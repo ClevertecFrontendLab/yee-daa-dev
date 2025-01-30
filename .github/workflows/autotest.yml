@@ -1,0 +1,44 @@
+name: Clevertec Frontend Autotests
+
+on:
+    pull_request:
+        branches:
+            - main
+
+permissions:
+    checks: write
+    actions: read
+    contents: read
+
+jobs:
+    build:
+        name: Autotesting with cypress
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Add reviewers
+              uses: ClevertecFrontendLab/create-pr@main
+              with:
+                  owner: ${{ github.repository_owner }}
+                  repo: ${{ github.event.repository.name }}
+                  pull_number: ${{ github.event.number }}
+                  token: ${{ secrets.ADMIN_TOKEN }}
+                  host: ${{ secrets.HOST }}
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+            - name: Run autotest with cypress
+              uses: cypress-io/github-action@v6
+              with:
+                  install: yarn install
+                  start: yarn start
+                  wait-on: 'http://localhost:3000'
+            - name: Check tests
+              if: always()
+              uses: ClevertecFrontendLab/check-test@main
+              with:
+                  owner: ${{ github.repository_owner }}
+                  repo: ${{ github.event.repository.name }}
+                  pull_number: ${{ github.event.number }}
+                  token: ${{ secrets.ADMIN_TOKEN }}
+                  host: ${{ secrets.HOST }}

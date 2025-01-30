@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "types": ["node", "cypress"],
+        "paths": {
+            "@public/*": ["./public/*"]
+        },
+        "plugins": [
+            {
+                "name": "typescript-plugin-css-modules",
+                "options": {
+                    "postCssOptions": {
+                        "useConfig": true
+                    }
+                }
+            }
+        ]
+    },
+    "include": ["src", "cypress/**/*.ts", "cypress.config.ts", "vite.config.ts"],
+    "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
+}
