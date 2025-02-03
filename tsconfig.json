@@ -3,7 +3,14 @@
         "baseUrl": ".",
         "types": ["node", "cypress"],
         "paths": {
-            "@public/*": ["./public/*"]
+            "@public/*": ["./public/*"],
+            "@components/*": ["./src/components/*"],
+            "@constants/*": ["./src/constants/*"],
+            "@hooks/*": ["./src/hooks/*"],
+            "@pages/*": ["./src/pages/*"],
+            "@redux/*": ["./src/redux/*"],
+            "@types/*": ["./src/types/*"],
+            "@utils/*": ["./src/utils/*"]
         },
         "plugins": [
             {

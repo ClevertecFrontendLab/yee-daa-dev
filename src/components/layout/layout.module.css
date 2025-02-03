@@ -1,0 +1,24 @@
+.fix {
+    position: fixed;
+    height: 80px;
+    width: 100%;
+}
+
+.fixAside,
+.fixNav {
+    position: fixed;
+    width: 256px;
+    height: calc(100% - 80px);
+    top: 80px;
+}
+
+.fixAside {
+    right: 0;
+}
+
+.fixFooter {
+    position: fixed;
+    height: 84px;
+    bottom: 0;
+    width: 100%;
+}
