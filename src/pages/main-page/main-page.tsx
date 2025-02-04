@@ -4,69 +4,9 @@ export const MainPage = () => {
     return (
         <div>
             <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur assumenda, at
-                blanditiis delectus dolorem, doloremque explicabo inventore modi obcaecati, quam quo
-                quos rerum sequi velit vero? Atque doloremque vero vitae!
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur assumenda, at
-                blanditiis delectus dolorem, doloremque explicabo inventore modi obcaecati, quam quo
-                quos rerum sequi velit vero? Atque doloremque vero vitae!
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur assumenda, at
-                blanditiis delectus dolorem, doloremque explicabo inventore modi obcaecati, quam quo
-                quos rerum sequi velit vero? Atque doloremque vero vitae!
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur assumenda, at
-                blanditiis delectus dolorem, doloremque explicabo inventore modi obcaecati, quam quo
-                quos rerum sequi velit vero? Atque doloremque vero vitae!
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur assumenda, at
-                blanditiis delectus dolorem, doloremque explicabo inventore modi obcaecati, quam quo
-                quos rerum sequi velit vero? Atque doloremque vero vitae!
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur assumenda, at
-                blanditiis delectus dolorem, doloremque explicabo inventore modi obcaecati, quam quo
-                quos rerum sequi velit vero? Atque doloremque vero vitae!
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur assumenda, at
-                blanditiis delectus dolorem, doloremque explicabo inventore modi obcaecati, quam quo
-                quos rerum sequi velit vero? Atque doloremque vero vitae!
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur assumenda, at
-                blanditiis delectus dolorem, doloremque explicabo inventore modi obcaecati, quam quo
-                quos rerum sequi velit vero? Atque doloremque vero vitae!
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur assumenda, at
-                blanditiis delectus dolorem, doloremque explicabo inventore modi obcaecati, quam quo
-                quos rerum sequi velit vero? Atque doloremque vero vitae!
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur assumenda, at
-                blanditiis delectus dolorem, doloremque explicabo inventore modi obcaecati, quam quo
-                quos rerum sequi velit vero? Atque doloremque vero vitae!
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur assumenda, at
-                blanditiis delectus dolorem, doloremque explicabo inventore modi obcaecati, quam quo
-                quos rerum sequi velit vero? Atque doloremque vero vitae!
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur assumenda, at
-                blanditiis delectus dolorem, doloremque explicabo inventore modi obcaecati, quam quo
-                quos rerum sequi velit vero? Atque doloremque vero vitae!
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur assumenda, at
-                blanditiis delectus dolorem, doloremque explicabo inventore modi obcaecati, quam quo
-                quos rerum sequi velit vero? Atque doloremque vero vitae!
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus asperiores autem
+                dolor, dolorem doloribus dolorum exercitationem fugiat in incidunt ipsum laboriosam
+                modi mollitia nesciunt non quisquam quod rerum soluta veritatis.
             </p>
         </div>
     );

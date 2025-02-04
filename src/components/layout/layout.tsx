@@ -1,4 +1,4 @@
-import { Grid, GridItem } from '@chakra-ui/react';
+import { Grid, GridItem, Text } from '@chakra-ui/react';
 import { Outlet } from 'react-router';
 
 import styles from './layout.module.css';
@@ -16,10 +16,9 @@ export const Layout = () => {
             gridTemplateRows={{ md: '80px 1fr', base: '80px 1fr 84px' }}
             gridTemplateColumns={{ md: '256px 1fr 256px', base: '1fr' }}
             h='100%'
-            color='blackAlpha.700'
-            fontWeight='bold'
         >
-            <GridItem pl='2' bg='orange.300' area={'header'} className={styles.fix}>
+            <GridItem pl='2' bg='lime.50' area={'header'} className={styles.fix}>
+                <Text>test</Text>
                 Header
             </GridItem>
             <GridItem
