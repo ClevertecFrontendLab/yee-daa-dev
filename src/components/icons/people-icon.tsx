@@ -16,8 +16,8 @@ export const PeopleIcon = createIcon({
                 fill='black'
             />
             <path
-                fill-rule='evenodd'
-                clip-rule='evenodd'
+                fillRule='evenodd'
+                clipRule='evenodd'
                 d='M5.216 14C5.06775 13.6878 4.99382 13.3455 5 13C5 11.645 5.68 10.25 6.936 9.28C6.30909 9.08684 5.65595 8.99237 5 9C1 9 0 12 0 13C0 14 1 14 1 14H5.216Z'
                 fill='black'
             />

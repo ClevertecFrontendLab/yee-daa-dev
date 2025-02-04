@@ -1,6 +1,7 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import { Outlet } from 'react-router';
 
+import { Aside } from '../aside';
 import { Header } from '../header';
 import styles from './layout.module.css';
 
@@ -32,12 +33,11 @@ export const Layout = () => {
                 <Outlet />
             </GridItem>
             <GridItem
-                bg='green.200'
-                area={'aside'}
+                area='aside'
                 className={styles.fixAside}
                 display={{ base: 'none', md: 'block' }}
             >
-                Aside
+                <Aside />
             </GridItem>
             <GridItem
                 bg='lime.50'
