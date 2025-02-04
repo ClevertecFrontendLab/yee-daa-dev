@@ -20,6 +20,7 @@
         "cy:e2e": "start-server-and-test start http-get://localhost:3000 cy:open-e2e"
     },
     "dependencies": {
+        "@chakra-ui/icons": "^2.2.4",
         "@chakra-ui/react": "2.8.2",
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
