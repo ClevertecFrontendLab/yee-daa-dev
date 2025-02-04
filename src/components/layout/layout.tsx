@@ -2,6 +2,7 @@ import { Grid, GridItem } from '@chakra-ui/react';
 import { Outlet } from 'react-router';
 
 import { Aside } from '../aside';
+import { Footer } from '../footer';
 import { Header } from '../header';
 import styles from './layout.module.css';
 
@@ -45,7 +46,7 @@ export const Layout = () => {
                 display={{ md: 'none', base: 'block' }}
                 className={styles.fixFooter}
             >
-                Footer
+                <Footer />
             </GridItem>
         </Grid>
     );
