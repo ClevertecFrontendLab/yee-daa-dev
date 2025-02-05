@@ -30,7 +30,7 @@ export const Layout = () => {
             >
                 Nav
             </GridItem>
-            <GridItem bg='green.300' area={'main'}>
+            <GridItem area='main' pl={6} pr={6} pt={8}>
                 <Outlet />
             </GridItem>
             <GridItem
@@ -42,7 +42,7 @@ export const Layout = () => {
             </GridItem>
             <GridItem
                 bg='lime.50'
-                area={'footer'}
+                area='footer'
                 display={{ md: 'none', base: 'block' }}
                 className={styles.fixFooter}
             >

@@ -32,11 +32,11 @@ export const Footer = () => {
     return (
         <Grid templateColumns='repeat(4, 1fr)' height='100%' templateRows='1fr'>
             {icons.map((icon, i) => (
-                <GridItem>
+                <GridItem key={i}>
                     <FooterBtn text={texts[i]} icon={icon} />
                 </GridItem>
             ))}
-            <GridItem>
+            <GridItem key={icons.length + 1}>
                 <FooterBtn
                     text={'Мой профиль'}
                     icon={<img src={userImg} alt='user-image' />}

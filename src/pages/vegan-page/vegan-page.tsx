@@ -1,5 +1,9 @@
-import React from 'react';
+import { SectionHeader } from '../../components/section-header';
 
 export const VeganPage = () => {
-    return <div>VeganPage</div>;
+    return (
+        <div>
+            <SectionHeader />
+        </div>
+    );
 };
