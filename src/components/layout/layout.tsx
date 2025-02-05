@@ -19,7 +19,7 @@ export const Layout = () => {
             gridTemplateRows={{ md: '80px 1fr', base: '64px 1fr 84px' }}
             gridTemplateColumns={{ md: '256px 1fr 256px', base: '1fr' }}
         >
-            <GridItem bg='lime.50' area={'header'} className={styles.fix}>
+            <GridItem bg='lime.50' area='header' className={styles.fix} zIndex={3}>
                 <Header />
             </GridItem>
             <GridItem
@@ -30,7 +30,7 @@ export const Layout = () => {
             >
                 Nav
             </GridItem>
-            <GridItem area='main' pl={6} pr={6} pt={8}>
+            <GridItem area='main' pl={6} pr={6} pt={8} overflow='hidden'>
                 <Outlet />
             </GridItem>
             <GridItem

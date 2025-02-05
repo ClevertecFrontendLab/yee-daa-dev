@@ -12,7 +12,7 @@ import { FilterIcon } from '../icons/filter-icon.tsx';
 
 export const SearchBlock = () => {
     return (
-        <Stack spacing={4} maxWidth='520px' ml='auto' mr='auto'>
+        <Stack spacing={4} maxWidth='520px' ml='auto' mr='auto' pb={8}>
             <Stack direction='row' spacing={3}>
                 <IconButton
                     aria-label={'filter'}
