@@ -30,13 +30,7 @@ export const Layout = () => {
             >
                 Nav
             </GridItem>
-            <GridItem
-                area='main'
-                pl={{ base: 4, md: 6 }}
-                pr={{ base: 4, md: 6 }}
-                pt={{ base: 4, md: 8 }}
-                overflow='hidden'
-            >
+            <GridItem area='main' p={{ base: 4, md: 6 }} pt={{ base: 4, md: 8 }} overflow='hidden'>
                 <Outlet />
             </GridItem>
             <GridItem

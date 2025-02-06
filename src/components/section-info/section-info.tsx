@@ -15,8 +15,8 @@ export const SectionInfo = () => {
             </Heading>
             {description && (
                 <Text
-                    fontSize='md'
-                    lineHeight={6}
+                    fontSize={{ base: 'sm', md: 'md' }}
+                    lineHeight={{ base: 5, md: 6 }}
                     fontWeight={500}
                     color='blackAlpha.600'
                     textAlign='center'
