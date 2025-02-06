@@ -12,7 +12,7 @@ const imgArr = [soliankaImg, kotletaImg, oladushkiImg, saladImg, soliankaImg];
 
 export const Carousel = () => {
     return (
-        <Box mb='40px'>
+        <Box mb={10}>
             <Heading fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }} fontWeight={500} mb={6}>
                 Новые рецепты
             </Heading>

@@ -1,6 +1,7 @@
 import { Flex, Spacer } from '@chakra-ui/react';
 
 import { useIsTablet } from '../../hooks/media-query.ts';
+import { user } from '../../mocks/users.ts';
 import { Breadcrumbs } from '../breadcrumbs';
 import { BurgerMenu } from '../burger-menu';
 import { Logo } from '../logo';
@@ -14,7 +15,7 @@ export const Header = () => {
             <Logo />
             <Breadcrumbs />
             <Spacer />
-            {!isTablet && <UserInfo size='large' withGutter />}
+            {!isTablet && <UserInfo withGutter {...user} />}
             {isTablet && <StatsBlock />}
             {isTablet && <BurgerMenu />}
         </Flex>

@@ -1,59 +1,41 @@
-import { Box, Flex, Spacer, Square, Text } from '@chakra-ui/react';
+import { Avatar } from '@chakra-ui/icons';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import userImg from '../../assets/images/user.webp';
 import { UserProps } from '../../types/user.ts';
 
-type Props = Partial<{
-    size: 'small' | 'large';
-    withGutter: boolean;
-}>;
+type Props = UserProps &
+    Partial<{
+        withGutter: boolean;
+    }>;
 
-const user: UserProps = {
-    firstName: 'Екатерина',
-    lastName: 'Константинопольская',
-    login: '@bake_and_pie',
-};
-
-export const UserInfo: FC<Props> = ({ size = 'small', withGutter = false }) => {
-    // TODO: заменить на селектор
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { firstName, lastName, login, imageUrl } = user;
-
-    const isLarge = size === 'large';
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const imagePlug = (
-        <Text fontSize='xl' color='white' fontWeight={500}>
-            {firstName[0].concat(lastName[0])}
-        </Text>
-    );
-
+export const UserInfo: FC<Props> = ({
+    withGutter = false,
+    lastName,
+    imageUrl,
+    firstName,
+    login,
+}) => {
     return (
-        <Flex ml={withGutter ? 13 : 0} maxWidth={'355px'}>
-            <Square
-                size={isLarge ? '48px' : '32px'}
-                bg={'lime.400'}
-                borderRadius='50%'
-                overflow='hidden'
-            >
-                {/* TODO: раскоментировать, когда будет доступ к картинкам, убрать заглушки линта */}
-                {/*{imageUrl ? <img src={imageUrl} alt={'user-img'} /> : imagePlug}*/}
-                <img src={userImg} alt={'user-img'} />
-            </Square>
-            <Spacer width={3} />
-            <Box>
+        <Flex ml={withGutter ? 13 : 0} maxWidth={'355px'} alignItems='center'>
+            {/*<Avatar size={isLarge ? 'md' : 'sm'} src={imageUrl} name={`${firstName} ${lastName}`} />*/}
+            <Avatar
+                size={{ base: 'sm', md: 'md' }}
+                src={imageUrl}
+                name={`${firstName} ${lastName}`}
+            />
+            <Box ml={{ base: 2, md: 3 }} flexGrow={1}>
                 <Text
-                    fontSize='lg'
+                    fontSize={{ base: 'sm', md: 'lg' }}
                     fontWeight={500}
-                    lineHeight={7}
+                    lineHeight={{ base: 6, md: 7 }}
                     noOfLines={1}
-                    maxWidth={'296px'}
+                    letterSpacing={'-0.5px'}
                 >
-                    {`${firstName} ${lastName}`}
+                    {firstName} {lastName}
                 </Text>
                 <Text
-                    fontSize='sm'
+                    fontSize={{ base: 'xs', md: 'sm' }}
                     lineHeight={5}
                     color='blackAlpha.700'
                     noOfLines={1}
