@@ -1,28 +1,16 @@
-import { CardFooter, Image, Stack, TagLabel } from '@chakra-ui/icons';
-import { Card, CardBody, CardHeader, Heading, HStack, Tag, Text } from '@chakra-ui/react';
-import React, { FC } from 'react';
+import { CardFooter, Image, Stack } from '@chakra-ui/icons';
+import { Box, Card, CardBody, CardHeader, Heading, HStack, Text } from '@chakra-ui/react';
+import { FC } from 'react';
 
-import cookies from '../../assets/icons/cookies.png';
-import first from '../../assets/icons/first.png';
-import salad from '../../assets/icons/salad.png';
-import vegan from '../../assets/icons/vegan.png';
 import { Recipe } from '../../types/recipe.ts';
-import { BookmarkIcon } from '../icons/bookmark-icon.tsx';
-import { FavoritesIcon } from '../icons/favorites-icon.tsx';
-
-const images = [
-    <Image src={first} />,
-    <Image src={vegan} />,
-    <Image src={cookies} />,
-    <Image src={salad} />,
-];
+import { CardStat } from '../card-stat/card-stat.tsx';
+import { CategoryTag } from '../category-tag';
 
 export const CarouselItem: FC<Recipe> = ({
     title,
     image,
     description,
     category,
-    id,
     likes,
     bookmarks,
 }) => {
@@ -33,24 +21,20 @@ export const CarouselItem: FC<Recipe> = ({
             flexShrink={0}
             border='1px solid rgba(0, 0, 0, 0.08)'
             borderRadius='8px'
+            boxShadow='none'
         >
             <CardHeader p={0} position='relative'>
                 <Image src={image} alt={title} borderTopRightRadius='lg' borderTopLeftRadius='lg' />
-                <Tag
-                    size={'md'}
-                    bg='lime.150'
-                    maxWidth='175px'
-                    display={{ base: 'flex', md: 'none' }}
+                <Box
                     position='absolute'
-                    top={2}
-                    left={2}
+                    top={1}
+                    left={1}
                     p={1}
+                    display={{ base: 'block', md: 'none' }}
+                    width={'100%'}
                 >
-                    {images[id]}
-                    <TagLabel ml='2px' noOfLines={1} fontSize='sm' letterSpacing='-0.5px'>
-                        {category}
-                    </TagLabel>
-                </Tag>
+                    <CategoryTag category={category} color='lime.150' />
+                </Box>
             </CardHeader>
             <CardBody p={{ base: 3, md: 6 }} pt={{ base: 3, md: 4 }} pb={{ base: 2, md: 6 }}>
                 <Stack>
@@ -73,36 +57,11 @@ export const CarouselItem: FC<Recipe> = ({
                 </Stack>
             </CardBody>
             <CardFooter p={{ base: 3, md: 6 }} pt={{ base: 0, md: 0 }} display='block'>
-                <HStack justifyContent={'space-between'} alignItems={'center'}>
-                    <Tag
-                        size={'md'}
-                        bg='lime.150'
-                        maxWidth='170px'
-                        display={{ base: 'none', md: 'flex' }}
-                    >
-                        {images[id]}
-                        <TagLabel ml={2} noOfLines={1}>
-                            {category}
-                        </TagLabel>
-                    </Tag>
-                    <HStack>
-                        {bookmarks && (
-                            <HStack spacing={2} pl={2} pr={1}>
-                                <BookmarkIcon w={4} h={4} />
-                                <Text fontSize='md' lineHeight={6} color='lime.600'>
-                                    {bookmarks}
-                                </Text>
-                            </HStack>
-                        )}
-                        {likes && (
-                            <HStack spacing={2} pl={2} pr={1}>
-                                <FavoritesIcon w={4} h={4} />
-                                <Text fontSize='md' lineHeight={6} color='lime.600'>
-                                    {likes}
-                                </Text>
-                            </HStack>
-                        )}
-                    </HStack>
+                <HStack justifyContent='space-between' alignItems='center'>
+                    <Box display={{ base: 'none', md: 'flex' }}>
+                        <CategoryTag category={category} color='lime.150' />
+                    </Box>
+                    <CardStat likes={likes} bookmarks={bookmarks} />
                 </HStack>
             </CardFooter>
         </Card>

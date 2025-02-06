@@ -2,6 +2,7 @@
     position: fixed;
     height: var(--header-height);
     width: 100%;
+    z-index: 9;
 }
 
 .fixAside,

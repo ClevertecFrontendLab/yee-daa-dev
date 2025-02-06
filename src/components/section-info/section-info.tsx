@@ -10,7 +10,7 @@ export const SectionInfo = () => {
 
     return (
         <Stack spacing={3} mb={8}>
-            <Heading fontSize='5xl' lineHeight='none' textAlign='center'>
+            <Heading fontSize={{ base: '2xl', xl: '5xl' }} lineHeight='none' textAlign='center'>
                 {title}
             </Heading>
             {description && (

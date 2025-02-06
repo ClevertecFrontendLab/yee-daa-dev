@@ -12,8 +12,8 @@ const imgArr = [soliankaImg, kotletaImg, oladushkiImg, saladImg, soliankaImg];
 
 export const Carousel = () => {
     return (
-        <Box pb='40px'>
-            <Heading fontSize='5xl' lineHeight='none' fontWeight={500} mb={6}>
+        <Box mb='40px'>
+            <Heading fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }} fontWeight={500} mb={6}>
                 Новые рецепты
             </Heading>
             <Box position='relative'>
@@ -24,7 +24,7 @@ export const Carousel = () => {
                     color='white'
                     size='lg'
                     position='absolute'
-                    top='50%'
+                    top='45%'
                     left='0'
                     transform='translate(-25%, -50%)'
                     zIndex={3}
@@ -46,7 +46,7 @@ export const Carousel = () => {
                     bg='black'
                     color='white'
                     position='absolute'
-                    top='50%'
+                    top='45%'
                     right='0'
                     transform='translate(25%, -50%)'
                     size='lg'
