@@ -1,0 +1,21 @@
+:global(.sideNavItem) {
+    position: relative;
+
+    &:before {
+        position: absolute;
+        content: '';
+        width: 1px;
+        height: 100%;
+        display: block;
+        background: #c4ff61;
+        top: 0;
+        left: -1px;
+    }
+}
+
+:global(.sideNavItem.active) {
+    &:before {
+        width: 8px;
+        left: -8px;
+    }
+}
