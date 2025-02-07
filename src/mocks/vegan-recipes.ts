@@ -1,4 +1,9 @@
-import kneliImg from '../assets/images/kneli.png';
+import lazaniaImg from '../assets/images/lazania-vegan.jpg';
+import potatoGarlicImg from '../assets/images/potato-garlic.jpg';
+import rollsImg from '../assets/images/potato-mini-rolls.jpg';
+import potatTushImg from '../assets/images/potato-tushenaya.jpg';
+import puriImg from '../assets/images/puri.jpg';
+import tefteliImg from '../assets/images/tefteli-vegan.jpg';
 import tomImg from '../assets/images/tom.png';
 import { Recipe } from '../types/recipe.ts';
 
@@ -9,7 +14,7 @@ export const veganRecipes: Recipe[] = [
         description:
             'Картошка, тушенная с болгарским перцем, фасолью, морковью и луком, -  вариант сытного блюда на каждый день. Фасоль в данном случае заменяет  мясо, делая рагу сытным и питательным. Чтобы сократить время  приготовления, возьмём консервированную фасоль. Блюдо хоть и простое, но в полной мере наполнено ароматами и имеет выразительный вкус за счёт  добавления томатной пасты.',
         category: 'Национальные',
-        image: kneliImg,
+        image: potatTushImg,
         bookmarks: 85,
         likes: 152,
     },
@@ -19,7 +24,7 @@ export const veganRecipes: Recipe[] = [
         description:
             'Рекомендую всем приготовить постное блюдо из картофеля и грибов.  Готовится это блюдо без яиц, без мяса и без сыра, из самых простых  ингредиентов, а получается очень вкусно и сытно. Постный рецепт  картофельных рулетиков с грибами, в томатном соусе, - на обед, ужин и  даже на праздничный стол!',
         category: 'Детские блюда',
-        image: kneliImg,
+        image: rollsImg,
         bookmarks: 85,
         likes: 152,
     },
@@ -39,7 +44,7 @@ export const veganRecipes: Recipe[] = [
         description:
             'Большое, сытное блюдо для ценителей блюд без мяса! Такая лазанья  готовится с овощным соусом и соусом бешамель, а вместо листов для  лазаньи используется тонкий лаваш.',
         category: 'Блюда на гриле',
-        image: tomImg,
+        image: lazaniaImg,
         bookmarks: 85,
         likes: 152,
     },
@@ -49,7 +54,7 @@ export const veganRecipes: Recipe[] = [
         description:
             'Тефтели из булгура и чечевицы – яркие и питательные, отлично подходят  для постного и вегетарианского меню. Тефтели получаются нежными, а также сочными и ароматными благодаря использованию томатного соуса и душистых пряностей.',
         category: 'Вторые блюда',
-        image: tomImg,
+        image: tefteliImg,
         bookmarks: 85,
         likes: 152,
     },
@@ -59,7 +64,7 @@ export const veganRecipes: Recipe[] = [
         description:
             'Такая картошечка украсит любой семейный обед! Все будут в полном  восторге, очень вкусно! Аромат чеснока, хрустящая корочка на картошечке - просто объедение! Отличная идея для обеда или ужина, готовится просто!',
         category: 'Национальные',
-        image: tomImg,
+        image: potatoGarlicImg,
         bookmarks: 124,
         likes: 342,
     },
@@ -69,8 +74,8 @@ export const veganRecipes: Recipe[] = [
         description:
             'Пури - это индийские жареные лепешки, которые готовятся из пресного  теста. Рецепт лепешек пури требует самых доступных ингредиентов, и  времени на приготовление хрустящих лепешек уйдет мало.',
         category: 'Национальные',
-        image: tomImg,
-        bookmarks: 124,
+        image: puriImg,
+        bookmarks: 123,
         likes: 342,
     },
     {
@@ -79,7 +84,7 @@ export const veganRecipes: Recipe[] = [
         description:
             'Пури - это индийские жареные лепешки, которые готовятся из пресного  теста. Рецепт лепешек пури требует самых доступных ингредиентов, и  времени на приготовление хрустящих лепешек уйдет мало.',
         category: 'Национальные',
-        image: tomImg,
+        image: puriImg,
         bookmarks: 124,
         likes: 342,
     },

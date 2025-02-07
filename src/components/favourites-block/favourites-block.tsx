@@ -1,6 +1,8 @@
 import { ArrowForwardIcon, Button, SimpleGrid } from '@chakra-ui/icons';
 import { Box, Center, Heading, HStack } from '@chakra-ui/react';
+import { Link } from 'react-router';
 
+import { Paths } from '../../constants/path.ts';
 import { favouritesRecipes } from '../../mocks/favourites-recipes.ts';
 import { FoodCard } from '../food-card';
 
@@ -21,6 +23,8 @@ export const FavouritesBlock = () => {
                     rightIcon={<ArrowForwardIcon />}
                     display={{ base: 'none', md: 'flex' }}
                     alignItems='center'
+                    as={Link}
+                    to={Paths.JUICIEST}
                 >
                     Вся подборка
                 </Button>
@@ -31,7 +35,7 @@ export const FavouritesBlock = () => {
                 maxWidth='100%'
                 minChildWidth={{ base: '300px', md: '450px' }}
             >
-                {favouritesRecipes.map((el) => (
+                {favouritesRecipes.slice(0, 4).map((el) => (
                     <FoodCard {...el} key={el.id} />
                 ))}
             </SimpleGrid>

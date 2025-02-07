@@ -2,6 +2,7 @@ import { Paths } from './path.ts';
 
 export const pathsMap = {
     [Paths.R_SWITCHER]: 'Главная',
+    [Paths.JUICIEST]: 'Самое сочное',
     vegan: 'Веганская кухня',
     snacks: 'Закуски',
     salads: 'Салаты',
