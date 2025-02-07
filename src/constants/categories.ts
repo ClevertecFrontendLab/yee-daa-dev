@@ -17,7 +17,7 @@ export const categoriesMap: Record<string, string> = {
     ['Закуски']: zakuski,
     ['Первые блюда']: first,
     ['Вторые блюда']: second,
-    ['Десерты, выпечка']: cookies,
+    ['Десерты и выпечка']: cookies,
     ['Блюда на гриле']: grill,
     ['Веганская кухня']: vegan,
     ['Детские блюда']: kids,
@@ -25,5 +25,5 @@ export const categoriesMap: Record<string, string> = {
     ['Национальные']: national,
     ['Соусы']: sauce,
     ['Напитки']: drink,
-    ['Заготовки']: zagotovki,
+    ['Домашние заготовки']: zagotovki,
 };

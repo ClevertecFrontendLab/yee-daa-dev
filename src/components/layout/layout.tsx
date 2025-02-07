@@ -4,6 +4,7 @@ import { Outlet } from 'react-router';
 import { Aside } from '../aside';
 import { Footer } from '../footer';
 import { Header } from '../header';
+import { SideNav } from '../side-nav';
 import styles from './layout.module.css';
 
 export const Layout = () => {
@@ -23,12 +24,11 @@ export const Layout = () => {
                 <Header />
             </GridItem>
             <GridItem
-                bg='pink.300'
                 area={'nav'}
                 className={styles.fixNav}
                 display={{ base: 'none', md: 'block' }}
             >
-                Nav
+                <SideNav />
             </GridItem>
             <GridItem area='main' p={{ base: 4, md: 6 }} pt={{ base: 4, md: 8 }} overflow='hidden'>
                 <Outlet />

@@ -200,7 +200,7 @@ export const navMenu: MenuItem[] = [
         ],
     },
     {
-        title: '',
+        title: 'Блюда на гриле',
         path: '/grilled-dishes',
         subItems: [
             {
