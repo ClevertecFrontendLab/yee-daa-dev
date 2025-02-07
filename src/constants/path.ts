@@ -1,6 +1,6 @@
 export const Paths = {
     R_SWITCHER: '/',
-    VEGAN: '/vegan',
+    VEGAN: 'vegan',
+    JUICIEST: 'the-juiciest',
     ERROR: '*',
-    TEST: 'test',
 };

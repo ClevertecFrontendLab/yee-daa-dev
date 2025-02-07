@@ -11,19 +11,19 @@ type Props = Partial<{
 
 export const CardStat: FC<Props> = ({ bookmarks, likes }) => {
     return (
-        <HStack>
+        <HStack spacing={2}>
             {bookmarks && (
-                <HStack spacing={2} pl={2} pr={1}>
-                    <BookmarkIcon w={4} h={4} />
-                    <Text fontSize='md' lineHeight={6} color='lime.600'>
+                <HStack spacing={2} p={1} alignItems='center'>
+                    <BookmarkIcon w={3} h={3} />
+                    <Text fontSize='xs' lineHeight={4} color='lime.600'>
                         {bookmarks}
                     </Text>
                 </HStack>
             )}
             {likes && (
-                <HStack spacing={2} pl={2} pr={1}>
-                    <FavoritesIcon w={4} h={4} />
-                    <Text fontSize='md' lineHeight={6} color='lime.600'>
+                <HStack spacing={2} p={1} alignItems='center'>
+                    <FavoritesIcon w={3} h={3} />
+                    <Text fontSize='xs' lineHeight={4} color='lime.600'>
                         {likes}
                     </Text>
                 </HStack>

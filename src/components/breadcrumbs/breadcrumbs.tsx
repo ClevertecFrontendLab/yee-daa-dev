@@ -3,11 +3,7 @@ import { Box, Breadcrumb, BreadcrumbItem } from '@chakra-ui/react';
 import { Link, useLocation } from 'react-router';
 
 import { Paths } from '../../constants/path.ts';
-
-const pathsMap = {
-    [Paths.R_SWITCHER]: 'Главная',
-    vegan: 'Веганская кухня',
-};
+import { pathsMap } from '../../constants/path-map.ts';
 
 const pathsObj: Record<string, string> = {
     vegan: Paths.VEGAN,
