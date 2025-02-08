@@ -19,7 +19,7 @@ const subcategories = [
 
 export const KitchenTabs = () => {
     return (
-        <Tabs mb={10}>
+        <Tabs mb={{ base: 8, md: 10 }}>
             <Box
                 maxW='1020px'
                 ml='auto'

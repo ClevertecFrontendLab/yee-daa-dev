@@ -1,8 +1,9 @@
 import { Button, SimpleGrid } from '@chakra-ui/icons';
-import { Box, Center } from '@chakra-ui/react';
+import { Center } from '@chakra-ui/react';
 
 import { FoodCard } from '../../components/food-card';
 import { RelevantKitchen } from '../../components/relevant-kitchen';
+import { SectionBox } from '../../components/section-box/section-box.tsx';
 import { SectionHeader } from '../../components/section-header';
 import { favouritesRecipes } from '../../mocks/favourites-recipes.ts';
 import { relevantVegan } from '../../mocks/relevant-vegan.ts';
@@ -16,7 +17,7 @@ export const JuiciestPage = () => {
     return (
         <>
             <SectionHeader />
-            <Box mb={10}>
+            <SectionBox>
                 <SimpleGrid
                     columns={2}
                     gap={{ base: 3, md: 4 }}
@@ -30,7 +31,7 @@ export const JuiciestPage = () => {
                 <Center mt={4}>
                     <Button bg={'lime.400'}>Загрузить ещё</Button>
                 </Center>
-            </Box>
+            </SectionBox>
             <RelevantKitchen title={title} description={desc} recipes={relevantVegan} />
         </>
     );

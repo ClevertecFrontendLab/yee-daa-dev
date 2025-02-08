@@ -38,5 +38,13 @@
 @media (max-width: 662px) {
     .block {
         flex-direction: column;
+
+        & > *:not(:last-child) {
+            flex-basis: fit-content;
+        }
+
+        & > *:last-child {
+            flex-basis: fit-content;
+        }
     }
 }

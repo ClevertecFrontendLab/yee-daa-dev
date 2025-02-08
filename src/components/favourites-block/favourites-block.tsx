@@ -1,14 +1,31 @@
 import { ArrowForwardIcon, Button, SimpleGrid } from '@chakra-ui/icons';
-import { Box, Center, Heading, HStack } from '@chakra-ui/react';
+import { Center, Heading, HStack } from '@chakra-ui/react';
 import { Link } from 'react-router';
 
 import { Paths } from '../../constants/path.ts';
+import { useIsTablet } from '../../hooks/media-query.ts';
 import { favouritesRecipes } from '../../mocks/favourites-recipes.ts';
 import { FoodCard } from '../food-card';
+import { SectionBox } from '../section-box/section-box.tsx';
 
 export const FavouritesBlock = () => {
+    const isTablet = useIsTablet();
+
+    const linkBtn = (
+        <Button
+            bg='lime.400'
+            size={{ base: 'md', '2xl': 'lg' }}
+            rightIcon={<ArrowForwardIcon />}
+            alignItems='center'
+            as={Link}
+            to={Paths.JUICIEST}
+        >
+            Вся подборка
+        </Button>
+    );
+
     return (
-        <Box mb={10}>
+        <SectionBox>
             <HStack justifyContent='space-between' mb={6}>
                 <Heading
                     fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }}
@@ -17,17 +34,7 @@ export const FavouritesBlock = () => {
                 >
                     Самое сочное
                 </Heading>
-                <Button
-                    bg='lime.400'
-                    size={{ base: 'md', '2xl': 'lg' }}
-                    rightIcon={<ArrowForwardIcon />}
-                    display={{ base: 'none', md: 'flex' }}
-                    alignItems='center'
-                    as={Link}
-                    to={Paths.JUICIEST}
-                >
-                    Вся подборка
-                </Button>
+                {!isTablet && linkBtn}
             </HStack>
             <SimpleGrid
                 columns={2}
@@ -40,14 +47,8 @@ export const FavouritesBlock = () => {
                 ))}
             </SimpleGrid>
             <Center display={{ base: 'flex', md: 'none' }} mt={3}>
-                <Button
-                    bg='lime.400'
-                    size={{ base: 'md', '2xl': 'lg' }}
-                    rightIcon={<ArrowForwardIcon />}
-                >
-                    Вся подборка
-                </Button>
+                {linkBtn}
             </Center>
-        </Box>
+        </SectionBox>
     );
 };

@@ -6,7 +6,7 @@ import { BlogCard } from '../blog-card/blog-card.tsx';
 
 export const BlogSection = () => {
     return (
-        <Box mb={10} bg='lime.400' borderRadius={6} p={6}>
+        <Box mb={{ base: 8, md: 10 }} bg='lime.400' borderRadius={6} p={6}>
             <HStack justifyContent='space-between' mb={6}>
                 <Heading fontSize={{ base: '2xl', xl: '4xl' }} lineHeight={10} fontWeight={400}>
                     Кулинарные блоги

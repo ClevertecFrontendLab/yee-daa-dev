@@ -70,7 +70,12 @@ export const FoodCard: FC<Recipe> = ({
                     pt={0}
                     pb={{ base: 1, md: 5 }}
                 >
-                    <HStack justifyContent='flex-end' width='100%' spacing={{ base: 3, md: 2 }}>
+                    <HStack
+                        justifyContent='flex-end'
+                        width='100%'
+                        spacing={{ base: 3, md: 2 }}
+                        flexWrap='wrap'
+                    >
                         <IconButton
                             size={{ base: 'xs', md: 'sm' }}
                             aria-label={'save-recipe'}
@@ -84,7 +89,7 @@ export const FoodCard: FC<Recipe> = ({
                             size={{ base: 'xs', md: 'sm' }}
                             leftIcon={<BookmarkIcon />}
                             color='blackAlpha.800'
-                            display={{ base: 'none', md: 'block' }}
+                            display={{ base: 'none', md: 'flex' }}
                         >
                             Сохранить
                         </Button>

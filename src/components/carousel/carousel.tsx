@@ -6,13 +6,14 @@ import oladushkiImg from '../../assets/images/oladushki.png';
 import saladImg from '../../assets/images/salat-zdorovie.png';
 import soliankaImg from '../../assets/images/solianka.png';
 import { carouselRecipes } from '../../mocks/carousel-recipes.ts';
+import { SectionBox } from '../section-box/section-box.tsx';
 import { CarouselItem } from './carousel-item.tsx';
 
 const imgArr = [soliankaImg, kotletaImg, oladushkiImg, saladImg, soliankaImg];
 
 export const Carousel = () => {
     return (
-        <Box mb={10}>
+        <SectionBox>
             <Heading fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }} fontWeight={500} mb={6}>
                 Новые рецепты
             </Heading>
@@ -54,6 +55,6 @@ export const Carousel = () => {
                     display={{ base: 'none', md: 'block' }}
                 />
             </Box>
-        </Box>
+        </SectionBox>
     );
 };
