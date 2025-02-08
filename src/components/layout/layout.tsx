@@ -18,7 +18,10 @@ export const Layout = () => {
                   "footer"`,
             }}
             gridTemplateRows={{ md: '80px 1fr', base: '64px 1fr 84px' }}
-            gridTemplateColumns={{ md: '256px 1fr 256px', base: '1fr' }}
+            gridTemplateColumns={{
+                md: 'clamp(160px, 13vw, 256px) 1fr clamp(160px, 13vw, 256px)',
+                base: '1fr',
+            }}
         >
             <GridItem bg='lime.50' area='header' className={styles.fix}>
                 <Header />

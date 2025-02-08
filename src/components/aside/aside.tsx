@@ -11,7 +11,7 @@ export const Aside = () => {
             pb='52px'
             direction='column'
             alignItems='flex-end'
-            position={'relative'}
+            position='relative'
         >
             <StatsBlock />
             <Spacer />

@@ -8,7 +8,7 @@
 .fixAside,
 .fixNav {
     position: fixed;
-    width: 256px;
+    width: clamp(160px, 13vw, 256px);
     height: calc(100% - var(--header-height));
     top: var(--header-height);
 }
