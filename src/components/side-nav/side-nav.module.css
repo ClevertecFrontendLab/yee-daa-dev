@@ -7,7 +7,7 @@
         width: 1px;
         height: 100%;
         display: block;
-        background: var(--lime-300);
+        background: #c4ff61;
         top: 0;
         left: -1px;
     }
