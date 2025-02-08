@@ -1,4 +1,5 @@
-import { Grid, GridItem, Text } from '@chakra-ui/react';
+import { Avatar } from '@chakra-ui/icons';
+import { Grid, GridItem } from '@chakra-ui/react';
 
 import userImg from '../../assets/images/user.webp';
 import { UserProps } from '../../types/user.ts';
@@ -14,20 +15,12 @@ const user: UserProps = {
     firstName: 'Екатерина',
     lastName: 'Константинопольская',
     login: '@bake_and_pie',
+    imageUrl: userImg,
 };
 
 export const Footer = () => {
     // TODO: заменить на селектор
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { firstName, lastName, login, imageUrl } = user;
-
-    // TODO: когда будет доступ к картинкам - реализовать логику с подставление заглушки
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const imagePlug = (
-        <Text fontSize='xl' color='black' fontWeight={500}>
-            {firstName[0].concat(lastName[0])}
-        </Text>
-    );
+    const { firstName, lastName, imageUrl } = user;
 
     return (
         <Grid templateColumns='repeat(4, 1fr)' height='100%' templateRows='1fr'>
@@ -38,8 +31,8 @@ export const Footer = () => {
             ))}
             <GridItem key={icons.length + 1}>
                 <FooterBtn
-                    text={'Мой профиль'}
-                    icon={<img src={userImg} alt='user-image' />}
+                    text='Мой профиль'
+                    icon={<Avatar src={imageUrl} name={`${firstName} ${lastName}`} />}
                     isProfile={true}
                 />
             </GridItem>
