@@ -19,7 +19,7 @@ export const Layout = () => {
             }}
             gridTemplateRows={{ md: '80px 1fr', base: '64px 1fr 84px' }}
             gridTemplateColumns={{
-                md: 'clamp(160px, 13vw, 256px) 1fr clamp(160px, 13vw, 256px)',
+                md: 'clamp(170px, 13vw, 266px) 1fr clamp(160px, 13vw, 256px)',
                 base: '1fr',
             }}
         >
@@ -33,7 +33,13 @@ export const Layout = () => {
             >
                 <SideNav />
             </GridItem>
-            <GridItem area='main' p={{ base: 4, md: 6 }} pt={{ base: 4, md: 8 }} overflow='hidden'>
+            <GridItem
+                area='main'
+                p={{ base: 4, md: 6 }}
+                pt={{ base: 4, md: 8 }}
+                pl={{ base: '6px', md: '14px' }}
+                overflow='hidden'
+            >
                 <Outlet />
             </GridItem>
             <GridItem

@@ -17,6 +17,16 @@
     right: 0;
 }
 
+.fixNav {
+    min-height: calc(100vh - var(--header-height) - 24px);
+    box-shadow:
+        0 2px 1px -1px rgba(0, 0, 0, 0.2),
+        0 1px 1px 0 rgba(0, 0, 0, 0.14),
+        0 1px 3px 0 rgba(0, 0, 0, 0.12);
+    background: #fff;
+    width: clamp(170px, 13vw, 266px);
+}
+
 .fixFooter {
     position: fixed;
     height: 84px;
