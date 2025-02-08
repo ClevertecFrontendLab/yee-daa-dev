@@ -37,7 +37,7 @@
     }
 
     &:hover > svg > path {
-        fill: black;
+        fill: #000;
     }
 
     &:before {

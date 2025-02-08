@@ -2,6 +2,13 @@
 
 :root {
     --header-height: 80px;
+    --lime-50: '#FFFFD3';
+    --lime-100: '#EAFFC7';
+    --lime-150: '#D7FF94';
+    --lime-300: '#C4FF61';
+    --lime-400: '#B1FF2E';
+    --lime-600: '#2DB100';
+    --lime-800: '#134B00';
 }
 
 @media (max-width: 768px) {
