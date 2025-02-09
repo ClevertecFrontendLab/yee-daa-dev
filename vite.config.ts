@@ -10,7 +10,11 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '@public': path.resolve(__dirname, 'public'),
+            '@': path.resolve(__dirname, 'src'),
+            '@app': path.resolve(__dirname, 'src/app'),
+            '@query': path.resolve(__dirname, 'src/query'),
+            '@assets': path.resolve(__dirname, 'src/assets'),
+            '@store': path.resolve(__dirname, 'src/store'),
         },
     },
 });

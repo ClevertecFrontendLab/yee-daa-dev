@@ -3,7 +3,11 @@
         "baseUrl": ".",
         "types": ["node", "cypress"],
         "paths": {
-            "@public/*": ["./public/*"]
+            "@/*": ["src/*"],
+            "@app/*": ["src/app/*"],
+            "@query/*": ["src/query/*"],
+            "@assets/*": ["src/assets/*"],
+            "@store/*": ["src/store/*"]
         },
         "plugins": [
             {
@@ -16,6 +20,6 @@
             }
         ]
     },
-    "include": ["src", "cypress/**/*.ts", "cypress.config.ts", "vite.config.ts"],
+    "include": ["src"],
     "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }
