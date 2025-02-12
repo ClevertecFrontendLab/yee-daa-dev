@@ -18,6 +18,7 @@ export const StatsBlock = () => {
             pr={{ base: 4, md: 0 }}
             pt={{ base: 0, md: 4 }}
             pb={{ base: 0, md: 4 }}
+            mr={14}
             flexDirection={{ base: 'row', md: 'column' }}
             gap={{ base: 0, md: 6 }}
         >

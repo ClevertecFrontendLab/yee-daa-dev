@@ -1,34 +1,43 @@
-.fix {
-    position: fixed;
+.wrapper {
+    max-width: 1920px;
+    min-width: 320px;
+    min-height: 100dvh;
+    margin: 0 auto;
+    background: var(--chakra-colors-chakra-body-bg);
+    position: relative;
+}
+
+.header {
+    position: sticky;
+    top: 0;
     height: var(--header-height);
     width: 100%;
     z-index: 9;
 }
 
-.fixAside,
-.fixNav {
-    position: fixed;
+.aside,
+.nav {
     width: clamp(160px, 13vw, 256px);
-    height: calc(100% - var(--header-height));
+    height: calc(1120px - var(--header-height));
     top: var(--header-height);
+    position: sticky;
 }
 
-.fixAside {
-    right: 0;
-}
-
-.fixNav {
-    min-height: calc(100vh - var(--header-height) - 24px);
+.nav {
     box-shadow:
-        0 2px 1px -1px rgba(0, 0, 0, 0.2),
-        0 1px 1px 0 rgba(0, 0, 0, 0.14),
-        0 1px 3px 0 rgba(0, 0, 0, 0.12);
+        0 0 1px -1px rgba(0, 0, 0, 0.2),
+        0 0 1px 0 rgba(0, 0, 0, 0.14),
+        0 0 3px 0 rgba(0, 0, 0, 0.12);
     background: #fff;
     width: clamp(170px, 13vw, 266px);
 }
 
-.fixFooter {
-    position: fixed;
+.main {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.footer {
     height: 84px;
     bottom: 0;
     width: 100%;

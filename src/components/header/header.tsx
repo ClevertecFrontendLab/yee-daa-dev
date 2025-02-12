@@ -11,7 +11,7 @@ import { UserInfo } from '../user-info';
 export const Header = () => {
     const isTablet = useIsTablet();
     return (
-        <Flex pl={4} pr={4} pt={6} pb={6} mr={{ base: 0, md: 14 }} h='100%' alignItems='center'>
+        <Flex pl={4} pr={4} pt={6} pb={6} h='100%' alignItems='center'>
             <Logo />
             <Breadcrumbs />
             <Spacer />
