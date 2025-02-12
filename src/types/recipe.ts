@@ -5,7 +5,7 @@ export type Recipe = {
     category: string;
     title: string;
     description: string;
-    image: string;
+    image?: string;
     likes?: number;
     views?: number;
     bookmarks?: number;

@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 
 import { Paths } from '../../constants/path.ts';
 import { useIsTablet } from '../../hooks/media-query.ts';
-import { favouritesRecipes } from '../../mocks/favourites-recipes.ts';
+import { favouritesRecipes } from '../../mocks/recipes.ts';
 import { FoodCard } from '../food-card';
 import { SectionBox } from '../section-box/section-box.tsx';
 
@@ -42,7 +42,7 @@ export const FavouritesBlock = () => {
                 maxWidth='100%'
                 minChildWidth={{ base: '300px', md: '450px' }}
             >
-                {favouritesRecipes.slice(0, 4).map((el) => (
+                {favouritesRecipes.map((el) => (
                     <FoodCard {...el} key={el.id} />
                 ))}
             </SimpleGrid>

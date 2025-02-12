@@ -16,7 +16,7 @@ export const CarouselItem: FC<Recipe> = ({
 }) => {
     return (
         <Card
-            maxWidth='322px'
+            width='322px'
             flexBasis={{ base: '158px', md: '277', xl: '322px' }}
             flexShrink={0}
             border='1px solid rgba(0, 0, 0, 0.08)'

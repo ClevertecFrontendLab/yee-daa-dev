@@ -1,6 +1,7 @@
 .wrapper {
     max-width: 1920px;
     min-width: 320px;
+    width: 100%;
     min-height: 100dvh;
     margin: 0 auto;
     background: var(--chakra-colors-chakra-body-bg);
@@ -18,7 +19,7 @@
 .aside,
 .nav {
     width: clamp(160px, 13vw, 256px);
-    height: calc(1120px - var(--header-height));
+    height: calc(100dvh - var(--header-height));
     top: var(--header-height);
     position: sticky;
 }

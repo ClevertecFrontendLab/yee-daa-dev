@@ -1,7 +1,7 @@
 import { KitchenTabs } from '../../components/kitchen-tabs';
 import { RelevantKitchen } from '../../components/relevant-kitchen';
 import { SectionHeader } from '../../components/section-header';
-import { cookiesRecipes } from '../../mocks/cookies-recipes.ts';
+import { cookiesRecipes } from '../../mocks/recipes';
 
 // TODO: Переименовать в kitchen page и отревакторить для маппинга в роутере
 

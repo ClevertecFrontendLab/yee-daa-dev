@@ -5,8 +5,7 @@ import { FoodCard } from '../../components/food-card';
 import { RelevantKitchen } from '../../components/relevant-kitchen';
 import { SectionBox } from '../../components/section-box/section-box.tsx';
 import { SectionHeader } from '../../components/section-header';
-import { favouritesRecipes } from '../../mocks/favourites-recipes.ts';
-import { relevantVegan } from '../../mocks/relevant-vegan.ts';
+import { favouritesRecipes, veganRecipes } from '../../mocks/recipes.ts';
 
 const desc =
     'Интересны не только убеждённым вегетарианцам, но и тем, кто хочет попробовать вегетарианскую диету и готовить вкусные вегетарианские блюда.';
@@ -32,7 +31,7 @@ export const JuiciestPage = () => {
                     <Button bg={'lime.400'}>Загрузить ещё</Button>
                 </Center>
             </SectionBox>
-            <RelevantKitchen title={title} description={desc} recipes={relevantVegan} />
+            <RelevantKitchen title={title} description={desc} recipes={veganRecipes} />
         </>
     );
 };

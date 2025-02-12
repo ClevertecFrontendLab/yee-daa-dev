@@ -1,7 +1,7 @@
 import { Button, SimpleGrid, TabList, TabPanel } from '@chakra-ui/icons';
 import { Box, Center, Tab, TabPanels, Tabs } from '@chakra-ui/react';
 
-import { veganRecipes } from '../../mocks/vegan-recipes.ts';
+import { veganRecipes } from '../../mocks/recipes';
 import { FoodCard } from '../food-card';
 
 const subcategories = [

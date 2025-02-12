@@ -1,17 +1,34 @@
 import { ArrowBackIcon, ArrowForwardIcon, IconButton } from '@chakra-ui/icons';
 import { Box, Heading, HStack } from '@chakra-ui/react';
+import { useState } from 'react';
 
-import kotletaImg from '../../assets/images/kapustnie-kotletki.png';
-import oladushkiImg from '../../assets/images/oladushki.png';
-import saladImg from '../../assets/images/salat-zdorovie.png';
-import soliankaImg from '../../assets/images/solianka.png';
-import { carouselRecipes } from '../../mocks/carousel-recipes.ts';
+import { useIsTablet } from '../../hooks/media-query.ts';
+import { carouselRecipes } from '../../mocks/recipes.ts';
 import { SectionBox } from '../section-box/section-box.tsx';
 import { CarouselItem } from './carousel-item.tsx';
 
-const imgArr = [soliankaImg, kotletaImg, oladushkiImg, saladImg, soliankaImg];
-
 export const Carousel = () => {
+    const isTablet = useIsTablet();
+
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const itemsPerPage = isTablet ? 1 : 4;
+    const totalItems = carouselRecipes.length;
+
+    const handleNext = () => {
+        setCurrentIndex((prevIndex) => {
+            const newIndex = prevIndex + itemsPerPage;
+            return newIndex >= totalItems ? 0 : newIndex;
+        });
+    };
+
+    const handleBack = () => {
+        setCurrentIndex((prevIndex) => {
+            const newIndex = prevIndex - itemsPerPage;
+            return newIndex < 0
+                ? totalItems - (totalItems % itemsPerPage || itemsPerPage)
+                : newIndex;
+        });
+    };
     return (
         <SectionBox>
             <Heading fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }} fontWeight={500} mb={6}>
@@ -30,15 +47,16 @@ export const Carousel = () => {
                     transform='translate(-25%, -50%)'
                     zIndex={3}
                     display={{ base: 'none', md: 'block' }}
+                    onClick={handleBack}
                 />
                 <HStack
                     spacing={{ base: 3, md: 6 }}
-                    overflowX='hidden'
-                    maxWidth='100%'
+                    transform={`translateX(-${currentIndex * 320 + currentIndex * 24}px)`}
+                    transition='transform 0.3s ease'
                     alignItems='stretch'
                 >
-                    {carouselRecipes.map((el, i) => (
-                        <CarouselItem {...el} key={el.id} image={imgArr[i]} />
+                    {carouselRecipes.map((el) => (
+                        <CarouselItem {...el} key={el.id} />
                     ))}
                 </HStack>
                 <IconButton
@@ -53,6 +71,7 @@ export const Carousel = () => {
                     size='lg'
                     zIndex={3}
                     display={{ base: 'none', md: 'block' }}
+                    onClick={handleNext}
                 />
             </Box>
         </SectionBox>

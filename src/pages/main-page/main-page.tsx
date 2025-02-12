@@ -3,7 +3,7 @@ import { Carousel } from '../../components/carousel';
 import { FavouritesBlock } from '../../components/favourites-block';
 import { RelevantKitchen } from '../../components/relevant-kitchen';
 import { SectionHeader } from '../../components/section-header';
-import { relevantVegan } from '../../mocks/relevant-vegan.ts';
+import { veganRecipes } from '../../mocks/recipes';
 
 const desc =
     'Интересны не только убеждённым вегетарианцам, но и тем, кто хочет попробовать вегетарианскую диету и готовить вкусные вегетарианские блюда.';
@@ -17,7 +17,7 @@ export const MainPage = () => {
             <Carousel />
             <FavouritesBlock />
             <BlogSection />
-            <RelevantKitchen title={title} description={desc} recipes={relevantVegan} />
+            <RelevantKitchen title={title} description={desc} recipes={veganRecipes} />
         </>
     );
 };
