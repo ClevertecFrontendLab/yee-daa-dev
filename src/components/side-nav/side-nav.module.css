@@ -1,0 +1,45 @@
+:global(.sideNavItem) {
+    position: relative;
+
+    &:before {
+        position: absolute;
+        content: '';
+        width: 1px;
+        height: 100%;
+        display: block;
+        background: #c4ff61;
+        top: 0;
+        left: -1px;
+    }
+}
+
+:global(.sideNavItem.active) {
+    &:before {
+        width: 8px;
+        left: -8px;
+    }
+}
+
+.container {
+    min-height: calc(100vh - var(--header-height));
+    overflow-y: scroll;
+    position: relative;
+    padding-right: 10px;
+}
+
+.container::-webkit-scrollbar {
+    position: absolute;
+    width: 8px;
+    right: 10px;
+}
+.container::-webkit-scrollbar-track {
+    background: transparent;
+    margin-right: -10px;
+    position: absolute;
+}
+
+.container::-webkit-scrollbar-thumb {
+    background: #d7ff94;
+    border-radius: 99px;
+    width: 8px;
+}

@@ -1,0 +1,57 @@
+.wrapper {
+    display: flex;
+    width: 208px;
+    aspect-ratio: 1;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 12px;
+    position: absolute;
+    bottom: 0;
+    right: -52px;
+}
+
+.btn {
+    display: flex;
+    transition: all ease-in-out 0.2s;
+    width: 48px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    z-index: 9;
+
+    &:hover {
+        background: transparent;
+
+        &:before {
+            transition: all ease-in-out 0.2s;
+            background: transparent;
+        }
+    }
+
+    & > svg > path {
+        transition: all ease-in-out 0.2s;
+        fill: #ffffd3;
+    }
+
+    &:hover > svg > path {
+        fill: #000;
+    }
+
+    &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 208px;
+        aspect-ratio: 1;
+        background: radial-gradient(
+            40% 40% at 50% 50%,
+            rgba(196, 255, 97, 0.6) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        z-index: -1;
+        pointer-events: none;
+    }
+}

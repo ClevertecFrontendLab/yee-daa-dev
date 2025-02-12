@@ -20,12 +20,15 @@
         "cy:e2e": "start-server-and-test start http-get://localhost:3000 cy:open-e2e"
     },
     "dependencies": {
+        "@chakra-ui/icons": "^2.2.4",
         "@chakra-ui/react": "2.8.2",
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
         "framer-motion": "^12.0.0",
+        "lefthook": "^1.10.10",
         "react": "19.0.0",
-        "react-dom": "19.0.0"
+        "react-dom": "19.0.0",
+        "react-router": "^7.1.5"
     },
     "devDependencies": {
         "@arkweid/lefthook": "^0.7.7",
