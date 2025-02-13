@@ -1,5 +1,5 @@
-const browserWidth = 1440;
-const browserHeight = 1024;
+const browserWidth = 1953;
+const browserHeight = 1180;
 
 module.exports = {
     video: false,
@@ -18,7 +18,14 @@ module.exports = {
         },
         setupNodeEvents(on) {
             on('before:browser:launch', (browser, launchOptions) => {
-                if (browser.name === 'electron' && browser.isHeadless) {
+                if (browser.family === 'chromium') {
+                    launchOptions.args.push(`--window-size=${browserWidth},${browserHeight}`);
+                } else if (browser.family === 'firefox') {
+                    launchOptions.args.push(`--width=${browserWidth}`);
+                    launchOptions.args.push(`--height=${browserHeight}`);
+                }
+
+                if (browser.name === 'electron') {
                     launchOptions.preferences.width = browserWidth;
                     launchOptions.preferences.height = browserHeight;
                 }
