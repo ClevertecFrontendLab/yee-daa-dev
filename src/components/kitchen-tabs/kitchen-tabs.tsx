@@ -1,8 +1,9 @@
-import { Button, SimpleGrid, TabList, TabPanel } from '@chakra-ui/icons';
-import { Box, Center, Tab, TabPanels, Tabs } from '@chakra-ui/react';
+import { TabList, TabPanel } from '@chakra-ui/icons';
+import { Box, Tab, TabPanels, Tabs } from '@chakra-ui/react';
+import { FC } from 'react';
 
-import { veganRecipes } from '../../mocks/recipes';
-import { FoodCard } from '../food-card';
+import { Recipe } from '../../types/recipe';
+import { RecipeCardList } from '../recipes-card-list/recipes-card-list';
 
 const subcategories = [
     'Закуски',
@@ -17,7 +18,7 @@ const subcategories = [
 
 // !НЕАДАПТИВНЫЕ ТАБЫ :harold-pain:
 
-export const KitchenTabs = () => {
+export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
     return (
         <Tabs mb={{ base: 8, md: 10 }}>
             <Box
@@ -52,19 +53,7 @@ export const KitchenTabs = () => {
             <TabPanels>
                 {subcategories.map((subcategory) => (
                     <TabPanel key={subcategory} flexShrink={0}>
-                        <SimpleGrid
-                            columns={2}
-                            gap={{ base: 3, md: 4 }}
-                            maxWidth='100%'
-                            minChildWidth={{ base: '300px', md: '450px' }}
-                        >
-                            {veganRecipes.map((el) => (
-                                <FoodCard {...el} key={el.id} />
-                            ))}
-                        </SimpleGrid>
-                        <Center mt={4}>
-                            <Button bg={'lime.400'}>Загрузить ещё</Button>
-                        </Center>
+                        <RecipeCardList recipeList={recipeList} />
                     </TabPanel>
                 ))}
             </TabPanels>

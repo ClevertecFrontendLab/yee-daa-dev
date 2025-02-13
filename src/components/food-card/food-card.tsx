@@ -1,5 +1,14 @@
 import { Button, CardFooter, IconButton, Image, Stack } from '@chakra-ui/icons';
-import { Box, Card, CardBody, CardHeader, Heading, HStack, Text } from '@chakra-ui/react';
+import {
+    Box,
+    Card,
+    CardBody,
+    CardHeader,
+    Heading,
+    Highlight,
+    HStack,
+    Text,
+} from '@chakra-ui/react';
 import { FC } from 'react';
 
 import { Recipe } from '../../types/recipe.ts';
@@ -8,7 +17,9 @@ import { CategoryTag } from '../category-tag';
 import { BookmarkIcon } from '../icons/bookmark-icon.tsx';
 import { RecommendationTag } from '../recommendation-tag';
 
-export const FoodCard: FC<Recipe> = ({
+type RecipeProps = Recipe & { inputValue?: string };
+
+export const FoodCard: FC<RecipeProps> = ({
     title,
     image,
     description,
@@ -16,6 +27,7 @@ export const FoodCard: FC<Recipe> = ({
     likes,
     bookmarks,
     recommendation,
+    inputValue,
 }) => {
     return (
         <Card direction='row' variant='outline' overflow='hidden'>
@@ -53,7 +65,7 @@ export const FoodCard: FC<Recipe> = ({
                         mb={2}
                         fontWeight={500}
                     >
-                        {title}
+                        <Highlight query={inputValue ?? ''}>{title}</Highlight>
                     </Heading>
                     <Text
                         noOfLines={3}

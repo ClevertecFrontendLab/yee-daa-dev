@@ -1,23 +1,3 @@
-import { BlogSection } from '../../components/blog-section';
-import { Carousel } from '../../components/carousel';
-import { FavouritesBlock } from '../../components/favourites-block';
-import { RelevantKitchen } from '../../components/relevant-kitchen';
-import { SectionHeader } from '../../components/section-header';
-import { veganRecipes } from '../../mocks/recipes';
+import { KitchenPage } from '../kitchen-page';
 
-const desc =
-    'Интересны не только убеждённым вегетарианцам, но и тем, кто хочет попробовать вегетарианскую диету и готовить вкусные вегетарианские блюда.';
-
-const title = 'Веганская кухня';
-
-export const MainPage = () => {
-    return (
-        <>
-            <SectionHeader />
-            <Carousel />
-            <FavouritesBlock />
-            <BlogSection />
-            <RelevantKitchen title={title} description={desc} recipes={veganRecipes} />
-        </>
-    );
-};
+export const MainPage = () => <KitchenPage pageType='main' />;

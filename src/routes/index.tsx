@@ -4,21 +4,27 @@ import { Route, Routes } from 'react-router';
 import { Layout } from '../components/layout';
 import { MenuItem, navMenu } from '../constants/nav-menu.ts';
 import { Paths } from '../constants/path.ts';
+import { CategoryPage } from '../pages/category-page';
 import { JuiciestPage } from '../pages/juiciest-page';
 import { MainPage } from '../pages/main-page';
-import { VeganPage } from '../pages/vegan-page';
 
 const renderRoutes = (routes: MenuItem[]) => {
     return routes.map((item): ReactNode => {
         if (item.subItems)
             return (
                 <>
-                    <Route key={item.path} path={item.path} element={<VeganPage />} />
+                    <Route
+                        key={item.path}
+                        path={item.path}
+                        element={<CategoryPage title={item.title} />}
+                    />
                     {renderRoutes(item.subItems)}
                 </>
             );
 
-        return <Route key={item.path} path={item.path} element={<VeganPage />} />;
+        return (
+            <Route key={item.path} path={item.path} element={<CategoryPage title={item.title} />} />
+        );
     });
 };
 

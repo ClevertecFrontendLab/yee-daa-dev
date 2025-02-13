@@ -1,14 +1,15 @@
-import { ArrowForwardIcon, Button, SimpleGrid } from '@chakra-ui/icons';
+import { ArrowForwardIcon, Button } from '@chakra-ui/icons';
 import { Center, Heading, HStack } from '@chakra-ui/react';
+import { FC } from 'react';
 import { Link } from 'react-router';
 
 import { Paths } from '../../constants/path.ts';
 import { useIsTablet } from '../../hooks/media-query.ts';
 import { favouritesRecipes } from '../../mocks/recipes.ts';
-import { FoodCard } from '../food-card';
+import { CardList } from '../card-list/card-list.tsx';
 import { SectionBox } from '../section-box/section-box.tsx';
 
-export const FavouritesBlock = () => {
+export const FavouritesBlock: FC = () => {
     const isTablet = useIsTablet();
 
     const linkBtn = (
@@ -27,25 +28,19 @@ export const FavouritesBlock = () => {
     return (
         <SectionBox>
             <HStack justifyContent='space-between' mb={6}>
-                <Heading
-                    fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }}
-                    lineHeight='none'
-                    fontWeight={500}
-                >
-                    Самое сочное
-                </Heading>
+                <Link to={Paths.JUICIEST}>
+                    <Heading
+                        fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }}
+                        lineHeight='none'
+                        fontWeight={500}
+                        _hover={{ cursor: 'pointer' }}
+                    >
+                        Самое сочное
+                    </Heading>
+                </Link>
                 {!isTablet && linkBtn}
             </HStack>
-            <SimpleGrid
-                columns={2}
-                gap={{ base: 3, md: 4 }}
-                maxWidth='100%'
-                minChildWidth={{ base: '300px', md: '450px' }}
-            >
-                {favouritesRecipes.map((el) => (
-                    <FoodCard {...el} key={el.id} />
-                ))}
-            </SimpleGrid>
+            <CardList recipeList={favouritesRecipes} />
             <Center display={{ base: 'flex', md: 'none' }} mt={3}>
                 {linkBtn}
             </Center>

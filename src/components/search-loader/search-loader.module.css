@@ -1,0 +1,33 @@
+.wrapper {
+    margin: 0 auto;
+    padding: 55px;
+    display: flex;
+    width: 134px;
+    height: 134px;
+    aspect-ratio: 1;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.gradientBackground {
+    position: absolute;
+    width: var(--chakra-sizes-full);
+    height: var(--chakra-sizes-full);
+    border-radius: var(--chakra-radii-full);
+    background: radial-gradient(
+        40% 40% at 50% 50%,
+        rgba(196, 255, 97, 0.6) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+}
+
+.searchLoader {
+    position: absolute;
+    width: var(--chakra-sizes-6);
+    height: var(--chakra-sizes-6);
+    border: var(--chakra-borders-1px);
+    border-radius: var(--chakra-radii-full);
+    border-top-color: transparent;
+    z-index: 9;
+}

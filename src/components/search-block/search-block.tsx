@@ -7,10 +7,49 @@ import {
     Switch,
 } from '@chakra-ui/icons';
 import { Input, Select, Text } from '@chakra-ui/react';
+import { FC, useState } from 'react';
 
 import { FilterIcon } from '../icons/filter-icon.tsx';
 
-export const SearchBlock = () => {
+type SearchBlockProps = {
+    onInputFocus: () => void;
+    onInputBlur: () => void;
+    onSearch: (inputValue: string) => void;
+    setInputValue: (inputValue: string) => void;
+    inputValue: string;
+};
+
+export const SearchBlock: FC<SearchBlockProps> = ({
+    onInputFocus,
+    onInputBlur,
+    onSearch,
+    inputValue,
+    setInputValue,
+}) => {
+    const [isFocused, setIsFocused] = useState(false);
+
+    const handleSearchClick = () => {
+        if (inputValue) {
+            onSearch(inputValue);
+        }
+    };
+
+    const handleFocus = () => {
+        onInputFocus();
+        setIsFocused(true);
+    };
+
+    const handleBlur = () => {
+        setIsFocused(false);
+        onInputBlur();
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            handleSearchClick();
+        }
+    };
+
     return (
         <Stack spacing={4} maxWidth='520px' ml='auto' mr='auto' pb={8}>
             <Stack direction='row' spacing={3}>
@@ -26,9 +65,18 @@ export const SearchBlock = () => {
                     <Input
                         type='search'
                         size={{ base: 'sm', md: 'lg' }}
-                        placeholder='Название или ингредиент...'
+                        placeholder={!isFocused ? 'Название или ингредиент...' : ''}
                         _placeholder={{ color: 'lime.800' }}
                         borderColor='blackAlpha.600'
+                        _focus={{
+                            borderColor: '#2DB100',
+                            boxShadow: 'none',
+                        }}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        value={inputValue}
                     />
                     <InputRightElement
                         height={{ base: '32px', md: '48px' }}
@@ -37,6 +85,7 @@ export const SearchBlock = () => {
                         <SearchIcon
                             width={{ base: '14px', md: '18px' }}
                             height={{ base: '14px', md: '18px' }}
+                            onClick={handleSearchClick}
                         />
                     </InputRightElement>
                 </InputGroup>

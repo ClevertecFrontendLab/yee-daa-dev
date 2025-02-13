@@ -7,7 +7,13 @@ import styles from './side-nav.module.css';
 
 export const SideNav = () => {
     return (
-        <Stack pt={6} justifyContent={'space-between'} h={'100%'} className={styles.container}>
+        <Stack
+            pt={6}
+            justifyContent={'space-between'}
+            h={'100%'}
+            className={styles.container}
+            pr={0}
+        >
             <Accordion allowToggle>
                 {navMenu.map((item, i) => (
                     <NavItem {...item} key={i} />
