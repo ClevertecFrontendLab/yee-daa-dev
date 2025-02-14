@@ -1,17 +1,11 @@
-import {
-    IconButton,
-    InputGroup,
-    InputRightElement,
-    SearchIcon,
-    Stack,
-    Switch,
-} from '@chakra-ui/icons';
-import { Input, Select, Text } from '@chakra-ui/react';
+import { IconButton, InputGroup, InputRightElement, SearchIcon, Stack } from '@chakra-ui/icons';
+import { Input } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
 import { selectInputValue, setInputValue } from '../../redux/features/search-slice.ts';
 import { FilterIcon } from '../icons/filter-icon.tsx';
+import { AllergenSelect } from './allergen-select/allergen-select.tsx';
 
 type SearchBlockProps = {
     onInputFocus: () => void;
@@ -85,20 +79,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
                     </InputRightElement>
                 </InputGroup>
             </Stack>
-            <Stack
-                spacing={8}
-                direction='row'
-                justifyContent='flex-end'
-                display={{ base: 'none', md: 'flex' }}
-            >
-                <Stack maxWidth='268px' direction='row' alignItems='center' spacing={3}>
-                    <Text>Исключить мои аллергены</Text>
-                    <Switch />
-                </Stack>
-                <Select placeholder='Выберите из списка...' maxWidth='228px' color='lime.800'>
-                    <option value='option1'>Какой-то опшен</option>
-                </Select>
-            </Stack>
+            <AllergenSelect />
         </Stack>
     );
 };

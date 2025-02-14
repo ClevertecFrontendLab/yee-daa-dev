@@ -31,7 +31,7 @@ export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
                     '::-webkit-scrollbar': {
                         display: 'none',
                     },
-                    '-webkit-overflow-scrolling': 'touch',
+                    WebkitOverflowScrolling: 'touch',
                 }}
             >
                 <TabList w='max-content'>

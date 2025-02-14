@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import { allergenSlice } from './features/allergens';
 import { categoriesReducer, categoriesSlice } from './features/categories-slice';
 import { choosenCategoryReducer, choosenCategorySlice } from './features/choosen-category-slice';
 import { recipesReducer, recipesSlice } from './features/recipies-slice';
@@ -11,6 +12,7 @@ export const store = configureStore({
         [categoriesSlice.name]: categoriesReducer,
         [choosenCategorySlice.name]: choosenCategoryReducer,
         [recipesSlice.name]: recipesReducer,
+        [allergenSlice.name]: allergenSlice.reducer,
     },
 });
 

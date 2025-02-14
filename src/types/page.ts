@@ -1,1 +1,5 @@
-export type PageType = 'main' | 'category' | 'juiciest';
+export enum PageType {
+    Main = 'main',
+    Category = 'category',
+    Juiciest = 'juiciest',
+}

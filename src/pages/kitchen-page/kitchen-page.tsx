@@ -13,7 +13,12 @@ import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-ho
 import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
 import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
 import { selectRecipes } from '../../redux/features/recipies-slice.ts';
-import { selectInputValue, setInputValue } from '../../redux/features/search-slice.ts';
+import {
+    selectFilteredRecipes,
+    selectInputValue,
+    setFilteredRecipes,
+    setInputValue,
+} from '../../redux/features/search-slice.ts';
 import { PageType } from '../../types/page.ts';
 import { Recipe } from '../../types/recipe.ts';
 
@@ -28,16 +33,17 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const recipes = useAppSelector(selectRecipes);
     const selectedCategory = useAppSelector(selectChoosenCategory);
     const categories = useAppSelector(selectCategoriesMenu);
+    const filteredRecipes = useAppSelector(selectFilteredRecipes);
+
     const [relevantRecipes, setRelevantRecipes] = useState([] as Recipe[]);
     const [relevantTitle, setRelevantTitle] = useState('');
     const [relevantDesc, setRelevantDesc] = useState('');
-    const [filteredRecipes, setFilteredRecipes] = useState([] as Recipe[]);
     const [startSearch, setStartSearch] = useState(false);
     const searchValue = useAppSelector(selectInputValue);
 
-    const isMainPage = pageType === 'main';
-    const isCategoryPage = pageType === 'category';
-    const isJuiciestPage = pageType === 'juiciest';
+    const isMainPage = pageType === PageType.Main;
+    const isCategoryPage = pageType === PageType.Category;
+    const isJuiciestPage = pageType === PageType.Juiciest;
 
     const categoryRecipes = recipes.filter(
         (recipe) =>
@@ -50,13 +56,19 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
         .sort((a, b) => (b?.likes ?? 0) - (a?.likes ?? 0))
         .slice(0, 15);
 
+    const searchRecipes: Record<PageType, Recipe[]> = {
+        main: recipes,
+        juiciest: favouritesRecipes,
+        category: categoryRecipes,
+    };
+
     const handleSearch = (inputValue: string) => {
         setStartSearch(true);
-        const nameFiltered = (isCategoryPage ? categoryRecipes : recipes).filter((recipe) =>
+        const nameFiltered = searchRecipes[pageType]?.filter((recipe) =>
             recipe.title.toLowerCase().includes(inputValue.toLowerCase()),
         );
 
-        setFilteredRecipes(nameFiltered);
+        dispatch(setFilteredRecipes(nameFiltered));
     };
 
     useEffect(() => {
@@ -65,7 +77,8 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
 
     useEffect(() => {
         if (!searchValue) {
-            setFilteredRecipes([]), setStartSearch(false);
+            dispatch(setFilteredRecipes([]));
+            setStartSearch(false);
         }
     }, [searchValue]);
 
@@ -111,7 +124,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
                             <RecipeCardList recipeList={favouritesRecipes} />
                         </SectionBox>
                     )}
-                    {isMainPage && (
+                    {(isMainPage || !selectedCategory) && (
                         <>
                             <Carousel />
                             <FavouritesBlock />

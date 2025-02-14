@@ -1,6 +1,6 @@
 import { AccordionIcon, AccordionItem, AccordionPanel, Image } from '@chakra-ui/icons';
 import { AccordionButton, HStack, Text } from '@chakra-ui/react';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { NavLink } from 'react-router';
 
 import { categoriesMap } from '../../constants/categories.ts';
@@ -22,24 +22,16 @@ export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }
     };
 
     const handleClick = () => {
-        if (subItems && subItems.length > 0) {
-            dispatch(setChoosenCategory(choosenItem));
-        } else {
-            dispatch(setChoosenCategory(choosenItem));
-        }
+        dispatch(setChoosenCategory(choosenItem));
     };
+
+    useEffect(() => {
+        setIsActive(window.location.pathname === categoryPath);
+    }, [categoryPath]);
+
     return (
         <AccordionItem border='none'>
-            <NavLink
-                to={categoryPath}
-                key={category}
-                onClick={handleClick}
-                className={({ isActive }) => {
-                    setIsActive(isActive);
-
-                    return undefined;
-                }}
-            >
+            <NavLink to={categoryPath} key={category} onClick={handleClick}>
                 <AccordionButton
                     padding='8px 12px'
                     _expanded={{

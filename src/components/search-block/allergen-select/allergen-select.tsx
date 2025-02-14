@@ -1,0 +1,93 @@
+import { FormControl, Menu, Stack } from '@chakra-ui/react';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import {
+    clearSearchTerm,
+    clearSelectedAllergens,
+    selectSelectedAllergens,
+} from '../../../redux/features/allergens';
+import { SelectMenuButton } from './menu-button/menu-button';
+import { SelectMenuList } from './menu-list/menu-list';
+import { Switcher } from './switcher/switcher';
+
+export const AllergenSelect = () => {
+    const dispatch = useDispatch();
+    const selectedAllergens = useSelector(selectSelectedAllergens);
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [newAllergen, setNewAllergen] = useState<string>('');
+    const [isAdding, setIsAdding] = useState(false);
+    const [isSwitchOn, setIsSwitchOn] = useState(false);
+
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    const clearSelection = () => {
+        dispatch(clearSelectedAllergens());
+    };
+
+    const handleMenuToggle = () => {
+        if (isSwitchOn) {
+            setIsOpen((prev) => !prev);
+            dispatch(clearSearchTerm());
+        }
+    };
+
+    const handleSwitchChange = () => {
+        setIsSwitchOn((prev) => !prev);
+        dispatch(clearSelectedAllergens());
+        if (!isSwitchOn) {
+            setIsOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+                setIsAdding(false);
+                setNewAllergen('');
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('touchstart', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('touchstart', handleClickOutside);
+        };
+    }, []);
+
+    return (
+        <Stack
+            spacing={4}
+            direction={{ md: 'column', xl: 'row' }}
+            justifyContent='space-between'
+            alignItems='center'
+            display={{ base: 'none', md: 'flex', xl: 'flex' }}
+        >
+            <Switcher isSwitchOn={isSwitchOn} handleSwitchChange={handleSwitchChange} />
+            <FormControl ref={menuRef} width='234px'>
+                <Menu isOpen={isOpen} isLazy={true} matchWidth={true}>
+                    <SelectMenuButton
+                        isSwitchOn={isSwitchOn}
+                        selectedAllergens={selectedAllergens}
+                        handleMenuToggle={handleMenuToggle}
+                        clearSelection={clearSelection}
+                        isOpen={isOpen}
+                    />
+
+                    {isOpen && (
+                        <SelectMenuList
+                            isAdding={isAdding}
+                            newAllergen={newAllergen}
+                            setIsAdding={setIsAdding}
+                            setNewAllergen={setNewAllergen}
+                        />
+                    )}
+                </Menu>
+            </FormControl>
+        </Stack>
+    );
+};

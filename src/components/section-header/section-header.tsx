@@ -33,6 +33,8 @@ export const SectionHeader: FC<SectionHeaderProps> = ({ onSearch, pageType }) =>
             className={isInputFocused ? styles.sectionHeader : ''}
             maxWidth='898px'
             margin={'0 auto'}
+            pr={12}
+            pl={12}
             mb={6}
         >
             <SectionInfo pageType={pageType} />

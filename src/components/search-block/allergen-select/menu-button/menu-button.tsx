@@ -1,0 +1,77 @@
+import { ChevronDownIcon, ChevronUpIcon, CloseIcon } from '@chakra-ui/icons';
+import { Button, MenuButton } from '@chakra-ui/react';
+import { FC } from 'react';
+
+import { SearchInput } from '../search-input';
+import { SelectedAllergens } from '../selected-allergens';
+
+type SelectMenuButtonProps = {
+    isSwitchOn: boolean;
+    selectedAllergens: string[];
+    handleMenuToggle: () => void;
+    clearSelection: () => void;
+    isOpen: boolean;
+};
+
+export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
+    isSwitchOn,
+    selectedAllergens,
+    handleMenuToggle,
+    clearSelection,
+    isOpen,
+}) => {
+    return isOpen && !selectedAllergens.length ? (
+        <SearchInput isOpen={isOpen} />
+    ) : (
+        <MenuButton
+            w='100%'
+            h='100%'
+            minHeight='40px'
+            p={2}
+            as={Button}
+            color='blackAlpha.700'
+            fontWeight={400}
+            outline='none'
+            background={'--chakra-ring-offset-color'}
+            border='1px solid rgba(0, 0, 0, 0.64)'
+            _active={{
+                background: '--chakra-ring-offset-color',
+                border: '1px solid #C4FF61',
+                boxShadow: 'none',
+            }}
+            _hover={{
+                background: '--chakra-ring-offset-color',
+                boxShadow: 'none',
+                border: '1px solid #C4FF61',
+            }}
+            isDisabled={!isSwitchOn}
+            sx={{
+                '.chakra-button__icon': {
+                    alignSelf: 'flex-start',
+                    display: 'flex',
+                    alignItems: 'center',
+                },
+            }}
+            rightIcon={
+                <>
+                    {selectedAllergens.length > 0 && (
+                        <CloseIcon
+                            onClick={clearSelection}
+                            w={2}
+                            h={2}
+                            cursor={'pointer'}
+                            _hover={{ bg: 'none', color: '#2DB100' }}
+                        />
+                    )}
+                    {isOpen ? (
+                        <ChevronUpIcon onClick={handleMenuToggle} />
+                    ) : (
+                        <ChevronDownIcon onClick={handleMenuToggle} />
+                    )}
+                </>
+            }
+        >
+            <SelectedAllergens selectedAllergens={selectedAllergens} />
+        </MenuButton>
+    );
+};
