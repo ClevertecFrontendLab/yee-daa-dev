@@ -1,20 +1,26 @@
 import { BreadcrumbLink, ChevronRightIcon } from '@chakra-ui/icons';
 import { Box, Breadcrumb, BreadcrumbItem } from '@chakra-ui/react';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 
 import { Paths } from '../../constants/path.ts';
-import { pathsMap } from '../../constants/path-map.ts';
-
-const pathsObj: Record<string, string> = {
-    vegan: Paths.VEGAN,
-};
-
-// TODO: сделать нормальный маппинг, а то поедет крыша мапить ручками на 3 уровень вложенности путей
+import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
+import { generatePathsMap } from './helpers/get-paths.ts';
 
 export const Breadcrumbs = () => {
+    const navMenu = useAppSelector(selectCategoriesMenu);
+    const pathsMap = generatePathsMap(navMenu);
     const { pathname } = useLocation();
-    const pathsArr = pathname.split('/');
-    const paths = pathname.length > 1 ? pathsArr : pathsArr.splice(0, pathsArr.length - 1);
+    const pathsArr = pathname.split('/').filter(Boolean);
+    const navigate = useNavigate();
+
+    const handleCategoryClick = (el: string, e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        const firstSubItem = navMenu.find((item) => item.category === el)?.subItems?.[0];
+        if (firstSubItem) {
+            navigate(`/${el}/${firstSubItem.category}`);
+        }
+    };
 
     return (
         <>
@@ -24,33 +30,31 @@ export const Breadcrumbs = () => {
                 separator={<ChevronRightIcon color='gray.800' />}
                 display={{ base: 'none', md: 'block' }}
             >
-                {paths.map((el, i) => {
-                    if (!i)
-                        return (
-                            <BreadcrumbItem
-                                key={i}
-                                isCurrentPage={paths.length === 1}
-                                color={paths.length === 1 ? 'black' : 'blackAlpha.700'}
-                            >
-                                <BreadcrumbLink as={Link} to={Paths.R_SWITCHER}>
-                                    {pathsMap[Paths.R_SWITCHER]}
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                        );
-
-                    if (i === pathsArr.length - 1 && pathsArr.length > 1)
-                        return (
-                            <BreadcrumbItem isCurrentPage color='black' key={i}>
-                                <BreadcrumbLink as={Link} to={pathsObj[el]}>
-                                    {pathsMap[el]}
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                        );
+                <BreadcrumbItem>
+                    <BreadcrumbLink as={Link} to={Paths.R_SWITCHER}>
+                        Главная
+                    </BreadcrumbLink>
+                </BreadcrumbItem>
+                {pathsArr.map((el, i) => {
+                    const isLast = i === pathsArr.length - 1;
 
                     return (
-                        <BreadcrumbItem color='blackAlpha.700' key={i}>
-                            <BreadcrumbLink as={Link} to={pathsObj[el]}>
-                                {pathsMap[el]}
+                        <BreadcrumbItem
+                            key={i}
+                            isCurrentPage={isLast}
+                            color={isLast ? 'black' : 'blackAlpha.700'}
+                        >
+                            <BreadcrumbLink
+                                as={Link}
+                                to={isLast ? '#' : `/${el}`}
+                                onClick={
+                                    !isLast &&
+                                    navMenu.find((item) => item.category === el)?.subItems?.length
+                                        ? (e) => handleCategoryClick(el, e)
+                                        : undefined
+                                }
+                            >
+                                {pathsMap[el] || el}
                             </BreadcrumbLink>
                         </BreadcrumbItem>
                     );

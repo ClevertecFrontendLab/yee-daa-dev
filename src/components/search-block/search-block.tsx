@@ -9,29 +9,23 @@ import {
 import { Input, Select, Text } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
+import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { selectInputValue, setInputValue } from '../../redux/features/search-slice.ts';
 import { FilterIcon } from '../icons/filter-icon.tsx';
 
 type SearchBlockProps = {
     onInputFocus: () => void;
     onInputBlur: () => void;
     onSearch: (inputValue: string) => void;
-    setInputValue: (inputValue: string) => void;
-    inputValue: string;
 };
 
-export const SearchBlock: FC<SearchBlockProps> = ({
-    onInputFocus,
-    onInputBlur,
-    onSearch,
-    inputValue,
-    setInputValue,
-}) => {
+export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, onSearch }) => {
+    const dispatch = useAppDispatch();
+    const inputValue = useAppSelector(selectInputValue);
     const [isFocused, setIsFocused] = useState(false);
 
     const handleSearchClick = () => {
-        if (inputValue) {
-            onSearch(inputValue);
-        }
+        onSearch(inputValue);
     };
 
     const handleFocus = () => {
@@ -67,14 +61,14 @@ export const SearchBlock: FC<SearchBlockProps> = ({
                         size={{ base: 'sm', md: 'lg' }}
                         placeholder={!isFocused ? 'Название или ингредиент...' : ''}
                         _placeholder={{ color: 'lime.800' }}
-                        borderColor='blackAlpha.600'
+                        borderColor={inputValue ? '#2DB100' : 'blackAlpha.600'}
                         _focus={{
                             borderColor: '#2DB100',
                             boxShadow: 'none',
                         }}
                         onFocus={handleFocus}
                         onBlur={handleBlur}
-                        onChange={(e) => setInputValue(e.target.value)}
+                        onChange={(e) => dispatch(setInputValue(e.target.value))}
                         onKeyDown={handleKeyDown}
                         value={inputValue}
                     />
@@ -85,6 +79,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({
                         <SearchIcon
                             width={{ base: '14px', md: '18px' }}
                             height={{ base: '14px', md: '18px' }}
+                            cursor={'pointer'}
                             onClick={handleSearchClick}
                         />
                     </InputRightElement>

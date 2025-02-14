@@ -4,15 +4,36 @@ import { FC, useState } from 'react';
 import { NavLink } from 'react-router';
 
 import { categoriesMap } from '../../constants/categories.ts';
-import { MenuItem } from '../../constants/nav-menu.ts';
+import { useAppDispatch } from '../../hooks/typed-react-redux-hooks.ts';
+import { setChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
+import { MenuItem } from '../../types/category.ts';
 import { SubNavItem } from './sub-nav-item.tsx';
 
-export const NavItem: FC<MenuItem> = ({ subItems, path, title }) => {
+export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }) => {
+    const dispatch = useAppDispatch();
     const [isActive, setIsActive] = useState(false);
+
+    const categoryPath = subItems ? `/${category}/${subItems[0].category}` : `/${category}`;
+    const choosenItem = {
+        category,
+        title,
+        description,
+        choosenSubCategory: subItems ? subItems[0] : null,
+    };
+
+    const handleClick = () => {
+        if (subItems && subItems.length > 0) {
+            dispatch(setChoosenCategory(choosenItem));
+        } else {
+            dispatch(setChoosenCategory(choosenItem));
+        }
+    };
     return (
         <AccordionItem border='none'>
             <NavLink
-                to={path}
+                to={categoryPath}
+                key={category}
+                onClick={handleClick}
                 className={({ isActive }) => {
                     setIsActive(isActive);
 
@@ -26,7 +47,7 @@ export const NavItem: FC<MenuItem> = ({ subItems, path, title }) => {
                     }}
                 >
                     <HStack as='span' flex='1' textAlign='left' spacing={3}>
-                        <Image src={categoriesMap[title]} alt={title} w={6} h={6} />
+                        <Image src={categoriesMap[category]} alt={category} w={6} h={6} />
                         <Text
                             fontSize='md'
                             lineHeight={6}
@@ -40,7 +61,15 @@ export const NavItem: FC<MenuItem> = ({ subItems, path, title }) => {
                 </AccordionButton>
             </NavLink>
             <AccordionPanel padding='4px 8px 4px 40px'>
-                {subItems?.map((el) => <SubNavItem key={el.path} {...el} />)}
+                {subItems?.map((el) => (
+                    <SubNavItem
+                        key={el.category}
+                        {...el}
+                        parentCategory={category}
+                        parentTitle={title}
+                        parentDesc={description}
+                    />
+                ))}
             </AccordionPanel>
         </AccordionItem>
     );

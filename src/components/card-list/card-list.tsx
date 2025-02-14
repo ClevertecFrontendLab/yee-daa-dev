@@ -6,10 +6,9 @@ import { FoodCard } from '../food-card';
 
 type CardListProps = {
     recipeList: Recipe[];
-    inputValue?: string;
 };
 
-export const CardList: FC<CardListProps> = ({ recipeList, inputValue }) => (
+export const CardList: FC<CardListProps> = ({ recipeList }) => (
     <SimpleGrid
         columns={2}
         gap={{ base: 3, md: 4 }}
@@ -17,7 +16,7 @@ export const CardList: FC<CardListProps> = ({ recipeList, inputValue }) => (
         minChildWidth={{ base: '328px', md: '450px' }}
     >
         {recipeList.map((el) => (
-            <FoodCard {...el} key={el.id} inputValue={inputValue} />
+            <FoodCard {...el} key={el.id} />
         ))}
     </SimpleGrid>
 );

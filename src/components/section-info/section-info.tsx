@@ -1,17 +1,24 @@
 import { Stack } from '@chakra-ui/icons';
 import { Heading, Text } from '@chakra-ui/react';
+import { FC } from 'react';
 
-import { sectionHeaderInfo } from '../../constants/section-header-info.ts';
-import { useSecondLevelPath } from '../../hooks/use-second-level-path.tsx';
+import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
+import { PageType } from '../../types/page.ts';
 
-export const SectionInfo = () => {
-    const secondLevelPath = useSecondLevelPath();
-    const { title, description } = sectionHeaderInfo[secondLevelPath];
+export const SectionInfo: FC<{ pageType: PageType }> = ({ pageType }) => {
+    const { title, description } = useAppSelector(selectChoosenCategory);
+
+    const headingTitle: Record<PageType, string> = {
+        main: 'Приятного аппетита!',
+        juiciest: 'Самое сочное',
+        category: title,
+    };
 
     return (
         <Stack spacing={3} mb={8}>
             <Heading fontSize={{ base: '2xl', xl: '5xl' }} lineHeight='none' textAlign='center'>
-                {title}
+                {headingTitle[pageType]}
             </Heading>
             {description && (
                 <Text

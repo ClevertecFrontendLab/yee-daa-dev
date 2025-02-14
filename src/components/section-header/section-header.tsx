@@ -1,6 +1,9 @@
 import { Box } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
+import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks';
+import { selectSearchLoading, setLoading } from '../../redux/features/search-slice';
+import { PageType } from '../../types/page';
 import { SearchBlock } from '../search-block';
 import { SearchLoader } from '../search-loader';
 import { SectionInfo } from '../section-info';
@@ -8,25 +11,31 @@ import styles from './section-header.module.css';
 
 type SectionHeaderProps = {
     onSearch: (inputValue: string) => void;
+    pageType: PageType;
 };
-export const SectionHeader: FC<SectionHeaderProps> = ({ onSearch }) => {
+export const SectionHeader: FC<SectionHeaderProps> = ({ onSearch, pageType }) => {
+    const dispatch = useAppDispatch();
+    const isLoading = useAppSelector(selectSearchLoading);
+
     const [isInputFocused, setInputFocused] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [inputValue, setInputValue] = useState('');
 
     const handleSearch = (value: string) => {
-        setInputValue(value);
-        setIsLoading(true);
+        dispatch(setLoading(true));
         setTimeout(() => {
-            setIsLoading(false);
+            dispatch(setLoading(false));
             setInputFocused(false);
             onSearch(value);
         }, 2000);
     };
 
     return (
-        <Box mb={6} className={isInputFocused ? styles.sectionHeader : ''}>
-            <SectionInfo />
+        <Box
+            className={isInputFocused ? styles.sectionHeader : ''}
+            maxWidth='898px'
+            margin={'0 auto'}
+            mb={6}
+        >
+            <SectionInfo pageType={pageType} />
             {isLoading ? (
                 <SearchLoader />
             ) : (
@@ -34,8 +43,6 @@ export const SectionHeader: FC<SectionHeaderProps> = ({ onSearch }) => {
                     onInputFocus={() => setInputFocused(true)}
                     onInputBlur={() => setInputFocused(false)}
                     onSearch={handleSearch}
-                    inputValue={inputValue}
-                    setInputValue={setInputValue}
                 />
             )}
         </Box>

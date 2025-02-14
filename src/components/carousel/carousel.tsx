@@ -3,12 +3,14 @@ import { Box, Heading, HStack } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
 import { useIsTablet } from '../../hooks/media-query.ts';
-import { carouselRecipes } from '../../mocks/recipes.ts';
+import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { selectRecipes } from '../../redux/features/recipies-slice.ts';
 import { SectionBox } from '../section-box/section-box.tsx';
 import { CarouselItem } from './carousel-item.tsx';
 
 export const Carousel: FC = () => {
     const isTablet = useIsTablet();
+    const carouselRecipes = useAppSelector(selectRecipes);
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const itemsPerPage = isTablet ? 1 : 2;

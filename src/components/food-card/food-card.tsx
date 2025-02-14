@@ -11,15 +11,15 @@ import {
 } from '@chakra-ui/react';
 import { FC } from 'react';
 
+import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { selectInputValue } from '../../redux/features/search-slice.ts';
 import { Recipe } from '../../types/recipe.ts';
 import { CardStat } from '../card-stat/card-stat.tsx';
 import { CategoryTag } from '../category-tag';
 import { BookmarkIcon } from '../icons/bookmark-icon.tsx';
 import { RecommendationTag } from '../recommendation-tag';
 
-type RecipeProps = Recipe & { inputValue?: string };
-
-export const FoodCard: FC<RecipeProps> = ({
+export const FoodCard: FC<Recipe> = ({
     title,
     image,
     description,
@@ -27,8 +27,9 @@ export const FoodCard: FC<RecipeProps> = ({
     likes,
     bookmarks,
     recommendation,
-    inputValue,
 }) => {
+    const inputValue = useAppSelector(selectInputValue);
+
     return (
         <Card direction='row' variant='outline' overflow='hidden'>
             <Box position='absolute' top={2} left={2} display={{ base: 'block', md: 'none' }}>
@@ -43,7 +44,12 @@ export const FoodCard: FC<RecipeProps> = ({
             >
                 {recommendation && <RecommendationTag {...recommendation} />}
             </Box>
-            <Image src={image} alt={title} maxW={{ base: '158px', md: '50%' }} objectFit='cover' />
+            <Image
+                src={image}
+                alt={title}
+                maxW={{ base: '158px', md: '50%', xl: 'calc(55% - 16px)' }}
+                objectFit='cover'
+            />
             <Stack flexGrow={1}>
                 <CardHeader
                     pb={0}

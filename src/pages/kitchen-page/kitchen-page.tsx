@@ -1,4 +1,5 @@
-import { FC, useState } from 'react';
+import { Heading } from '@chakra-ui/react';
+import { FC, useEffect, useState } from 'react';
 
 import { BlogSection } from '../../components/blog-section/blog-section.tsx';
 import { Carousel } from '../../components/carousel/carousel.tsx';
@@ -8,58 +9,109 @@ import { RecipeCardList } from '../../components/recipes-card-list/recipes-card-
 import { RelevantKitchen } from '../../components/relevant-kitchen';
 import { SectionBox } from '../../components/section-box/section-box.tsx';
 import { SectionHeader } from '../../components/section-header';
-import { favouritesRecipes, recipes } from '../../mocks/recipes';
+import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
+import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
+import { selectRecipes } from '../../redux/features/recipies-slice.ts';
+import { selectInputValue, setInputValue } from '../../redux/features/search-slice.ts';
+import { PageType } from '../../types/page.ts';
 import { Recipe } from '../../types/recipe.ts';
 
 type KitchenPageProps = {
-    pageType: string;
+    pageType: PageType;
     relevantTitle?: string;
     relevantDesc?: string;
 };
 
-export const KitchenPage: FC<KitchenPageProps> = ({ pageType, relevantTitle, relevantDesc }) => {
+export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
+    const dispatch = useAppDispatch();
+    const recipes = useAppSelector(selectRecipes);
+    const selectedCategory = useAppSelector(selectChoosenCategory);
+    const categories = useAppSelector(selectCategoriesMenu);
+    const [relevantRecipes, setRelevantRecipes] = useState([] as Recipe[]);
+    const [relevantTitle, setRelevantTitle] = useState('');
+    const [relevantDesc, setRelevantDesc] = useState('');
     const [filteredRecipes, setFilteredRecipes] = useState([] as Recipe[]);
-    const [inputValue, setInputValue] = useState('');
+    const [startSearch, setStartSearch] = useState(false);
+    const searchValue = useAppSelector(selectInputValue);
 
-    const categoryRecipes = relevantTitle
-        ? recipes.filter((recipe) => recipe.category === relevantTitle)
-        : recipes;
+    const isMainPage = pageType === 'main';
+    const isCategoryPage = pageType === 'category';
+    const isJuiciestPage = pageType === 'juiciest';
 
-    const getNextCategoryTitle = (recipes: Recipe[], relevantTitle?: string) => {
-        const index = recipes.findIndex((recipe) => recipe.category === relevantTitle);
-        return recipes[index + 1].category;
-    };
+    const categoryRecipes = recipes.filter(
+        (recipe) =>
+            recipe.category === selectedCategory.category &&
+            recipe.subcategory === selectedCategory.choosenSubCategory?.category,
+    );
 
-    const nextCategoryTitle = getNextCategoryTitle(recipes, relevantTitle);
-
-    const nextCategoryRecipes = nextCategoryTitle
-        ? recipes.filter((recipe) => recipe.category === nextCategoryTitle)
-        : [];
+    const favouritesRecipes = recipes
+        .filter((recipe) => recipe.likes !== undefined)
+        .sort((a, b) => (b?.likes ?? 0) - (a?.likes ?? 0))
+        .slice(0, 15);
 
     const handleSearch = (inputValue: string) => {
-        setInputValue(inputValue);
-        const nameFiltered = categoryRecipes.filter((recipe) =>
+        setStartSearch(true);
+        const nameFiltered = (isCategoryPage ? categoryRecipes : recipes).filter((recipe) =>
             recipe.title.toLowerCase().includes(inputValue.toLowerCase()),
         );
 
         setFilteredRecipes(nameFiltered);
     };
 
+    useEffect(() => {
+        dispatch(setInputValue(''));
+    }, [selectedCategory]);
+
+    useEffect(() => {
+        if (!searchValue) {
+            setFilteredRecipes([]), setStartSearch(false);
+        }
+    }, [searchValue]);
+
+    useEffect(() => {
+        const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+
+        setRelevantTitle(randomCategory.title);
+        setRelevantDesc(randomCategory.description ?? '');
+
+        const relatedRecipes = recipes.filter(
+            (recipe) => recipe.category === randomCategory.category,
+        );
+
+        setRelevantRecipes(relatedRecipes);
+    }, [categories, recipes]);
+
     return (
         <>
-            <SectionHeader onSearch={handleSearch} />
+            <SectionHeader onSearch={handleSearch} pageType={pageType} />
 
             {filteredRecipes.length ? (
-                <RecipeCardList recipeList={filteredRecipes} inputValue={inputValue} />
+                <RecipeCardList recipeList={filteredRecipes} />
             ) : (
+                startSearch &&
+                !filteredRecipes.length && (
+                    <SectionBox>
+                        <Heading
+                            fontSize={{ base: 'xl', xl: '2xl' }}
+                            lineHeight='none'
+                            textAlign='center'
+                        >
+                            По вашему запросу ничего не найдено...
+                        </Heading>
+                    </SectionBox>
+                )
+            )}
+
+            {!startSearch && (
                 <>
-                    {pageType === 'category' && <KitchenTabs recipeList={categoryRecipes} />}
-                    {pageType === 'juiciest' && (
+                    {isCategoryPage && <KitchenTabs recipeList={categoryRecipes} />}
+                    {isJuiciestPage && (
                         <SectionBox>
                             <RecipeCardList recipeList={favouritesRecipes} />
                         </SectionBox>
                     )}
-                    {pageType === 'main' && (
+                    {isMainPage && (
                         <>
                             <Carousel />
                             <FavouritesBlock />
@@ -70,8 +122,8 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType, relevantTitle, rel
             )}
 
             <RelevantKitchen
-                recipes={nextCategoryRecipes}
-                title={nextCategoryTitle}
+                recipes={relevantRecipes}
+                title={relevantTitle}
                 description={relevantDesc}
             />
         </>

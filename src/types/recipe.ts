@@ -1,9 +1,11 @@
 import { UserProps } from './user.ts';
 
 export type Recipe = {
-    id: number;
+    id: string;
     category: string;
+    subcategory: string;
     title: string;
+    date: string;
     description: string;
     image?: string;
     likes?: number;

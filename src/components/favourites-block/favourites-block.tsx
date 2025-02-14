@@ -5,12 +5,19 @@ import { Link } from 'react-router';
 
 import { Paths } from '../../constants/path.ts';
 import { useIsTablet } from '../../hooks/media-query.ts';
-import { favouritesRecipes } from '../../mocks/recipes.ts';
+import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { selectRecipes } from '../../redux/features/recipies-slice.ts';
 import { CardList } from '../card-list/card-list.tsx';
 import { SectionBox } from '../section-box/section-box.tsx';
 
 export const FavouritesBlock: FC = () => {
     const isTablet = useIsTablet();
+    const recipes = useAppSelector(selectRecipes);
+
+    const favouritesRecipes = recipes
+        .filter((recipe) => recipe.likes !== undefined)
+        .sort((a, b) => (b?.likes ?? 0) - (a?.likes ?? 0))
+        .slice(0, 4);
 
     const linkBtn = (
         <Button
@@ -28,16 +35,14 @@ export const FavouritesBlock: FC = () => {
     return (
         <SectionBox>
             <HStack justifyContent='space-between' mb={6}>
-                <Link to={Paths.JUICIEST}>
-                    <Heading
-                        fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }}
-                        lineHeight='none'
-                        fontWeight={500}
-                        _hover={{ cursor: 'pointer' }}
-                    >
-                        Самое сочное
-                    </Heading>
-                </Link>
+                <Heading
+                    fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }}
+                    lineHeight='none'
+                    fontWeight={500}
+                    _hover={{ cursor: 'pointer' }}
+                >
+                    Самое сочное
+                </Heading>
                 {!isTablet && linkBtn}
             </HStack>
             <CardList recipeList={favouritesRecipes} />

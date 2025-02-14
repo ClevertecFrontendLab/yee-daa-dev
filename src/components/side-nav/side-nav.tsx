@@ -1,11 +1,13 @@
 import { Stack } from '@chakra-ui/icons';
 import { Accordion, Text } from '@chakra-ui/react';
 
-import { navMenu } from '../../constants/nav-menu.ts';
+import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
 import { NavItem } from './nav-item.tsx';
 import styles from './side-nav.module.css';
 
 export const SideNav = () => {
+    const navMenu = useAppSelector(selectCategoriesMenu);
     return (
         <Stack
             pt={6}
