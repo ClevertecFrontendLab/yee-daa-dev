@@ -23,7 +23,6 @@
 .container {
     overflow-y: scroll;
     position: relative;
-    padding-right: 10px;
 }
 
 .container::-webkit-scrollbar {

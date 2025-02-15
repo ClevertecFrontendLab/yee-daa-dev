@@ -28,13 +28,7 @@ export const SideNav = () => {
     }, [choosenCategory, navigate, location]);
 
     return (
-        <Stack
-            pt={6}
-            justifyContent={'space-between'}
-            h={'100%'}
-            className={styles.container}
-            pr={0}
-        >
+        <Stack pt={6} justifyContent='space-between' h='100%' className={styles.container}>
             <Accordion allowToggle>
                 {navMenu.map((item, i) => (
                     <NavItem {...item} key={i} />

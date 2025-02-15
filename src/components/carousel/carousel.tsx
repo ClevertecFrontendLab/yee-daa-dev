@@ -5,7 +5,6 @@ import { FC, useState } from 'react';
 import { useIsTablet } from '../../hooks/media-query.ts';
 import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
 import { selectRecipes } from '../../redux/features/recipies-slice.ts';
-import { SectionBox } from '../section-box/section-box.tsx';
 import { CarouselItem } from './carousel-item.tsx';
 
 export const Carousel: FC = () => {
@@ -32,7 +31,7 @@ export const Carousel: FC = () => {
         });
     };
     return (
-        <SectionBox maxWidth='1360px' position='relative'>
+        <Box maxWidth='1360px' mb={{ base: 8, md: 10 }} position='relative'>
             <Heading fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }} fontWeight={500} mb={6}>
                 Новые рецепты
             </Heading>
@@ -76,6 +75,6 @@ export const Carousel: FC = () => {
                 display={{ base: 'none', md: 'block' }}
                 onClick={handleNext}
             />
-        </SectionBox>
+        </Box>
     );
 };

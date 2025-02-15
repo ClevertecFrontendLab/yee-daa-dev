@@ -47,12 +47,6 @@ export const allergenSlice = createSlice({
         clearSelectedAllergens(state) {
             state.selectedAllergens = [];
         },
-        setSearchTerm(state, action: PayloadAction<string>) {
-            state.searchTerm = action.payload;
-        },
-        clearSearchTerm(state) {
-            state.searchTerm = '';
-        },
         setLoading(state, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;
         },
@@ -61,8 +55,6 @@ export const allergenSlice = createSlice({
 
 export const selectAllergens = (state: AppState) => state.allergens.allergens;
 export const selectSelectedAllergens = (state: AppState) => state.allergens.selectedAllergens;
-export const selectSearchTerm = (state: AppState) => state.allergens.searchTerm;
-export const selectSearchLoading = (state: AppState) => state.allergens.isLoading;
 export const selectIsLoading = (state: AppState) => state.allergens.isLoading;
 
 export const {
@@ -71,8 +63,6 @@ export const {
     selectAllergen,
     deselectAllergen,
     clearSelectedAllergens,
-    setSearchTerm,
-    clearSearchTerm,
     setLoading,
 } = allergenSlice.actions;
 export const allergenReducer = allergenSlice.reducer;

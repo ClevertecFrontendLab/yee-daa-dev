@@ -10,6 +10,8 @@ import { UserInfo } from '../user-info';
 
 export const Header = () => {
     const isTablet = useIsTablet();
+    console.log(isTablet);
+
     return (
         <Flex pl={4} pr={4} pt={6} pb={6} h='100%' alignItems='center'>
             <Logo />

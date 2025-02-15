@@ -18,7 +18,6 @@ import {
     deselectAllergen,
     selectAllergen,
     selectAllergens,
-    selectSearchTerm,
     selectSelectedAllergens,
 } from '../../../../redux/features/allergens';
 
@@ -39,11 +38,6 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
     const allergens = useSelector(selectAllergens);
     const selectedAllergens = useSelector(selectSelectedAllergens);
     const inputRef = useRef<HTMLInputElement>(null);
-    const searchTerm = useSelector(selectSearchTerm);
-
-    const filteredAllergens = allergens.filter((allergen) =>
-        allergen.label.toLowerCase().includes(searchTerm?.toLowerCase()),
-    );
 
     const toggleAllergen = (value: string) => {
         if (selectedAllergens.includes(value)) {
@@ -80,7 +74,7 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
     return (
         <Box position='absolute' top='40px'>
             <MenuList pt={3} pb={3} w='234px'>
-                {filteredAllergens.map((allergen, index) => (
+                {allergens.map((allergen, index) => (
                     <MenuItem
                         key={allergen.value}
                         pl={4}

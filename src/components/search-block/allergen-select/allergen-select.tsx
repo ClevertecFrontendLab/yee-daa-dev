@@ -2,11 +2,7 @@ import { FormControl, Menu, Stack } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-    clearSearchTerm,
-    clearSelectedAllergens,
-    selectSelectedAllergens,
-} from '../../../redux/features/allergens';
+import { clearSelectedAllergens, selectSelectedAllergens } from '../../../redux/features/allergens';
 import { SelectMenuButton } from './menu-button/menu-button';
 import { SelectMenuList } from './menu-list/menu-list';
 import { Switcher } from './switcher/switcher';
@@ -29,7 +25,6 @@ export const AllergenSelect = () => {
     const handleMenuToggle = () => {
         if (isSwitchOn) {
             setIsOpen((prev) => !prev);
-            dispatch(clearSearchTerm());
         }
     };
 

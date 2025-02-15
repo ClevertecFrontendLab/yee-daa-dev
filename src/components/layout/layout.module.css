@@ -1,6 +1,6 @@
 .wrapper {
     max-width: 1920px;
-    min-width: 320px;
+    min-width: 360px;
     width: 100%;
     min-height: 100dvh;
     margin: 0 auto;
@@ -18,7 +18,7 @@
 
 .aside,
 .nav {
-    width: clamp(160px, 13vw, 256px);
+    width: clamp(160px, 14vw, 256px);
     height: calc(100dvh - var(--header-height));
     top: var(--header-height);
     position: sticky;
