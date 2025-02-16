@@ -1,6 +1,6 @@
 import { Box, Text } from '@chakra-ui/react';
 
-import { PLACEHOLDER_SELECT } from '../../../../constants/select';
+import { PLACEHOLDER_SELECT } from '../../../constants/select';
 
 export const SelectedAllergens: React.FC<{ selectedAllergens: string[] }> = ({
     selectedAllergens,
@@ -11,14 +11,14 @@ export const SelectedAllergens: React.FC<{ selectedAllergens: string[] }> = ({
                 selectedAllergens.map((allergen) => (
                     <Box
                         key={allergen}
-                        border={`1px solid #C4FF61`}
+                        border={`1px solid var(--chakra-colors-lime-300)`}
                         borderRadius='md'
                         p={1}
                         mr={1}
                         fontSize='xs'
                         display='inline-block'
                     >
-                        <Text color='#C4FF61'>{allergen}</Text>
+                        <Text color='var(--chakra-colors-lime-300)'>{allergen}</Text>
                     </Box>
                 ))
             ) : (

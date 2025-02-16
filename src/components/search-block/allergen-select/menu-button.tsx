@@ -2,7 +2,7 @@ import { ChevronDownIcon, ChevronUpIcon, CloseIcon } from '@chakra-ui/icons';
 import { Button, MenuButton } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { SelectedAllergens } from '../selected-allergens';
+import { SelectedAllergens } from './selected-allergens';
 
 type SelectMenuButtonProps = {
     isSwitchOn: boolean;
@@ -57,7 +57,7 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
                         w={2}
                         h={2}
                         cursor={'pointer'}
-                        _hover={{ bg: 'none', color: '#2DB100' }}
+                        _hover={{ bg: 'none', color: 'var(--chakra-colors-lime-600)' }}
                     />
                 )}
                 {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}

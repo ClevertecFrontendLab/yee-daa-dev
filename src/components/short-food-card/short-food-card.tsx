@@ -1,11 +1,18 @@
 import { Button, Image } from '@chakra-ui/icons';
 import { Heading, HStack } from '@chakra-ui/react';
 import { FC } from 'react';
+import { NavLink } from 'react-router';
 
 import { categoriesMap } from '../../constants/categories.ts';
+import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
 import { Recipe } from '../../types/recipe.ts';
+import { getPath } from '../../utils/get-path.ts';
 
-export const ShortFoodCard: FC<Recipe> = ({ category, title }) => {
+export const ShortFoodCard: FC<Recipe> = ({ id, category, subcategory, title }) => {
+    const allcategories = useAppSelector(selectCategoriesMenu);
+    const categoryPath = getPath(allcategories, category, subcategory, id);
+
     return (
         <HStack
             border='1px solid rgba(0, 0, 0, 0.08)'
@@ -14,7 +21,7 @@ export const ShortFoodCard: FC<Recipe> = ({ category, title }) => {
             alignItems='center'
             spacing={2}
         >
-            <Image src={categoriesMap[category]} alt={category} />
+            <Image src={categoriesMap[category[0]]} alt={category[0]} />
             <Heading
                 fontSize={{ base: 'md', md: 'xl' }}
                 noOfLines={1}
@@ -30,7 +37,7 @@ export const ShortFoodCard: FC<Recipe> = ({ category, title }) => {
                 size='sm'
                 flexShrink={0}
             >
-                Готовить
+                <NavLink to={categoryPath}> Готовить</NavLink>
             </Button>
         </HStack>
     );

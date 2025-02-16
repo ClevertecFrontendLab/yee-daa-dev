@@ -55,9 +55,11 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
                         size={{ base: 'sm', md: 'lg' }}
                         placeholder={!isFocused ? 'Название или ингредиент...' : ''}
                         _placeholder={{ color: 'lime.800' }}
-                        borderColor={inputValue ? '#2DB100' : 'blackAlpha.600'}
+                        borderColor={
+                            inputValue ? 'var(--chakra-colors-lime-600)' : 'blackAlpha.600'
+                        }
                         _focus={{
-                            borderColor: '#2DB100',
+                            borderColor: 'var(--chakra-colors-lime-600)',
                             boxShadow: 'none',
                         }}
                         onFocus={handleFocus}

@@ -17,4 +17,13 @@ export const theme = extendTheme({
         heading: `Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"`,
         mono: `Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"`,
     },
+    breakpoints: {
+        sm: '35em', // 560px
+        md: '48em', // 768px
+        lg: '62em', // 992px
+        xl: '70em', // 1120px
+        xxl: '80em', // 1280px
+        '2xl': '96em', // 1536px
+        '3xl': '109em', // 1744px
+    },
 });

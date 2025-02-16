@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { clearSelectedAllergens, selectSelectedAllergens } from '../../../redux/features/allergens';
-import { SelectMenuButton } from './menu-button/menu-button';
-import { SelectMenuList } from './menu-list/menu-list';
-import { Switcher } from './switcher/switcher';
+import { SelectMenuButton } from './menu-button';
+import { SelectMenuList } from './menu-list';
+import { Switcher } from './switcher';
 
 export const AllergenSelect = () => {
     const dispatch = useDispatch();

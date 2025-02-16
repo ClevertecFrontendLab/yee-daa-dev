@@ -10,28 +10,35 @@ import {
     Text,
 } from '@chakra-ui/react';
 import { FC } from 'react';
+import { NavLink } from 'react-router';
 
 import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
 import { selectInputValue } from '../../redux/features/search-slice.ts';
 import { Recipe } from '../../types/recipe.ts';
+import { getPath } from '../../utils/get-path.ts';
 import { CardStat } from '../card-stat/card-stat.tsx';
 import { CategoryTag } from '../category-tag';
 import { BookmarkIcon } from '../icons/bookmark-icon.tsx';
 import { RecommendationTag } from '../recommendation-tag';
 
 export const FoodCard: FC<Recipe> = ({
+    id,
     title,
     image,
     description,
     category,
+    subcategory,
     likes,
     bookmarks,
     recommendation,
 }) => {
     const inputValue = useAppSelector(selectInputValue);
+    const allcategories = useAppSelector(selectCategoriesMenu);
+    const categoryPath = getPath(allcategories, category, subcategory, id);
 
     return (
-        <Card direction='row' variant='outline' overflow='hidden'>
+        <Card direction='row' variant='outline' gap={6}>
             <Box position='absolute' top={2} left={2} display={{ base: 'block', md: 'none' }}>
                 <CategoryTag category={category} color={'lime.50'} />
             </Box>
@@ -47,16 +54,12 @@ export const FoodCard: FC<Recipe> = ({
             <Image
                 src={image}
                 alt={title}
-                maxW={{ base: '158px', md: '50%', xl: 'calc(55% - 16px)' }}
+                w={{ base: '158px', sm: '232px', xxl: '346px' }}
                 objectFit='cover'
+                borderRadius={'var(--chakra-radii-lg)'}
             />
-            <Stack flexGrow={1}>
-                <CardHeader
-                    pb={0}
-                    pl={{ base: 2, md: 6 }}
-                    pr={{ base: 2, md: 6 }}
-                    pt={{ base: 2, md: 5 }}
-                >
+            <Stack pt={{ base: 2, xl: 6 }} pb={{ base: 2, xl: 6 }} pr={{ base: 2, xl: 6 }}>
+                <CardHeader p={0}>
                     <HStack justifyContent='space-between'>
                         <Box display={{ base: 'none', md: 'block' }}>
                             <CategoryTag category={category} color='lime.50' />
@@ -64,7 +67,7 @@ export const FoodCard: FC<Recipe> = ({
                         <CardStat bookmarks={bookmarks} likes={likes} />
                     </HStack>
                 </CardHeader>
-                <CardBody p={{ base: 2, md: 6 }} pb={{ base: 5, md: 6 }} pt={{ base: 0, md: 6 }}>
+                <CardBody p={0}>
                     <Heading
                         fontSize={{ base: 'md', md: 'xl' }}
                         noOfLines={{ base: 2, md: 1 }}
@@ -82,12 +85,7 @@ export const FoodCard: FC<Recipe> = ({
                         {description}
                     </Text>
                 </CardBody>
-                <CardFooter
-                    pl={{ base: 2, md: 6 }}
-                    pr={{ base: 2, md: 6 }}
-                    pt={0}
-                    pb={{ base: 1, md: 5 }}
-                >
+                <CardFooter p={0}>
                     <HStack
                         justifyContent='flex-end'
                         width='100%'
@@ -111,9 +109,11 @@ export const FoodCard: FC<Recipe> = ({
                         >
                             Сохранить
                         </Button>
-                        <Button bg='black' color='white' size={{ base: 'xs', md: 'sm' }}>
-                            Готовить
-                        </Button>
+                        <NavLink to={categoryPath}>
+                            <Button bg='black' color='white' size={{ base: 'xs', md: 'sm' }}>
+                                Готовить
+                            </Button>
+                        </NavLink>
                     </HStack>
                 </CardFooter>
             </Stack>

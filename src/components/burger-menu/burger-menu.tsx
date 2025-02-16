@@ -5,6 +5,7 @@ import { BurgerIcon } from '../icons/burger-icon.tsx';
 export const BurgerMenu = () => {
     return (
         <IconButton
+            display={{ base: 'block', xl: 'none' }}
             aria-label='burger'
             variant='ghost'
             colorScheme='blackAlpha'

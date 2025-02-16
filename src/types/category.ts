@@ -3,4 +3,5 @@ export type MenuItem = {
     title: string;
     description?: string;
     subItems?: MenuItem[];
+    imgUrl?: string;
 };

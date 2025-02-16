@@ -17,7 +17,12 @@ export const UserInfo: FC<Props> = ({
     login,
 }) => {
     return (
-        <Flex ml={withGutter ? 13 : 0} maxWidth={'355px'} alignItems='center'>
+        <Flex
+            ml={withGutter ? 13 : 0}
+            maxWidth={'355px'}
+            alignItems='center'
+            display={{ base: 'none', xl: 'flex' }}
+        >
             {/*<Avatar size={isLarge ? 'md' : 'sm'} src={imageUrl} name={`${firstName} ${lastName}`} />*/}
             <Avatar
                 size={{ base: 'sm', md: 'md' }}

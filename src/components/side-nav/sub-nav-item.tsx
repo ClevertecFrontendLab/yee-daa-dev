@@ -40,7 +40,7 @@ export const SubNavItem: FC<SubNavItemProps> = ({
     };
 
     useEffect(() => {
-        setIsActive(location.pathname === subCategoryPath);
+        setIsActive(location.pathname.split('/')[2] === subCategoryPath.split('/')[2]);
     }, [location.pathname, subCategoryPath]);
 
     return (

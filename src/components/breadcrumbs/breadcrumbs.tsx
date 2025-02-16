@@ -3,11 +3,13 @@ import { Box, Breadcrumb, BreadcrumbItem } from '@chakra-ui/react';
 import { Link, useLocation, useNavigate } from 'react-router';
 
 import { Paths } from '../../constants/path.ts';
-import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
 import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
+import { setChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
 import { generatePathsMap } from './helpers/get-paths.ts';
 
 export const Breadcrumbs = () => {
+    const dispatch = useAppDispatch();
     const navMenu = useAppSelector(selectCategoriesMenu);
     const pathsMap = generatePathsMap(navMenu);
     const { pathname } = useLocation();
@@ -17,14 +19,23 @@ export const Breadcrumbs = () => {
     const handleCategoryClick = (el: string, e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
         const firstSubItem = navMenu.find((item) => item.category === el)?.subItems?.[0];
+        const category = navMenu.find((item) => item.category === el);
+
         if (firstSubItem) {
+            dispatch(
+                setChoosenCategory({
+                    title: category?.title ?? '',
+                    category: el,
+                    description: category?.description ?? '',
+                    choosenSubCategory: firstSubItem,
+                }),
+            );
             navigate(`/${el}/${firstSubItem.category}`);
         }
     };
 
     return (
-        <>
-            <Box width={32} display={{ base: 'none', md: 'block' }} />
+        <Box width={32} display={{ base: 'none', xl: 'block' }}>
             <Breadcrumb
                 spacing='8px'
                 separator={<ChevronRightIcon color='gray.800' />}
@@ -60,6 +71,6 @@ export const Breadcrumbs = () => {
                     );
                 })}
             </Breadcrumb>
-        </>
+        </Box>
     );
 };

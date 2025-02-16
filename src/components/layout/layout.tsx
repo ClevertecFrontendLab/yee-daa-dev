@@ -12,7 +12,7 @@ export const Layout = () => {
         <div className={styles.wrapper}>
             <Grid
                 templateAreas={{
-                    md: `"header header header"
+                    xl: `"header header header"
                   "nav main aside"`,
                     base: `"header"
                   "main"
@@ -20,7 +20,7 @@ export const Layout = () => {
                 }}
                 gridTemplateRows={{ md: '80px 1fr', base: '64px 1fr 84px' }}
                 gridTemplateColumns={{
-                    md: 'clamp(170px, 13vw, 266px) 1fr clamp(160px, 13vw, 256px)',
+                    xl: '256px 1fr 280px',
                     base: '1fr',
                 }}
             >
@@ -30,7 +30,7 @@ export const Layout = () => {
                 <GridItem
                     area={'nav'}
                     className={styles.nav}
-                    display={{ base: 'none', md: 'block' }}
+                    display={{ base: 'none', xl: 'block' }}
                 >
                     <SideNav />
                 </GridItem>
@@ -40,14 +40,14 @@ export const Layout = () => {
                 <GridItem
                     area='aside'
                     className={styles.aside}
-                    display={{ base: 'none', md: 'block' }}
+                    display={{ base: 'none', xl: 'block' }}
                 >
                     <Aside />
                 </GridItem>
                 <GridItem
                     bg='lime.50'
                     area='footer'
-                    display={{ md: 'none', base: 'block' }}
+                    display={{ xl: 'none', base: 'block' }}
                     className={styles.footer}
                 >
                     <Footer />

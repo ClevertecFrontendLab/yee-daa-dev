@@ -21,6 +21,7 @@ import {
 } from '../../redux/features/search-slice.ts';
 import { PageType } from '../../types/page.ts';
 import { Recipe } from '../../types/recipe.ts';
+import { getCategoryRecipes, getFavouritesRecipes } from './helpers/get-recipes.ts';
 
 type KitchenPageProps = {
     pageType: PageType;
@@ -45,16 +46,8 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const isCategoryPage = pageType === PageType.Category;
     const isJuiciestPage = pageType === PageType.Juiciest;
 
-    const categoryRecipes = recipes.filter(
-        (recipe) =>
-            recipe.category === selectedCategory.category &&
-            recipe.subcategory === selectedCategory.choosenSubCategory?.category,
-    );
-
-    const favouritesRecipes = recipes
-        .filter((recipe) => recipe.likes !== undefined)
-        .sort((a, b) => (b?.likes ?? 0) - (a?.likes ?? 0))
-        .slice(0, 15);
+    const favouritesRecipes = getFavouritesRecipes(recipes);
+    const categoryRecipes = getCategoryRecipes(recipes, selectedCategory);
 
     const searchRecipes: Record<PageType, Recipe[]> = {
         main: recipes,
@@ -88,8 +81,8 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
         setRelevantTitle(randomCategory.title);
         setRelevantDesc(randomCategory.description ?? '');
 
-        const relatedRecipes = recipes.filter(
-            (recipe) => recipe.category === randomCategory.category,
+        const relatedRecipes = recipes.filter((recipe) =>
+            recipe.category.includes(randomCategory.category),
         );
 
         setRelevantRecipes(relatedRecipes);

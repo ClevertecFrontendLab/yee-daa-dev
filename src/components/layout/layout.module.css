@@ -18,7 +18,6 @@
 
 .aside,
 .nav {
-    width: clamp(160px, 14vw, 256px);
     height: calc(100dvh - var(--header-height));
     top: var(--header-height);
     position: sticky;
@@ -30,7 +29,6 @@
         0 0 1px 0 rgba(0, 0, 0, 0.14),
         0 0 3px 0 rgba(0, 0, 0, 0.12);
     background: #fff;
-    width: clamp(170px, 13vw, 266px);
 }
 
 .main {

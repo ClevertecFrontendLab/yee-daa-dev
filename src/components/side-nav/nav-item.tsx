@@ -1,7 +1,7 @@
 import { AccordionIcon, AccordionItem, AccordionPanel, Image } from '@chakra-ui/icons';
 import { AccordionButton, HStack, Text } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, useLocation } from 'react-router';
 
 import { categoriesMap } from '../../constants/categories.ts';
 import { useAppDispatch } from '../../hooks/typed-react-redux-hooks.ts';
@@ -10,6 +10,7 @@ import { MenuItem } from '../../types/category.ts';
 import { SubNavItem } from './sub-nav-item.tsx';
 
 export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }) => {
+    const location = useLocation();
     const dispatch = useAppDispatch();
     const [isActive, setIsActive] = useState(false);
 
@@ -23,14 +24,26 @@ export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }
 
     const handleClick = () => {
         dispatch(setChoosenCategory(choosenItem));
+        setIsActive((prev) => !prev);
     };
 
     useEffect(() => {
-        setIsActive(window.location.pathname === categoryPath);
-    }, [categoryPath]);
+        setIsActive(location.pathname.split('/')[1] === categoryPath.split('/')[1]);
+    }, [location.pathname, categoryPath]);
 
     return (
-        <AccordionItem border='none'>
+        <AccordionItem
+            border='none'
+            className='accordion'
+            sx={{
+                '.chakra-collapse': {
+                    display: isActive ? 'block !important' : 'none !important',
+                    height: isActive ? 'auto !important' : '0px !important',
+                    opacity: isActive ? '1 !important' : '0 !important',
+                    transition: 'opacity 0.1s ease',
+                },
+            }}
+        >
             <NavLink to={categoryPath} key={category} onClick={handleClick}>
                 <AccordionButton
                     padding='8px 12px'

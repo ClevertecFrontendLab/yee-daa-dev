@@ -12,14 +12,14 @@ import {
 import { FC, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { BUTTON_ADD_OTHER_ALLERGEN, PLACEHOLDER_ALLERGEN } from '../../../../constants/select';
+import { BUTTON_ADD_OTHER_ALLERGEN, PLACEHOLDER_ALLERGEN } from '../../../constants/select';
 import {
     addAllergen,
     deselectAllergen,
     selectAllergen,
     selectAllergens,
     selectSelectedAllergens,
-} from '../../../../redux/features/allergens';
+} from '../../../redux/features/allergens';
 
 type SelectMenuListProps = {
     isAdding: boolean;
@@ -82,7 +82,7 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
                         bg={index % 2 === 0 ? 'gray.100' : 'white'}
                     >
                         <Checkbox
-                            borderColor='#C4FF61'
+                            borderColor='var(--chakra-colors-lime-300)'
                             colorScheme='green'
                             iconColor='black'
                             isChecked={selectedAllergens.includes(allergen.label)}
@@ -90,8 +90,8 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
                             _hidden={{ display: 'none' }}
                             sx={{
                                 '&[data-checked] .chakra-checkbox__control': {
-                                    backgroundColor: '#C4FF61',
-                                    borderColor: '#C4FF61',
+                                    backgroundColor: 'var(--chakra-colors-lime-300)',
+                                    borderColor: 'var(--chakra-colors-lime-300)',
                                 },
                             }}
                         >
@@ -111,9 +111,9 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
                             onKeyDown={handleKeyDown}
                             placeholder={PLACEHOLDER_ALLERGEN}
                             _placeholder={{ color: 'lime.800' }}
-                            borderColor='#2DB100'
+                            borderColor='var(--chakra-colors-lime-600)'
                             _focus={{
-                                borderColor: '#2DB100',
+                                borderColor: 'var(--chakra-colors-lime-600)',
                                 boxShadow: 'none',
                             }}
                         />
@@ -127,7 +127,7 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
                         width={'160px'}
                         margin='8px auto'
                         fontWeight={400}
-                        color={'#134B00'}
+                        color={'var(--chakra-colors-lime-800)'}
                         background={'--chakra-ring-offset-color'}
                         border='1px solid rgba(0, 0, 0, 0.64)'
                         onClick={handleAddClick}

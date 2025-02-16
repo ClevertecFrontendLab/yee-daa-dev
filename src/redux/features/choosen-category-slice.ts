@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { MenuItem } from '../../types/category';
 import { AppState } from '../../types/store';
 
-type ChoosenCategory = MenuItem & {
+export type ChoosenCategory = MenuItem & {
     choosenSubCategory: MenuItem | null;
 };
 

@@ -1,7 +1,7 @@
 import { FormControl, Switch, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { BUTTON_EXCLUDE_MY_ALLERGENS } from '../../../../constants/select';
+import { BUTTON_EXCLUDE_MY_ALLERGENS } from '../../../constants/select';
 
 type SwitcherProps = {
     isSwitchOn: boolean;
@@ -20,7 +20,7 @@ export const Switcher: FC<SwitcherProps> = ({ isSwitchOn, handleSwitchChange }) 
                 colorScheme='green'
                 sx={{
                     '&[data-checked] .chakra-switch__track': {
-                        backgroundColor: '#C4FF61',
+                        backgroundColor: 'var(--chakra-colors-lime-300)',
                     },
                 }}
             />
