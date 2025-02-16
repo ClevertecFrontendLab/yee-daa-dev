@@ -3,28 +3,31 @@ import { Box, Card, CardBody, CardHeader, Heading, HStack, Text } from '@chakra-
 import { FC } from 'react';
 import { NavLink } from 'react-router';
 
-import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
 import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
+import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
+import { setSelectedRecipe } from '../../redux/features/choosen-recipe-slice.ts';
+import { selectRecipes } from '../../redux/features/recipies-slice.ts';
 import { Recipe } from '../../types/recipe.ts';
 import { getPath } from '../../utils/get-path.ts';
 import { CardStat } from '../card-stat/card-stat.tsx';
 import { CategoryTag } from '../category-tag';
 
-export const CarouselItem: FC<Recipe> = ({
-    id,
-    title,
-    image,
-    description,
-    category,
-    subcategory,
-    likes,
-    bookmarks,
-}) => {
+export const CarouselItem: FC<{ recipe: Recipe }> = ({ recipe }) => {
+    const dispatch = useAppDispatch();
+    const selectedCategory = useAppSelector(selectChoosenCategory);
     const allcategories = useAppSelector(selectCategoriesMenu);
-    const categoryPath = getPath(allcategories, category, subcategory, id);
+    const allRecipes = useAppSelector(selectRecipes);
+
+    const { id, title, image, description, category, likes, bookmarks } = recipe;
+    const categoryPath = getPath(allcategories, allRecipes, selectedCategory, id);
+
+    const handleClick = () => {
+        dispatch(setSelectedRecipe(recipe));
+    };
 
     return (
-        <NavLink to={categoryPath}>
+        <NavLink to={categoryPath} onClick={handleClick}>
             <Card
                 width={{ base: '158px', md: '277px', xl: '322px' }}
                 minH={{ base: '220px', md: '375px', xl: '400px' }}

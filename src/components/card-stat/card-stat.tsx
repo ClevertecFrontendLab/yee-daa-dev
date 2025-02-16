@@ -11,7 +11,12 @@ type Props = Partial<{
 
 export const CardStat: FC<Props> = ({ bookmarks, likes }) => {
     return (
-        <HStack spacing={2} flexWrap='wrap'>
+        <HStack
+            spacing={2}
+            flexWrap='wrap'
+            justifyContent='flex-end'
+            minW={{ base: 'auto', md: '110px' }}
+        >
             {bookmarks && (
                 <HStack spacing={2} p={1} alignItems='center'>
                     <BookmarkIcon w={3} h={3} />

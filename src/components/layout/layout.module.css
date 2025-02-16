@@ -20,7 +20,6 @@
 .nav {
     height: calc(100dvh - var(--header-height));
     top: var(--header-height);
-    position: sticky;
 }
 
 .nav {
@@ -40,4 +39,33 @@
     height: 84px;
     bottom: 0;
     width: 100%;
+}
+
+@media (max-width: 1120px) {
+    .nav {
+        max-height: 740px;
+        overflow-y: scroll;
+        top: var(--header-height);
+        right: 0;
+        z-index: 3;
+        border-radius: var(--chakra-radii-xl);
+        height: auto;
+        padding: 0 var(--chakra-space-4) var(--chakra-space-4) var(--chakra-space-4);
+        transition:
+            top 0.3s ease,
+            opacity 0.3s ease;
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .nav.open {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+@media (max-width: 400px) {
+    .nav {
+        width: 100%;
+    }
 }

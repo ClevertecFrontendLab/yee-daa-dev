@@ -4,12 +4,12 @@ import { allergens } from '../../mocks/allergens';
 import { Allergen } from '../../types/allergens';
 import { AppState } from '../../types/store';
 
-interface AllergensState {
+type AllergensState = {
     allergens: Allergen[];
     selectedAllergens: string[];
     isLoading: boolean;
     searchTerm: string;
-}
+};
 
 const initialState: AllergensState = {
     allergens: allergens,
@@ -47,6 +47,7 @@ export const allergenSlice = createSlice({
         clearSelectedAllergens(state) {
             state.selectedAllergens = [];
         },
+
         setLoading(state, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;
         },

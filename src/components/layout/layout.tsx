@@ -1,6 +1,9 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import { Outlet } from 'react-router';
 
+import { useIsTablet } from '../../hooks/media-query';
+import { useAppSelector } from '../../hooks/typed-react-redux-hooks';
+import { selectMenu } from '../../redux/features/burger-slice';
 import { Aside } from '../aside';
 import { Footer } from '../footer';
 import { Header } from '../header';
@@ -8,6 +11,9 @@ import { SideNav } from '../side-nav';
 import styles from './layout.module.css';
 
 export const Layout = () => {
+    const isOpen = useAppSelector(selectMenu);
+    const isTablet = useIsTablet();
+
     return (
         <div className={styles.wrapper}>
             <Grid
@@ -23,17 +29,24 @@ export const Layout = () => {
                     xl: '256px 1fr 280px',
                     base: '1fr',
                 }}
+                minHeight='100vh'
             >
-                <GridItem bg='lime.50' area='header' className={styles.header}>
+                <GridItem
+                    bg={isTablet && isOpen ? 'white' : 'lime.50'}
+                    area='header'
+                    className={styles.header}
+                >
                     <Header />
                 </GridItem>
-                <GridItem
-                    area={'nav'}
-                    className={styles.nav}
-                    display={{ base: 'none', xl: 'block' }}
-                >
-                    <SideNav />
-                </GridItem>
+                {(isTablet && isOpen) || !isTablet ? (
+                    <GridItem
+                        area={'nav'}
+                        position={{ base: 'absolute', xl: 'sticky' }}
+                        className={`${styles.nav} ${isOpen ? styles.open : ''}`}
+                    >
+                        <SideNav />
+                    </GridItem>
+                ) : null}
                 <GridItem area='main' pt={{ base: 4, md: 8 }} pl={6} pr={6} overflow='hidden'>
                     <Outlet />
                 </GridItem>

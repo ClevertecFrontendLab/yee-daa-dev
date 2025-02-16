@@ -31,11 +31,11 @@ export const SectionHeader: FC<SectionHeaderProps> = ({ onSearch, pageType }) =>
     return (
         <Box
             className={isInputFocused ? styles.sectionHeader : ''}
-            maxWidth='898px'
+            maxWidth={{ base: '100%', xl: '898px' }}
             margin={'0 auto'}
-            pr={12}
-            pl={12}
-            mb={6}
+            pr={{ base: 4, xl: 16 }}
+            pl={{ base: 4, xl: 16 }}
+            mb={{ base: 4, xl: 6 }}
         >
             <SectionInfo pageType={pageType} />
             {isLoading ? (

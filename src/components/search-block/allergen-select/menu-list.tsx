@@ -19,7 +19,7 @@ import {
     selectAllergen,
     selectAllergens,
     selectSelectedAllergens,
-} from '../../../redux/features/allergens';
+} from '../../../redux/features/allergens-slice';
 
 type SelectMenuListProps = {
     isAdding: boolean;
@@ -37,6 +37,7 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
     const dispatch = useDispatch();
     const allergens = useSelector(selectAllergens);
     const selectedAllergens = useSelector(selectSelectedAllergens);
+
     const inputRef = useRef<HTMLInputElement>(null);
 
     const toggleAllergen = (value: string) => {
@@ -72,7 +73,7 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
     }, [isAdding]);
 
     return (
-        <Box position='absolute' top='40px'>
+        <Box position='absolute' top='40px' zIndex={3}>
             <MenuList pt={3} pb={3} w='234px'>
                 {allergens.map((allergen, index) => (
                     <MenuItem

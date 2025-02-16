@@ -5,3 +5,9 @@
     border-radius: var(--chakra-radii-3xl);
     margin-bottom: var(--chakra-space-6);
 }
+
+@media screen and (max-width: 1120px) {
+    .sectionHeader {
+        margin-bottom: var(--chakra-space-4);
+    }
+}

@@ -1,75 +1,94 @@
 import { BreadcrumbLink, ChevronRightIcon } from '@chakra-ui/icons';
 import { Box, Breadcrumb, BreadcrumbItem } from '@chakra-ui/react';
-import { Link, useLocation, useNavigate } from 'react-router';
+import { Link, useLocation } from 'react-router';
 
 import { Paths } from '../../constants/path.ts';
 import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { closeMenu } from '../../redux/features/burger-slice.ts';
 import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
-import { setChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
-import { generatePathsMap } from './helpers/get-paths.ts';
+import {
+    clearChoosenCategory,
+    setChoosenCategory,
+} from '../../redux/features/choosen-category-slice.ts';
+import { selectRecipes } from '../../redux/features/recipies-slice.ts';
 
 export const Breadcrumbs = () => {
-    const dispatch = useAppDispatch();
-    const navMenu = useAppSelector(selectCategoriesMenu);
-    const pathsMap = generatePathsMap(navMenu);
     const { pathname } = useLocation();
+    const navMenu = useAppSelector(selectCategoriesMenu);
+    const recipes = useAppSelector(selectRecipes);
+    const dispatch = useAppDispatch();
+
     const pathsArr = pathname.split('/').filter(Boolean);
-    const navigate = useNavigate();
+    const categoryItem = navMenu.find((item) => item.category === pathsArr[0]);
+    const subcategory = categoryItem?.subItems?.find((subItem) => subItem.category === pathsArr[1]);
+    const recipePath = recipes.find((recipe) => recipe.id === pathsArr[2])?.title || '';
 
-    const handleCategoryClick = (el: string, e: React.MouseEvent<HTMLAnchorElement>) => {
-        e.preventDefault();
-        const firstSubItem = navMenu.find((item) => item.category === el)?.subItems?.[0];
-        const category = navMenu.find((item) => item.category === el);
+    const isRathsJuiciest = pathname.includes(Paths.JUICIEST);
 
-        if (firstSubItem) {
-            dispatch(
-                setChoosenCategory({
-                    title: category?.title ?? '',
-                    category: el,
-                    description: category?.description ?? '',
-                    choosenSubCategory: firstSubItem,
-                }),
-            );
-            navigate(`/${el}/${firstSubItem.category}`);
-        }
+    const pathsRussianArr = [categoryItem?.title, subcategory?.title, recipePath];
+
+    const handleCategoryClick = () => {
+        const choosenCategory = {
+            category: categoryItem?.category ?? '',
+            title: categoryItem?.title ?? '',
+            description: categoryItem?.description ?? '',
+            choosenSubCategory: subcategory ?? null,
+        };
+
+        dispatch(closeMenu());
+        dispatch(setChoosenCategory(choosenCategory));
     };
 
     return (
-        <Box width={32} display={{ base: 'none', xl: 'block' }}>
+        <Box ml={{ base: 0, xl: 32 }} pb={{ base: 8, xl: 0 }}>
             <Breadcrumb
                 spacing='8px'
                 separator={<ChevronRightIcon color='gray.800' />}
-                display={{ base: 'none', md: 'block' }}
+                sx={{
+                    ol: {
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                    },
+                }}
             >
                 <BreadcrumbItem>
-                    <BreadcrumbLink as={Link} to={Paths.R_SWITCHER}>
+                    <BreadcrumbLink
+                        as={Link}
+                        to={Paths.R_SWITCHER}
+                        onClick={() => dispatch(clearChoosenCategory())}
+                    >
                         Главная
                     </BreadcrumbLink>
                 </BreadcrumbItem>
-                {pathsArr.map((el, i) => {
-                    const isLast = i === pathsArr.length - 1;
-
-                    return (
-                        <BreadcrumbItem
-                            key={i}
-                            isCurrentPage={isLast}
-                            color={isLast ? 'black' : 'blackAlpha.700'}
-                        >
-                            <BreadcrumbLink
-                                as={Link}
-                                to={isLast ? '#' : `/${el}`}
-                                onClick={
-                                    !isLast &&
-                                    navMenu.find((item) => item.category === el)?.subItems?.length
-                                        ? (e) => handleCategoryClick(el, e)
-                                        : undefined
-                                }
-                            >
-                                {pathsMap[el] || el}
-                            </BreadcrumbLink>
-                        </BreadcrumbItem>
-                    );
-                })}
+                {isRathsJuiciest ? (
+                    <BreadcrumbItem>
+                        <BreadcrumbLink as={Link} to={Paths.JUICIEST}>
+                            Сочное
+                        </BreadcrumbLink>
+                    </BreadcrumbItem>
+                ) : (
+                    pathsRussianArr.map(
+                        (title, index) =>
+                            title && (
+                                <BreadcrumbItem
+                                    key={index}
+                                    isCurrentPage={index === pathsRussianArr.length - 1}
+                                >
+                                    <BreadcrumbLink
+                                        as={Link}
+                                        to={
+                                            index === 0
+                                                ? '#'
+                                                : `/${pathsArr.slice(0, index + 1).join('/')}`
+                                        }
+                                        onClick={index === 0 ? handleCategoryClick : undefined}
+                                    >
+                                        {title}
+                                    </BreadcrumbLink>
+                                </BreadcrumbItem>
+                            ),
+                    )
+                )}
             </Breadcrumb>
         </Box>
     );

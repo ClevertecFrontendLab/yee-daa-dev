@@ -20,9 +20,11 @@ export const CategoryTag: FC<Props> = ({ category, color }) => {
                 category.map((cat) => {
                     const categoryTitle = categories.find((c) => c.category === cat)?.title ?? '';
                     return (
-                        <Tag key={cat} size='md' bg={color}>
+                        <Tag key={cat} bg={color}>
                             <Image src={categoriesMap[cat]} alt={cat} mr={2} />
-                            <TagLabel noOfLines={1}>{categoryTitle}</TagLabel>
+                            <TagLabel noOfLines={1} fontWeight={400}>
+                                {categoryTitle}
+                            </TagLabel>
                         </Tag>
                     );
                 })}

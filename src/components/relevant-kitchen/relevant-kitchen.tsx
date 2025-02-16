@@ -26,7 +26,7 @@ export const RelevantKitchen: FC<Props> = ({ recipes, description, title }) => {
                     md: '1fr 2fr',
                     '2xl': '1fr 1fr',
                 }}
-                mb={{ base: 4, md: 6 }}
+                mb={{ base: 4, xl: 6 }}
             >
                 <Heading
                     fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }}

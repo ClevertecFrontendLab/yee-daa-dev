@@ -39,7 +39,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
     };
 
     return (
-        <Stack spacing={4} maxWidth='520px' ml='auto' mr='auto' pb={8}>
+        <Stack spacing={4} maxWidth={{ base: '100%', sm: '520px' }} ml='auto' mr='auto' pb={8}>
             <Stack direction='row' spacing={3}>
                 <IconButton
                     aria-label={'filter'}
@@ -62,6 +62,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
                             borderColor: 'var(--chakra-colors-lime-600)',
                             boxShadow: 'none',
                         }}
+                        color={'var(--chakra-colors-lime-800)'}
                         onFocus={handleFocus}
                         onBlur={handleBlur}
                         onChange={(e) => dispatch(setInputValue(e.target.value))}

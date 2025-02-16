@@ -6,12 +6,16 @@ import { NavLink } from 'react-router';
 import { categoriesMap } from '../../constants/categories.ts';
 import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
 import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
+import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
+import { selectRecipes } from '../../redux/features/recipies-slice.ts';
 import { Recipe } from '../../types/recipe.ts';
 import { getPath } from '../../utils/get-path.ts';
 
-export const ShortFoodCard: FC<Recipe> = ({ id, category, subcategory, title }) => {
+export const ShortFoodCard: FC<Recipe> = ({ id, category, title }) => {
+    const allRecipes = useAppSelector(selectRecipes);
     const allcategories = useAppSelector(selectCategoriesMenu);
-    const categoryPath = getPath(allcategories, category, subcategory, id);
+    const choosenCategory = useAppSelector(selectChoosenCategory);
+    const categoryPath = getPath(allcategories, allRecipes, choosenCategory, id);
 
     return (
         <HStack
@@ -37,7 +41,7 @@ export const ShortFoodCard: FC<Recipe> = ({ id, category, subcategory, title }) 
                 size='sm'
                 flexShrink={0}
             >
-                <NavLink to={categoryPath}> Готовить</NavLink>
+                <NavLink to={categoryPath}>Готовить</NavLink>
             </Button>
         </HStack>
     );

@@ -2,7 +2,10 @@ import { FormControl, Menu, Stack } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { clearSelectedAllergens, selectSelectedAllergens } from '../../../redux/features/allergens';
+import {
+    clearSelectedAllergens,
+    selectSelectedAllergens,
+} from '../../../redux/features/allergens-slice';
 import { SelectMenuButton } from './menu-button';
 import { SelectMenuList } from './menu-list';
 import { Switcher } from './switcher';

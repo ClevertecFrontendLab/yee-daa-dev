@@ -17,11 +17,10 @@ export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
     const selectedCategory = useAppSelector(selectChoosenCategory);
     const categories = useAppSelector(selectCategoriesMenu);
 
+    const [selectedTabIndex, setSelectedTabIndex] = useState(0);
     const subcategories = categories
         .filter((cat) => cat.category === selectedCategory.category)
         .flatMap((category) => category.subItems);
-
-    const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 
     const handleTabChange = (index: number) => {
         setSelectedTabIndex(index);
@@ -100,7 +99,7 @@ export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
             </Box>
             <TabPanels>
                 {subcategories.map((subcategory) => (
-                    <TabPanel key={subcategory?.category} flexShrink={0}>
+                    <TabPanel p={0} key={subcategory?.category}>
                         <RecipeCardList recipeList={filteredRecipes} />
                     </TabPanel>
                 ))}

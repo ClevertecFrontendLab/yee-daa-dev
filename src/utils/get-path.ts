@@ -1,16 +1,26 @@
+import { ChoosenCategory } from '../redux/features/choosen-category-slice';
 import { MenuItem } from '../types/category';
+import { Recipe } from '../types/recipe';
 
 export const getPath = (
     allcategories: MenuItem[],
-    category: string[],
-    subcategory: string[],
-    id: string,
+    allRecipes: Recipe[],
+    selectedCategory: ChoosenCategory | null,
+    recipeId: string,
 ) => {
-    const subItems = allcategories.find((cat) => cat.category === category[0])?.subItems;
+    const currentRecipe = allRecipes.find((recipe) => recipe.id === recipeId);
 
-    const subcategoryPath = subItems
-        ?.filter((item) => subcategory.includes(item.category))
-        .map((item) => item.category);
+    if (selectedCategory?.category) {
+        return `/${selectedCategory?.category}/${selectedCategory?.choosenSubCategory?.category}/${recipeId}`;
+    } else {
+        const foundCategory = allcategories.find(
+            (category) => category.category === currentRecipe?.category[0],
+        );
 
-    return `/${category[0]}/${subcategoryPath}/${id}`;
+        const foundSubCategory = foundCategory?.subItems?.find((subItem) =>
+            currentRecipe?.subcategory.includes(subItem.category),
+        );
+
+        return `/${foundCategory?.category}/${foundSubCategory?.category}/${recipeId}`;
+    }
 };

@@ -207,7 +207,7 @@ export const recipes: Recipe[] = [
         title: 'Чесночная картошка',
         description:
             'Хрустящая картошка с ароматом чеснока, идеальная для обеда или ужина. Готовится быстро и просто.',
-        category: ['vegan', 'second-dishes'],
+        category: ['vegan', 'second-dish'],
         subcategory: ['side-dishes', 'second-dish', 'vegetables'],
         image: potatoGarlicImg,
         bookmarks: 124,
@@ -528,6 +528,7 @@ export const recipes: Recipe[] = [
             { name: 'banana', title: 'банан', quantity: 2, unit: 'шт.' },
             { name: 'milk', title: 'молоко', quantity: 200, unit: 'мл' },
             { name: 'gelatin', title: 'желатин', quantity: 10, unit: 'г' },
+            { name: 'honey', title: 'мед', quantity: 50, unit: 'г' },
         ],
         steps: [
             { number: 1, description: 'Замочить желатин в воде.' },
@@ -559,8 +560,10 @@ export const recipes: Recipe[] = [
         value: { calorie: 200, proteins: 4, fats: 12, carbohydrates: 20 },
         ingredients: [
             { name: 'cream cheese', title: 'сливочный сыр', quantity: 250, unit: 'г' },
+            { name: 'milk', title: 'молоко', quantity: 250, unit: 'г' },
             { name: 'sugar', title: 'сахар', quantity: 100, unit: 'г' },
             { name: 'vanilla', title: 'ваниль', quantity: 0, unit: 'по вкусу' },
+            { name: 'honey', title: 'мед', quantity: 1, unit: 'шт.' },
         ],
         steps: [
             { number: 1, description: 'Смешать сыр с сахаром и ванилью.' },
@@ -675,7 +678,7 @@ export const recipes: Recipe[] = [
         },
     },
     {
-        id: '18',
+        id: '19',
         title: 'Воздушное банановое печенье на сковороде',
         description:
             'Банановое печенье, готовящееся на сковороде. Мягкое и ароматное, идеально подходит к чаю.',
@@ -707,7 +710,7 @@ export const recipes: Recipe[] = [
         },
     },
     {
-        id: '19',
+        id: '20',
         title: 'Солянка с грибами',
         description: 'Насыщенная солянка с грибами, идеально подходит для холодного времени года.',
         category: ['first-dish'],
@@ -738,7 +741,7 @@ export const recipes: Recipe[] = [
         },
     },
     {
-        id: '20',
+        id: '21',
         title: "Салат 'Здоровье'",
         description: 'Полезный салат с сельдереем, который порадует вас свежестью и вкусом.',
         category: ['salads'],
@@ -766,7 +769,7 @@ export const recipes: Recipe[] = [
         },
     },
     {
-        id: '21',
+        id: '22',
         title: 'Гречка с овощами',
         description: 'Полезное и сытное блюдо из гречки и свежих овощей, идеальный гарнир.',
         category: ['side-dishes'],
@@ -797,7 +800,7 @@ export const recipes: Recipe[] = [
         },
     },
     {
-        id: '22',
+        id: '23',
         title: 'Шоколадный торт',
         description: 'Нежный шоколадный торт, который порадует любителей сладкого.',
         category: ['dessert'],
@@ -829,7 +832,7 @@ export const recipes: Recipe[] = [
         },
     },
     {
-        id: '23',
+        id: '24',
         title: 'Суп-пюре из тыквы',
         description: 'Ароматный суп-пюре из тыквы, который согревает в холодное время года.',
         category: ['first-dish'],
@@ -861,7 +864,7 @@ export const recipes: Recipe[] = [
         },
     },
     {
-        id: '24',
+        id: '25',
         title: 'Паста с томатным соусом',
         description:
             'Простая и вкусная паста с домашним томатным соусом, идеальный вариант для ужина.',
@@ -893,7 +896,7 @@ export const recipes: Recipe[] = [
         },
     },
     {
-        id: '25',
+        id: '26',
         title: 'Куриный салат с ананасами',
         description: 'Свежий и легкий салат с курицей и ананасами, идеален для летних дней.',
         category: ['salads'],
@@ -924,7 +927,7 @@ export const recipes: Recipe[] = [
         },
     },
     {
-        id: '26',
+        id: '78',
         title: "Оладьи на кефире 'Пышные'",
         description:
             'Очень вкусные и нежные оладьи на кефире. Настоятельно рекомендую пышные кефирные оладьи на завтрак.',
@@ -1536,7 +1539,7 @@ export const recipes: Recipe[] = [
     },
     {
         id: '45',
-        title: 'Лимонный курд',
+        title: 'Лимонный сырный курд',
         description: 'Нежный лимонный курд, идеально подходит для десертов.',
         category: ['dessert'],
         subcategory: ['creams'],
@@ -1549,8 +1552,10 @@ export const recipes: Recipe[] = [
         ingredients: [
             { name: 'lemon juice', title: 'лимонный сок', quantity: 100, unit: 'мл' },
             { name: 'sugar', title: 'сахар', quantity: 150, unit: 'г' },
+            { name: 'milk', title: 'молоко', quantity: 150, unit: 'г' },
             { name: 'butter', title: 'масло', quantity: 100, unit: 'г' },
             { name: 'eggs', title: 'яйца', quantity: 3, unit: 'шт.' },
+            { name: 'nuts', title: 'орехи', quantity: 2, unit: 'по вкусу' },
         ],
         steps: [
             { number: 1, description: 'Смешать все ингредиенты на водяной бане.' },

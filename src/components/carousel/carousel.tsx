@@ -98,7 +98,7 @@ export const Carousel: FC = () => {
                             ref={index === carouselRecipes.length - 1 ? lastItemRef : null}
                             key={el.id}
                         >
-                            <CarouselItem {...el} />
+                            <CarouselItem recipe={el} />
                         </div>
                     ))}
                 </HStack>

@@ -20,6 +20,7 @@ export const theme = extendTheme({
     breakpoints: {
         sm: '35em', // 560px
         md: '48em', // 768px
+        xmd: '56em', // 896px
         lg: '62em', // 992px
         xl: '70em', // 1120px
         xxl: '80em', // 1280px

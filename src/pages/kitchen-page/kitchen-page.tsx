@@ -10,6 +10,7 @@ import { RelevantKitchen } from '../../components/relevant-kitchen';
 import { SectionBox } from '../../components/section-box/section-box.tsx';
 import { SectionHeader } from '../../components/section-header';
 import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { selectSelectedAllergens } from '../../redux/features/allergens-slice.ts';
 import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
 import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
 import { selectRecipes } from '../../redux/features/recipies-slice.ts';
@@ -21,6 +22,7 @@ import {
 } from '../../redux/features/search-slice.ts';
 import { PageType } from '../../types/page.ts';
 import { Recipe } from '../../types/recipe.ts';
+import { filterRecipes } from '../../utils/filter-recipes.ts';
 import { getCategoryRecipes, getFavouritesRecipes } from './helpers/get-recipes.ts';
 
 type KitchenPageProps = {
@@ -35,7 +37,9 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const selectedCategory = useAppSelector(selectChoosenCategory);
     const categories = useAppSelector(selectCategoriesMenu);
     const filteredRecipes = useAppSelector(selectFilteredRecipes);
+    const selectedAllergens = useAppSelector(selectSelectedAllergens);
 
+    const [displayRecipes, setDisplayRecipes] = useState(recipes);
     const [relevantRecipes, setRelevantRecipes] = useState([] as Recipe[]);
     const [relevantTitle, setRelevantTitle] = useState('');
     const [relevantDesc, setRelevantDesc] = useState('');
@@ -46,11 +50,11 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const isCategoryPage = pageType === PageType.Category;
     const isJuiciestPage = pageType === PageType.Juiciest;
 
-    const favouritesRecipes = getFavouritesRecipes(recipes);
-    const categoryRecipes = getCategoryRecipes(recipes, selectedCategory);
+    const favouritesRecipes = getFavouritesRecipes(displayRecipes);
+    const categoryRecipes = getCategoryRecipes(displayRecipes, selectedCategory);
 
     const searchRecipes: Record<PageType, Recipe[]> = {
-        main: recipes,
+        main: displayRecipes,
         juiciest: favouritesRecipes,
         category: categoryRecipes,
     };
@@ -87,6 +91,16 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
 
         setRelevantRecipes(relatedRecipes);
     }, [categories, recipes]);
+
+    useEffect(() => {
+        const filteredByAllergens = filterRecipes(recipes, selectedAllergens);
+        setDisplayRecipes(filteredByAllergens);
+    }, [selectedAllergens]);
+
+    useEffect(() => {
+        const filteredByAllergens = filterRecipes(filteredRecipes, selectedAllergens);
+        dispatch(setFilteredRecipes(filteredByAllergens));
+    }, [selectedAllergens]);
 
     return (
         <>
