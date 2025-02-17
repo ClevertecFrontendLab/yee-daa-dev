@@ -9,16 +9,16 @@ import { MainPage } from '../pages/main-page';
 import { VeganPage } from '../pages/vegan-page';
 
 const renderRoutes = (routes: MenuItem[]) => {
-    return routes.map((item): ReactNode => {
-        if (item.subItems)
+    return routes.map(({ path, subItems }): ReactNode => {
+        if (subItems)
             return (
                 <>
-                    <Route key={item.path} path={item.path} element={<VeganPage />} />
-                    {renderRoutes(item.subItems)}
+                    <Route key={path} path={path} element={<VeganPage />} />
+                    {renderRoutes(subItems)}
                 </>
             );
 
-        return <Route key={item.path} path={item.path} element={<VeganPage />} />;
+        return <Route key={path} path={path} element={<VeganPage />} />;
     });
 };
 

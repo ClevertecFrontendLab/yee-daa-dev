@@ -7,7 +7,7 @@ import { categoriesMap } from '../../constants/categories.ts';
 import { MenuItem } from '../../constants/nav-menu.ts';
 import { SubNavItem } from './sub-nav-item.tsx';
 
-export const NavItem: FC<MenuItem> = ({ subItems, path, title }) => {
+export const NavItem: FC<MenuItem> = ({ subItems, path, title, dataTestId }) => {
     const [isActive, setIsActive] = useState(false);
     return (
         <AccordionItem border='none'>
@@ -18,6 +18,7 @@ export const NavItem: FC<MenuItem> = ({ subItems, path, title }) => {
 
                     return undefined;
                 }}
+                data-test-id={dataTestId}
             >
                 <AccordionButton
                     padding='8px 12px'

@@ -6,7 +6,7 @@ import { NavLink } from 'react-router';
 
 import { MenuItem } from '../../constants/nav-menu.ts';
 
-export const SubNavItem: FC<MenuItem> = ({ path, title }) => {
+export const SubNavItem: FC<MenuItem> = ({ path, title, dataTestId }) => {
     const [isActive, setIsActive] = useState(false);
 
     const cn = ['sideNavItem', isActive ? 'active' : ''].join(' ').trim();
@@ -20,6 +20,7 @@ export const SubNavItem: FC<MenuItem> = ({ path, title }) => {
 
                 return undefined;
             }}
+            data-test-id={dataTestId}
         >
             <Box borderColor='lime.400' borderLeftWidth={'1px'} pl={3} mt={1} mb={1} className={cn}>
                 <Text fontSize='md' lineHeight={6} fontWeight={isActive ? 700 : 500} noOfLines={1}>

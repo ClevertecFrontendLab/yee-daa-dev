@@ -1,5 +1,5 @@
 const browserWidth = 1953;
-const browserHeight = 1180;
+const browserHeight = 950;
 
 module.exports = {
     video: false,
