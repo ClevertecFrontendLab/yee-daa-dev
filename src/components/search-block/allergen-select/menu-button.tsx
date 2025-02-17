@@ -31,7 +31,7 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
 
     return (
         <MenuButton
-            w='100%'
+            w='270px'
             h='100%'
             minHeight='40px'
             p={2}

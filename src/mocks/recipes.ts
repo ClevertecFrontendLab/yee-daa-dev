@@ -61,6 +61,9 @@ export const recipes: Recipe[] = [
             imageUrl: man,
             followers: 101,
         },
+        cuisine: 'American',
+        meat: 'pork',
+        side: 'pasta',
     },
     {
         id: '1',
@@ -96,6 +99,9 @@ export const recipes: Recipe[] = [
             imageUrl: man,
             followers: 101,
         },
+        cuisine: 'American',
+        meat: 'chicken',
+        side: 'potatoes',
     },
 
     {
@@ -132,6 +138,7 @@ export const recipes: Recipe[] = [
             imageUrl: man,
             followers: 577,
         },
+        cuisine: 'American',
     },
     {
         id: '3',
@@ -167,6 +174,7 @@ export const recipes: Recipe[] = [
             imageUrl: man,
             followers: 46,
         },
+        cuisine: 'Italian',
     },
     {
         id: '4',
@@ -201,6 +209,7 @@ export const recipes: Recipe[] = [
             bookmarks: 30,
             imageUrl: man,
         },
+        cuisine: 'Italian',
     },
     {
         id: '5',
@@ -235,6 +244,7 @@ export const recipes: Recipe[] = [
             bookmarks: 40,
             imageUrl: woman,
         },
+        cuisine: 'Italian',
     },
     {
         id: '6',
@@ -269,6 +279,7 @@ export const recipes: Recipe[] = [
             imageUrl: woman,
             followers: 456,
         },
+        cuisine: 'Mexican',
     },
     {
         id: '7',
@@ -302,6 +313,7 @@ export const recipes: Recipe[] = [
             bookmarks: 10,
             imageUrl: woman,
         },
+        cuisine: 'Mexican',
     },
     {
         id: '8',
@@ -333,6 +345,7 @@ export const recipes: Recipe[] = [
             bookmarks: 5,
             imageUrl: woman,
         },
+        cuisine: 'Mexican',
     },
     {
         id: '9',
@@ -366,6 +379,7 @@ export const recipes: Recipe[] = [
             bookmarks: 20,
             imageUrl: woman,
         },
+        cuisine: 'Japanese',
     },
     {
         id: '10',
@@ -400,6 +414,7 @@ export const recipes: Recipe[] = [
             imageUrl: woman,
             followers: 68,
         },
+        cuisine: 'Japanese',
     },
 
     {
@@ -435,6 +450,7 @@ export const recipes: Recipe[] = [
             bookmarks: 30,
             imageUrl: 'ivanov_imageUrl.png',
         },
+        cuisine: 'French',
     },
     {
         id: '12',
@@ -473,6 +489,7 @@ export const recipes: Recipe[] = [
             bookmarks: 50,
             followers: 788,
         },
+        cuisine: 'French',
     },
     {
         id: '13',
@@ -510,6 +527,7 @@ export const recipes: Recipe[] = [
             likes: 180,
             bookmarks: 40,
         },
+        cuisine: 'French',
     },
     {
         id: '14',
@@ -543,6 +561,7 @@ export const recipes: Recipe[] = [
             bookmarks: 2,
             followers: 57,
         },
+        cuisine: 'Indian',
     },
     {
         id: '15',
@@ -577,6 +596,7 @@ export const recipes: Recipe[] = [
             likes: 5,
             bookmarks: 1,
         },
+        cuisine: 'Indian',
     },
     {
         id: '16',
@@ -608,6 +628,7 @@ export const recipes: Recipe[] = [
             bookmarks: 5,
             imageUrl: woman,
         },
+        cuisine: 'Indian',
     },
     {
         id: '17',
@@ -640,6 +661,8 @@ export const recipes: Recipe[] = [
             bookmarks: 25,
             imageUrl: woman,
         },
+        meat: 'pork',
+        side: 'pasta',
     },
 
     {
@@ -676,6 +699,8 @@ export const recipes: Recipe[] = [
             imageUrl: woman,
             followers: 89,
         },
+        meat: 'pork',
+        side: 'pasta',
     },
     {
         id: '19',
@@ -708,6 +733,8 @@ export const recipes: Recipe[] = [
             likes: 40,
             bookmarks: 10,
         },
+        meat: 'pork',
+        side: 'pasta',
     },
     {
         id: '20',
@@ -767,6 +794,8 @@ export const recipes: Recipe[] = [
             likes: 30,
             bookmarks: 7,
         },
+        meat: 'beef',
+        side: 'salad',
     },
     {
         id: '22',
@@ -798,6 +827,8 @@ export const recipes: Recipe[] = [
             imageUrl: 'kovalev_imageUrl.png',
             followers: 789,
         },
+        meat: 'chicken',
+        side: 'potatoes',
     },
     {
         id: '23',
@@ -830,6 +861,8 @@ export const recipes: Recipe[] = [
             bookmarks: 5,
             imageUrl: 'smirnova_imageUrl.png',
         },
+        meat: 'chicken',
+        side: 'potatoes',
     },
     {
         id: '24',
@@ -862,6 +895,8 @@ export const recipes: Recipe[] = [
             bookmarks: 3,
             imageUrl: 'petrova_imageUrl.png',
         },
+        meat: 'beef',
+        side: 'salad',
     },
     {
         id: '25',
@@ -894,6 +929,8 @@ export const recipes: Recipe[] = [
             bookmarks: 8,
             imageUrl: 'solovyeva_imageUrl.png',
         },
+        meat: 'beef',
+        side: 'salad',
     },
     {
         id: '26',
@@ -925,6 +962,8 @@ export const recipes: Recipe[] = [
             bookmarks: 4,
             imageUrl: 'fedorova_imageUrl.png',
         },
+        meat: 'beef',
+        side: 'salad',
     },
     {
         id: '78',
@@ -957,6 +996,8 @@ export const recipes: Recipe[] = [
             bookmarks: 1,
             imageUrl: 'semenova_imageUrl.png',
         },
+        meat: 'beef',
+        side: 'salad',
     },
 
     {
@@ -1153,6 +1194,9 @@ export const recipes: Recipe[] = [
             bookmarks: 15,
             imageUrl: 'kovaleva_imageUrl.png',
         },
+        cuisine: 'Vietnamese',
+        meat: 'chicken',
+        side: 'potatoes',
     },
     {
         id: '33',
@@ -1186,6 +1230,9 @@ export const recipes: Recipe[] = [
             bookmarks: 20,
             imageUrl: 'ivanova_imageUrl.png',
         },
+        cuisine: 'Vietnamese',
+        meat: 'chicken',
+        side: 'potatoes',
     },
     {
         id: '34',
@@ -1219,6 +1266,7 @@ export const recipes: Recipe[] = [
             bookmarks: 30,
             imageUrl: 'sidorova_imageUrl.png',
         },
+        cuisine: 'Vietnamese',
     },
     {
         id: '35',
@@ -1249,6 +1297,7 @@ export const recipes: Recipe[] = [
             bookmarks: 10,
             imageUrl: 'fedorov_imageUrl.png',
         },
+        cuisine: 'Greek',
     },
     {
         id: '36',
@@ -1282,6 +1331,7 @@ export const recipes: Recipe[] = [
             bookmarks: 5,
             imageUrl: 'kuznetsova_imageUrl.png',
         },
+        cuisine: 'Greek',
     },
     {
         id: '37',
@@ -1313,6 +1363,7 @@ export const recipes: Recipe[] = [
             bookmarks: 10,
             imageUrl: 'semenov_imageUrl.png',
         },
+        cuisine: 'Greek',
     },
     {
         id: '38',
@@ -1344,6 +1395,7 @@ export const recipes: Recipe[] = [
             bookmarks: 5,
             imageUrl: 'petrova_imageUrl.png',
         },
+        cuisine: 'Greek',
     },
 
     {
@@ -1377,6 +1429,7 @@ export const recipes: Recipe[] = [
             bookmarks: 12,
             imageUrl: 'solovyev_imageUrl.png',
         },
+        cuisine: 'SouthAfrican',
     },
     {
         id: '40',
@@ -1409,6 +1462,7 @@ export const recipes: Recipe[] = [
             bookmarks: 8,
             imageUrl: 'tikhonova_imageUrl.png',
         },
+        cuisine: 'SouthAfrican',
     },
     {
         id: '41',
@@ -1441,6 +1495,7 @@ export const recipes: Recipe[] = [
             bookmarks: 20,
             imageUrl: 'nikolaeva_imageUrl.png',
         },
+        cuisine: 'SouthAfrican',
     },
     {
         id: '42',
@@ -1473,6 +1528,7 @@ export const recipes: Recipe[] = [
             bookmarks: 15,
             imageUrl: 'sidorova_imageUrl.png',
         },
+        cuisine: 'SouthAfrican',
     },
     {
         id: '43',
@@ -1504,6 +1560,7 @@ export const recipes: Recipe[] = [
             bookmarks: 5,
             imageUrl: 'kovaleva_imageUrl.png',
         },
+        cuisine: 'Brazilian',
     },
     {
         id: '44',
@@ -1536,7 +1593,9 @@ export const recipes: Recipe[] = [
             bookmarks: 10,
             imageUrl: 'semenova_imageUrl.png',
         },
+        cuisine: 'Brazilian',
     },
+
     {
         id: '45',
         title: 'Лимонный сырный курд',
@@ -1570,6 +1629,7 @@ export const recipes: Recipe[] = [
             bookmarks: 8,
             imageUrl: 'ivanova_imageUrl.png',
         },
+        cuisine: 'Brazilian',
     },
     {
         id: '46',
@@ -1602,5 +1662,6 @@ export const recipes: Recipe[] = [
             bookmarks: 20,
             imageUrl: 'sidorov_imageUrl.png',
         },
+        cuisine: 'Indian',
     },
 ];

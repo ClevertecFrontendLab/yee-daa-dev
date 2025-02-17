@@ -16,13 +16,16 @@ export const SelectedAllergens: React.FC<{ selectedAllergens: string[] }> = ({
                         p={1}
                         mr={1}
                         fontSize='xs'
+                        fontWeight={500}
                         display='inline-block'
                     >
-                        <Text color='var(--chakra-colors-lime-300)'>{allergen}</Text>
+                        <Text color='var(--chakra-colors-lime-600)'>{allergen}</Text>
                     </Box>
                 ))
             ) : (
-                <Text color='gray.500'>{PLACEHOLDER_SELECT}</Text>
+                <Text color='gray.500' noOfLines={1} isTruncated>
+                    {PLACEHOLDER_SELECT}
+                </Text>
             )}
         </Box>
     );

@@ -1,7 +1,7 @@
 import { FormControl, Switch, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { BUTTON_EXCLUDE_MY_ALLERGENS } from '../../../constants/select';
+import { BUTTON_EXCLUDE_ALLERGENS } from '../../../constants/select';
 
 type SwitcherProps = {
     isSwitchOn: boolean;
@@ -10,10 +10,8 @@ type SwitcherProps = {
 
 export const Switcher: FC<SwitcherProps> = ({ isSwitchOn, handleSwitchChange }) => {
     return (
-        <FormControl display='flex' alignItems='center' width='268px'>
-            <Text fontWeight={500} width='220px'>
-                {BUTTON_EXCLUDE_MY_ALLERGENS}
-            </Text>
+        <FormControl display='flex' gap={3} alignItems='center' width='233px'>
+            <Text fontWeight={500}>{BUTTON_EXCLUDE_ALLERGENS}</Text>
             <Switch
                 isChecked={isSwitchOn}
                 onChange={handleSwitchChange}

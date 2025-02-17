@@ -5,6 +5,7 @@ import { useIsTablet } from '../../hooks/media-query';
 import { useAppSelector } from '../../hooks/typed-react-redux-hooks';
 import { selectMenu } from '../../redux/features/burger-slice';
 import { Aside } from '../aside';
+import { FilterDrawer } from '../drawer';
 import { Footer } from '../footer';
 import { Header } from '../header';
 import { SideNav } from '../side-nav';
@@ -56,6 +57,7 @@ export const Layout = () => {
                     display={{ base: 'none', xl: 'block' }}
                 >
                     <Aside />
+                    <FilterDrawer />
                 </GridItem>
                 <GridItem
                     bg='lime.50'

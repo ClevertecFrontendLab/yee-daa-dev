@@ -1,0 +1,34 @@
+.drawer {
+    padding: 32px;
+    padding-bottom: 90px;
+
+    .drawerHeader {
+        padding: 0;
+        padding-bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .drawerHeading {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .drawerBody {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 24px;
+    }
+
+    .drawerButton {
+        padding: 12px 24px;
+        font-size: 18px;
+    }
+
+    .drawerType {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 12px;
+    }
+}

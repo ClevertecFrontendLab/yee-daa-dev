@@ -8,16 +8,19 @@ export type Recipe = {
     date: string;
     description: string;
     time: string;
+    value: EnergyValue;
+    ingredients: ingredient[];
+    steps: Step[];
+    author: UserProps;
+    meat?: string;
+    side?: string;
+    cuisine?: string;
     portions?: number;
     image?: string;
     likes?: number;
     views?: number;
     bookmarks?: number;
     recommendation?: Omit<UserProps, 'login'>;
-    value: EnergyValue;
-    ingredients: ingredient[];
-    steps: Step[];
-    author: UserProps;
 };
 
 type EnergyValue = { calorie: number; proteins: number; fats: number; carbohydrates: number };

@@ -3,6 +3,8 @@ import { Input } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { clearSelectedAllergens } from '../../redux/features/allergens-slice.ts';
+import { openDrawer } from '../../redux/features/drawer.ts';
 import { selectInputValue, setInputValue } from '../../redux/features/search-slice.ts';
 import { FilterIcon } from '../icons/filter-icon.tsx';
 import { AllergenSelect } from './allergen-select/allergen-select.tsx';
@@ -38,6 +40,12 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
         }
     };
 
+    const handleDrawerClick = () => {
+        dispatch(setInputValue(''));
+        dispatch(clearSelectedAllergens());
+        dispatch(openDrawer());
+    };
+
     return (
         <Stack spacing={4} maxWidth={{ base: '100%', sm: '520px' }} ml='auto' mr='auto' pb={8}>
             <Stack direction='row' spacing={3}>
@@ -48,6 +56,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
                     width={{ base: '32px', md: '48px' }}
                     variant='outline'
                     borderColor='blackAlpha.600'
+                    onClick={handleDrawerClick}
                 />
                 <InputGroup>
                     <Input

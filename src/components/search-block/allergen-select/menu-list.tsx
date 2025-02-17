@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { BUTTON_ADD_OTHER_ALLERGEN, PLACEHOLDER_ALLERGEN } from '../../../constants/select';
 import {
-    addAllergen,
     deselectAllergen,
     selectAllergen,
     selectAllergens,
@@ -49,8 +48,8 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
     };
 
     const handleAddAllergen = () => {
-        if (newAllergen.trim() !== '') {
-            dispatch(addAllergen(newAllergen));
+        if (newAllergen.trim()) {
+            dispatch(selectAllergen(newAllergen.trim()));
             setNewAllergen('');
             setIsAdding(false);
         }
@@ -74,7 +73,7 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
 
     return (
         <Box position='absolute' top='40px' zIndex={3}>
-            <MenuList pt={3} pb={3} w='234px'>
+            <MenuList pt={3} pb={3} w='270px'>
                 {allergens.map((allergen, index) => (
                     <MenuItem
                         key={allergen.value}
@@ -105,8 +104,9 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
                         <Input
                             display='block'
                             margin='8px auto'
-                            width='200px'
+                            width='220px'
                             ref={inputRef}
+                            color={'var(--chakra-colors-lime-800)'}
                             value={newAllergen}
                             onChange={(e) => setNewAllergen(e.target.value)}
                             onKeyDown={handleKeyDown}
@@ -125,12 +125,13 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
                 ) : (
                     <Button
                         display={'block'}
-                        width={'160px'}
-                        margin='8px auto'
+                        textAlign='start'
+                        w='220px'
+                        margin='8px 16px'
                         fontWeight={400}
                         color={'var(--chakra-colors-lime-800)'}
                         background={'--chakra-ring-offset-color'}
-                        border='1px solid rgba(0, 0, 0, 0.64)'
+                        border='1px solid var(--chakra-colors-blackAlpha-200)'
                         onClick={handleAddClick}
                     >
                         {BUTTON_ADD_OTHER_ALLERGEN}

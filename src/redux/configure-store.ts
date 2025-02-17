@@ -1,10 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { allergenReducer, allergenSlice } from './features/allergens-slice';
+import { authorsReducer, authorsSlice } from './features/authors-slice';
 import { menuReducer, menuSlice } from './features/burger-slice';
 import { categoriesReducer, categoriesSlice } from './features/categories-slice';
 import { choosenCategoryReducer, choosenCategorySlice } from './features/choosen-category-slice';
 import { selectedRecipeReducer, selectedRecipeSlice } from './features/choosen-recipe-slice';
+import { cuisinesReducer, cuisinesSlice } from './features/cuisines-slice';
+import { drawerReducer, drawerSlice } from './features/drawer';
 import { recipesReducer, recipesSlice } from './features/recipies-slice';
 import { searchReducer, searchSlice } from './features/search-slice';
 
@@ -17,6 +20,9 @@ export const store = configureStore({
         [allergenSlice.name]: allergenReducer,
         [selectedRecipeSlice.name]: selectedRecipeReducer,
         [menuSlice.name]: menuReducer,
+        [drawerSlice.name]: drawerReducer,
+        [cuisinesSlice.name]: cuisinesReducer,
+        [authorsSlice.name]: authorsReducer,
     },
 });
 

@@ -61,9 +61,9 @@ export const AllergenSelect = () => {
         <Stack
             spacing={4}
             direction={{ md: 'column', xl: 'row' }}
-            justifyContent='space-between'
             alignItems='center'
             display={{ base: 'none', md: 'flex', xl: 'flex' }}
+            flexWrap='wrap'
         >
             <Switcher isSwitchOn={isSwitchOn} handleSwitchChange={handleSwitchChange} />
             <FormControl ref={menuRef} width='234px'>
