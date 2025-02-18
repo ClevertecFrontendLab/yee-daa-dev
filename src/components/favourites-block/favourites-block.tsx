@@ -3,27 +3,11 @@ import { Center, Heading, HStack } from '@chakra-ui/react';
 import { Link } from 'react-router';
 
 import { Paths } from '../../constants/path.ts';
-import { useIsTablet } from '../../hooks/media-query.ts';
 import { favouritesRecipes } from '../../mocks/favourites-recipes.ts';
 import { FoodCard } from '../food-card';
 import { SectionBox } from '../section-box/section-box.tsx';
 
 export const FavouritesBlock = () => {
-    const isTablet = useIsTablet();
-
-    const linkBtn = (
-        <Button
-            bg='lime.400'
-            size={{ base: 'md', '2xl': 'lg' }}
-            rightIcon={<ArrowForwardIcon />}
-            alignItems='center'
-            as={Link}
-            to={Paths.JUICIEST}
-        >
-            Вся подборка
-        </Button>
-    );
-
     return (
         <SectionBox>
             <HStack justifyContent='space-between' mb={6}>
@@ -34,7 +18,18 @@ export const FavouritesBlock = () => {
                 >
                     Самое сочное
                 </Heading>
-                {!isTablet && linkBtn}
+                <Button
+                    bg='lime.400'
+                    size={{ base: 'md', '2xl': 'lg' }}
+                    rightIcon={<ArrowForwardIcon />}
+                    alignItems='center'
+                    as={Link}
+                    to={Paths.JUICIEST}
+                    data-test-id='juiciest-link'
+                    display={{ base: 'none', md: 'flex' }}
+                >
+                    Вся подборка
+                </Button>
             </HStack>
             <SimpleGrid
                 columns={2}
@@ -47,7 +42,17 @@ export const FavouritesBlock = () => {
                 ))}
             </SimpleGrid>
             <Center display={{ base: 'flex', md: 'none' }} mt={3}>
-                {linkBtn}
+                <Button
+                    bg='lime.400'
+                    size={{ base: 'md', '2xl': 'lg' }}
+                    rightIcon={<ArrowForwardIcon />}
+                    alignItems='center'
+                    as={Link}
+                    to={Paths.JUICIEST}
+                    data-test-id='juiciest-link-mobile'
+                >
+                    Вся подборка
+                </Button>
             </Center>
         </SectionBox>
     );

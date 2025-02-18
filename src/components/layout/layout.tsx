@@ -23,14 +23,10 @@ export const Layout = () => {
                 base: '1fr',
             }}
         >
-            <GridItem bg='lime.50' area='header' className={styles.fix}>
+            <GridItem bg='lime.50' area='header' className={styles.fix} data-test-id='header'>
                 <Header />
             </GridItem>
-            <GridItem
-                area={'nav'}
-                className={styles.fixNav}
-                display={{ base: 'none', md: 'block' }}
-            >
+            <GridItem area='nav' className={styles.fixNav} display={{ base: 'none', md: 'block' }}>
                 <SideNav />
             </GridItem>
             <GridItem
@@ -54,6 +50,7 @@ export const Layout = () => {
                 area='footer'
                 display={{ md: 'none', base: 'block' }}
                 className={styles.fixFooter}
+                data-test-id='footer'
             >
                 <Footer />
             </GridItem>

@@ -1,6 +1,7 @@
 export type MenuItem = {
     title: string;
     path: string;
+    dataTestId?: string;
     subItems?: MenuItem[];
 };
 
@@ -232,6 +233,7 @@ export const navMenu: MenuItem[] = [
     {
         title: 'Веганская кухня',
         path: 'vegan',
+        dataTestId: 'vegan-cuisine',
         subItems: [
             {
                 title: 'Закуски',

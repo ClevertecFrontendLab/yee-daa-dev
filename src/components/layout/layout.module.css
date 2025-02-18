@@ -25,6 +25,7 @@
         0 1px 3px 0 rgba(0, 0, 0, 0.12);
     background: #fff;
     width: clamp(170px, 13vw, 266px);
+    padding-right: 4px;
 }
 
 .fixFooter {
