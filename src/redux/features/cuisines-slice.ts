@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { cuisines } from '../../mocks/filters';
 import { FoodItem } from '../../types/food-item';
 import { AppState } from '../../types/store';
+import { toggleItemInArray } from '../../utils/toggle-items';
 
 type CuisinesState = {
     cuisines: FoodItem[];
@@ -25,18 +26,10 @@ export const cuisinesSlice = createSlice({
             state.isLoading = false;
         },
 
-        selectCuisine(state, action: PayloadAction<string>) {
-            const allergen = action.payload;
-            if (!state.selectedCuisines.includes(allergen)) {
-                state.selectedCuisines.push(allergen);
-            }
+        toggleCuisine(state, action: PayloadAction<string>) {
+            state.selectedCuisines = toggleItemInArray(state.selectedCuisines, action.payload);
         },
-        deselectAllergen(state, action: PayloadAction<string>) {
-            state.selectedCuisines = state.selectedCuisines.filter(
-                (item) => item !== action.payload,
-            );
-        },
-        clearSelectedAllergens(state) {
+        clearSelectedCuisines(state) {
             state.selectedCuisines = [];
         },
 
@@ -50,6 +43,7 @@ export const selectCuisines = (state: AppState) => state.cuisines.cuisines;
 export const selectSelectedCuisines = (state: AppState) => state.cuisines.selectedCuisines;
 export const selectIsLoading = (state: AppState) => state.cuisines.isLoading;
 
-export const { setCuisines, selectCuisine, deselectAllergen } = cuisinesSlice.actions;
+export const { setCuisines, toggleCuisine, setLoading, clearSelectedCuisines } =
+    cuisinesSlice.actions;
 
 export const cuisinesReducer = cuisinesSlice.reducer;

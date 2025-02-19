@@ -1,9 +1,9 @@
 import { Fragment, ReactNode } from 'react';
-import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router';
 
 import { Layout } from '../components/layout';
 import { Paths } from '../constants/path.ts';
+import { useAppSelector } from '../hooks/typed-react-redux-hooks.ts';
 import { CategoryPage } from '../pages/category-page';
 import { ErrorPage } from '../pages/error-page/error-page.tsx';
 import { JuiciestPage } from '../pages/juiciest-page';
@@ -27,7 +27,7 @@ const renderRoutes = (routes: MenuItem[], basePath: string = ''): ReactNode => {
 };
 
 export const AppRoutes = () => {
-    const navMenu = useSelector(selectCategoriesMenu);
+    const navMenu = useAppSelector(selectCategoriesMenu);
 
     return (
         <Routes>

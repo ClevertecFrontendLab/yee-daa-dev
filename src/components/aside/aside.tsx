@@ -6,7 +6,7 @@ import { StatsBlock } from '../stats-block';
 
 export const Aside = () => {
     return (
-        <Flex height='100%' direction='column' alignItems='flex-end' justifyContent='flex-end'>
+        <Flex height='100%' direction='column' alignItems='flex-end' justifyContent='space-between'>
             <StatsBlock {...users[2]} />
             <Spacer />
             <AddRecipeBtn />

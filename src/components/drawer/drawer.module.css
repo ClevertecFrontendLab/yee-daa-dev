@@ -1,34 +1,60 @@
 .drawer {
-    padding: 32px;
+    padding: var(--chakra-space-8);
     padding-bottom: 90px;
 
     .drawerHeader {
         padding: 0;
-        padding-bottom: 16px;
+        padding-bottom: var(--chakra-space-4);
         display: flex;
         justify-content: space-between;
     }
 
     .drawerHeading {
-        font-size: 24px;
-        font-weight: 700;
+        font-size: var(--chakra-space-6);
+        font-weight: var(--chakra-fontWeights-bold);
     }
 
     .drawerBody {
         display: flex;
         flex-direction: column;
-        gap: 16px;
-        margin-top: 24px;
+        gap: var(--chakra-space-4);
+        margin-top: var(--chakra-space-6);
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--chakra-colors-blackAlpha-300) var(--chakra-colors-blackAlpha-50);
     }
 
     .drawerButton {
-        padding: 12px 24px;
-        font-size: 18px;
+        padding: var(--chakra-space-3) var(--chakra-space-6);
+        font-size: var(--chakra-fontSizes-lg);
     }
 
     .drawerType {
-        font-size: 16px;
-        font-weight: 500;
-        margin-bottom: 12px;
+        font-size: var(--chakra-fontSizes-md);
+        font-weight: var(--chakra-fontWeights-medium);
+        margin-bottom: var(--chakra-space-3);
+    }
+
+    .drawerBody::-webkit-scrollbar {
+        width: var(--chakra-sizes-2);
+        height: 50%;
+        background: var(--chakra-colors-blackAlpha-50);
+    }
+
+    .drawerBody::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .drawerBody::-webkit-scrollbar-thumb {
+        width: var(--chakra-sizes-2);
+        background-color: var(--chakra-colors-blackAlpha-300);
+    }
+
+    .drawerBody::-webkit-scrollbar-thumb:hover {
+        background-color: var(--chakra-colors-blackAlpha-400);
+    }
+
+    .drawerBody::-webkit-scrollbar-button {
+        display: none;
     }
 }

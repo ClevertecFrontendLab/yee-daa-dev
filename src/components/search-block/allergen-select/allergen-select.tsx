@@ -1,7 +1,7 @@
 import { FormControl, Menu, Stack } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
+import { useAppDispatch, useAppSelector } from '../../../hooks/typed-react-redux-hooks';
 import {
     clearSelectedAllergens,
     selectSelectedAllergens,
@@ -11,8 +11,8 @@ import { SelectMenuList } from './menu-list';
 import { Switcher } from './switcher';
 
 export const AllergenSelect = () => {
-    const dispatch = useDispatch();
-    const selectedAllergens = useSelector(selectSelectedAllergens);
+    const dispatch = useAppDispatch();
+    const selectedAllergens = useAppSelector(selectSelectedAllergens);
 
     const [isOpen, setIsOpen] = useState(false);
     const [newAllergen, setNewAllergen] = useState<string>('');
@@ -20,10 +20,6 @@ export const AllergenSelect = () => {
     const [isSwitchOn, setIsSwitchOn] = useState(false);
 
     const menuRef = useRef<HTMLDivElement>(null);
-
-    const clearSelection = () => {
-        dispatch(clearSelectedAllergens());
-    };
 
     const handleMenuToggle = () => {
         if (isSwitchOn) {
@@ -72,7 +68,7 @@ export const AllergenSelect = () => {
                         isSwitchOn={isSwitchOn}
                         selectedAllergens={selectedAllergens}
                         handleMenuToggle={handleMenuToggle}
-                        clearSelection={clearSelection}
+                        setIsOpen={setIsOpen}
                         isOpen={isOpen}
                     />
 

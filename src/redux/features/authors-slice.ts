@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { authors } from '../../mocks/filters';
 import { AppState } from '../../types/store';
 import { UserProps } from '../../types/user';
+import { toggleItemInArray } from '../../utils/toggle-items';
 
 type AuthorsState = {
     authors: UserProps[];
@@ -25,16 +26,10 @@ export const authorsSlice = createSlice({
             state.isLoading = false;
         },
 
-        selectCuisine(state, action: PayloadAction<string>) {
-            const allergen = action.payload;
-            if (!state.selectedAuthors.includes(allergen)) {
-                state.selectedAuthors.push(allergen);
-            }
+        toggleAuthor(state, action: PayloadAction<string>) {
+            state.selectedAuthors = toggleItemInArray(state.selectedAuthors, action.payload);
         },
-        deselectAllergen(state, action: PayloadAction<string>) {
-            state.selectedAuthors = state.selectedAuthors.filter((item) => item !== action.payload);
-        },
-        clearSelectedAllergens(state) {
+        clearSelectedAuthors(state) {
             state.selectedAuthors = [];
         },
 
@@ -48,6 +43,6 @@ export const selectAuthors = (state: AppState) => state.authors.authors;
 export const selectSelectedAuthors = (state: AppState) => state.authors.selectedAuthors;
 export const selectIsLoading = (state: AppState) => state.authors.isLoading;
 
-export const { setAuthors, selectCuisine, deselectAllergen } = authorsSlice.actions;
+export const { setAuthors, toggleAuthor, clearSelectedAuthors } = authorsSlice.actions;
 
 export const authorsReducer = authorsSlice.reducer;

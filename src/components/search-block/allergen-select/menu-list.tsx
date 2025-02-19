@@ -10,9 +10,9 @@ import {
     MenuList,
 } from '@chakra-ui/react';
 import { FC, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { BUTTON_ADD_OTHER_ALLERGEN, PLACEHOLDER_ALLERGEN } from '../../../constants/select';
+import { useAppDispatch, useAppSelector } from '../../../hooks/typed-react-redux-hooks';
 import {
     deselectAllergen,
     selectAllergen,
@@ -33,9 +33,9 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
     setIsAdding,
     setNewAllergen,
 }) => {
-    const dispatch = useDispatch();
-    const allergens = useSelector(selectAllergens);
-    const selectedAllergens = useSelector(selectSelectedAllergens);
+    const dispatch = useAppDispatch();
+    const allergens = useAppSelector(selectAllergens);
+    const selectedAllergens = useAppSelector(selectSelectedAllergens);
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -83,7 +83,6 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
                     >
                         <Checkbox
                             borderColor='var(--chakra-colors-lime-300)'
-                            colorScheme='green'
                             iconColor='black'
                             isChecked={selectedAllergens.includes(allergen.label)}
                             onChange={() => toggleAllergen(allergen.label)}

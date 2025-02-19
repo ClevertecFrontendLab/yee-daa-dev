@@ -5,13 +5,13 @@ import { AppState } from '../../types/store';
 
 type SearchState = {
     inputValue: string;
-    filteredRecipes: Recipe[];
+    matchedRecipes: Recipe[];
     isLoading: boolean;
 };
 
 const initialState: SearchState = {
     inputValue: '',
-    filteredRecipes: [],
+    matchedRecipes: [],
     isLoading: false,
 };
 
@@ -25,15 +25,15 @@ export const searchSlice = createSlice({
         setLoading(state, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;
         },
-        setFilteredRecipes(state, action: PayloadAction<Recipe[]>) {
-            state.filteredRecipes = action.payload;
+        setMatchedRecipes(state, action: PayloadAction<Recipe[]>) {
+            state.matchedRecipes = action.payload;
         },
     },
 });
 
 export const selectInputValue = (state: AppState) => state.search.inputValue;
 export const selectSearchLoading = (state: AppState) => state.search.isLoading;
-export const selectFilteredRecipes = (state: AppState) => state.search.filteredRecipes;
+export const selectMatchedRecipes = (state: AppState) => state.search.matchedRecipes;
 
-export const { setInputValue, setLoading, setFilteredRecipes } = searchSlice.actions;
+export const { setInputValue, setLoading, setMatchedRecipes } = searchSlice.actions;
 export const searchReducer = searchSlice.reducer;

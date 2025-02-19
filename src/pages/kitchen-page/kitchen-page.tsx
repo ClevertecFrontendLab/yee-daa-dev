@@ -10,15 +10,16 @@ import { RelevantKitchen } from '../../components/relevant-kitchen';
 import { SectionBox } from '../../components/section-box/section-box.tsx';
 import { SectionHeader } from '../../components/section-header';
 import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { recipes as mockRecipes } from '../../mocks/recipes.ts';
 import { selectSelectedAllergens } from '../../redux/features/allergens-slice.ts';
 import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
 import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
-import { selectRecipes } from '../../redux/features/recipies-slice.ts';
+import { selectRecipes, setRecipes } from '../../redux/features/recipies-slice.ts';
 import {
-    selectFilteredRecipes,
     selectInputValue,
-    setFilteredRecipes,
+    selectMatchedRecipes,
     setInputValue,
+    setMatchedRecipes,
 } from '../../redux/features/search-slice.ts';
 import { PageType } from '../../types/page.ts';
 import { Recipe } from '../../types/recipe.ts';
@@ -36,7 +37,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const recipes = useAppSelector(selectRecipes);
     const selectedCategory = useAppSelector(selectChoosenCategory);
     const categories = useAppSelector(selectCategoriesMenu);
-    const filteredRecipes = useAppSelector(selectFilteredRecipes);
+    const matchedRecipes = useAppSelector(selectMatchedRecipes);
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
 
     const [displayRecipes, setDisplayRecipes] = useState(recipes);
@@ -65,16 +66,17 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
             recipe.title.toLowerCase().includes(inputValue.toLowerCase()),
         );
 
-        dispatch(setFilteredRecipes(nameFiltered));
+        dispatch(setMatchedRecipes(nameFiltered));
     };
 
     useEffect(() => {
         dispatch(setInputValue(''));
+        setStartSearch(false);
     }, [selectedCategory]);
 
     useEffect(() => {
         if (!searchValue) {
-            dispatch(setFilteredRecipes([]));
+            dispatch(setMatchedRecipes([]));
             setStartSearch(false);
         }
     }, [searchValue]);
@@ -98,19 +100,26 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     }, [selectedAllergens]);
 
     useEffect(() => {
-        const filteredByAllergens = filterRecipes(filteredRecipes, selectedAllergens);
-        dispatch(setFilteredRecipes(filteredByAllergens));
+        const filteredByAllergens = filterRecipes(matchedRecipes, selectedAllergens);
+        dispatch(setMatchedRecipes(filteredByAllergens));
     }, [selectedAllergens]);
+
+    useEffect(() => {
+        dispatch(setRecipes(mockRecipes));
+    }, []);
+
+    console.log(matchedRecipes);
+    console.log(startSearch);
 
     return (
         <>
             <SectionHeader onSearch={handleSearch} pageType={pageType} />
 
-            {filteredRecipes.length ? (
-                <RecipeCardList recipeList={filteredRecipes} />
+            {startSearch && matchedRecipes.length && startSearch ? (
+                <RecipeCardList recipeList={matchedRecipes} />
             ) : (
                 startSearch &&
-                !filteredRecipes.length && (
+                !matchedRecipes.length && (
                     <SectionBox>
                         <Heading
                             fontSize={{ base: 'xl', xl: '2xl' }}
