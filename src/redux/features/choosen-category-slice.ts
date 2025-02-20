@@ -7,7 +7,7 @@ export type ChoosenCategory = MenuItem & {
     choosenSubCategory: MenuItem | null;
 };
 
-const initialState: ChoosenCategory = {
+export const initialState: ChoosenCategory = {
     title: '',
     category: '',
     description: '',

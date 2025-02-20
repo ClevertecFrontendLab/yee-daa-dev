@@ -5,7 +5,12 @@ import { FC, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 
 import { useAppDispatch } from '../../hooks/typed-react-redux-hooks';
+import {
+    clearSelectedAllergens,
+    setFilteredByAllergens,
+} from '../../redux/features/allergens-slice';
 import { setChoosenCategory } from '../../redux/features/choosen-category-slice';
+import { clearFilteredRecipes } from '../../redux/features/recipies-slice';
 import { MenuItem } from '../../types/category';
 
 type SubNavItemProps = MenuItem & {
@@ -37,6 +42,9 @@ export const SubNavItem: FC<SubNavItemProps> = ({
 
     const handleClick = () => {
         dispatch(setChoosenCategory(choosenSubItem));
+        dispatch(clearFilteredRecipes());
+        dispatch(clearSelectedAllergens());
+        dispatch(setFilteredByAllergens([]));
     };
 
     useEffect(() => {

@@ -9,7 +9,7 @@ export const StepsBlock: FC<{ steps?: Recipe['steps'] }> = ({ steps }) =>
             key={step.number}
             variant={'outline'}
             direction='row'
-            minH={{ base: '128px', xl: '244px' }}
+            minH={{ base: step?.image ? '128px' : '88px', xl: step?.image ? '244px' : '100px' }}
             borderRadius={'--chakra-radii-lg'}
         >
             {step?.image && (

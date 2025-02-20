@@ -36,7 +36,6 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
     const dispatch = useAppDispatch();
     const allergens = useAppSelector(selectAllergens);
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
-
     const inputRef = useRef<HTMLInputElement>(null);
 
     const toggleAllergen = (value: string) => {

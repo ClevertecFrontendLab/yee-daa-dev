@@ -14,9 +14,9 @@ import { selectRecipes } from '../../redux/features/recipies-slice.ts';
 
 export const Breadcrumbs = () => {
     const { pathname } = useLocation();
+    const dispatch = useAppDispatch();
     const navMenu = useAppSelector(selectCategoriesMenu);
     const recipes = useAppSelector(selectRecipes);
-    const dispatch = useAppDispatch();
 
     const pathsArr = pathname.split('/').filter(Boolean);
     const categoryItem = navMenu.find((item) => item.category === pathsArr[0]);

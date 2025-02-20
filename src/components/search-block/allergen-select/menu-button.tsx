@@ -1,11 +1,10 @@
 import { ChevronDownIcon, ChevronUpIcon, CloseIcon } from '@chakra-ui/icons';
 import { Button, MenuButton } from '@chakra-ui/react';
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 
-import { useAppDispatch, useAppSelector } from '../../../hooks/typed-react-redux-hooks';
+import { useAppDispatch } from '../../../hooks/typed-react-redux-hooks';
 import { clearSelectedAllergens } from '../../../redux/features/allergens-slice';
-import { selectChoosenCategory } from '../../../redux/features/choosen-category-slice';
-import { SelectedAllergens } from './selected-allergens';
+import { SelectedItems } from './selected-allergens';
 
 type SelectMenuButtonProps = {
     isSwitchOn: boolean;
@@ -23,17 +22,11 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
     isOpen,
 }) => {
     const dispatch = useAppDispatch();
-    const selectedCategory = useAppSelector(selectChoosenCategory);
-
     const clearSelection = (event: React.MouseEvent) => {
         event.stopPropagation();
         dispatch(clearSelectedAllergens());
         setIsOpen(false);
     };
-
-    useEffect(() => {
-        dispatch(clearSelectedAllergens());
-    }, [selectedCategory]);
 
     return (
         <MenuButton
@@ -81,7 +74,7 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
                 </span>
             }
         >
-            <SelectedAllergens selectedAllergens={selectedAllergens} />
+            <SelectedItems selectedItems={selectedAllergens} />
         </MenuButton>
     );
 };

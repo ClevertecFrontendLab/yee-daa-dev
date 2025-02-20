@@ -30,6 +30,9 @@ export const recipesSlice = createSlice({
         setFilteredRecipes(state, action: PayloadAction<Recipe[]>) {
             state.filteredRecipes = action.payload;
         },
+        clearFilteredRecipes(state) {
+            state.filteredRecipes = [];
+        },
     },
 });
 
@@ -38,4 +41,5 @@ export const selectRecipes = (state: AppState) => state.recipes.recipes;
 export const selectFilteredRecipes = (state: AppState) => state.recipes.filteredRecipes;
 
 export const recipesReducer = recipesSlice.reducer;
-export const { setLoading, setRecipes, setFilteredRecipes } = recipesSlice.actions;
+export const { setLoading, setRecipes, setFilteredRecipes, clearFilteredRecipes } =
+    recipesSlice.actions;

@@ -4,8 +4,16 @@ import { FC, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 
 import { categoriesMap } from '../../constants/categories.ts';
-import { useAppDispatch } from '../../hooks/typed-react-redux-hooks.ts';
-import { setChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
+import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import {
+    clearSelectedAllergens,
+    setFilteredByAllergens,
+} from '../../redux/features/allergens-slice.ts';
+import {
+    selectChoosenCategory,
+    setChoosenCategory,
+} from '../../redux/features/choosen-category-slice.ts';
+import { clearFilteredRecipes } from '../../redux/features/recipies-slice.ts';
 import { MenuItem } from '../../types/category.ts';
 import { SubNavItem } from './sub-nav-item.tsx';
 
@@ -13,6 +21,7 @@ export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }
     const location = useLocation();
     const dispatch = useAppDispatch();
     const [isActive, setIsActive] = useState(false);
+    const choosenCategory = useAppSelector(selectChoosenCategory);
 
     const categoryPath = subItems ? `/${category}/${subItems[0].category}` : `/${category}`;
     const choosenItem = {
@@ -24,12 +33,22 @@ export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }
 
     const handleClick = () => {
         dispatch(setChoosenCategory(choosenItem));
+        dispatch(clearFilteredRecipes());
+        dispatch(clearSelectedAllergens());
+        dispatch(setFilteredByAllergens([]));
+
         setIsActive((prev) => !prev);
     };
 
     useEffect(() => {
         setIsActive(location.pathname.split('/')[1] === categoryPath.split('/')[1]);
     }, [location.pathname, categoryPath]);
+
+    useEffect(() => {
+        if (!choosenCategory.category) {
+            setIsActive(false);
+        }
+    }, [choosenCategory]);
 
     return (
         <AccordionItem

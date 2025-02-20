@@ -2,6 +2,9 @@ import { Checkbox, Heading, Stack } from '@chakra-ui/react';
 
 import { FILTER_TITLES } from '../../constants/filters';
 import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks';
+import { selectSelectedAuthors } from '../../redux/features/authors-slice';
+import { selectSelectedCategories } from '../../redux/features/categories-slice';
+import { selectSelectedCuisines } from '../../redux/features/cuisines-slice';
 import { selectSelectedMeats, toggleMeat } from '../../redux/features/meats-slice';
 import { selectSelectedSides, toggleSide } from '../../redux/features/sides-slice';
 import { FoodItem } from '../../types/food-item';
@@ -15,10 +18,19 @@ type CheckboxGroupProps = {
 
 export const DrawerCheckboxGroup: React.FC<CheckboxGroupProps> = ({ filterTitle, items }) => {
     const dispatch = useAppDispatch();
+    const selectedCategories = useAppSelector(selectSelectedCategories);
+    const selectedCuisines = useAppSelector(selectSelectedCuisines);
+    const selectedAuthors = useAppSelector(selectSelectedAuthors);
     const selectedMeats = useAppSelector(selectSelectedMeats);
     const selectedSides = useAppSelector(selectSelectedSides);
 
-    const selectedItems = getSelectedItems(filterTitle, { selectedMeats, selectedSides });
+    const selectedItems = getSelectedItems(filterTitle, {
+        selectedCategories,
+        selectedCuisines,
+        selectedAuthors,
+        selectedMeats,
+        selectedSides,
+    });
 
     const handleCheckboxChange = (value: string) => {
         if (filterTitle === FILTER_TITLES.MEAT) {

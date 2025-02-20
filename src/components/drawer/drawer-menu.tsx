@@ -11,13 +11,28 @@ import { FC, useState } from 'react';
 
 import { FILTER_TITLES } from '../../constants/filters';
 import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks';
-import { selectSelectedAuthors, toggleAuthor } from '../../redux/features/authors-slice';
-import { selectSelectedCategories, toggleCategory } from '../../redux/features/categories-slice';
-import { selectSelectedCuisines, toggleCuisine } from '../../redux/features/cuisines-slice';
+import {
+    selectAuthors,
+    selectSelectedAuthors,
+    toggleAuthor,
+} from '../../redux/features/authors-slice';
+import {
+    selectCategoriesMenu,
+    selectSelectedCategories,
+    toggleCategory,
+} from '../../redux/features/categories-slice';
+import {
+    selectCuisines,
+    selectSelectedCuisines,
+    toggleCuisine,
+} from '../../redux/features/cuisines-slice';
+import { selectMeats, selectSelectedMeats } from '../../redux/features/meats-slice';
+import { selectSelectedSides, selectSides } from '../../redux/features/sides-slice';
 import { MenuItem } from '../../types/category';
 import { FoodItem } from '../../types/food-item';
 import { UserProps } from '../../types/user';
-import { getSelectedItems } from './helpers/get-selected-items';
+import { SelectedItems } from '../search-block/allergen-select/selected-allergens';
+import { getSelectedItems, translateSelectedItems } from './helpers/get-selected-items';
 
 type MenuItemProps = {
     items: (FoodItem | MenuItem | UserProps)[];
@@ -46,12 +61,40 @@ export const DrawerMenu: FC<MenuItemProps> = ({ items, filterTitle }) => {
     const selectedCategories = useAppSelector(selectSelectedCategories);
     const selectedCuisines = useAppSelector(selectSelectedCuisines);
     const selectedAuthors = useAppSelector(selectSelectedAuthors);
+    const selectedMeats = useAppSelector(selectSelectedMeats);
+    const selectedSides = useAppSelector(selectSelectedSides);
+
+    const allCategories = useAppSelector(selectCategoriesMenu);
+    const allCuisines = useAppSelector(selectCuisines);
+    const allAuthors = useAppSelector(selectAuthors);
+    const allMeats = useAppSelector(selectMeats);
+    const allSides = useAppSelector(selectSides);
 
     const selectedItems = getSelectedItems(filterTitle, {
         selectedCategories,
         selectedCuisines,
         selectedAuthors,
+        selectedMeats,
+        selectedSides,
     });
+
+    const selectedRusItems = translateSelectedItems(
+        filterTitle,
+        {
+            selectedCategories,
+            selectedCuisines,
+            selectedAuthors,
+            selectedMeats,
+            selectedSides,
+        },
+        {
+            allCategories,
+            allCuisines,
+            allAuthors,
+            allMeats,
+            allSides,
+        },
+    );
 
     return (
         <Menu isLazy={true} matchWidth={true} closeOnSelect={false}>
@@ -59,6 +102,8 @@ export const DrawerMenu: FC<MenuItemProps> = ({ items, filterTitle }) => {
                 p={2}
                 as={Button}
                 color='blackAlpha.700'
+                minHeight='40px'
+                height='auto'
                 fontWeight={400}
                 fontSize='md'
                 outline='none'
@@ -68,7 +113,11 @@ export const DrawerMenu: FC<MenuItemProps> = ({ items, filterTitle }) => {
                 onClick={() => setIsBtnOpen(!isBtnOpen)}
                 rightIcon={isBtnOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
             >
-                {filterTitle}
+                {selectedItems?.length ? (
+                    <SelectedItems selectedItems={selectedRusItems} />
+                ) : (
+                    filterTitle
+                )}
             </MenuButton>
             <MenuList>
                 {items.map((item, index) => {

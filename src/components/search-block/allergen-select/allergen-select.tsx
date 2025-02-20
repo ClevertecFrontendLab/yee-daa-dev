@@ -1,16 +1,18 @@
 import { FormControl, Menu, Stack } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../../hooks/typed-react-redux-hooks';
 import {
     clearSelectedAllergens,
     selectSelectedAllergens,
+    setisfromFilter,
 } from '../../../redux/features/allergens-slice';
+import { setInputValue } from '../../../redux/features/search-slice';
 import { SelectMenuButton } from './menu-button';
 import { SelectMenuList } from './menu-list';
 import { Switcher } from './switcher';
 
-export const AllergenSelect = () => {
+export const AllergenSelect: FC<{ isfromFilter: boolean }> = ({ isfromFilter }) => {
     const dispatch = useAppDispatch();
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
 
@@ -22,6 +24,8 @@ export const AllergenSelect = () => {
     const menuRef = useRef<HTMLDivElement>(null);
 
     const handleMenuToggle = () => {
+        dispatch(setisfromFilter(isfromFilter));
+
         if (isSwitchOn) {
             setIsOpen((prev) => !prev);
         }
@@ -30,6 +34,8 @@ export const AllergenSelect = () => {
     const handleSwitchChange = () => {
         setIsSwitchOn((prev) => !prev);
         dispatch(clearSelectedAllergens());
+        dispatch(setInputValue(''));
+
         if (!isSwitchOn) {
             setIsOpen(false);
         }

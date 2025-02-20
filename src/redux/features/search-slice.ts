@@ -9,7 +9,7 @@ type SearchState = {
     isLoading: boolean;
 };
 
-const initialState: SearchState = {
+export const initialState: SearchState = {
     inputValue: '',
     matchedRecipes: [],
     isLoading: false,

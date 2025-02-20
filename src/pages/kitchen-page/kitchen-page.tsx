@@ -10,11 +10,19 @@ import { RelevantKitchen } from '../../components/relevant-kitchen';
 import { SectionBox } from '../../components/section-box/section-box.tsx';
 import { SectionHeader } from '../../components/section-header';
 import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { recipes as mockRecipes } from '../../mocks/recipes.ts';
-import { selectSelectedAllergens } from '../../redux/features/allergens-slice.ts';
+import {
+    selectFilteredByAllergens,
+    selectisfromFilter,
+    selectSelectedAllergens,
+    setFilteredByAllergens,
+} from '../../redux/features/allergens-slice.ts';
 import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
 import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
-import { selectRecipes, setRecipes } from '../../redux/features/recipies-slice.ts';
+import {
+    selectFilteredRecipes,
+    selectRecipes,
+    setRecipes,
+} from '../../redux/features/recipies-slice.ts';
 import {
     selectInputValue,
     selectMatchedRecipes,
@@ -39,8 +47,10 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const categories = useAppSelector(selectCategoriesMenu);
     const matchedRecipes = useAppSelector(selectMatchedRecipes);
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
+    const filteredByAllergens = useAppSelector(selectFilteredByAllergens);
+    const filteredRecipes = useAppSelector(selectFilteredRecipes);
+    const isfromFilter = useAppSelector(selectisfromFilter);
 
-    const [displayRecipes, setDisplayRecipes] = useState(recipes);
     const [relevantRecipes, setRelevantRecipes] = useState([] as Recipe[]);
     const [relevantTitle, setRelevantTitle] = useState('');
     const [relevantDesc, setRelevantDesc] = useState('');
@@ -51,20 +61,32 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const isCategoryPage = pageType === PageType.Category;
     const isJuiciestPage = pageType === PageType.Juiciest;
 
-    const favouritesRecipes = getFavouritesRecipes(displayRecipes);
-    const categoryRecipes = getCategoryRecipes(displayRecipes, selectedCategory);
+    const favouritesRecipes = getFavouritesRecipes(recipes);
+    const categoryRecipes = getCategoryRecipes(recipes, selectedCategory);
 
     const searchRecipes: Record<PageType, Recipe[]> = {
-        main: displayRecipes,
+        main: recipes,
         juiciest: favouritesRecipes,
         category: categoryRecipes,
     };
 
     const handleSearch = (inputValue: string) => {
         setStartSearch(true);
-        const nameFiltered = searchRecipes[pageType]?.filter((recipe) =>
-            recipe.title.toLowerCase().includes(inputValue.toLowerCase()),
-        );
+
+        let nameFiltered: Recipe[] | undefined;
+        if (filteredRecipes.length) {
+            nameFiltered = filteredRecipes.filter((recipe) =>
+                recipe.title.toLowerCase().includes(inputValue.toLowerCase()),
+            );
+        } else if (filteredByAllergens.length) {
+            nameFiltered = filteredByAllergens.filter((recipe) =>
+                recipe.title.toLowerCase().includes(inputValue.toLowerCase()),
+            );
+        } else {
+            nameFiltered = searchRecipes[pageType]?.filter((recipe) =>
+                recipe.title.toLowerCase().includes(inputValue.toLowerCase()),
+            );
+        }
 
         dispatch(setMatchedRecipes(nameFiltered));
     };
@@ -95,27 +117,32 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     }, [categories, recipes]);
 
     useEffect(() => {
-        const filteredByAllergens = filterRecipes(recipes, selectedAllergens);
-        setDisplayRecipes(filteredByAllergens);
+        const recipesToFilter =
+            (filteredRecipes.length && filteredRecipes) ||
+            (categoryRecipes.length && categoryRecipes) ||
+            (recipes.length && recipes) ||
+            [];
+
+        if (selectedAllergens.length && !isfromFilter) {
+            const getAllergensRecipes = () => filterRecipes(recipesToFilter, selectedAllergens);
+
+            const allergensRecipes = getAllergensRecipes();
+
+            dispatch(setFilteredByAllergens(allergensRecipes));
+        } else {
+            dispatch(setFilteredByAllergens([]));
+        }
     }, [selectedAllergens]);
 
     useEffect(() => {
-        const filteredByAllergens = filterRecipes(matchedRecipes, selectedAllergens);
-        dispatch(setMatchedRecipes(filteredByAllergens));
-    }, [selectedAllergens]);
-
-    useEffect(() => {
-        dispatch(setRecipes(mockRecipes));
+        dispatch(setRecipes(recipes));
     }, []);
-
-    console.log(matchedRecipes);
-    console.log(startSearch);
 
     return (
         <>
             <SectionHeader onSearch={handleSearch} pageType={pageType} />
 
-            {startSearch && matchedRecipes.length && startSearch ? (
+            {startSearch && matchedRecipes.length ? (
                 <RecipeCardList recipeList={matchedRecipes} />
             ) : (
                 startSearch &&
@@ -134,17 +161,30 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
 
             {!startSearch && (
                 <>
-                    {isCategoryPage && <KitchenTabs recipeList={categoryRecipes} />}
-                    {isJuiciestPage && (
-                        <SectionBox>
-                            <RecipeCardList recipeList={favouritesRecipes} />
-                        </SectionBox>
+                    {isfromFilter && filteredRecipes.length > 0 && (
+                        <RecipeCardList recipeList={filteredRecipes} />
                     )}
-                    {(isMainPage || !selectedCategory) && (
+                    {!isfromFilter && filteredByAllergens.length > 0 && (
+                        <RecipeCardList recipeList={filteredByAllergens} />
+                    )}
+                    {!isfromFilter && !filteredByAllergens.length && filteredRecipes.length > 0 && (
+                        <RecipeCardList recipeList={filteredRecipes} />
+                    )}
+                    {!filteredRecipes.length && !filteredByAllergens.length && (
                         <>
-                            <Carousel />
-                            <FavouritesBlock />
-                            <BlogSection />
+                            {isCategoryPage && <KitchenTabs recipeList={categoryRecipes} />}
+                            {isJuiciestPage && (
+                                <SectionBox>
+                                    <RecipeCardList recipeList={favouritesRecipes} />
+                                </SectionBox>
+                            )}
+                            {(isMainPage || !selectedCategory) && (
+                                <>
+                                    <Carousel />
+                                    <FavouritesBlock />
+                                    <BlogSection />
+                                </>
+                            )}
                         </>
                     )}
                 </>

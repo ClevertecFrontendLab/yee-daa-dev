@@ -10,8 +10,12 @@ export const getPath = (
 ) => {
     const currentRecipe = allRecipes.find((recipe) => recipe.id === recipeId);
 
-    if (selectedCategory?.category) {
-        return `/${selectedCategory?.category}/${selectedCategory?.choosenSubCategory?.category}/${recipeId}`;
+    const choosenCategory = currentRecipe?.category.find(
+        (category) => category === selectedCategory?.category,
+    );
+
+    if (choosenCategory) {
+        return `/${choosenCategory}/${selectedCategory?.choosenSubCategory?.category}/${recipeId}`;
     } else {
         const foundCategory = allcategories.find(
             (category) => category.category === currentRecipe?.category[0],

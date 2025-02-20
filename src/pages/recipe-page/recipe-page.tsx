@@ -1,6 +1,6 @@
 import { Stack } from '@chakra-ui/react';
 import { useEffect } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { AuthorCard } from '../../components/author-card/author-card.tsx';
 import { CalorieCard } from '../../components/calorie/calorie.tsx';
@@ -13,16 +13,13 @@ import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
 import { selectRecipes } from '../../redux/features/recipies-slice.ts';
 
 export const RecipePage = () => {
-    const location = useLocation();
     const { id } = useParams();
     const navigate = useNavigate();
     const recipes = useAppSelector(selectRecipes);
 
     const recipe = recipes.find((recipe) => recipe.id === id);
 
-    const category = location.pathname.split('/')[1];
-
-    const isRedirect = !recipe || !recipe.category.includes(category);
+    const isRedirect = !recipe;
 
     useEffect(() => {
         if (isRedirect) {

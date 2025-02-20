@@ -127,4 +127,12 @@ export const authors: UserProps[] = [
         bookmarks: 55,
         followers: 700,
     },
+    {
+        firstName: 'Светлана',
+        lastName: 'Иванова',
+        login: 'ivanova_s',
+        likes: 80,
+        bookmarks: 20,
+        imageUrl: 'ivanova_imageUrl.png',
+    },
 ];

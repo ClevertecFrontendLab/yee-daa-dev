@@ -4,8 +4,14 @@ import { FC, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
 import { clearSelectedAllergens } from '../../redux/features/allergens-slice.ts';
+import { clearSelectedAuthors } from '../../redux/features/authors-slice.ts';
+import { clearSelectedCategories } from '../../redux/features/categories-slice.ts';
+import { clearSelectedCuisines } from '../../redux/features/cuisines-slice.ts';
 import { openDrawer } from '../../redux/features/drawer.ts';
+import { clearSelectedMeats } from '../../redux/features/meats-slice.ts';
+import { clearFilteredRecipes } from '../../redux/features/recipies-slice.ts';
 import { selectInputValue, setInputValue } from '../../redux/features/search-slice.ts';
+import { clearSelectedSides } from '../../redux/features/sides-slice.ts';
 import { FilterIcon } from '../icons/filter-icon.tsx';
 import { AllergenSelect } from './allergen-select/allergen-select.tsx';
 
@@ -43,6 +49,13 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
     const handleDrawerClick = () => {
         dispatch(setInputValue(''));
         dispatch(clearSelectedAllergens());
+        dispatch(clearFilteredRecipes());
+        dispatch(clearSelectedAuthors());
+        dispatch(clearSelectedCategories());
+        dispatch(clearSelectedCuisines());
+        dispatch(clearSelectedMeats());
+        dispatch(clearSelectedSides());
+
         dispatch(openDrawer());
     };
 
@@ -91,7 +104,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
                     </InputRightElement>
                 </InputGroup>
             </Stack>
-            <AllergenSelect />
+            <AllergenSelect isfromFilter={false} />
         </Stack>
     );
 };
