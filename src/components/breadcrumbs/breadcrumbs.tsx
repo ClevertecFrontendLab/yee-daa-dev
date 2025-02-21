@@ -63,7 +63,7 @@ export const Breadcrumbs = () => {
                 {isRathsJuiciest ? (
                     <BreadcrumbItem>
                         <BreadcrumbLink as={Link} to={Paths.JUICIEST}>
-                            Сочное
+                            Самое сочное
                         </BreadcrumbLink>
                     </BreadcrumbItem>
                 ) : (

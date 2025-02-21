@@ -36,6 +36,7 @@ export const Layout = () => {
                     bg={isTablet && isOpen ? 'white' : 'lime.50'}
                     area='header'
                     className={styles.header}
+                    data-test-id='header'
                 >
                     <Header />
                 </GridItem>

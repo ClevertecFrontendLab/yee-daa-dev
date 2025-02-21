@@ -35,7 +35,6 @@ export const SectionHeader: FC<SectionHeaderProps> = ({ onSearch, pageType }) =>
             margin={'0 auto'}
             pr={{ base: 4, xl: 16 }}
             pl={{ base: 4, xl: 16 }}
-            mb={{ base: 4, xl: 6 }}
         >
             <SectionInfo pageType={pageType} />
             {isLoading ? (

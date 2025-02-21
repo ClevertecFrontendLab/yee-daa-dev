@@ -26,6 +26,8 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
     const inputValue = useAppSelector(selectInputValue);
     const [isFocused, setIsFocused] = useState(false);
 
+    const isButtonDisabled = inputValue.length < 3;
+
     const handleSearchClick = () => {
         onSearch(inputValue);
     };
@@ -41,7 +43,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && !isButtonDisabled) {
             handleSearchClick();
         }
     };
@@ -94,6 +96,11 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
                     <InputRightElement
                         height={{ base: '32px', md: '48px' }}
                         width={{ base: '32px', md: '48px' }}
+                        sx={{
+                            pointerEvents: isButtonDisabled ? 'none' : 'auto',
+                            cursor: isButtonDisabled ? 'not-allowed' : 'pointer',
+                            opacity: isButtonDisabled ? 0.4 : 1,
+                        }}
                     >
                         <SearchIcon
                             width={{ base: '14px', md: '18px' }}

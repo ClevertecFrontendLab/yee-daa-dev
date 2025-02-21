@@ -52,12 +52,7 @@ export const SubNavItem: FC<SubNavItemProps> = ({
     }, [location.pathname, subCategoryPath]);
 
     return (
-        <NavLink
-            to={subCategoryPath}
-            key={category}
-            onClick={handleClick}
-            data-test-id={parentCategory === 'vegan' ? 'vegan-cuisine' : ''}
-        >
+        <NavLink to={subCategoryPath} key={category} onClick={handleClick}>
             <Box
                 borderColor='lime.400'
                 borderLeftWidth={'1px'}
