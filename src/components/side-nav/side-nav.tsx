@@ -2,7 +2,7 @@ import { Stack } from '@chakra-ui/icons';
 import { Accordion, Text } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
 
-import { useIsTablet } from '../../hooks/media-query.ts';
+import { useIsLg } from '../../hooks/media-query.ts';
 import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
 import { closeMenu, selectIsClicked } from '../../redux/features/burger-slice';
 import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
@@ -15,7 +15,7 @@ export const SideNav = () => {
     const navMenu = useAppSelector(selectCategoriesMenu);
     const isClicked = useAppSelector(selectIsClicked);
 
-    const isTablet = useIsTablet();
+    const isLg = useIsLg();
     const navRef = useRef<HTMLDivElement>(null);
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -41,7 +41,7 @@ export const SideNav = () => {
             className={styles.container}
             ref={navRef}
         >
-            {isTablet && <Breadcrumbs />}
+            {isLg && <Breadcrumbs />}
             <Accordion allowToggle>
                 {navMenu.map((item, i) => (
                     <NavItem {...item} key={i} />

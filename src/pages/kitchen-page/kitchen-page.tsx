@@ -18,11 +18,7 @@ import {
 } from '../../redux/features/allergens-slice.ts';
 import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
 import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
-import {
-    selectFilteredRecipes,
-    selectRecipes,
-    setRecipes,
-} from '../../redux/features/recipies-slice.ts';
+import { selectFilteredRecipes, selectRecipes } from '../../redux/features/recipies-slice.ts';
 import {
     selectInputValue,
     selectMatchedRecipes,
@@ -133,10 +129,6 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
             dispatch(setFilteredByAllergens([]));
         }
     }, [selectedAllergens]);
-
-    useEffect(() => {
-        dispatch(setRecipes(recipes));
-    }, []);
 
     return (
         <>

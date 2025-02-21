@@ -59,7 +59,7 @@ export const Carousel: FC = () => {
     }, [lastItemRef]);
 
     return (
-        <Box maxWidth='1360px' mb={{ base: 8, md: 10 }} position='relative'>
+        <Box maxWidth='1360px' mb={{ base: 8, xmd: 10 }} position='relative'>
             <Heading fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }} fontWeight={500} mb={6}>
                 Новые рецепты
             </Heading>
@@ -74,21 +74,21 @@ export const Carousel: FC = () => {
                 left='0'
                 transform='translate(-25%, -50%)'
                 zIndex={3}
-                display={{ base: 'none', md: 'block' }}
+                display={{ base: 'none', xmd: 'block' }}
                 onClick={handleBack}
             />
             <Box
-                overflowX={{ base: 'auto', md: 'auto', '2xl': 'hidden' }}
+                overflowX={{ base: 'auto', xmd: 'auto', '2xl': 'hidden' }}
                 sx={{
                     scrollbarWidth: 'none',
                     '::-webkit-scrollbar': {
                         display: 'none',
                     },
-                    WebkitOverflowScrolling: { base: 'touch', md: 'touch' },
+                    WebkitOverflowScrolling: { base: 'touch', xmd: 'touch' },
                 }}
             >
                 <HStack
-                    spacing={{ base: 3, md: 6 }}
+                    spacing={{ base: 3, xmd: 6 }}
                     transform={`translateX(-${currentIndex * 320 + currentIndex * 24}px)`}
                     transition='transform 0.3s ease'
                     alignItems='stretch'
@@ -114,7 +114,7 @@ export const Carousel: FC = () => {
                 transform='translate(25%, -50%)'
                 size='lg'
                 zIndex={3}
-                display={{ base: 'none', md: 'block' }}
+                display={{ base: 'none', xmd: 'block' }}
                 onClick={handleNext}
             />
         </Box>

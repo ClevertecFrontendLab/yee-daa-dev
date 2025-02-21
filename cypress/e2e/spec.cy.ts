@@ -44,6 +44,7 @@ describe('App Component', () => {
     });
 
     it('should take a screenshot of the app', () => {
+        cy.getByTestId(HEADER).should('contain', 'Главная').click();
         takeScreenshots('Главная страница');
 
         cy.getByTestId(JUISIEST_LINK_MOB).should('not.be.visible');

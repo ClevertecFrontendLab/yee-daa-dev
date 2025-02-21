@@ -40,7 +40,7 @@ export const Breadcrumbs = () => {
     };
 
     return (
-        <Box ml={{ base: 0, xl: 32 }} pb={{ base: 8, xl: 0 }}>
+        <Box ml={{ base: 0, lg: 32 }} pb={{ base: 8, lg: 0 }}>
             <Breadcrumb
                 spacing='8px'
                 separator={<ChevronRightIcon color='gray.800' />}

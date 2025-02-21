@@ -1,7 +1,6 @@
-import { Fragment, ReactNode } from 'react';
+import { Fragment, lazy, ReactNode, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
-import { Layout } from '../components/layout';
 import { Paths } from '../constants/path.ts';
 import { useAppSelector } from '../hooks/typed-react-redux-hooks.ts';
 import { CategoryPage } from '../pages/category-page';
@@ -11,6 +10,8 @@ import { MainPage } from '../pages/main-page';
 import { RecipePage } from '../pages/recipe-page/recipe-page.tsx';
 import { selectCategoriesMenu } from '../redux/features/categories-slice.ts';
 import { MenuItem } from '../types/category.ts';
+
+const Layout = lazy(() => import('../components/layout/layout.tsx'));
 
 const renderRoutes = (routes: MenuItem[], basePath: string = ''): ReactNode => {
     return routes.map((item): ReactNode => {
@@ -30,14 +31,16 @@ export const AppRoutes = () => {
     const navMenu = useAppSelector(selectCategoriesMenu);
 
     return (
-        <Routes>
-            <Route path={Paths.R_SWITCHER} element={<Layout />}>
-                <Route index element={<MainPage />} />
-                <Route path={Paths.JUICIEST} element={<JuiciestPage />} />
-                <Route path={Paths.ERROR} element={<ErrorPage />} />
+        <Suspense fallback={<div>Загрузка...</div>}>
+            <Routes>
+                <Route path={Paths.R_SWITCHER} element={<Layout />}>
+                    <Route index element={<MainPage />} />
+                    <Route path={Paths.JUICIEST} element={<JuiciestPage />} />
+                    <Route path={Paths.ERROR} element={<ErrorPage />} />
 
-                {renderRoutes(navMenu)}
-            </Route>
-        </Routes>
+                    {renderRoutes(navMenu)}
+                </Route>
+            </Routes>
+        </Suspense>
     );
 };

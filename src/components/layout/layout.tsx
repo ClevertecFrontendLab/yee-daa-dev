@@ -11,7 +11,7 @@ import { Header } from '../header';
 import { SideNav } from '../side-nav';
 import styles from './layout.module.css';
 
-export const Layout = () => {
+const Layout = () => {
     const isOpen = useAppSelector(selectMenu);
     const isTablet = useIsTablet();
 
@@ -53,7 +53,7 @@ export const Layout = () => {
                     area='main'
                     pt={{ base: 4, md: 8 }}
                     overflow='hidden'
-                    className={styles.main}
+                    className={`${styles.main} ${isOpen ? styles.blur : ''}`}
                 >
                     <Outlet />
                 </GridItem>
@@ -69,7 +69,7 @@ export const Layout = () => {
                     bg='lime.50'
                     area='footer'
                     display={{ xl: 'none', base: 'block' }}
-                    className={styles.footer}
+                    className={`${styles.footer} ${isOpen ? styles.blur : ''}`}
                     data-test-id='footer'
                 >
                     <Footer />
@@ -78,3 +78,5 @@ export const Layout = () => {
         </div>
     );
 };
+
+export default Layout;

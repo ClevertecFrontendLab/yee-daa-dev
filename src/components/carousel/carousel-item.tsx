@@ -29,8 +29,8 @@ export const CarouselItem: FC<{ recipe: Recipe }> = ({ recipe }) => {
     return (
         <NavLink to={categoryPath} onClick={handleClick}>
             <Card
-                width={{ base: '158px', md: '277px', xl: '322px' }}
-                minH={{ base: '220px', md: '375px', xl: '400px' }}
+                width={{ base: '158px', xmd: '277px', xl: '322px' }}
+                minH={{ base: '220px', xmd: '375px', xl: '400px' }}
                 border='1px solid rgba(0, 0, 0, 0.08)'
                 borderRadius='8px'
                 boxShadow='none'
@@ -53,13 +53,13 @@ export const CarouselItem: FC<{ recipe: Recipe }> = ({ recipe }) => {
                         <CategoryTag category={category} color='lime.150' />
                     </Box>
                 </CardHeader>
-                <CardBody p={{ base: 3, md: 6 }} pt={{ base: 3, md: 4 }} pb={{ base: 2, md: 6 }}>
+                <CardBody p={{ base: 3, xmd: 6 }} pt={{ base: 3, xmd: 4 }} pb={{ base: 2, xmd: 6 }}>
                     <Stack>
                         <Heading
-                            fontSize={{ base: 'md', md: 'xl' }}
+                            fontSize={{ base: 'md', xmd: 'xl' }}
                             lineHeight='none'
                             textAlign='left'
-                            noOfLines={{ base: 2, md: 1 }}
+                            noOfLines={{ base: 2, xmd: 1 }}
                         >
                             {title}
                         </Heading>
@@ -67,15 +67,15 @@ export const CarouselItem: FC<{ recipe: Recipe }> = ({ recipe }) => {
                             fontSize='sm'
                             lineHeight={5}
                             noOfLines={3}
-                            display={{ base: 'none', md: '-webkit-box' }}
+                            display={{ base: 'none', xmd: '-webkit-box' }}
                         >
                             {description}
                         </Text>
                     </Stack>
                 </CardBody>
-                <CardFooter p={{ base: 3, md: 6 }} pt={{ base: 0, md: 0 }} display='block'>
+                <CardFooter p={{ base: 3, xmd: 6 }} pt={{ base: 0, xmd: 0 }} display='block'>
                     <HStack justifyContent='space-between' alignItems='center'>
-                        <Box display={{ base: 'none', md: 'flex' }}>
+                        <Box display={{ base: 'none', xmd: 'flex' }}>
                             <CategoryTag category={category} color='lime.150' />
                         </Box>
                         <CardStat likes={likes} bookmarks={bookmarks} />

@@ -5,3 +5,9 @@ export const useIsTablet = () => {
 
     return isTablet;
 };
+
+export const useIsLg = () => {
+    const [isTablet] = useMediaQuery('(max-width: 992px)');
+
+    return isTablet;
+};
