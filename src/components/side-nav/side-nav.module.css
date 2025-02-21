@@ -31,13 +31,13 @@
     right: 10px;
 }
 .container::-webkit-scrollbar-track {
-    background: transparent;
     margin-right: -10px;
     position: absolute;
+    background: rgba(0, 0, 0, 0.04);
 }
 
 .container::-webkit-scrollbar-thumb {
-    background: #d7ff94;
+    background: rgba(0, 0, 0, 0.16);
     border-radius: 99px;
     width: 8px;
 }

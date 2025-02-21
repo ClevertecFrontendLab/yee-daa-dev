@@ -63,7 +63,12 @@ export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }
                 },
             }}
         >
-            <NavLink to={categoryPath} key={category} onClick={handleClick}>
+            <NavLink
+                to={categoryPath}
+                key={category}
+                onClick={handleClick}
+                data-test-id={category === 'vegan' ? 'vegan-cuisine' : ''}
+            >
                 <AccordionButton
                     padding='8px 12px'
                     _expanded={{

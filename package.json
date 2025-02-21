@@ -15,7 +15,7 @@
         "lint:fix": "yarn lint:styles --fix && yarn lint:scripts --fix && yarn format",
         "cy:open-e2e": "cypress open --e2e --browser chrome",
         "cy:open-unit": "cypress open --component --browser chrome",
-        "cy:run-e2e": "cypress run --e2e",
+        "cy:run-e2e": "cypress run --e2e --browser chrome",
         "cy:run-unit": "cypress run --component",
         "cy:e2e": "start-server-and-test start http-get://localhost:3000 cy:open-e2e"
     },

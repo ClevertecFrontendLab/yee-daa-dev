@@ -64,6 +64,7 @@ export const Layout = () => {
                     area='footer'
                     display={{ xl: 'none', base: 'block' }}
                     className={styles.footer}
+                    data-test-id='footer'
                 >
                     <Footer />
                 </GridItem>
