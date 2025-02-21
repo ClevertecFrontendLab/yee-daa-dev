@@ -1,13 +1,22 @@
-import { ArrowForwardIcon, Button, SimpleGrid } from '@chakra-ui/icons';
+import { ArrowForwardIcon, Button } from '@chakra-ui/icons';
 import { Center, Heading, HStack } from '@chakra-ui/react';
+import { FC } from 'react';
 import { Link } from 'react-router';
 
 import { Paths } from '../../constants/path.ts';
-import { favouritesRecipes } from '../../mocks/favourites-recipes.ts';
-import { FoodCard } from '../food-card';
+import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { selectRecipes } from '../../redux/features/recipies-slice.ts';
+import { CardList } from '../card-list/card-list.tsx';
 import { SectionBox } from '../section-box/section-box.tsx';
 
-export const FavouritesBlock = () => {
+export const FavouritesBlock: FC = () => {
+    const recipes = useAppSelector(selectRecipes);
+
+    const favouritesRecipes = recipes
+        .filter((recipe) => recipe.likes)
+        .sort((a, b) => (b?.likes ?? 0) - (a?.likes ?? 0))
+        .slice(0, 4);
+
     return (
         <SectionBox>
             <HStack justifyContent='space-between' mb={6}>
@@ -15,6 +24,7 @@ export const FavouritesBlock = () => {
                     fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }}
                     lineHeight='none'
                     fontWeight={500}
+                    _hover={{ cursor: 'pointer' }}
                 >
                     Самое сочное
                 </Heading>
@@ -31,16 +41,7 @@ export const FavouritesBlock = () => {
                     Вся подборка
                 </Button>
             </HStack>
-            <SimpleGrid
-                columns={2}
-                gap={{ base: 3, md: 4 }}
-                maxWidth='100%'
-                minChildWidth={{ base: '300px', md: '450px' }}
-            >
-                {favouritesRecipes.slice(0, 4).map((el) => (
-                    <FoodCard {...el} key={el.id} />
-                ))}
-            </SimpleGrid>
+            <CardList recipeList={favouritesRecipes} />
             <Center display={{ base: 'flex', md: 'none' }} mt={3}>
                 <Button
                     bg='lime.400'

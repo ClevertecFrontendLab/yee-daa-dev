@@ -8,9 +8,9 @@ import { ShortFoodCard } from '../short-food-card';
 import styles from './relevant-kitchen.module.css';
 
 type Props = {
-    title: string;
-    description: string;
     recipes: Recipe[];
+    title?: string;
+    description?: string;
 };
 
 export const RelevantKitchen: FC<Props> = ({ recipes, description, title }) => {
@@ -26,7 +26,7 @@ export const RelevantKitchen: FC<Props> = ({ recipes, description, title }) => {
                     md: '1fr 2fr',
                     '2xl': '1fr 1fr',
                 }}
-                mb={{ base: 4, md: 6 }}
+                mb={{ base: 4, xl: 6 }}
             >
                 <Heading
                     fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }}
@@ -34,7 +34,7 @@ export const RelevantKitchen: FC<Props> = ({ recipes, description, title }) => {
                     fontWeight={500}
                     flexBasis='calc(50% - 12px)'
                 >
-                    {title}
+                    {title ?? 'Веганская кухня'}
                 </Heading>
                 <Text
                     fontSize={{ base: 'sm', md: 'md' }}
@@ -43,7 +43,8 @@ export const RelevantKitchen: FC<Props> = ({ recipes, description, title }) => {
                     color='blackAlpha.600'
                     flexBasis='calc(50% - 12px)'
                 >
-                    {description}
+                    {description ??
+                        'Интересны не только убеждённым вегетарианцам, но и тем, кто хочет  попробовать вегетарианскую диету и готовить вкусные  вегетарианские блюда.'}
                 </Text>
             </Grid>
             <div className={styles.block}>

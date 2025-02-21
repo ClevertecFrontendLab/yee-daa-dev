@@ -10,7 +10,9 @@ export const RecommendationTag: FC<Props> = ({ firstName, lastName, imageUrl }) 
     return (
         <Tag size='md' bg='lime.150'>
             <Avatar size='2xs' src={imageUrl} name={`${firstName} ${lastName}`} />
-            <TagLabel ml={2}>{`${firstName} ${lastName}`} рекомендует</TagLabel>
+            <TagLabel ml={2} noOfLines={1}>
+                {`${firstName} ${lastName}`} рекомендует
+            </TagLabel>
         </Tag>
     );
 };

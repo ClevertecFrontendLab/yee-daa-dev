@@ -3,15 +3,21 @@ import './index.css';
 import { ChakraProvider } from '@chakra-ui/react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router';
 
-import { routes } from './routes';
+import { store } from './redux/configure-store.ts';
+import { AppRoutes } from './routes/index.tsx';
 import { theme } from './theme.ts';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <ChakraProvider theme={theme}>
-            <BrowserRouter>{routes}</BrowserRouter>
-        </ChakraProvider>
+        <Provider store={store}>
+            <ChakraProvider theme={theme}>
+                <BrowserRouter>
+                    <AppRoutes />
+                </BrowserRouter>
+            </ChakraProvider>
+        </Provider>
     </StrictMode>,
 );
