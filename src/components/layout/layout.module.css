@@ -9,7 +9,7 @@
 }
 
 .header {
-    position: sticky;
+    position: fixed;
     top: 0;
     height: var(--header-height);
     width: 100%;
@@ -40,6 +40,7 @@
 }
 
 .footer {
+    position: fixed;
     height: 84px;
     bottom: 0;
     width: 100%;
