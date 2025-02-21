@@ -49,7 +49,12 @@ export const Layout = () => {
                         <SideNav />
                     </GridItem>
                 ) : null}
-                <GridItem area='main' pt={{ base: 4, md: 8 }} pl={6} pr={6} overflow='hidden'>
+                <GridItem
+                    area='main'
+                    pt={{ base: 4, md: 8 }}
+                    overflow='hidden'
+                    className={styles.main}
+                >
                     <Outlet />
                 </GridItem>
                 <GridItem
