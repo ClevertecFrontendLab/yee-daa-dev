@@ -30,7 +30,7 @@ export const recipes: Recipe[] = [
         description:
             'Сытное блюдо на каждый день. Картошка тушится с болгарским перцем и фасолью, что делает его насыщенным и ароматным.',
         category: ['vegan', 'second-dish'],
-        subcategory: ['second-dish', 'vegetables'],
+        subcategory: ['second-dish', 'vegetables', 'snacks'],
         image: potatTushImg,
         bookmarks: 85,
         likes: 152,
@@ -146,7 +146,7 @@ export const recipes: Recipe[] = [
         description:
             'Лазанья без мяса, приготовленная с овощным соусом и соусом бешамель, с использованием тонкого лаваша вместо листов лазаньи.',
         category: ['vegan', 'second-dish', 'national'],
-        subcategory: ['second-dish', 'vegetables', 'italian'],
+        subcategory: ['second-dish', 'vegetables', 'italian', 'snacks'],
         image: lazaniaImg,
         bookmarks: 85,
         likes: 152,
@@ -287,7 +287,7 @@ export const recipes: Recipe[] = [
         description:
             'Пышные и вкусные котлеты из капусты, идеально подходят для вегетарианского меню.',
         category: ['vegan'],
-        subcategory: ['second-dish'],
+        subcategory: ['second-dish', 'snacks'],
         image: kotletaImg,
         bookmarks: 2,
         likes: 1,
@@ -321,7 +321,7 @@ export const recipes: Recipe[] = [
         description:
             'Ароматные и сочные котлеты из капусты, которые станут вашим любимым овощным блюдом.',
         category: ['vegan'],
-        subcategory: ['second-dish'],
+        subcategory: ['second-dish', 'snacks'],
         image: hamImg,
         bookmarks: 2,
         likes: 1,
@@ -387,7 +387,7 @@ export const recipes: Recipe[] = [
         description:
             'Кремовый сырный суп с лапшой и брокколи, который согреет и насытит в холодное время года.',
         category: ['vegan', 'first-dish'],
-        subcategory: ['first-dish', 'vegetables-soups'],
+        subcategory: ['first-dish', 'vegetables-soups', 'snacks'],
         image: soupImg,
         bookmarks: 85,
         likes: 152,
@@ -1101,7 +1101,7 @@ export const recipes: Recipe[] = [
         title: 'Овощное рагу',
         description: 'Сытное рагу из сезонных овощей, приправленное травами.',
         category: ['vegan', 'second-dish'],
-        subcategory: ['side-dishes', 'vegetables'],
+        subcategory: ['side-dishes', 'vegetables', 'snacks'],
         image: chikenSaladImg,
         bookmarks: 8,
         likes: 60,
@@ -1134,7 +1134,7 @@ export const recipes: Recipe[] = [
         title: 'Рататуй',
         description: 'Французское блюдо из запечённых овощей, подаваемое горячим или холодным.',
         category: ['vegan', 'second-dish'],
-        subcategory: ['second-dish', 'vegetables'],
+        subcategory: ['second-dish', 'vegetables', 'snacks'],
         image: chikenSaladImg,
         bookmarks: 12,
         likes: 80,
