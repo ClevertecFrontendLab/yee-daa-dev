@@ -1,16 +1,11 @@
 {
     "compilerOptions": {
         "baseUrl": ".",
+        "traceResolution": true,
         "types": ["node", "cypress"],
         "paths": {
-            "@public/*": ["./public/*"],
-            "@components/*": ["./src/components/*"],
-            "@constants/*": ["./src/constants/*"],
-            "@hooks/*": ["./src/hooks/*"],
-            "@pages/*": ["./src/pages/*"],
-            "@redux/*": ["./src/redux/*"],
-            "@types/*": ["./src/types/*"],
-            "@utils/*": ["./src/utils/*"]
+            "~/*": ["./src/*"],
+            "@public/*": ["./public/*"]
         },
         "plugins": [
             {
