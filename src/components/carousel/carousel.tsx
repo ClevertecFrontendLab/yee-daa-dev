@@ -2,7 +2,7 @@ import 'swiper/swiper-bundle.css';
 
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import { Box, Heading, IconButton } from '@chakra-ui/react';
-import { FC, useRef } from 'react';
+import { useRef } from 'react';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 
@@ -10,7 +10,7 @@ import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
 import { selectRecipes } from '../../redux/features/recipies-slice.ts';
 import { CarouselItem } from './carousel-item.tsx';
 
-export const Carousel: FC = () => {
+export const Carousel = () => {
     const allRecipes = useAppSelector(selectRecipes);
     const swiperRef = useRef<SwiperRef | null>(null);
 
