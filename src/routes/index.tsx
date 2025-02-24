@@ -6,7 +6,7 @@ import { Paths } from '~/constants/path.js';
 import { CategoryExistProtected } from '~/hoc/category-exist-protected';
 import { SubcategoryRedirect } from '~/hoc/subcategory-redirect';
 import { CategoryPage } from '~/pages/category-page';
-import { ErrorPage } from '~/pages/error-page/error-page.tsx';
+import { ErrorPage } from '~/pages/error-page/error-page';
 import { JuiciestPage } from '~/pages/juiciest-page';
 import { MainPage } from '~/pages/main-page';
 import { RecipePageWrapper } from '~/pages/recipe-page';
@@ -17,7 +17,13 @@ import { juiciestLoader } from './loaders/juciest-loader';
 import { recipeLoader } from './loaders/recipe-loader';
 import { rootCategoryLoader } from './loaders/root-category-loader';
 
-const Layout = lazy(() => import('~/components/layout/layout.tsx'));
+const Layout = lazy(() => import('../components/layout/layout.tsx'));
+const AuthorizationLayout = lazy(
+    () => import('../components/authorization-layout/authorization-layout.tsx'),
+);
+
+const SignInPage = lazy(() => import('../pages/sign-in-page/sign-in-page.tsx'));
+const SignUpPage = lazy(() => import('../pages/sign-up-page/sign-up-page.tsx'));
 
 // createBrowserRouter только с ним можно юзать loader, action, useLoaderData
 // createRoutesFromElements позволяет сделать из обычного классического рута подкапотно children
@@ -32,6 +38,11 @@ export const appRouter = createBrowserRouter(
                 </Suspense>
             }
         >
+            <Route element={<AuthorizationLayout />}>
+                <Route path={Paths.SIGN_IN} element={<SignInPage />} />
+                <Route path={Paths.SIGN_UP} element={<SignUpPage />} />
+            </Route>
+
             <Route index element={<MainPage />} loader={clearFilterStateLoader} />
             <Route
                 path={Paths.CATEGORY_ROOT}

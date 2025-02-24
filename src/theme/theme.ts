@@ -1,6 +1,15 @@
 import { extendTheme } from '@chakra-ui/react';
 
+import { tabsTheme } from './components/tabs';
+
 export const theme = extendTheme({
+    styles: {
+        global: {
+            body: {
+                color: 'black',
+            },
+        },
+    },
     colors: {
         lime: {
             50: '#FFFFD3',
@@ -9,6 +18,7 @@ export const theme = extendTheme({
             300: '#C4FF61',
             400: '#B1FF2E',
             600: '#2DB100',
+            700: '#207E00',
             800: '#134B00',
         },
     },
@@ -27,5 +37,8 @@ export const theme = extendTheme({
         '2xl': '1536px',
         '3xl': '1744px',
         // в px жестко, чтобы не зависело от em - а то м.б. непредсказуемо у children блоков
+    },
+    components: {
+        Tabs: tabsTheme,
     },
 });

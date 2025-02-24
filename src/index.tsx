@@ -9,7 +9,8 @@ import { Provider } from 'react-redux';
 import { App } from './components/app';
 import { AppNotification } from './components/app-notification/app-notification.tsx';
 import { store } from './redux/configure-store.ts';
-import { theme } from './theme.ts';
+import { AppRoutes } from './routes/index.tsx';
+import { theme } from './theme/theme.ts';
 
 const rootElement = (document.getElementById('root') ?? document.body) as HTMLElement;
 
