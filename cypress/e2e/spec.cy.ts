@@ -16,7 +16,7 @@ describe('App Component', () => {
         for (let i = 0; i < resolution.length; i++) {
             const capture = resolution[i].width < 1920 ? 'fullPage' : 'viewport';
             cy.viewport(resolution[i].width, resolution[i].height);
-            cy.wait(500);
+            cy.wait(700);
             if (resolution[i].width === 1920) {
                 cy.screenshot(`${screenshotName}_${resolution[i].width}x${resolution[i].height}`, {
                     capture,
@@ -29,7 +29,7 @@ describe('App Component', () => {
             } else {
                 cy.getByTestId('header').invoke('css', 'position', 'absolute');
                 cy.getByTestId('footer').invoke('css', 'position', 'absolute');
-                cy.wait(500);
+                cy.wait(700);
                 cy.screenshot(`${screenshotName}_${resolution[i].width}x${resolution[i].height}`, {
                     capture,
                 });

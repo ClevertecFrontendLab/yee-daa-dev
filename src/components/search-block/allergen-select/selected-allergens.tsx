@@ -1,10 +1,12 @@
 import { Box, Text } from '@chakra-ui/react';
 
-import { PLACEHOLDER_SELECT } from '../../../constants/select';
+import { PLACEHOLDER_SELECT, PLACEHOLDER_SELECT_DRAWER } from '../../../constants/select';
 
-export const SelectedItems: React.FC<{ selectedItems?: (string | null)[] }> = ({
-    selectedItems,
-}) => {
+type SelectedItemsProps = {
+    selectedItems?: (string | null)[];
+    isfromFilter?: boolean;
+};
+export const SelectedItems: React.FC<SelectedItemsProps> = ({ selectedItems, isfromFilter }) => {
     return (
         <Box display='flex' flexWrap='wrap' w='100%'>
             {selectedItems?.length ? (
@@ -24,7 +26,7 @@ export const SelectedItems: React.FC<{ selectedItems?: (string | null)[] }> = ({
                 ))
             ) : (
                 <Text color='gray.500' noOfLines={1} isTruncated>
-                    {PLACEHOLDER_SELECT}
+                    {isfromFilter ? PLACEHOLDER_SELECT_DRAWER : PLACEHOLDER_SELECT}
                 </Text>
             )}
         </Box>

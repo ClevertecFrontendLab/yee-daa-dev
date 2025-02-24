@@ -2,6 +2,7 @@ import { IconButton, InputGroup, InputRightElement, SearchIcon, Stack } from '@c
 import { Input } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
+import { useIsTablet } from '../../hooks/media-query.ts';
 import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
 import {
     clearFilteredByAllergens,
@@ -29,6 +30,7 @@ const maxSearchLength = 3;
 export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, onSearch }) => {
     const dispatch = useAppDispatch();
     const inputValue = useAppSelector(selectInputValue);
+    const isTablet = useIsTablet();
     const [isFocused, setIsFocused] = useState(false);
 
     const isButtonDisabled = inputValue.length < maxSearchLength;
@@ -117,7 +119,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
                     </InputRightElement>
                 </InputGroup>
             </Stack>
-            <AllergenSelect isfromFilter={false} />
+            {!isTablet && <AllergenSelect isfromFilter={false} />}
         </Stack>
     );
 };
