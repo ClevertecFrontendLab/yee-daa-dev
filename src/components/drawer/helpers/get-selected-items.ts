@@ -42,7 +42,7 @@ export const getTranslatedMenuItem = (selectedMenuItems: string[], allMenuItems:
             const item = allMenuItems.find((it) => it.category === selected);
             return item ? item.title : null;
         })
-        .filter((title) => title !== null);
+        .filter(Boolean);
 };
 
 export const getTranslatedFoodItem = (selectedFoodItems: string[], allFoodItems: FoodItem[]) => {
@@ -51,16 +51,16 @@ export const getTranslatedFoodItem = (selectedFoodItems: string[], allFoodItems:
             const item = allFoodItems.find((it) => it.value === selected);
             return item ? item.label : null;
         })
-        .filter((label) => label !== null);
+        .filter(Boolean);
 };
 
 export const getTranslatedAuthor = (selectedAuthors: string[], allAuthors: UserProps[]) => {
     return selectedAuthors
         .map((selected) => {
             const author = allAuthors.find((au) => au.login === selected);
-            return author ? `${author.lastName}${author.firstName}` : null;
+            return author ? `${author.lastName} ${author.firstName}` : null;
         })
-        .filter((author) => author !== null);
+        .filter(Boolean);
 };
 
 export const translateSelectedItems = (

@@ -3,7 +3,10 @@ import { Input } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { clearSelectedAllergens } from '../../redux/features/allergens-slice.ts';
+import {
+    clearFilteredByAllergens,
+    clearSelectedAllergens,
+} from '../../redux/features/allergens-slice.ts';
 import { clearSelectedAuthors } from '../../redux/features/authors-slice.ts';
 import { clearSelectedCategories } from '../../redux/features/categories-slice.ts';
 import { clearSelectedCuisines } from '../../redux/features/cuisines-slice.ts';
@@ -21,12 +24,14 @@ type SearchBlockProps = {
     onSearch: (inputValue: string) => void;
 };
 
+const maxSearchLength = 3;
+
 export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, onSearch }) => {
     const dispatch = useAppDispatch();
     const inputValue = useAppSelector(selectInputValue);
     const [isFocused, setIsFocused] = useState(false);
 
-    const isButtonDisabled = inputValue.length < 3;
+    const isButtonDisabled = inputValue.length < maxSearchLength;
 
     const handleSearchClick = () => {
         onSearch(inputValue);
@@ -52,6 +57,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
         dispatch(setInputValue(''));
         dispatch(clearSelectedAllergens());
         dispatch(clearFilteredRecipes());
+        dispatch(clearFilteredByAllergens());
         dispatch(clearSelectedAuthors());
         dispatch(clearSelectedCategories());
         dispatch(clearSelectedCuisines());

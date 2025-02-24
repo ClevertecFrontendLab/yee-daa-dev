@@ -53,7 +53,9 @@ export const allergenSlice = createSlice({
         setFilteredByAllergens(state, action: PayloadAction<Recipe[]>) {
             state.filteredByAllergens = action.payload;
         },
-
+        clearFilteredByAllergens(state) {
+            state.filteredByAllergens = [];
+        },
         setisfromFilter(state, action: PayloadAction<boolean>) {
             state.isfromFilter = action.payload;
         },
@@ -77,6 +79,7 @@ export const {
     clearSelectedAllergens,
     setLoading,
     setFilteredByAllergens,
+    clearFilteredByAllergens,
     setisfromFilter,
 } = allergenSlice.actions;
 export const allergenReducer = allergenSlice.reducer;

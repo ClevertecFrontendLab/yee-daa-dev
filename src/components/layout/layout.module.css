@@ -50,6 +50,7 @@
     height: 84px;
     bottom: 0;
     width: 100%;
+    z-index: 9;
 }
 
 .blur {

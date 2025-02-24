@@ -31,6 +31,6 @@ export const menuSlice = createSlice({
 
 export const { toggleMenu, openMenu, closeMenu, setClicked } = menuSlice.actions;
 export const selectMenu = (state: AppState) => state.menu.isOpen;
-export const selectIsClicked = (state: AppState) => state.menu.isClicked; //
+export const selectIsClicked = (state: AppState) => state.menu.isClicked;
 
 export const menuReducer = menuSlice.reducer;

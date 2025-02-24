@@ -28,6 +28,7 @@ import {
 import { PageType } from '../../types/page.ts';
 import { Recipe } from '../../types/recipe.ts';
 import { filterRecipes } from '../../utils/filter-recipes.ts';
+import { filterRecipesByTitle } from './helpers/filter-by-title.ts';
 import { getCategoryRecipes, getFavouritesRecipes } from './helpers/get-recipes.ts';
 
 type KitchenPageProps = {
@@ -70,18 +71,13 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
         setStartSearch(true);
 
         let nameFiltered: Recipe[] | undefined;
+
         if (filteredRecipes.length) {
-            nameFiltered = filteredRecipes.filter((recipe) =>
-                recipe.title.toLowerCase().includes(inputValue.toLowerCase()),
-            );
+            nameFiltered = filterRecipesByTitle(filteredRecipes, inputValue);
         } else if (filteredByAllergens.length) {
-            nameFiltered = filteredByAllergens.filter((recipe) =>
-                recipe.title.toLowerCase().includes(inputValue.toLowerCase()),
-            );
+            nameFiltered = filterRecipesByTitle(filteredByAllergens, inputValue);
         } else {
-            nameFiltered = searchRecipes[pageType]?.filter((recipe) =>
-                recipe.title.toLowerCase().includes(inputValue.toLowerCase()),
-            );
+            nameFiltered = filterRecipesByTitle(searchRecipes[pageType] || [], inputValue);
         }
 
         dispatch(setMatchedRecipes(nameFiltered));

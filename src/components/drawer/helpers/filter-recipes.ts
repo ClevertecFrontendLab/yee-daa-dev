@@ -9,6 +9,14 @@ type FilterOptions = {
     selectedAllergens: string[];
 };
 
+export const normalizeArray = (arr: string[]) => {
+    return arr.map((item) => item.trim().toLowerCase());
+};
+
+export const matchesAny = (normalizedArray: string[], valueArray: string[]) => {
+    return normalizedArray.length === 0 || valueArray.some((val) => normalizedArray.includes(val));
+};
+
 export const filterRecipes = (recipes: Recipe[], filterOptions: FilterOptions): Recipe[] => {
     const {
         selectedCategories,
@@ -18,33 +26,30 @@ export const filterRecipes = (recipes: Recipe[], filterOptions: FilterOptions): 
         selectedSides,
         selectedAllergens,
     } = filterOptions;
-    const normalizedCategories = selectedCategories.map((cat) => cat.trim().toLowerCase());
-    const normalizedCuisines = selectedCuisines.map((cuisine) => cuisine.trim().toLowerCase());
-    const normalizedAuthors = selectedAuthors.map((author) => author.trim().toLowerCase());
-    const normalizedMeats = selectedMeats.map((meat) => meat.trim().toLowerCase());
-    const normalizedSides = selectedSides.map((side) => side.trim().toLowerCase());
-    const normalizedAllergens = selectedAllergens.map((allergen) => allergen.trim().toLowerCase());
+
+    const normalizedCategories = normalizeArray(selectedCategories);
+    const normalizedCuisines = normalizeArray(selectedCuisines);
+    const normalizedAuthors = normalizeArray(selectedAuthors);
+    const normalizedMeats = normalizeArray(selectedMeats);
+    const normalizedSides = normalizeArray(selectedSides);
+    const normalizedAllergens = normalizeArray(selectedAllergens);
 
     return recipes.filter((recipe) => {
-        const recipeCategories = recipe.category.map((cat) => cat.trim().toLowerCase());
-        const recipeCuisine = recipe.cuisine?.trim().toLowerCase() ?? '';
-        const recipeAuthor = recipe.author.login.trim().toLowerCase();
-        const recipeMeat = recipe.meat?.trim().toLowerCase() ?? '';
-        const recipeSide = recipe.side?.trim().toLowerCase() ?? '';
-        const recipeAllergens = recipe.ingredients.map((ingredient) =>
-            ingredient.title.trim().toLowerCase(),
+        const recipeCategories = normalizeArray(recipe.category);
+        const recipeCuisine = normalizeArray([recipe.cuisine || ''])[0];
+        const recipeAuthor = normalizeArray([recipe.author.login])[0];
+        const recipeMeat = normalizeArray([recipe.meat || ''])[0];
+        const recipeSide = normalizeArray([recipe.side || ''])[0];
+        const recipeAllergens = normalizeArray(
+            recipe.ingredients.map((ingredient) => ingredient.title),
         );
 
-        const matchesCategory =
-            normalizedCategories.length === 0 ||
-            recipeCategories.some((cat) => normalizedCategories.includes(cat));
-        const matchesCuisine =
-            normalizedCuisines.length === 0 || normalizedCuisines.includes(recipeCuisine);
-        const matchesAuthor =
-            normalizedAuthors.length === 0 || normalizedAuthors.includes(recipeAuthor);
-        const matchesMeat = normalizedMeats.length === 0 || normalizedMeats.includes(recipeMeat);
-        const matchesSide = normalizedSides.length === 0 || normalizedSides.includes(recipeSide);
-        const containsAllergen = normalizedAllergens.some((allergen) =>
+        const matchesCategory = matchesAny(normalizedCategories, recipeCategories);
+        const matchesCuisine = matchesAny(normalizedCuisines, [recipeCuisine]);
+        const matchesAuthor = matchesAny(normalizedAuthors, [recipeAuthor]);
+        const matchesMeat = matchesAny(normalizedMeats, [recipeMeat]);
+        const matchesSide = matchesAny(normalizedSides, [recipeSide]);
+        const containsAllergen = normalizedAllergens.some((allergen: string) =>
             recipeAllergens.includes(allergen),
         );
 

@@ -2,7 +2,9 @@ import { Box, Text } from '@chakra-ui/react';
 
 import { PLACEHOLDER_SELECT } from '../../../constants/select';
 
-export const SelectedItems: React.FC<{ selectedItems?: string[] }> = ({ selectedItems }) => {
+export const SelectedItems: React.FC<{ selectedItems?: (string | null)[] }> = ({
+    selectedItems,
+}) => {
     return (
         <Box display='flex' flexWrap='wrap' w='100%'>
             {selectedItems?.length ? (

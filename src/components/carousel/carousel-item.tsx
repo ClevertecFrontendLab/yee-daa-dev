@@ -29,8 +29,8 @@ export const CarouselItem: FC<{ recipe: Recipe }> = ({ recipe }) => {
     return (
         <NavLink to={categoryPath} onClick={handleClick}>
             <Card
-                width={{ base: '158px', xmd: '277px', xl: '322px' }}
-                minH={{ base: '220px', xmd: '375px', xl: '400px' }}
+                maxWidth={{ base: '158px', xmd: '277px', xl: '322px' }}
+                maxH={{ base: '220px', xmd: '375px', xl: '400px' }}
                 border='1px solid rgba(0, 0, 0, 0.08)'
                 borderRadius='8px'
                 boxShadow='none'
