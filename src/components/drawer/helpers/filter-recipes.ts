@@ -9,8 +9,8 @@ type FilterOptions = {
     selectedAllergens: string[];
 };
 
-export const normalizeArray = (arr: string[]) => {
-    return arr.map((item) => item.trim().toLowerCase());
+export const normalizeArray = (arr: (string | undefined)[]) => {
+    return arr.map((item) => (item ? item.trim().toLowerCase() : ''));
 };
 
 export const matchesAny = (normalizedArray: string[], valueArray: string[]) => {
@@ -36,10 +36,10 @@ export const filterRecipes = (recipes: Recipe[], filterOptions: FilterOptions): 
 
     return recipes.filter((recipe) => {
         const recipeCategories = normalizeArray(recipe.category);
-        const recipeCuisine = normalizeArray([recipe.cuisine || ''])[0];
+        const recipeCuisine = normalizeArray([recipe.cuisine])[0];
         const recipeAuthor = normalizeArray([recipe.author.login])[0];
-        const recipeMeat = normalizeArray([recipe.meat || ''])[0];
-        const recipeSide = normalizeArray([recipe.side || ''])[0];
+        const recipeMeat = normalizeArray([recipe.meat])[0];
+        const recipeSide = normalizeArray([recipe.side])[0];
         const recipeAllergens = normalizeArray(
             recipe.ingredients.map((ingredient) => ingredient.title),
         );

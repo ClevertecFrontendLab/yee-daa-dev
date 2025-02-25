@@ -81,7 +81,7 @@ export const Breadcrumbs = () => {
                                                 ? '#'
                                                 : `/${pathsArr.slice(0, index + 1).join('/')}`
                                         }
-                                        onClick={index === 0 ? handleCategoryClick : undefined}
+                                        onClick={handleCategoryClick}
                                     >
                                         {title}
                                     </BreadcrumbLink>

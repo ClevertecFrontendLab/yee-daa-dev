@@ -23,7 +23,6 @@ export const UserInfo: FC<Props> = ({
             alignItems='center'
             display={{ base: 'none', xl: 'flex' }}
         >
-            {/*<Avatar size={isLarge ? 'md' : 'sm'} src={imageUrl} name={`${firstName} ${lastName}`} />*/}
             <Avatar
                 size={{ base: 'sm', md: 'md' }}
                 src={imageUrl}
