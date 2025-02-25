@@ -1,5 +1,7 @@
 import { extendTheme } from '@chakra-ui/react';
 
+import { buttonTheme } from './components/button';
+import { inputTheme } from './components/input';
 import { tabsTheme } from './components/tabs';
 
 export const theme = extendTheme({
@@ -40,5 +42,12 @@ export const theme = extendTheme({
     },
     components: {
         Tabs: tabsTheme,
+        Input: inputTheme,
+        Button: buttonTheme,
+        FormLabel: {
+            baseStyle: {
+                fontWeight: 'normal',
+            },
+        },
     },
 });
