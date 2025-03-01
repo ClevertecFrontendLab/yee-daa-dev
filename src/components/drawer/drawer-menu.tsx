@@ -10,29 +10,15 @@ import {
 import { FC, useState } from 'react';
 
 import { FILTER_TITLES } from '../../constants/filters';
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks';
-import {
-    selectAuthors,
-    selectSelectedAuthors,
-    toggleAuthor,
-} from '../../redux/features/authors-slice';
-import {
-    selectCategoriesMenu,
-    selectSelectedCategories,
-    toggleCategory,
-} from '../../redux/features/categories-slice';
-import {
-    selectCuisines,
-    selectSelectedCuisines,
-    toggleCuisine,
-} from '../../redux/features/cuisines-slice';
-import { selectMeats, selectSelectedMeats } from '../../redux/features/meats-slice';
-import { selectSelectedSides, selectSides } from '../../redux/features/sides-slice';
+import { useAppDispatch } from '../../hooks/typed-react-redux-hooks';
+import { useSelectedItems } from '../../hooks/use-selected-items';
+import { toggleAuthor } from '../../redux/features/authors-slice';
+import { toggleCategory } from '../../redux/features/categories-slice';
+import { toggleCuisine } from '../../redux/features/cuisines-slice';
 import { MenuItem } from '../../types/category';
 import { FoodItem } from '../../types/food-item';
 import { UserProps } from '../../types/user';
 import { SelectedItems } from '../search-block/allergen-select/selected-allergens';
-import { getSelectedItems, translateSelectedItems } from './helpers/get-selected-items';
 
 type MenuItemProps = {
     items: (FoodItem | MenuItem | UserProps)[];
@@ -58,43 +44,8 @@ export const DrawerMenu: FC<MenuItemProps> = ({ items, filterTitle }) => {
     const { key, displayName } = displayConfig[filterTitle] || {};
     const [isBtnOpen, setIsBtnOpen] = useState(false);
     const dispatch = useAppDispatch();
-    const selectedCategories = useAppSelector(selectSelectedCategories);
-    const selectedCuisines = useAppSelector(selectSelectedCuisines);
-    const selectedAuthors = useAppSelector(selectSelectedAuthors);
-    const selectedMeats = useAppSelector(selectSelectedMeats);
-    const selectedSides = useAppSelector(selectSelectedSides);
 
-    const allCategories = useAppSelector(selectCategoriesMenu);
-    const allCuisines = useAppSelector(selectCuisines);
-    const allAuthors = useAppSelector(selectAuthors);
-    const allMeats = useAppSelector(selectMeats);
-    const allSides = useAppSelector(selectSides);
-
-    const selectedItems = getSelectedItems(filterTitle, {
-        selectedCategories,
-        selectedCuisines,
-        selectedAuthors,
-        selectedMeats,
-        selectedSides,
-    });
-
-    const selectedRusItems = translateSelectedItems(
-        filterTitle,
-        {
-            selectedCategories,
-            selectedCuisines,
-            selectedAuthors,
-            selectedMeats,
-            selectedSides,
-        },
-        {
-            allCategories,
-            allCuisines,
-            allAuthors,
-            allMeats,
-            allSides,
-        },
-    );
+    const { selectedItemsResult, selectedTranslatedItems } = useSelectedItems(filterTitle);
 
     return (
         <Menu isLazy={true} matchWidth={true} closeOnSelect={false}>
@@ -113,8 +64,8 @@ export const DrawerMenu: FC<MenuItemProps> = ({ items, filterTitle }) => {
                 onClick={() => setIsBtnOpen(!isBtnOpen)}
                 rightIcon={isBtnOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
             >
-                {selectedItems?.length ? (
-                    <SelectedItems selectedItems={selectedRusItems} />
+                {selectedItemsResult?.length ? (
+                    <SelectedItems selectedItems={selectedTranslatedItems} />
                 ) : (
                     filterTitle
                 )}
@@ -135,7 +86,7 @@ export const DrawerMenu: FC<MenuItemProps> = ({ items, filterTitle }) => {
                               ? (item as FoodItem).value
                               : (item as MenuItem).category;
 
-                    const isChecked = selectedItems?.includes(itemKey);
+                    const isChecked = selectedItemsResult?.includes(itemKey);
 
                     const handleCheckboxChange = () => {
                         if (filterTitle === FILTER_TITLES.CATEGORY) {

@@ -6,10 +6,12 @@ import { CardList } from '../card-list';
 
 type RecipeCardListProps = { recipeList: Recipe[] };
 
+const maxVisibleCount = 8;
+
 export const RecipeCardList: FC<RecipeCardListProps> = ({ recipeList }) => {
-    const [visibleCount, setVisibleCount] = useState(8);
+    const [visibleCount, setVisibleCount] = useState(maxVisibleCount);
     const loadMoreRecipes = () => {
-        setVisibleCount((prevCount) => prevCount + 8);
+        setVisibleCount((prevCount) => prevCount + maxVisibleCount);
     };
 
     return (

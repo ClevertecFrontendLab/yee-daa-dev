@@ -50,6 +50,7 @@
     height: 84px;
     bottom: 0;
     width: 100%;
+    z-index: 9;
 }
 
 .blur {
@@ -101,6 +102,8 @@
 @media (max-width: 767px) {
     .main {
         padding-bottom: 16px;
+        padding-left: 16px;
+        padding-right: 16px;
     }
 }
 

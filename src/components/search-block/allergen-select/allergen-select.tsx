@@ -68,14 +68,15 @@ export const AllergenSelect: FC<{ isfromFilter: boolean }> = ({ isfromFilter }) 
             flexWrap='wrap'
         >
             <Switcher isSwitchOn={isSwitchOn} handleSwitchChange={handleSwitchChange} />
-            <FormControl ref={menuRef} width='234px'>
-                <Menu isOpen={isOpen} isLazy={true} matchWidth={true}>
+            <FormControl ref={menuRef} width='fit-content'>
+                <Menu isLazy={true} matchWidth={true} closeOnSelect={false}>
                     <SelectMenuButton
                         isSwitchOn={isSwitchOn}
                         selectedAllergens={selectedAllergens}
                         handleMenuToggle={handleMenuToggle}
                         setIsOpen={setIsOpen}
                         isOpen={isOpen}
+                        isfromFilter={isfromFilter}
                     />
 
                     {isOpen && (

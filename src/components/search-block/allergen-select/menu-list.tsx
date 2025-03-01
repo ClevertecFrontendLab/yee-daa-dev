@@ -72,7 +72,7 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
 
     return (
         <Box position='absolute' top='40px' zIndex={3}>
-            <MenuList pt={3} pb={3} w='270px'>
+            <MenuList pt={3} pb={3}>
                 {allergens.map((allergen, index) => (
                     <MenuItem
                         key={allergen.value}

@@ -18,6 +18,7 @@ import { selectRecipes, setFilteredRecipes } from '../../redux/features/recipies
 import { clearSelectedSides, selectSelectedSides } from '../../redux/features/sides-slice';
 import styles from './drawer.module.css';
 import { filterRecipes } from './helpers/filter-recipes';
+import { isButtonDisabled } from './helpers/is-button-disabled';
 
 export const FilterDrawerFooter = () => {
     const dispatch = useAppDispatch();
@@ -30,13 +31,14 @@ export const FilterDrawerFooter = () => {
     const selectedSides = useAppSelector(selectSelectedSides);
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
 
-    const isButtonDisabled =
-        !selectedCategories.length &&
-        !selectedCuisines.length &&
-        !selectedAuthors.length &&
-        !selectedMeats.length &&
-        !selectedSides.length &&
-        !selectedAllergens.length;
+    const disabled = isButtonDisabled(
+        selectedCategories,
+        selectedCuisines,
+        selectedAuthors,
+        selectedMeats,
+        selectedSides,
+        selectedAllergens,
+    );
 
     const clearFilters = () => {
         dispatch(clearSelectedAuthors());
@@ -72,10 +74,10 @@ export const FilterDrawerFooter = () => {
                 onClick={findRecipes}
                 size={'lg'}
                 sx={{
-                    pointerEvents: isButtonDisabled ? 'none' : 'auto',
-                    bg: isButtonDisabled ? 'gray.500' : 'black',
-                    cursor: isButtonDisabled ? 'not-allowed' : 'pointer',
-                    opacity: isButtonDisabled ? 0.4 : 1,
+                    pointerEvents: disabled ? 'none' : 'auto',
+                    bg: disabled ? 'gray.500' : 'black',
+                    cursor: disabled ? 'not-allowed' : 'pointer',
+                    opacity: disabled ? 0.4 : 1,
                 }}
             >
                 Найти рецепт
