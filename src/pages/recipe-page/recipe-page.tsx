@@ -2,15 +2,15 @@ import { Stack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
-import { AuthorCard } from '../../components/author-card/author-card.tsx';
-import { CalorieCard } from '../../components/calorie/calorie.tsx';
-import { Carousel } from '../../components/carousel/carousel.tsx';
-import { IngredientsBlock } from '../../components/ingredients-block/ingredients-block.tsx';
-import { RecipeCard } from '../../components/recipe-card/recipe-card.tsx';
-import { StepsBlock } from '../../components/stpeps-block/steps-block.js';
-import { Paths } from '../../constants/path.ts';
-import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { selectRecipes } from '../../redux/features/recipies-slice.ts';
+import { AuthorCard } from '~/components/author-card/author-card.tsx';
+import { CalorieCard } from '~/components/calorie/calorie.tsx';
+import { Carousel } from '~/components/carousel/carousel.tsx';
+import { IngredientsBlock } from '~/components/ingredients-block/ingredients-block.tsx';
+import { RecipeCard } from '~/components/recipe-card/recipe-card.tsx';
+import { StepsBlock } from '~/components/stpeps-block/steps-block.js';
+import { Paths } from '~/constants/path.js';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { selectRecipes } from '~/redux/features/recipies-slice.ts';
 
 export const RecipePage = () => {
     const { id } = useParams();

@@ -2,13 +2,11 @@ import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks';
-import { selectCategoriesMenu } from '../../redux/features/categories-slice';
-import {
-    selectChoosenCategory,
-    setChoosenCategory,
-} from '../../redux/features/choosen-category-slice';
-import { Recipe } from '../../types/recipe';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { selectCategoriesMenu } from '~/redux/features/categories-slice';
+import { selectChoosenCategory, setChoosenCategory } from '~/redux/features/choosen-category-slice';
+import { Recipe } from '~/types/recipe';
+
 import { RecipeCardList } from '../recipes-card-list/recipes-card-list';
 
 export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {

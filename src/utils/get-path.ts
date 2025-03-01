@@ -1,6 +1,6 @@
-import { ChoosenCategory } from '../redux/features/choosen-category-slice';
-import { MenuItem } from '../types/category';
-import { Recipe } from '../types/recipe';
+import { ChoosenCategory } from '~/redux/features/choosen-category-slice';
+import { MenuItem } from '~/types/category';
+import { Recipe } from '~/types/recipe';
 
 export const getPath = (
     allcategories: MenuItem[],

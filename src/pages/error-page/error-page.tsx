@@ -1,20 +1,29 @@
-import { Box, Button, Heading, Text } from '@chakra-ui/react';
+import { Center, Heading, Image, Link, Text } from '@chakra-ui/react';
 import { NavLink } from 'react-router';
 
-import { Paths } from '../../constants/path';
+import NotFoundImg from '~/assets/images/404.png';
+import NotFoundImgTablet from '~/assets/images/404-tablet.png';
+import { Paths } from '~/constants/path';
 
 export const ErrorPage = () => {
+    console.log(Paths);
     return (
-        <Box textAlign='center' py={10} px={6}>
+        <Center textAlign='center' py={0} px={0} h='100%' flexDirection='column' gap={4}>
+            <Image
+                src={NotFoundImg}
+                alt='not found page label'
+                srcSet={`${NotFoundImg} 1920w, ${NotFoundImgTablet} 768w`}
+            />
             <Heading as='h1' size='2xl' mb={4}>
-                Ой! Что-то пошло не так.
+                Упс! Такой страницы нет
             </Heading>
-            <Text fontSize='lg' mb={6}>
-                Мы не можем найти страницу, которую вы ищете.
+            <Text fontSize='lg' mb={6} textColor='black.700'>
+                Можете поискать другой рецепт{' '}
+                <Link as={NavLink} to={Paths.R_SWITCHER} textUnderlineOffset='6px'>
+                    здесь
+                </Link>
+                .
             </Text>
-            <Button colorScheme='teal' as={NavLink} to={Paths.R_SWITCHER}>
-                Вернуться на главную
-            </Button>
-        </Box>
+        </Center>
     );
 };

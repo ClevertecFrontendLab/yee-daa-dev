@@ -1,4 +1,4 @@
-import { MenuItem } from '../types/category';
+import { MenuItem } from '~/types/category';
 
 export const navMenu: MenuItem[] = [
     {

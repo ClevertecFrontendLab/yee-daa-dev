@@ -1,4 +1,4 @@
-import { Recipe } from '../types/recipe';
+import { Recipe } from '~/types/recipe';
 
 export const filterRecipes = (recipes: Recipe[], selectedAllergens: string[]) =>
     recipes.filter(

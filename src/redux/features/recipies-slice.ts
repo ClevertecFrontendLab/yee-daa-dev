@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { recipes } from '../../mocks/recipes';
-import { Recipe } from '../../types/recipe';
-import { AppState } from '../../types/store';
+import { recipes } from '~/mocks/recipes';
+import { Recipe } from '~/types/recipe';
+import { AppState } from '~/types/store';
 
 type RecipesState = {
     recipes: Recipe[];

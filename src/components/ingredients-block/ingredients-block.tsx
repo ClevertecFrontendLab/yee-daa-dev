@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
-import { Recipe } from '../../types/recipe';
+import { Recipe } from '~/types/recipe';
 
 export const IngredientsBlock: FC<{
     ingredients?: Recipe['ingredients'];
@@ -41,7 +41,7 @@ export const IngredientsBlock: FC<{
                         fontSize='sm'
                         textTransform='uppercase'
                         fontWeight={700}
-                        color={'var(--chakra-colors-lime-600)'}
+                        color='var(--chakra-colors-lime-600)'
                     >
                         ингредиенты
                     </Th>
@@ -51,7 +51,7 @@ export const IngredientsBlock: FC<{
                             fontSize='sm'
                             textTransform='uppercase'
                             fontWeight={700}
-                            color={'var(--chakra-colors-lime-600)'}
+                            color='var(--chakra-colors-lime-600)'
                         >
                             порций
                         </Box>
@@ -80,10 +80,10 @@ export const IngredientsBlock: FC<{
                         fontWeight={500}
                         _hover={{ bg: 'blackAlfa.100' }}
                     >
-                        <Td fontSize='sm' color={'blackAlfa.900'}>
+                        <Td fontSize='sm' color='blackAlfa.900'>
                             {ingredient.title}
                         </Td>
-                        <Td fontSize='sm' color={'blackAlfa.900'} textAlign='end'>
+                        <Td fontSize='sm' color='blackAlfa.900' textAlign='end'>
                             {!!ingredient.quantity && ingredient.quantity} {ingredient.unit}
                         </Td>
                     </Tr>

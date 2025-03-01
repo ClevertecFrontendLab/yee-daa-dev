@@ -3,9 +3,10 @@ import { Center, Heading, HStack } from '@chakra-ui/react';
 import { FC } from 'react';
 import { Link } from 'react-router';
 
-import { Paths } from '../../constants/path.ts';
-import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { selectRecipes } from '../../redux/features/recipies-slice.ts';
+import { Paths } from '~/constants/path.js';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { selectRecipes } from '~/redux/features/recipies-slice.ts';
+
 import { CardList } from '../card-list/card-list.tsx';
 import { SectionBox } from '../section-box/section-box.tsx';
 

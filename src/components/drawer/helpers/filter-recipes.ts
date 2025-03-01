@@ -1,4 +1,4 @@
-import { Recipe } from '../../../types/recipe';
+import { Recipe } from '~/types/recipe';
 
 type FilterOptions = {
     selectedCategories: string[];
@@ -9,13 +9,11 @@ type FilterOptions = {
     selectedAllergens: string[];
 };
 
-export const normalizeArray = (arr: (string | undefined)[]) => {
-    return arr.map((item) => (item ? item.trim().toLowerCase() : ''));
-};
+export const normalizeArray = (arr: (string | undefined)[]) =>
+    arr.map((item) => (item ? item.trim().toLowerCase() : ''));
 
-export const matchesAny = (normalizedArray: string[], valueArray: string[]) => {
-    return normalizedArray.length === 0 || valueArray.some((val) => normalizedArray.includes(val));
-};
+export const matchesAny = (normalizedArray: string[], valueArray: string[]) =>
+    normalizedArray.length === 0 || valueArray.some((val) => normalizedArray.includes(val));
 
 export const filterRecipes = (recipes: Recipe[], filterOptions: FilterOptions): Recipe[] => {
     const {

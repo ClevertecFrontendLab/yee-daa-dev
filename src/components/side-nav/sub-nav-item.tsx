@@ -4,14 +4,11 @@ import { Box, Text } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 
-import { useAppDispatch } from '../../hooks/typed-react-redux-hooks';
-import {
-    clearSelectedAllergens,
-    setFilteredByAllergens,
-} from '../../redux/features/allergens-slice';
-import { setChoosenCategory } from '../../redux/features/choosen-category-slice';
-import { clearFilteredRecipes } from '../../redux/features/recipies-slice';
-import { MenuItem } from '../../types/category';
+import { useAppDispatch } from '~/hooks/typed-react-redux-hooks';
+import { clearSelectedAllergens, setFilteredByAllergens } from '~/redux/features/allergens-slice';
+import { setChoosenCategory } from '~/redux/features/choosen-category-slice';
+import { clearFilteredRecipes } from '~/redux/features/recipies-slice';
+import { MenuItem } from '~/types/category';
 
 type SubNavItemProps = MenuItem & {
     parentCategory: string;
@@ -55,7 +52,7 @@ export const SubNavItem: FC<SubNavItemProps> = ({
         <NavLink to={subCategoryPath} key={category} onClick={handleClick}>
             <Box
                 borderColor='lime.400'
-                borderLeftWidth={'1px'}
+                borderLeftWidth='1px'
                 pl={3}
                 mt={1}
                 mb={1}

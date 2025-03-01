@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { Recipe } from '../../types/recipe';
-import { AppState } from '../../types/store';
+import { Recipe } from '~/types/recipe';
+import { AppState } from '~/types/store';
 
 type SearchState = {
     inputValue: string;

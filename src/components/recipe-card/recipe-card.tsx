@@ -15,7 +15,8 @@ import {
 } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { Recipe } from '../../types/recipe';
+import { Recipe } from '~/types/recipe';
+
 import { CardStat } from '../card-stat/card-stat';
 import { CategoryTag } from '../category-tag';
 import { AlarmIcon } from '../icons/alarm-icon';
@@ -24,10 +25,10 @@ import { CalendarIcon } from '../icons/calendar-icon';
 
 export const RecipeCard: FC<{ recipe?: Recipe }> = ({ recipe }) => (
     <Card
-        variant={'unstyled'}
+        variant='unstyled'
         direction='row'
         minH={{ base: '224px', xl: '410px' }}
-        borderRadius={'--chakra-radii-lg'}
+        borderRadius='--chakra-radii-lg'
         flexWrap={{ base: 'wrap', sm: 'nowrap' }}
         gap={{ base: 4, md: 6 }}
         mb={{ base: 4, xl: 10 }}
@@ -40,7 +41,7 @@ export const RecipeCard: FC<{ recipe?: Recipe }> = ({ recipe }) => (
             borderRadius='var(--chakra-radii-lg)'
         />
         <Stack>
-            <CardHeader display={'flex'} justifyContent={'space-between'} p={0} pr={1} pb={8}>
+            <CardHeader display='flex' justifyContent='space-between' p={0} pr={1} pb={8}>
                 <HStack flexWrap='wrap'>
                     <CategoryTag category={recipe?.category} color='lime.50' />
                 </HStack>
@@ -60,7 +61,7 @@ export const RecipeCard: FC<{ recipe?: Recipe }> = ({ recipe }) => (
                 </Text>
             </CardBody>
             <CardFooter p={0} justifyContent='space-between' flexWrap='wrap' gap={3}>
-                <Box mt={'auto'}>
+                <Box mt='auto'>
                     <Tag size='md' p='4px 8px'>
                         <AlarmIcon />
                         <TagLabel ml={2}>{recipe?.time}</TagLabel>
@@ -78,7 +79,7 @@ export const RecipeCard: FC<{ recipe?: Recipe }> = ({ recipe }) => (
                         Добавить в мой календарь
                     </Button>
                     <Button
-                        bg={'var(--chakra-colors-lime-400)'}
+                        bg='var(--chakra-colors-lime-400)'
                         size={{ base: 'sm', '2xl': 'lg' }}
                         p={0}
                         leftIcon={<BookmarkIcon />}

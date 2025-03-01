@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { authors } from '../../mocks/filters';
-import { AppState } from '../../types/store';
-import { UserProps } from '../../types/user';
-import { toggleItemInArray } from '../../utils/toggle-items';
+import { authors } from '~/mocks/filters';
+import { AppState } from '~/types/store';
+import { UserProps } from '~/types/user';
+import { toggleItemInArray } from '~/utils/toggle-items';
 
 type AuthorsState = {
     authors: UserProps[];

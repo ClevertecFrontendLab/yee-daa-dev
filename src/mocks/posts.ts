@@ -1,6 +1,6 @@
-import man from '../assets/images/man.png';
-import woman from '../assets/images/woman.png';
-import { Post } from '../types/post.ts';
+import man from '~/assets/images/man.png';
+import woman from '~/assets/images/woman.png';
+import { Post } from '~/types/post.ts';
 
 export const posts: Post[] = [
     {

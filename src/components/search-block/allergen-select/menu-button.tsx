@@ -2,8 +2,9 @@ import { ChevronDownIcon, ChevronUpIcon, CloseIcon } from '@chakra-ui/icons';
 import { Button, MenuButton } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { useAppDispatch } from '../../../hooks/typed-react-redux-hooks';
-import { clearSelectedAllergens } from '../../../redux/features/allergens-slice';
+import { useAppDispatch } from '~/hooks/typed-react-redux-hooks';
+import { clearSelectedAllergens } from '~/redux/features/allergens-slice';
+
 import { SelectedItems } from './selected-allergens';
 
 type SelectMenuButtonProps = {
@@ -40,7 +41,7 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
             color='blackAlpha.700'
             fontWeight={400}
             outline='none'
-            background={'--chakra-ring-offset-color'}
+            background='--chakra-ring-offset-color'
             border='1px solid rgba(0, 0, 0, 0.64)'
             _active={{
                 background: '--chakra-ring-offset-color',
@@ -68,7 +69,7 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
                             onClick={clearSelection}
                             w={2}
                             h={2}
-                            cursor={'pointer'}
+                            cursor='pointer'
                             _hover={{ bg: 'none', color: 'var(--chakra-colors-lime-600)' }}
                         />
                     )}

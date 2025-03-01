@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { allergenReducer, allergenSlice } from './features/allergens-slice';
+import { appReducer, appSlice } from './features/app-slice';
 import { authorsReducer, authorsSlice } from './features/authors-slice';
 import { menuReducer, menuSlice } from './features/burger-slice';
 import { categoriesReducer, categoriesSlice } from './features/categories-slice';
@@ -15,6 +16,7 @@ import { sidesReducer, sidesSlice } from './features/sides-slice';
 
 export const store = configureStore({
     reducer: {
+        [appSlice.name]: appReducer,
         [searchSlice.name]: searchReducer,
         [categoriesSlice.name]: categoriesReducer,
         [choosenCategorySlice.name]: choosenCategoryReducer,

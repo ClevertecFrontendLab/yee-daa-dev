@@ -1,9 +1,10 @@
 import { Flex, Spacer } from '@chakra-ui/react';
 
-import { useIsLg, useIsTablet } from '../../hooks/media-query.ts';
-import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { user, users } from '../../mocks/users.ts';
-import { selectMenu } from '../../redux/features/burger-slice.ts';
+import { useIsLg, useIsTablet } from '~/hooks/media-query.ts';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { user, users } from '~/mocks/users.ts';
+import { selectMenu } from '~/redux/features/burger-slice.ts';
+
 import { Breadcrumbs } from '../breadcrumbs';
 import { BurgerMenu } from '../burger-menu';
 import { Logo } from '../logo';

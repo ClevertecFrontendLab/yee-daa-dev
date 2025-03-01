@@ -1,9 +1,10 @@
 import { Box } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks';
-import { selectSearchLoading, setLoading } from '../../redux/features/search-slice';
-import { PageType } from '../../types/page';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { selectSearchLoading, setLoading } from '~/redux/features/search-slice';
+import { PageType } from '~/types/page';
+
 import { SearchBlock } from '../search-block';
 import { SearchLoader } from '../search-loader';
 import { SectionInfo } from '../section-info';
@@ -32,7 +33,7 @@ export const SectionHeader: FC<SectionHeaderProps> = ({ onSearch, pageType }) =>
         <Box
             className={isInputFocused ? styles.sectionHeader : ''}
             maxWidth={{ base: '100%', xl: '898px' }}
-            margin={'0 auto'}
+            margin='0 auto'
             pr={{ base: 4, xl: 16 }}
             pl={{ base: 4, xl: 16 }}
         >

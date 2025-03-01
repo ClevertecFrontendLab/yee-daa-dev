@@ -1,33 +1,34 @@
 import { Heading } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
 
-import { BlogSection } from '../../components/blog-section/blog-section.tsx';
-import { Carousel } from '../../components/carousel/carousel.tsx';
-import { FavouritesBlock } from '../../components/favourites-block/favourites-block.tsx';
-import { KitchenTabs } from '../../components/kitchen-tabs/kitchen-tabs.tsx';
-import { RecipeCardList } from '../../components/recipes-card-list/recipes-card-list.tsx';
-import { RelevantKitchen } from '../../components/relevant-kitchen';
-import { SectionBox } from '../../components/section-box/section-box.tsx';
-import { SectionHeader } from '../../components/section-header';
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { BlogSection } from '~/components/blog-section/blog-section.tsx';
+import { Carousel } from '~/components/carousel/carousel.tsx';
+import { FavouritesBlock } from '~/components/favourites-block/favourites-block.tsx';
+import { KitchenTabs } from '~/components/kitchen-tabs/kitchen-tabs.tsx';
+import { RecipeCardList } from '~/components/recipes-card-list/recipes-card-list.tsx';
+import { RelevantKitchen } from '~/components/relevant-kitchen';
+import { SectionBox } from '~/components/section-box/section-box.tsx';
+import { SectionHeader } from '~/components/section-header';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import {
     selectFilteredByAllergens,
     selectisfromFilter,
     selectSelectedAllergens,
     setFilteredByAllergens,
-} from '../../redux/features/allergens-slice.ts';
-import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
-import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
-import { selectFilteredRecipes, selectRecipes } from '../../redux/features/recipies-slice.ts';
+} from '~/redux/features/allergens-slice.ts';
+import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
+import { selectChoosenCategory } from '~/redux/features/choosen-category-slice.ts';
+import { selectFilteredRecipes, selectRecipes } from '~/redux/features/recipies-slice.ts';
 import {
     selectInputValue,
     selectMatchedRecipes,
     setInputValue,
     setMatchedRecipes,
-} from '../../redux/features/search-slice.ts';
-import { PageType } from '../../types/page.ts';
-import { Recipe } from '../../types/recipe.ts';
-import { filterRecipes } from '../../utils/filter-recipes.ts';
+} from '~/redux/features/search-slice.ts';
+import { PageType } from '~/types/page.ts';
+import { Recipe } from '~/types/recipe.ts';
+import { filterRecipes } from '~/utils/filter-recipes.ts';
+
 import { filterRecipesByTitle } from './helpers/filter-by-title.ts';
 import { getCategoryRecipes, getFavouritesRecipes } from './helpers/get-recipes.ts';
 

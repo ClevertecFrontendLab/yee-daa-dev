@@ -2,9 +2,9 @@ import { Stack } from '@chakra-ui/icons';
 import { Heading, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
-import { PageType } from '../../types/page.ts';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { selectChoosenCategory } from '~/redux/features/choosen-category-slice.ts';
+import { PageType } from '~/types/page.ts';
 
 export const SectionInfo: FC<{ pageType: PageType }> = ({ pageType }) => {
     const { title, description } = useAppSelector(selectChoosenCategory);

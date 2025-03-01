@@ -1,16 +1,16 @@
 import { Card, CardBody, CardHeader, Image, Stack, Tag, TagLabel, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { Recipe } from '../../types/recipe';
+import { Recipe } from '~/types/recipe';
 
 export const StepsBlock: FC<{ steps?: Recipe['steps'] }> = ({ steps }) =>
     steps?.map((step) => (
         <Card
             key={step.number}
-            variant={'outline'}
+            variant='outline'
             direction='row'
             minH={{ base: step?.image ? '128px' : '88px', xl: step?.image ? '244px' : '100px' }}
-            borderRadius={'--chakra-radii-lg'}
+            borderRadius='--chakra-radii-lg'
         >
             {step?.image && (
                 <Image

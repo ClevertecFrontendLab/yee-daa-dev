@@ -1,9 +1,10 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import { Outlet } from 'react-router';
 
-import { useIsTablet } from '../../hooks/media-query';
-import { useAppSelector } from '../../hooks/typed-react-redux-hooks';
-import { selectMenu } from '../../redux/features/burger-slice';
+import { useIsTablet } from '~/hooks/media-query';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { selectMenu } from '~/redux/features/burger-slice';
+
 import { Aside } from '../aside';
 import { FilterDrawer } from '../drawer';
 import { Footer } from '../footer';
@@ -42,7 +43,7 @@ const Layout = () => {
                 </GridItem>
                 {(isTablet && isOpen) || !isTablet ? (
                     <GridItem
-                        area={'nav'}
+                        area='nav'
                         position={{ base: 'absolute', xl: 'sticky' }}
                         className={`${styles.nav} ${isOpen ? styles.open : ''}`}
                     >

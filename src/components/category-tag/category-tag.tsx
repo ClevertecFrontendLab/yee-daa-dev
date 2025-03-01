@@ -2,9 +2,9 @@ import { Image, TagLabel } from '@chakra-ui/icons';
 import { HStack, Tag } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { categoriesMap } from '../../constants/categories.ts';
-import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
+import { categoriesMap } from '~/constants/categories.ts';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
 
 type Props = {
     color: string;

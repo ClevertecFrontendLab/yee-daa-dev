@@ -1,7 +1,7 @@
 import { Box, Card, SimpleGrid, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { Recipe } from '../../types/recipe';
+import { Recipe } from '~/types/recipe';
 
 const calories: Record<string, string> = {
     calorie: 'калорийность',
@@ -42,7 +42,7 @@ export const CalorieCard: FC<{ value?: Recipe['value'] }> = ({ value }) => (
                         gap={{ base: 10, sm: 0 }}
                     >
                         <Text
-                            color={'var(--chakra-colors-lime-800)'}
+                            color='var(--chakra-colors-lime-800)'
                             fontWeight={500}
                             fontSize={{ base: '2xl', sm: '40px' }}
                         >

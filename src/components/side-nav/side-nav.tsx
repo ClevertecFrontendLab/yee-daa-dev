@@ -2,10 +2,11 @@ import { Stack } from '@chakra-ui/icons';
 import { Accordion, Text } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
 
-import { useIsLg } from '../../hooks/media-query.ts';
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { closeMenu, selectIsClicked } from '../../redux/features/burger-slice';
-import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
+import { useIsLg } from '~/hooks/media-query.ts';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { closeMenu, selectIsClicked } from '~/redux/features/burger-slice';
+import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
+
 import { Breadcrumbs } from '../breadcrumbs/breadcrumbs.tsx';
 import { NavItem } from './nav-item.tsx';
 import styles from './side-nav.module.css';

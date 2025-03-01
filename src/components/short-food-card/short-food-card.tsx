@@ -3,13 +3,13 @@ import { Heading, HStack } from '@chakra-ui/react';
 import { FC } from 'react';
 import { NavLink } from 'react-router';
 
-import { categoriesMap } from '../../constants/categories.ts';
-import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
-import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
-import { selectRecipes } from '../../redux/features/recipies-slice.ts';
-import { Recipe } from '../../types/recipe.ts';
-import { getPath } from '../../utils/get-path.ts';
+import { categoriesMap } from '~/constants/categories.ts';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
+import { selectChoosenCategory } from '~/redux/features/choosen-category-slice.ts';
+import { selectRecipes } from '~/redux/features/recipies-slice.ts';
+import { Recipe } from '~/types/recipe.ts';
+import { getPath } from '~/utils/get-path.ts';
 
 export const ShortFoodCard: FC<Recipe> = ({ id, category, title }) => {
     const allRecipes = useAppSelector(selectRecipes);

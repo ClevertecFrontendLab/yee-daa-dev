@@ -3,18 +3,19 @@ import { AccordionButton, HStack, Text } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 
-import { categoriesMap } from '../../constants/categories.ts';
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { categoriesMap } from '~/constants/categories.ts';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import {
     clearSelectedAllergens,
     setFilteredByAllergens,
-} from '../../redux/features/allergens-slice.ts';
+} from '~/redux/features/allergens-slice.ts';
 import {
     selectChoosenCategory,
     setChoosenCategory,
-} from '../../redux/features/choosen-category-slice.ts';
-import { clearFilteredRecipes } from '../../redux/features/recipies-slice.ts';
-import { MenuItem } from '../../types/category.ts';
+} from '~/redux/features/choosen-category-slice.ts';
+import { clearFilteredRecipes } from '~/redux/features/recipies-slice.ts';
+import { MenuItem } from '~/types/category.ts';
+
 import { SubNavItem } from './sub-nav-item.tsx';
 
 export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }) => {

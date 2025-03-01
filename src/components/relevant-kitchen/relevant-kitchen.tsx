@@ -2,7 +2,8 @@ import { Stack } from '@chakra-ui/icons';
 import { Box, Grid, Heading, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { Recipe } from '../../types/recipe.ts';
+import { Recipe } from '~/types/recipe.ts';
+
 import { RelevantKitchenCard } from '../relevant-kitchen-card';
 import { ShortFoodCard } from '../short-food-card';
 import styles from './relevant-kitchen.module.css';

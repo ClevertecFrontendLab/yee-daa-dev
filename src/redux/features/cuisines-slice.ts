@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { cuisines } from '../../mocks/filters';
-import { FoodItem } from '../../types/food-item';
-import { AppState } from '../../types/store';
-import { toggleItemInArray } from '../../utils/toggle-items';
+import { cuisines } from '~/mocks/filters';
+import { FoodItem } from '~/types/food-item';
+import { AppState } from '~/types/store';
+import { toggleItemInArray } from '~/utils/toggle-items';
 
 type CuisinesState = {
     cuisines: FoodItem[];

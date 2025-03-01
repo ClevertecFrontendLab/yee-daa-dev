@@ -72,7 +72,7 @@ export const FilterDrawerFooter = () => {
                 bg='black'
                 color='white'
                 onClick={findRecipes}
-                size={'lg'}
+                size='lg'
                 sx={{
                     pointerEvents: disabled ? 'none' : 'auto',
                     bg: disabled ? 'gray.500' : 'black',

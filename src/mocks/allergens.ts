@@ -1,4 +1,4 @@
-import { Allergen } from '../types/allergens';
+import { Allergen } from '~/types/allergens';
 
 export const allergens: Allergen[] = [
     { label: 'Орехи', value: 'nuts' },

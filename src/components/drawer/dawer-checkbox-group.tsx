@@ -1,11 +1,12 @@
 import { Checkbox, Heading, Stack } from '@chakra-ui/react';
 
-import { FILTER_TITLES } from '../../constants/filters';
-import { useAppDispatch } from '../../hooks/typed-react-redux-hooks';
-import { useSelectedItems } from '../../hooks/use-selected-items';
-import { toggleMeat } from '../../redux/features/meats-slice';
-import { toggleSide } from '../../redux/features/sides-slice';
-import { FoodItem } from '../../types/food-item';
+import { FILTER_TITLES } from '~/constants/filters';
+import { useAppDispatch } from '~/hooks/typed-react-redux-hooks';
+import { useSelectedItems } from '~/hooks/use-selected-items';
+import { toggleMeat } from '~/redux/features/meats-slice';
+import { toggleSide } from '~/redux/features/sides-slice';
+import { FoodItem } from '~/types/food-item';
+
 import styles from './drawer.module.css';
 
 type CheckboxGroupProps = {

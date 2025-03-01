@@ -3,14 +3,15 @@ import { Box, Card, CardBody, CardHeader, Heading, Text } from '@chakra-ui/react
 import { FC } from 'react';
 import { NavLink } from 'react-router';
 
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
-import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
-import { setSelectedRecipe } from '../../redux/features/choosen-recipe-slice.ts';
-import { selectRecipes } from '../../redux/features/recipies-slice.ts';
-import { selectInputValue } from '../../redux/features/search-slice.ts';
-import { Recipe } from '../../types/recipe.ts';
-import { getPath } from '../../utils/get-path.ts';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
+import { selectChoosenCategory } from '~/redux/features/choosen-category-slice.ts';
+import { setSelectedRecipe } from '~/redux/features/choosen-recipe-slice.ts';
+import { selectRecipes } from '~/redux/features/recipies-slice.ts';
+import { selectInputValue } from '~/redux/features/search-slice.ts';
+import { Recipe } from '~/types/recipe.ts';
+import { getPath } from '~/utils/get-path.ts';
+
 import { CardStat } from '../card-stat/card-stat.tsx';
 import { CategoryTag } from '../category-tag';
 import { HighlightText } from '../highlight/highlight-text.tsx';
@@ -43,7 +44,7 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
                     maxWidth='150px'
                     zIndex={2}
                 >
-                    <CategoryTag category={category} color={'lime.50'} />
+                    <CategoryTag category={category} color='lime.50' />
                 </Box>
                 <Box
                     position='absolute'
@@ -64,7 +65,7 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
                     height='100%'
                     objectFit='cover'
                     position='absolute'
-                    borderRadius={'var(--chakra-radii-lg)'}
+                    borderRadius='var(--chakra-radii-lg)'
                 />
             </Box>
 

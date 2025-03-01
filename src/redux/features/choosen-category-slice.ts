@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { MenuItem } from '../../types/category';
-import { AppState } from '../../types/store';
+import { MenuItem } from '~/types/category';
+import { AppState } from '~/types/store';
 
 export type ChoosenCategory = MenuItem & {
     choosenSubCategory: MenuItem | null;

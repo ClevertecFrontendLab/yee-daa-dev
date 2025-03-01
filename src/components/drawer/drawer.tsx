@@ -12,28 +12,25 @@ import {
     TagLabel,
 } from '@chakra-ui/react';
 
-import { FILTER_TITLES } from '../../constants/filters';
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks';
-import { deselectAllergen, selectSelectedAllergens } from '../../redux/features/allergens-slice';
-import {
-    selectAuthors,
-    selectSelectedAuthors,
-    toggleAuthor,
-} from '../../redux/features/authors-slice';
+import { FILTER_TITLES } from '~/constants/filters';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { deselectAllergen, selectSelectedAllergens } from '~/redux/features/allergens-slice';
+import { selectAuthors, selectSelectedAuthors, toggleAuthor } from '~/redux/features/authors-slice';
 import {
     selectCategoriesMenu,
     selectSelectedCategories,
     toggleCategory,
-} from '../../redux/features/categories-slice';
+} from '~/redux/features/categories-slice';
 import {
     selectCuisines,
     selectSelectedCuisines,
     toggleCuisine,
-} from '../../redux/features/cuisines-slice';
-import { closeDrawer, selectDrawer } from '../../redux/features/drawer';
-import { selectMeats, selectSelectedMeats, toggleMeat } from '../../redux/features/meats-slice';
-import { selectSelectedSides, selectSides, toggleSide } from '../../redux/features/sides-slice';
-import { TagType } from '../../types/type-tags';
+} from '~/redux/features/cuisines-slice';
+import { closeDrawer, selectDrawer } from '~/redux/features/drawer';
+import { selectMeats, selectSelectedMeats, toggleMeat } from '~/redux/features/meats-slice';
+import { selectSelectedSides, selectSides, toggleSide } from '~/redux/features/sides-slice';
+import { TagType } from '~/types/type-tags';
+
 import { AllergenSelect } from '../search-block/allergen-select';
 import { DrawerCheckboxGroup } from './dawer-checkbox-group';
 import styles from './drawer.module.css';
@@ -171,8 +168,8 @@ export const FilterDrawer = () => {
                             const type = determineTagType(tag);
                             return (
                                 <Tag
-                                    bg={'var(--chakra-colors-lime-100)'}
-                                    border={'1px solid var(--chakra-colors-lime-400)'}
+                                    bg='var(--chakra-colors-lime-100)'
+                                    border='1px solid var(--chakra-colors-lime-400)'
                                     size='md'
                                     key={tag}
                                     variant='solid'

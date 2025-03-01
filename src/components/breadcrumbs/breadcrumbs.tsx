@@ -2,15 +2,15 @@ import { BreadcrumbLink, ChevronRightIcon } from '@chakra-ui/icons';
 import { Box, Breadcrumb, BreadcrumbItem } from '@chakra-ui/react';
 import { Link, useLocation } from 'react-router';
 
-import { Paths } from '../../constants/path.ts';
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { closeMenu } from '../../redux/features/burger-slice.ts';
-import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
+import { Paths } from '~/constants/path.js';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { closeMenu } from '~/redux/features/burger-slice.ts';
+import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
 import {
     clearChoosenCategory,
     setChoosenCategory,
-} from '../../redux/features/choosen-category-slice.ts';
-import { selectRecipes } from '../../redux/features/recipies-slice.ts';
+} from '~/redux/features/choosen-category-slice.ts';
+import { selectRecipes } from '~/redux/features/recipies-slice.ts';
 
 export const Breadcrumbs = () => {
     const { pathname } = useLocation();

@@ -1,7 +1,8 @@
 import { SimpleGrid } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { Recipe } from '../../types/recipe';
+import { Recipe } from '~/types/recipe';
+
 import { FoodCard } from '../food-card';
 
 type CardListProps = {

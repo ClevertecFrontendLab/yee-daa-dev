@@ -1,13 +1,14 @@
 import { FormControl, Menu, Stack } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '../../../hooks/typed-react-redux-hooks';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import {
     clearSelectedAllergens,
     selectSelectedAllergens,
     setisfromFilter,
-} from '../../../redux/features/allergens-slice';
-import { setInputValue } from '../../../redux/features/search-slice';
+} from '~/redux/features/allergens-slice';
+import { setInputValue } from '~/redux/features/search-slice';
+
 import { SelectMenuButton } from './menu-button';
 import { SelectMenuList } from './menu-list';
 import { Switcher } from './switcher';

@@ -1,13 +1,14 @@
 import { Button, Card, CardBody, CardHeader, Heading, HStack, Image, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { icons } from '../../constants/icons';
-import { Recipe } from '../../types/recipe';
+import { icons } from '~/constants/icons';
+import { Recipe } from '~/types/recipe';
+
 import { FollowersIcon } from '../icons/followers-icon';
 import { SubscribeIcon } from '../icons/subcribe-icon';
 
 export const AuthorCard: FC<{ author?: Recipe['author'] }> = ({ author }) => (
-    <Card bg={'var(--chakra-colors-lime-300)'} p={{ base: 3, sm: 6 }} flexDirection='row' gap={4}>
+    <Card bg='var(--chakra-colors-lime-300)' p={{ base: 3, sm: 6 }} flexDirection='row' gap={4}>
         <CardHeader p={0}>
             <Image src={author?.imageUrl} alt={author?.login} w='96px' h='96px' objectFit='cover' />
         </CardHeader>

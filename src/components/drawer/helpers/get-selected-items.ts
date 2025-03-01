@@ -1,7 +1,7 @@
-import { FILTER_TITLES } from '../../../constants/filters';
-import { MenuItem } from '../../../types/category';
-import { FoodItem } from '../../../types/food-item';
-import { UserProps } from '../../../types/user';
+import { FILTER_TITLES } from '~/constants/filters';
+import { MenuItem } from '~/types/category';
+import { FoodItem } from '~/types/food-item';
+import { UserProps } from '~/types/user';
 
 type SelectedItems = {
     selectedCategories: string[];
@@ -36,32 +36,29 @@ export const getSelectedItems = (filterTitle: string, selectedItems: SelectedIte
     }
 };
 
-export const getTranslatedMenuItem = (selectedMenuItems: string[], allMenuItems: MenuItem[]) => {
-    return selectedMenuItems
+export const getTranslatedMenuItem = (selectedMenuItems: string[], allMenuItems: MenuItem[]) =>
+    selectedMenuItems
         .map((selected) => {
             const item = allMenuItems.find((it) => it.category === selected);
             return item ? item.title : null;
         })
         .filter(Boolean);
-};
 
-export const getTranslatedFoodItem = (selectedFoodItems: string[], allFoodItems: FoodItem[]) => {
-    return selectedFoodItems
+export const getTranslatedFoodItem = (selectedFoodItems: string[], allFoodItems: FoodItem[]) =>
+    selectedFoodItems
         .map((selected) => {
             const item = allFoodItems.find((it) => it.value === selected);
             return item ? item.label : null;
         })
         .filter(Boolean);
-};
 
-export const getTranslatedAuthor = (selectedAuthors: string[], allAuthors: UserProps[]) => {
-    return selectedAuthors
+export const getTranslatedAuthor = (selectedAuthors: string[], allAuthors: UserProps[]) =>
+    selectedAuthors
         .map((selected) => {
             const author = allAuthors.find((au) => au.login === selected);
             return author ? `${author.lastName} ${author.firstName}` : null;
         })
         .filter(Boolean);
-};
 
 export const translateSelectedItems = (
     filterTitle: string,

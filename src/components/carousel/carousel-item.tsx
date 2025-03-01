@@ -3,13 +3,14 @@ import { Box, Card, CardBody, CardHeader, Heading, HStack, Text } from '@chakra-
 import { FC } from 'react';
 import { NavLink } from 'react-router';
 
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
-import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
-import { setSelectedRecipe } from '../../redux/features/choosen-recipe-slice.ts';
-import { selectRecipes } from '../../redux/features/recipies-slice.ts';
-import { Recipe } from '../../types/recipe.ts';
-import { getPath } from '../../utils/get-path.ts';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
+import { selectChoosenCategory } from '~/redux/features/choosen-category-slice.ts';
+import { setSelectedRecipe } from '~/redux/features/choosen-recipe-slice.ts';
+import { selectRecipes } from '~/redux/features/recipies-slice.ts';
+import { Recipe } from '~/types/recipe.ts';
+import { getPath } from '~/utils/get-path.ts';
+
 import { CardStat } from '../card-stat/card-stat.tsx';
 import { CategoryTag } from '../category-tag';
 
@@ -48,7 +49,7 @@ export const CarouselItem: FC<{ recipe: Recipe }> = ({ recipe }) => {
                         left={1}
                         p={1}
                         display={{ base: 'block', md: 'none' }}
-                        width={'100%'}
+                        width='100%'
                     >
                         <CategoryTag category={category} color='lime.150' />
                     </Box>

@@ -1,5 +1,5 @@
-import { ChoosenCategory } from '../../../redux/features/choosen-category-slice';
-import { Recipe } from '../../../types/recipe';
+import { ChoosenCategory } from '~/redux/features/choosen-category-slice';
+import { Recipe } from '~/types/recipe';
 
 export const getCategoryRecipes = (recipes: Recipe[], selectedCategory: ChoosenCategory) =>
     recipes.filter((recipe) => {

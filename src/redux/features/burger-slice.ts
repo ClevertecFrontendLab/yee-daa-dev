@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { AppState } from '../../types/store';
+import { AppState } from '~/types/store';
 
 const initialState = {
     isOpen: false,

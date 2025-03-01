@@ -9,15 +9,16 @@ import {
 } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
-import { FILTER_TITLES } from '../../constants/filters';
-import { useAppDispatch } from '../../hooks/typed-react-redux-hooks';
-import { useSelectedItems } from '../../hooks/use-selected-items';
-import { toggleAuthor } from '../../redux/features/authors-slice';
-import { toggleCategory } from '../../redux/features/categories-slice';
-import { toggleCuisine } from '../../redux/features/cuisines-slice';
-import { MenuItem } from '../../types/category';
-import { FoodItem } from '../../types/food-item';
-import { UserProps } from '../../types/user';
+import { FILTER_TITLES } from '~/constants/filters';
+import { useAppDispatch } from '~/hooks/typed-react-redux-hooks';
+import { useSelectedItems } from '~/hooks/use-selected-items';
+import { toggleAuthor } from '~/redux/features/authors-slice';
+import { toggleCategory } from '~/redux/features/categories-slice';
+import { toggleCuisine } from '~/redux/features/cuisines-slice';
+import { MenuItem } from '~/types/category';
+import { FoodItem } from '~/types/food-item';
+import { UserProps } from '~/types/user';
+
 import { SelectedItems } from '../search-block/allergen-select/selected-allergens';
 
 type MenuItemProps = {
@@ -58,7 +59,7 @@ export const DrawerMenu: FC<MenuItemProps> = ({ items, filterTitle }) => {
                 fontWeight={400}
                 fontSize='md'
                 outline='none'
-                background={'--chakra-ring-offset-color'}
+                background='--chakra-ring-offset-color'
                 border='1px solid var(--chakra-colors-blackAlpha-200)'
                 textAlign='left'
                 onClick={() => setIsBtnOpen(!isBtnOpen)}

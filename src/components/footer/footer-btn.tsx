@@ -3,7 +3,8 @@ import { Text } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import { Link, useLocation } from 'react-router';
 
-import { Paths } from '../../constants/path.ts';
+import { Paths } from '~/constants/path.js';
+
 import styles from './footer.module.css';
 
 type Props = {

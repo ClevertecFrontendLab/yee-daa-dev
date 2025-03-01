@@ -1,5 +1,5 @@
-import { FoodItem } from '../types/food-item';
-import { UserProps } from '../types/user';
+import { FoodItem } from '~/types/food-item';
+import { UserProps } from '~/types/user';
 
 export const cuisines: FoodItem[] = [
     { id: '1', value: 'American', label: 'Американская кухня' },

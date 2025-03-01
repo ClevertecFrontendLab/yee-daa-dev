@@ -6,8 +6,9 @@ import { useRef } from 'react';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 
-import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { selectRecipes } from '../../redux/features/recipies-slice.ts';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { selectRecipes } from '~/redux/features/recipies-slice.ts';
+
 import { CarouselItem } from './carousel-item.tsx';
 
 export const Carousel = () => {
