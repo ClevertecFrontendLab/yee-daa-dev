@@ -1,10 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { navMenu } from '~/mocks/nav-menu';
 import { MenuItem } from '~/types/category';
 import { AppState } from '~/types/store';
 import { toggleItemInArray } from '~/utils/toggle-items';
-
-import { navMenu } from '../../mocks/nav-menu';
 
 type CategoriesState = {
     menu: MenuItem[];

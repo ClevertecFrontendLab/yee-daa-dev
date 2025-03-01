@@ -12,7 +12,7 @@ import { RecipePage } from '~/pages/recipe-page/recipe-page.tsx';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
 import { MenuItem } from '~/types/category.ts';
 
-const Layout = lazy(() => import('../components/layout/layout.tsx'));
+const Layout = lazy(() => import('~/components/layout/layout.tsx'));
 
 const renderRoutes = (routes: MenuItem[], basePath: string = ''): ReactNode =>
     routes.map((item): ReactNode => {
