@@ -19,7 +19,7 @@ export const categoryApi = createApi({
             query: () => ({ url: ApiEndpoints.Category }),
             transformResponse: (response: CategoriesRawResponse): CategoriesResponse =>
                 response.map((resp) => ({ ...resp, id: resp._id })),
-            //TODO поменять под нотификашку с дизайна константы ошибок
+
             transformErrorResponse: (response) => ({
                 ...response,
                 [NOTIFICATION_STATE_NAME]: {
@@ -35,7 +35,7 @@ export const categoryApi = createApi({
                 ...response,
                 id: response._id,
             }),
-            //TODO поменять под нотификашку с дизайна константы ошибок
+
             transformErrorResponse: (response) => ({
                 ...response,
                 [NOTIFICATION_STATE_NAME]: {

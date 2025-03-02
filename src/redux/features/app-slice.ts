@@ -24,6 +24,10 @@ export const appSlice = createSlice({
         setNotificationData: (state, { payload }: PayloadAction<NotificationData>) => {
             state.notificationData = payload;
         },
+        resetNotification: (state) => {
+            state.isNotificationShowed = false;
+            state.notificationData = { status: 'error', description: '', title: '' };
+        },
     },
     selectors: {
         appLoadingSelector: (state) => state.isLoading,
@@ -34,6 +38,7 @@ export const appSlice = createSlice({
 
 export const appReducer = appSlice.reducer;
 
-export const { setAppLoading, setNotificationData, setNotificationVisibility } = appSlice.actions;
+export const { setAppLoading, setNotificationData, setNotificationVisibility, resetNotification } =
+    appSlice.actions;
 export const { appLoadingSelector, notificationDataSelector, notificationShowedSelector } =
     appSlice.selectors;

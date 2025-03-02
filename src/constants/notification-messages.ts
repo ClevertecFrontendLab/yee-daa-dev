@@ -1,4 +1,4 @@
 export enum NotificationMessages {
-    ERROR_GENERAL_TITLE = 'Произошла непредвиденная ошибка.',
-    ERROR_GENERAL_DESCRIPTION = 'Пожалуйста, повторите запрос позже.',
+    ERROR_GENERAL_TITLE = 'Ошибка сервера',
+    ERROR_GENERAL_DESCRIPTION = 'Попробуйте поискать снова попозже',
 }

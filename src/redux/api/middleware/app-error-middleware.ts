@@ -13,6 +13,7 @@ export const appErrorMiddleware: Middleware =
                 const {
                     appNotificationState: { status, title, description },
                 } = action.payload as WithNotificationState<unknown>;
+                dispatch(setNotificationVisibility(false));
                 dispatch(setNotificationData({ status, title, description }));
                 dispatch(setNotificationVisibility(true));
             }
