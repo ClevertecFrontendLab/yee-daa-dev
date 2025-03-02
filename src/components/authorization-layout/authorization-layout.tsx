@@ -7,6 +7,8 @@ import {
     TabIndicator,
     TabList,
     Tabs,
+    theme,
+    useMediaQuery,
     Wrap,
     WrapItem,
 } from '@chakra-ui/react';
@@ -15,11 +17,7 @@ import { Outlet, useMatch, useNavigate } from 'react-router';
 
 import { Paths } from '../../constants/path';
 import { Logo } from '../logo';
-
-export const Label = {
-    Rigths: 'Все права защищены, ученический файл, ©Клевер Технолоджи, 2025',
-    BestDishes: 'Лучший сервис для ваших кулинарных блюд',
-} as const;
+import { Label } from './label';
 
 const TabNavigation = [Paths.SIGN_IN, Paths.SIGN_UP] as const;
 
@@ -28,6 +26,7 @@ const AuthorizationLayout: FC = () => {
     const [tabIndex, setTabIndex] = useState<number>(match ? 0 : 1);
 
     const navigate = useNavigate();
+    const [isMd] = useMediaQuery(`(min-width: ${theme.breakpoints.md})`);
 
     const handleTabsChange = (index: number) => {
         setTabIndex(index);
@@ -41,10 +40,10 @@ const AuthorizationLayout: FC = () => {
                     as='section'
                     pb={75}
                     flex={1}
-                    bgGradient='linear(to-bl, lime.100, #29813F 150%)'
+                    bgGradient='linear(to-bl, lime.100, #29813F 170%)'
                 >
-                    <Container maxW={493}>
-                        <Logo height={64} mb={20} />
+                    <Container maxW={{ base: 387, md: 493 }}>
+                        <Logo height={isMd ? 64 : 38} hideMd={false} mb={{ base: 16, md: 20 }} />
 
                         <Tabs
                             variant='auth'
@@ -72,9 +71,10 @@ const AuthorizationLayout: FC = () => {
                     bgRepeat='no-repeat'
                     bgPosition='50% 50%'
                     bgSize='cover'
+                    display={{ base: 'none', lg: 'block' }}
                 />
             </Box>
-            <Box as='footer' p={{ base: 30 }} pos='fixed' bottom={0} w='full'>
+            <Box as='footer' p={{ base: 4, sm: 30 }} pos='fixed' bottom={0} w='full'>
                 <Wrap spacing='4' justify='space-between'>
                     <WrapItem>
                         <Heading as='h6' fontSize='xs' fontWeight='semibold'>
@@ -82,7 +82,7 @@ const AuthorizationLayout: FC = () => {
                         </Heading>
                     </WrapItem>
 
-                    <WrapItem>
+                    <WrapItem display={{ base: 'none', lg: 'block' }}>
                         <Heading as='h6' fontSize='xs' fontWeight='semibold'>
                             &ndash;&nbsp;{Label.BestDishes}
                         </Heading>

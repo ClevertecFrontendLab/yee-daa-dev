@@ -16,6 +16,10 @@ const authVariant = definePartsStyle(({ theme }) => ({
         _placeholder: {
             color: theme.colors.lime[800],
         },
+        _invalid: {
+            borderColor: theme.colors.red[500],
+            boxShadow: `0 0 0 1px ${theme.colors.red[500]}`,
+        },
     },
 }));
 

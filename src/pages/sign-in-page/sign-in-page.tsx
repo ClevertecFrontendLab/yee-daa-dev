@@ -14,21 +14,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { NavLink } from 'react-router';
-import * as yup from 'yup';
 
-const schema = yup.object().shape({
-    email: yup.string().required('Обязательное поле'),
-    password: yup.string().required('Обязательное поле'),
-});
-
-const Label = {
-    LoginLabel: 'Логин для входа на сайт',
-    LoginPlaceholder: 'Введите логин',
-    PasswordLabel: 'Пароль',
-    PasswordPlaceholder: 'Пароль для сайта',
-    LoginBtn: 'Войти',
-    ForgotPassword: 'Забыли логин или пароль?',
-} as const;
+import { SignInSchema } from './constants/sign-in-form';
+import { Label } from './label';
+import { SignInForm } from './types/sign-in-form';
 
 const SignInPage: FC = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -37,8 +26,8 @@ const SignInPage: FC = () => {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
-    } = useForm({
-        resolver: yupResolver(schema),
+    } = useForm<SignInForm>({
+        resolver: yupResolver(SignInSchema),
     });
 
     const showPassword = () => setPasswordVisible(true);
@@ -52,7 +41,12 @@ const SignInPage: FC = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isInvalid={!!errors.email}>
                 <FormLabel>{Label.LoginLabel}</FormLabel>
-                <Input variant='auth' placeholder={Label.LoginPlaceholder} {...register('email')} />
+                <Input
+                    variant='auth'
+                    size='lg'
+                    placeholder={Label.LoginPlaceholder}
+                    {...register('email')}
+                />
                 <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
             </FormControl>
 
@@ -60,13 +54,14 @@ const SignInPage: FC = () => {
                 <FormLabel>{Label.PasswordLabel}</FormLabel>
 
                 <InputGroup>
-                    <InputRightElement>
+                    <InputRightElement height='48px'>
                         <IconButton
                             aria-label='password-visibility'
                             onMouseDown={showPassword}
                             onMouseUp={hidePassword}
                             onMouseLeave={hidePassword}
                             variant='unstyled'
+                            height='100%'
                         >
                             {passwordVisible ? <ViewIcon /> : <ViewOffIcon />}
                         </IconButton>
@@ -74,6 +69,7 @@ const SignInPage: FC = () => {
 
                     <Input
                         variant='auth'
+                        size='lg'
                         type={passwordVisible ? 'text' : 'password'}
                         placeholder={Label.PasswordPlaceholder}
                         {...register('password')}

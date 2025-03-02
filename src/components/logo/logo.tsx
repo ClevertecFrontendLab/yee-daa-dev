@@ -10,9 +10,10 @@ const DEFAULT_HEIGHT = 32;
 
 type LogoProps = FlexProps & {
     height?: number;
+    hideMd?: boolean;
 };
 
-export const Logo: FC<LogoProps> = ({ height = DEFAULT_HEIGHT, ...restProps }) => {
+export const Logo: FC<LogoProps> = ({ height = DEFAULT_HEIGHT, hideMd = true, ...restProps }) => {
     return (
         <Flex
             as={NavLink}
@@ -58,7 +59,7 @@ export const Logo: FC<LogoProps> = ({ height = DEFAULT_HEIGHT, ...restProps }) =
                 </svg>
             </Box>
 
-            <Box display={{ base: 'none', md: 'block' }} h='80%'>
+            <Box display={{ base: hideMd ? 'none' : 'block', md: 'block' }} h='80%'>
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
                     width='100%'

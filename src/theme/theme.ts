@@ -30,6 +30,7 @@ export const theme = extendTheme({
         mono: `Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"`,
     },
     breakpoints: {
+        xs: '360px',
         sm: '560px',
         md: '768px',
         xmd: '896px',
@@ -38,7 +39,6 @@ export const theme = extendTheme({
         xxl: '1280px',
         '2xl': '1536px',
         '3xl': '1744px',
-        // в px жестко, чтобы не зависело от em - а то м.б. непредсказуемо у children блоков
     },
     components: {
         Tabs: tabsTheme,
