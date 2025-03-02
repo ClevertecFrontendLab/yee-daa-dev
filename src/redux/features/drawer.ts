@@ -1,7 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { AppState } from '~/types/store';
-
 export const drawerSlice = createSlice({
     name: 'drawer',
     initialState: {
@@ -15,8 +13,13 @@ export const drawerSlice = createSlice({
             state.isOpen = false;
         },
     },
+    selectors: {
+        selectDrawer: (state) => state.isOpen,
+    },
 });
 
 export const drawerReducer = drawerSlice.reducer;
-export const selectDrawer = (state: AppState) => state.drawer.isOpen;
+
+export const { selectDrawer } = drawerSlice.selectors;
+
 export const { openDrawer, closeDrawer } = drawerSlice.actions;

@@ -41,7 +41,3 @@ export const store = configureStore({
         getDefaultMiddleware().concat(categoryApi.middleware, appErrorMiddleware),
     devTools: isDevMode,
 });
-
-export const RootState = store.getState;
-
-export type ApplicationState = ReturnType<typeof RootState>;

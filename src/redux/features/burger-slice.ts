@@ -1,7 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { AppState } from '~/types/store';
-
 const initialState = {
     isOpen: false,
     isClicked: false,
@@ -27,10 +25,14 @@ export const menuSlice = createSlice({
             state.isClicked = action.payload;
         },
     },
+    selectors: {
+        selectMenu: (state) => state.isOpen,
+        selectIsClicked: (state) => state.isClicked,
+    },
 });
 
 export const { toggleMenu, openMenu, closeMenu, setClicked } = menuSlice.actions;
-export const selectMenu = (state: AppState) => state.menu.isOpen;
-export const selectIsClicked = (state: AppState) => state.menu.isClicked;
+
+export const { selectIsClicked, selectMenu } = menuSlice.selectors;
 
 export const menuReducer = menuSlice.reducer;

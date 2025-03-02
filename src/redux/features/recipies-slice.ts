@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { recipes } from '~/mocks/recipes';
 import { Recipe } from '~/types/recipe';
-import { AppState } from '~/types/store';
 
 type RecipesState = {
     recipes: Recipe[];
@@ -34,12 +33,15 @@ export const recipesSlice = createSlice({
             state.filteredRecipes = [];
         },
     },
+    selectors: {
+        recipesLoading: (state) => state.isLoading,
+        selectRecipes: (state) => state.recipes,
+        selectFilteredRecipes: (state) => state.filteredRecipes,
+    },
 });
-
-export const recipesLoading = (state: AppState) => state.recipes.isLoading;
-export const selectRecipes = (state: AppState) => state.recipes.recipes;
-export const selectFilteredRecipes = (state: AppState) => state.recipes.filteredRecipes;
 
 export const recipesReducer = recipesSlice.reducer;
 export const { setLoading, setRecipes, setFilteredRecipes, clearFilteredRecipes } =
     recipesSlice.actions;
+
+export const { recipesLoading, selectFilteredRecipes, selectRecipes } = recipesSlice.selectors;

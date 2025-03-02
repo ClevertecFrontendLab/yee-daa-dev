@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { Recipe } from '~/types/recipe';
-import { AppState } from '~/types/store';
 
 type SearchState = {
     inputValue: string;
@@ -29,11 +28,15 @@ export const searchSlice = createSlice({
             state.matchedRecipes = action.payload;
         },
     },
+    selectors: {
+        selectInputValue: (state) => state.inputValue,
+        selectSearchLoading: (state) => state.isLoading,
+        selectMatchedRecipes: (state) => state.matchedRecipes,
+    },
 });
-
-export const selectInputValue = (state: AppState) => state.search.inputValue;
-export const selectSearchLoading = (state: AppState) => state.search.isLoading;
-export const selectMatchedRecipes = (state: AppState) => state.search.matchedRecipes;
 
 export const { setInputValue, setLoading, setMatchedRecipes } = searchSlice.actions;
 export const searchReducer = searchSlice.reducer;
+
+export const { selectInputValue, selectMatchedRecipes, selectSearchLoading } =
+    searchSlice.selectors;

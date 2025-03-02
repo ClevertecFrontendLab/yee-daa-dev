@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { meats } from '~/mocks/filters';
 import { FoodItem } from '~/types/food-item';
-import { AppState } from '~/types/store';
 import { toggleItemInArray } from '~/utils/toggle-items';
 
 type MeatsState = {
@@ -37,11 +36,14 @@ export const meatsSlice = createSlice({
             state.isLoading = action.payload;
         },
     },
+    selectors: {
+        selectMeats: (state) => state.meats,
+        selectSelectedMeats: (state) => state.selectedMeats,
+        selectIsLoading: (state) => state.isLoading,
+    },
 });
 
-export const selectMeats = (state: AppState) => state.meats.meats;
-export const selectSelectedMeats = (state: AppState) => state.meats.selectedMeats;
-export const selectIsLoading = (state: AppState) => state.meats.isLoading;
+export const { selectIsLoading, selectMeats, selectSelectedMeats } = meatsSlice.selectors;
 
 export const { setMeats, toggleMeat, setLoading, clearSelectedMeats } = meatsSlice.actions;
 

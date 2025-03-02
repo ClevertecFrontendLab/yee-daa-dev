@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { authors } from '~/mocks/filters';
-import { AppState } from '~/types/store';
 import { UserProps } from '~/types/user';
 import { toggleItemInArray } from '~/utils/toggle-items';
 
@@ -37,12 +36,15 @@ export const authorsSlice = createSlice({
             state.isLoading = action.payload;
         },
     },
+    selectors: {
+        selectAuthors: (state) => state.authors,
+        selectSelectedAuthors: (state) => state.selectedAuthors,
+        selectIsLoading: (state) => state.isLoading,
+    },
 });
 
-export const selectAuthors = (state: AppState) => state.authors.authors;
-export const selectSelectedAuthors = (state: AppState) => state.authors.selectedAuthors;
-export const selectIsLoading = (state: AppState) => state.authors.isLoading;
-
 export const { setAuthors, toggleAuthor, clearSelectedAuthors } = authorsSlice.actions;
+
+export const { selectAuthors, selectIsLoading, selectSelectedAuthors } = authorsSlice.selectors;
 
 export const authorsReducer = authorsSlice.reducer;

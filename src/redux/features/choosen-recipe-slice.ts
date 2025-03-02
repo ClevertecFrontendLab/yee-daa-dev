@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { Recipe } from '~/types/recipe';
-import { AppState } from '~/types/store';
 
 type SelectedRecipeState = {
     selectedRecipe: Recipe | null;
@@ -22,9 +21,13 @@ export const selectedRecipeSlice = createSlice({
             state.selectedRecipe = null;
         },
     },
+    selectors: {
+        selectSelectedRecipe: (state) => state.selectedRecipe,
+    },
 });
 
 export const { setSelectedRecipe, clearSelectedRecipe } = selectedRecipeSlice.actions;
 
-export const selectSelectedRecipe = (state: AppState) => state.selectedRecipe.selectedRecipe;
+export const { selectSelectedRecipe } = selectedRecipeSlice.selectors;
+
 export const selectedRecipeReducer = selectedRecipeSlice.reducer;

@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { navMenu } from '~/mocks/nav-menu';
 import { MenuItem } from '~/types/category';
-import { AppState } from '~/types/store';
 import { toggleItemInArray } from '~/utils/toggle-items';
 
 type CategoriesState = {
@@ -30,12 +29,17 @@ export const categoriesSlice = createSlice({
             state.isLoading = action.payload;
         },
     },
+    selectors: {
+        selectCategoriesLoading: (state) => state.isLoading,
+        selectCategoriesMenu: (state) => state.menu,
+        selectSelectedCategories: (state) => state.selectedCategories,
+    },
 });
 
-export const selectCategoriesLoading = (state: AppState) => state.categories.isLoading;
-export const selectCategoriesMenu = (state: AppState) => state.categories.menu;
-export const selectSelectedCategories = (state: AppState) => state.categories.selectedCategories;
-
 export const categoriesReducer = categoriesSlice.reducer;
+
 export const { setCategories, toggleCategory, clearSelectedCategories, setLoading } =
     categoriesSlice.actions;
+
+export const { selectCategoriesLoading, selectCategoriesMenu, selectSelectedCategories } =
+    categoriesSlice.selectors;

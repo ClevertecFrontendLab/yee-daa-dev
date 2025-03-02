@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { MenuItem } from '~/types/category';
-import { AppState } from '~/types/store';
 
 export type ChoosenCategory = MenuItem & {
     choosenSubCategory: MenuItem | null;
@@ -25,9 +24,13 @@ export const choosenCategorySlice = createSlice({
             return initialState;
         },
     },
+    selectors: {
+        selectChoosenCategory: (state) => state.choosenSubCategory,
+    },
 });
 
-export const selectChoosenCategory = (state: AppState) => state.choosenCategory;
-
 export const { setChoosenCategory, clearChoosenCategory } = choosenCategorySlice.actions;
+
+export const { selectChoosenCategory } = choosenCategorySlice.selectors;
+
 export const choosenCategoryReducer = choosenCategorySlice.reducer;

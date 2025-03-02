@@ -3,7 +3,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { allergens } from '~/mocks/allergens';
 import { Allergen } from '~/types/allergens';
 import { Recipe } from '~/types/recipe';
-import { AppState } from '~/types/store';
 
 type AllergensState = {
     allergens: Allergen[];
@@ -63,13 +62,14 @@ export const allergenSlice = createSlice({
             state.isLoading = action.payload;
         },
     },
+    selectors: {
+        selectAllergens: (state) => state.allergens,
+        selectSelectedAllergens: (state) => state.selectedAllergens,
+        selectFilteredByAllergens: (state) => state.filteredByAllergens,
+        selectisfromFilter: (state) => state.isfromFilter,
+        selectIsLoading: (state) => state.isLoading,
+    },
 });
-
-export const selectAllergens = (state: AppState) => state.allergens.allergens;
-export const selectSelectedAllergens = (state: AppState) => state.allergens.selectedAllergens;
-export const selectFilteredByAllergens = (state: AppState) => state.allergens.filteredByAllergens;
-export const selectisfromFilter = (state: AppState) => state.allergens.isfromFilter;
-export const selectIsLoading = (state: AppState) => state.allergens.isLoading;
 
 export const {
     setAllergens,
@@ -82,4 +82,13 @@ export const {
     clearFilteredByAllergens,
     setisfromFilter,
 } = allergenSlice.actions;
+
+export const {
+    selectAllergens,
+    selectFilteredByAllergens,
+    selectIsLoading,
+    selectSelectedAllergens,
+    selectisfromFilter,
+} = allergenSlice.selectors;
+
 export const allergenReducer = allergenSlice.reducer;

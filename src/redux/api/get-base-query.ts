@@ -5,7 +5,8 @@ import {
     FetchBaseQueryError,
 } from '@reduxjs/toolkit/query';
 
-import { ApplicationState } from '../configure-store';
+import { AppState } from '~/types/store';
+
 import { API_BASE_URL, API_DEV_URL } from './constants';
 
 const isDevMode = process.env.NODE_ENV === 'development';
@@ -13,7 +14,7 @@ const isDevMode = process.env.NODE_ENV === 'development';
 const baseQueryWithAuth = fetchBaseQuery({
     baseUrl: isDevMode ? API_DEV_URL : API_BASE_URL,
     prepareHeaders: (headers, { getState }) => {
-        const state = getState() as ApplicationState;
+        const state = getState() as AppState;
         console.log(state);
         // логика авторизации будет
         // const accessToken = accessTokenSelector(state);

@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { cuisines } from '~/mocks/filters';
 import { FoodItem } from '~/types/food-item';
-import { AppState } from '~/types/store';
 import { toggleItemInArray } from '~/utils/toggle-items';
 
 type CuisinesState = {
@@ -37,13 +36,16 @@ export const cuisinesSlice = createSlice({
             state.isLoading = action.payload;
         },
     },
+    selectors: {
+        selectCuisines: (state) => state.cuisines,
+        selectSelectedCuisines: (state) => state.selectedCuisines,
+        selectIsLoading: (state) => state.isLoading,
+    },
 });
-
-export const selectCuisines = (state: AppState) => state.cuisines.cuisines;
-export const selectSelectedCuisines = (state: AppState) => state.cuisines.selectedCuisines;
-export const selectIsLoading = (state: AppState) => state.cuisines.isLoading;
 
 export const { setCuisines, toggleCuisine, setLoading, clearSelectedCuisines } =
     cuisinesSlice.actions;
+
+export const { selectCuisines, selectIsLoading, selectSelectedCuisines } = cuisinesSlice.selectors;
 
 export const cuisinesReducer = cuisinesSlice.reducer;
