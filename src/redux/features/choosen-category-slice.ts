@@ -25,7 +25,7 @@ export const choosenCategorySlice = createSlice({
         },
     },
     selectors: {
-        selectChoosenCategory: (state) => state.choosenSubCategory,
+        selectChoosenCategory: (state) => state,
     },
 });
 

@@ -18,7 +18,7 @@ export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
     const [selectedTabIndex, setSelectedTabIndex] = useState(0);
     const subcategories = categories
         .filter((cat) => cat.category === selectedCategory.category)
-        .flatMap((category) => category.subItems);
+        .flatMap((category) => category.subCategories);
 
     const handleTabChange = (index: number) => {
         setSelectedTabIndex(index);

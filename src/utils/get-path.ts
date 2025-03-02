@@ -21,7 +21,7 @@ export const getPath = (
             (category) => category.category === currentRecipe?.category[0],
         );
 
-        const foundSubCategory = foundCategory?.subItems?.find((subItem) =>
+        const foundSubCategory = foundCategory?.subCategories?.find((subItem) =>
             currentRecipe?.subcategory.includes(subItem.category),
         );
 

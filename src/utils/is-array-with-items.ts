@@ -1,1 +1,2 @@
-export const isArrayWithItems = (array: unknown) => Array.isArray(array) && array.length > 0;
+export const isArrayWithItems = <T>(array: unknown | null | undefined | T[]): array is T[] =>
+    Array.isArray(array) && array.length > 0;

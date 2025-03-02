@@ -22,7 +22,7 @@ const renderRoutes = (routes: MenuItem[], basePath: string = ''): ReactNode =>
             <Fragment key={currentPath}>
                 <Route path={currentPath} element={<CategoryPage />} />
                 <Route path={`${currentPath}/:id`} element={<RecipePage />} />
-                {item.subItems && renderRoutes(item.subItems, currentPath)}
+                {item.subCategories && renderRoutes(item.subCategories, currentPath)}
             </Fragment>
         );
     });

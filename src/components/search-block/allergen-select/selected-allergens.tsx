@@ -1,6 +1,7 @@
 import { Box, Text } from '@chakra-ui/react';
 
 import { PLACEHOLDER_SELECT, PLACEHOLDER_SELECT_DRAWER } from '~/constants/select';
+import { isArrayWithItems } from '~/utils/is-array-with-items';
 
 type SelectedItemsProps = {
     selectedItems?: (string | null)[];
@@ -8,7 +9,7 @@ type SelectedItemsProps = {
 };
 export const SelectedItems: React.FC<SelectedItemsProps> = ({ selectedItems, isfromFilter }) => (
     <Box display='flex' flexWrap='wrap' w='100%'>
-        {selectedItems?.length ? (
+        {isArrayWithItems(selectedItems) ? (
             selectedItems.map((item) => (
                 <Box
                     key={item}

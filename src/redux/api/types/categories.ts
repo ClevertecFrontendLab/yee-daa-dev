@@ -7,6 +7,7 @@ export type CategoriesResponse = Category[];
 
 export type Category = {
     id: string;
+    category: string;
     title: string;
     description: string;
     icon: string;

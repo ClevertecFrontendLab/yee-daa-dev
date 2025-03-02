@@ -18,7 +18,7 @@ export const AllergenSelect: FC<{ isfromFilter: boolean }> = ({ isfromFilter }) 
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
 
     const [isOpen, setIsOpen] = useState(false);
-    const [newAllergen, setNewAllergen] = useState<string>('');
+    const [newAllergen, setNewAllergen] = useState('');
     const [isAdding, setIsAdding] = useState(false);
     const [isSwitchOn, setIsSwitchOn] = useState(false);
 

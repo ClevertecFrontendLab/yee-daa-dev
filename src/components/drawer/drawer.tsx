@@ -65,8 +65,8 @@ export const FilterDrawer = () => {
         dispatch(closeDrawer());
     };
 
-    const determineTagType = (tag: string): TagType | null => {
-        if (selectedAllergens.includes(tag)) {
+    const determineTagType = (tag: string | null): TagType | null => {
+        if (tag && selectedAllergens.includes(tag)) {
             return TagType.ALLERGEN;
         }
 
@@ -114,8 +114,8 @@ export const FilterDrawer = () => {
         },
     };
 
-    const deleteFilter = (tag: string, type: TagType | null) => {
-        if (type && actionMapper[type]) {
+    const deleteFilter = (tag: string | null, type: TagType | null) => {
+        if (type && actionMapper[type] && tag) {
             actionMapper[type](tag);
         }
     };

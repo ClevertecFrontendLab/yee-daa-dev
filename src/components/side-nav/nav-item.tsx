@@ -15,21 +15,24 @@ import {
 } from '~/redux/features/choosen-category-slice.ts';
 import { clearFilteredRecipes } from '~/redux/features/recipies-slice.ts';
 import { MenuItem } from '~/types/category.ts';
+import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
 import { SubNavItem } from './sub-nav-item.tsx';
 
-export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }) => {
+export const NavItem: FC<MenuItem> = ({ category, subCategories, title, description }) => {
     const location = useLocation();
     const dispatch = useAppDispatch();
     const [isActive, setIsActive] = useState(false);
     const choosenCategory = useAppSelector(selectChoosenCategory);
 
-    const categoryPath = subItems ? `/${category}/${subItems[0].category}` : `/${category}`;
+    const categoryPath = isArrayWithItems(subCategories)
+        ? `/${category}/${subCategories[0].category}`
+        : `/${category}`;
     const choosenItem = {
         category,
         title,
         description,
-        choosenSubCategory: subItems ? subItems[0] : null,
+        choosenSubCategory: isArrayWithItems(subCategories) ? subCategories[0] : null,
     };
 
     const handleClick = () => {
@@ -46,7 +49,7 @@ export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }
     }, [location.pathname, categoryPath]);
 
     useEffect(() => {
-        if (!choosenCategory.category) {
+        if (!choosenCategory?.category) {
             setIsActive(false);
         }
     }, [choosenCategory]);
@@ -91,7 +94,7 @@ export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }
                 </AccordionButton>
             </NavLink>
             <AccordionPanel padding='4px 8px 4px 40px'>
-                {subItems?.map((el) => (
+                {subCategories?.map((el) => (
                     <SubNavItem
                         key={el.category}
                         {...el}

@@ -18,7 +18,6 @@ export const AppNotification = () => {
 
     useEffect(() => {
         const timerId = setTimeout(() => dispatch(resetNotification()), ALERT_AUTOCLOSE_TIME_MS);
-        console.log('effect worked');
         return () => {
             clearTimeout(timerId);
         };

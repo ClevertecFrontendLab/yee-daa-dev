@@ -9,13 +9,13 @@ import { AppState } from '~/types/store';
 
 import { API_BASE_URL, API_DEV_URL } from './constants';
 
-const isDevMode = process.env.NODE_ENV === 'development';
+const BASE_URL = process.env.NODE_ENV === 'development' ? API_DEV_URL : API_BASE_URL;
 
 const baseQueryWithAuth = fetchBaseQuery({
-    baseUrl: isDevMode ? API_DEV_URL : API_BASE_URL,
+    baseUrl: BASE_URL,
     prepareHeaders: (headers, { getState }) => {
         const state = getState() as AppState;
-        console.log(state);
+        console.log(state.app.isLoading);
         // логика авторизации будет
         // const accessToken = accessTokenSelector(state);
 
@@ -28,7 +28,7 @@ const baseQueryWithAuth = fetchBaseQuery({
 });
 
 const mainBaseQuery = fetchBaseQuery({
-    baseUrl: API_DEV_URL,
+    baseUrl: BASE_URL,
 });
 
 export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (

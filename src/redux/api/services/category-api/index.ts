@@ -10,6 +10,8 @@ import {
     CategoryRaw,
 } from '~/redux/api/types/categories';
 import { StatusTypesEnum } from '~/redux/api/types/common';
+import { setCategories } from '~/redux/features/categories-slice';
+import { isArrayWithItems } from '~/utils/is-array-with-items';
 
 export const categoryApi = createApi({
     reducerPath: 'categoryApi',
@@ -17,8 +19,27 @@ export const categoryApi = createApi({
     endpoints: (build) => ({
         getAllCategories: build.query<CategoriesResponse, void>({
             query: () => ({ url: ApiEndpoints.Category }),
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    const dataWithSubCategories = data.filter((category) =>
+                        isArrayWithItems(category.subCategories),
+                    );
+
+                    dispatch(setCategories(dataWithSubCategories));
+                } catch (err: unknown) {
+                    console.error('Error get Category list\n', err);
+                }
+            },
             transformResponse: (response: CategoriesRawResponse): CategoriesResponse =>
-                response.map((resp) => ({ ...resp, id: resp._id })),
+                response.map((resp) =>
+                    resp._id
+                        ? {
+                              ...resp,
+                              id: resp._id,
+                          }
+                        : resp,
+                ),
 
             transformErrorResponse: (response) => ({
                 ...response,
@@ -31,10 +52,13 @@ export const categoryApi = createApi({
         }),
         getCategoryById: build.query<Category, void>({
             query: (id) => ({ url: `${ApiEndpoints.Category}/${id}` }),
-            transformResponse: (response: CategoryRaw): Category => ({
-                ...response,
-                id: response._id,
-            }),
+            transformResponse: (response: CategoryRaw): Category =>
+                response._id
+                    ? {
+                          ...response,
+                          id: response._id,
+                      }
+                    : response,
 
             transformErrorResponse: (response) => ({
                 ...response,
