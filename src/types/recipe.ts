@@ -14,7 +14,6 @@ export type Recipe = {
     author: UserProps;
     meat?: string;
     side?: string;
-    cuisine?: string;
     portions?: number;
     image?: string;
     likes?: number;

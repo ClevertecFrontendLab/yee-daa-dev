@@ -11,7 +11,6 @@ import {
     selectSelectedCategories,
 } from '../../redux/features/categories-slice';
 import { initialState, setChoosenCategory } from '../../redux/features/choosen-category-slice';
-import { clearSelectedCuisines, selectSelectedCuisines } from '../../redux/features/cuisines-slice';
 import { closeDrawer } from '../../redux/features/drawer';
 import { clearSelectedMeats, selectSelectedMeats } from '../../redux/features/meats-slice';
 import { selectRecipes, setFilteredRecipes } from '../../redux/features/recipies-slice';
@@ -25,7 +24,6 @@ export const FilterDrawerFooter = () => {
 
     const allRecipes = useAppSelector(selectRecipes);
     const selectedCategories = useAppSelector(selectSelectedCategories);
-    const selectedCuisines = useAppSelector(selectSelectedCuisines);
     const selectedAuthors = useAppSelector(selectSelectedAuthors);
     const selectedMeats = useAppSelector(selectSelectedMeats);
     const selectedSides = useAppSelector(selectSelectedSides);
@@ -33,7 +31,6 @@ export const FilterDrawerFooter = () => {
 
     const disabled = isButtonDisabled(
         selectedCategories,
-        selectedCuisines,
         selectedAuthors,
         selectedMeats,
         selectedSides,
@@ -43,7 +40,6 @@ export const FilterDrawerFooter = () => {
     const clearFilters = () => {
         dispatch(clearSelectedAuthors());
         dispatch(clearSelectedCategories());
-        dispatch(clearSelectedCuisines());
         dispatch(clearSelectedMeats());
         dispatch(clearSelectedSides());
         dispatch(clearSelectedAllergens());
@@ -52,7 +48,6 @@ export const FilterDrawerFooter = () => {
     const findRecipes = () => {
         const filteredRecipes = filterRecipes(allRecipes, {
             selectedCategories,
-            selectedCuisines,
             selectedAuthors,
             selectedMeats,
             selectedSides,
@@ -65,10 +60,17 @@ export const FilterDrawerFooter = () => {
 
     return (
         <DrawerFooter p={0}>
-            <Button variant='outline' mr={3} onClick={clearFilters} className={styles.drawerButton}>
+            <Button
+                variant='outline'
+                mr={3}
+                onClick={clearFilters}
+                className={styles.drawerButton}
+                data-test-id='clear-filter-button'
+            >
                 Очистить фильтр
             </Button>
             <Button
+                data-test-id='find-recipe-button'
                 bg='black'
                 color='white'
                 onClick={findRecipes}

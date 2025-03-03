@@ -4,6 +4,29 @@ const JUISIEST_LINK = 'juiciest-link';
 const JUISIEST_LINK_MOB = 'juiciest-link-mobile';
 const VEGAN = 'vegan-cuisine';
 const HEADER = 'header';
+const FOOTER = 'footer';
+const NAV = 'nav';
+const BREADCRUMBS = 'breadcrumbs';
+const HUMB_ICON = 'hamburger-icon';
+const CLOSE_ICON = 'close-icon';
+const SEARCH_INPUT = 'search-input';
+const SEARCH_BUTTON = 'search-button';
+const FOOD_CARD = 'food-card';
+const CAROUSEL_CARD = 'carousel-card';
+const ALLERGEN_SWITCHER = 'allergens-switcher';
+const ALLERGEN_BUTTON = 'allergens-menu-button';
+const FILTER_DRAWER = 'filter-drawer';
+const FILTER_BUTTON = 'filter-button';
+const FIND_RECIPE_BUTTON = 'find-recipe-button';
+const FILTER_CATEGORY = 'filter-menu-button-категория';
+const VEGAN_CHECKBOX = 'checkbox-веганская кухня';
+const FILTER_AUTHOR = 'filter-menu-button-поиск по автору';
+const PETROVA_CHECKBOX = 'checkbox-анна петрова';
+const ALLERGEN_SWITCHER_FILTER = 'allergens-switcher-filter';
+const ALLERGEN_BUTTON_FILTER = 'allergens-menu-button-filter';
+const ADD_OTHER_ALLERGEN = 'add-other-allergen';
+const ADD_ALLERGEN_BUTTON = 'add-allergen-button';
+const FILTER_TAG = 'filter-tag';
 
 const resolutionFull = [
     { width: 360, height: 1080 },
@@ -11,34 +34,38 @@ const resolutionFull = [
     { width: 1920, height: 750 },
 ];
 
-describe('App Component', () => {
-    function takeScreenshots(screenshotName: string, resolution = resolutionFull) {
-        for (let i = 0; i < resolution.length; i++) {
-            const capture = resolution[i].width < 1920 ? 'fullPage' : 'viewport';
-            cy.viewport(resolution[i].width, resolution[i].height);
+const setElementPosition = () => {
+    cy.getByTestId(HEADER).invoke('css', 'position', 'absolute');
+    cy.getByTestId(FOOTER).invoke('css', 'position', 'absolute');
+};
+
+function takeScreenshots(screenshotName: string, resolution = resolutionFull) {
+    for (let i = 0; i < resolution.length; i++) {
+        const capture = resolution[i].width < 1920 ? 'fullPage' : 'viewport';
+        cy.viewport(resolution[i].width, resolution[i].height);
+        cy.wait(700);
+        if (resolution[i].width === 1920) {
+            cy.screenshot(`${screenshotName}_${resolution[i].width}x${resolution[i].height}`, {
+                capture,
+            });
+            cy.scrollTo('bottom');
+            cy.screenshot(`${screenshotName}_${resolution[i].width}x${resolution[i].height}`, {
+                capture,
+            });
+            cy.scrollTo('top');
+        } else {
+            setElementPosition();
             cy.wait(700);
-            if (resolution[i].width === 1920) {
-                cy.screenshot(`${screenshotName}_${resolution[i].width}x${resolution[i].height}`, {
-                    capture,
-                });
-                cy.scrollTo('bottom');
-                cy.screenshot(`${screenshotName}_${resolution[i].width}x${resolution[i].height}`, {
-                    capture,
-                });
-                cy.scrollTo('top');
-            } else {
-                cy.getByTestId('header').invoke('css', 'position', 'absolute');
-                cy.getByTestId('footer').invoke('css', 'position', 'absolute');
-                cy.wait(700);
-                cy.screenshot(`${screenshotName}_${resolution[i].width}x${resolution[i].height}`, {
-                    capture,
-                });
-                cy.getByTestId('header').invoke('css', 'position', 'fixed');
-                cy.getByTestId('footer').invoke('css', 'position', 'fixed');
-            }
+            cy.screenshot(`${screenshotName}_${resolution[i].width}x${resolution[i].height}`, {
+                capture,
+            });
+            cy.getByTestId(HEADER).invoke('css', 'position', 'fixed');
+            cy.getByTestId(FOOTER).invoke('css', 'position', 'fixed');
         }
     }
+}
 
+describe('App Component', () => {
     beforeEach(() => {
         cy.visit('http://localhost:3000');
     });
@@ -56,5 +83,351 @@ describe('App Component', () => {
         cy.getByTestId(VEGAN).click();
         cy.getByTestId(HEADER).should('contain', 'Веганская кухня');
         takeScreenshots('Страница Веганская кухня');
+    });
+});
+
+describe('Burger Menu Functionality', () => {
+    it('Бургер-меню отсутствует на 1440px', () => {
+        cy.viewport(1440, 1024);
+        cy.visit('/');
+        setElementPosition();
+
+        cy.getByTestId(HUMB_ICON).should('not.be.visible');
+        cy.getByTestId(NAV).should('exist');
+
+        cy.screenshot('hamburger-test-1440', { capture: 'viewport' });
+    });
+
+    it('Бургер-меню на 768px', () => {
+        cy.viewport(768, 1024);
+        cy.visit('/');
+
+        setElementPosition();
+
+        cy.getByTestId(NAV).should('not.exist');
+        cy.getByTestId(CLOSE_ICON).should('not.exist');
+        cy.getByTestId(HUMB_ICON).should('exist').click();
+
+        cy.getByTestId(HUMB_ICON).should('not.exist');
+        cy.getByTestId(CLOSE_ICON).should('exist');
+        cy.getByTestId(NAV).should('be.visible');
+        cy.getByTestId(VEGAN).click();
+        cy.getByTestId(CLOSE_ICON).scrollIntoView();
+        cy.getByTestId(BREADCRUMBS).should('contain.text', 'Закуски');
+        cy.getByTestId('snacks').should('contain.text', 'Закуски');
+        cy.screenshot('open-hamburger-768', { capture: 'fullPage' });
+
+        cy.get('body').click(100, 200);
+        cy.getByTestId(NAV).should('not.exist');
+        cy.screenshot('close-hamburger-768', { capture: 'fullPage' });
+    });
+
+    it('Бургер-меню на 360px', () => {
+        cy.viewport(393, 800);
+        cy.visit('/the-juiciest');
+
+        setElementPosition();
+
+        cy.getByTestId(NAV).should('not.exist');
+        cy.getByTestId(CLOSE_ICON).should('not.exist');
+        cy.getByTestId(HUMB_ICON).should('exist').click();
+
+        cy.getByTestId(HUMB_ICON).should('not.exist');
+        cy.getByTestId(CLOSE_ICON).should('exist');
+        cy.getByTestId(NAV).should('be.visible');
+        cy.getByTestId(CLOSE_ICON).scrollIntoView();
+        cy.getByTestId(BREADCRUMBS).should('contain.text', 'Самое сочное');
+
+        cy.screenshot('open-hamburger-360', { capture: 'fullPage' });
+
+        cy.getByTestId(CLOSE_ICON).click();
+        cy.getByTestId(NAV).should('not.exist');
+        cy.screenshot('close-hamburger-360', { capture: 'fullPage' });
+    });
+});
+
+describe('Search Functionality', () => {
+    it('Поиск на главной странице', () => {
+        cy.viewport(1920, 750);
+        cy.visit('/');
+        setElementPosition();
+
+        cy.getByTestId(SEARCH_INPUT).type('Ка');
+        cy.getByTestId(SEARCH_BUTTON).should('have.css', 'pointer-events', 'none');
+
+        cy.getByTestId(SEARCH_INPUT).clear().type('Кар');
+        cy.getByTestId(SEARCH_BUTTON).click();
+
+        cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 3);
+        cy.scrollTo('top');
+        cy.screenshot('search-main-page-1920', { capture: 'viewport' });
+    });
+
+    it('Поиск по категории', () => {
+        cy.viewport(768, 1024);
+        cy.visit('/');
+        setElementPosition();
+
+        cy.getByTestId(HUMB_ICON).should('be.visible').click();
+        cy.getByTestId(VEGAN).click();
+        cy.wait(700);
+        cy.getByTestId(CLOSE_ICON).should('be.visible').click();
+
+        cy.getByTestId(SEARCH_INPUT).type('Карт');
+        cy.getByTestId(SEARCH_BUTTON).click();
+
+        cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 2);
+        cy.screenshot(`search-category-768`, { capture: 'fullPage' });
+    });
+
+    it('Ничего не найдено', () => {
+        cy.viewport(393, 800);
+        cy.visit('/');
+        setElementPosition();
+
+        cy.getByTestId(SEARCH_INPUT).type('ооо');
+        cy.getByTestId(SEARCH_BUTTON).click();
+
+        cy.get(`[data-test-id^=${FOOD_CARD}]`).should('not.exist');
+        cy.screenshot(`search-nothing-360`, { capture: 'fullPage' });
+    });
+});
+
+describe('Card Functionality', () => {
+    it('Страница карточки', () => {
+        cy.visit('/');
+        cy.getByTestId('card-link-13').click();
+        cy.contains('Лапша с курицей и шафраном').should('exist');
+        cy.scrollTo('top');
+        takeScreenshots('Страница карточки');
+
+        cy.getByTestId('increment-stepper').click();
+        cy.getByTestId('ingredient-quantity-0').contains('250');
+        cy.getByTestId('ingredient-quantity-1').contains('375');
+
+        cy.getByTestId('decrement-stepper').click();
+        cy.getByTestId('ingredient-quantity-0').contains('200');
+        cy.getByTestId('ingredient-quantity-1').contains('300');
+    });
+});
+
+describe('Carousel Functionality', () => {
+    it('Карусель на 1920px', () => {
+        cy.viewport(1920, 750);
+        cy.visit('/');
+        cy.wait(700);
+        setElementPosition();
+
+        cy.get(`[data-test-id^=${CAROUSEL_CARD}]`).should('have.length', 10);
+
+        for (let i = 0; i < 4; i++) {
+            cy.getByTestId(`${CAROUSEL_CARD}-${i}`).should('be.visible');
+        }
+
+        cy.getByTestId('carousel-forward').click();
+        cy.wait(700);
+        cy.getByTestId(`${CAROUSEL_CARD}-4`).should('be.visible');
+        for (let i = 1; i <= 4; i++) {
+            cy.getByTestId(`${CAROUSEL_CARD}-${i}`).should('be.visible');
+        }
+
+        cy.getByTestId('carousel-back').click();
+        cy.wait(700);
+        cy.getByTestId(`${CAROUSEL_CARD}-0`).should('be.visible');
+
+        cy.getByTestId('carousel-back').click();
+        cy.wait(700);
+        cy.getByTestId(`${CAROUSEL_CARD}-9`).should('be.visible');
+
+        cy.wait(700);
+        [1, 2].forEach((index) => {
+            cy.getByTestId(`${CAROUSEL_CARD}-${index}`).should('be.visible');
+        });
+
+        cy.scrollTo('top');
+        cy.screenshot('carousel-1920', { capture: 'viewport' });
+    });
+
+    it('Карусель на 360px', () => {
+        cy.viewport(393, 600);
+        cy.visit('/');
+        setElementPosition();
+        cy.wait(700);
+
+        cy.get(`[data-test-id^=${CAROUSEL_CARD}]`).should('have.length', 10);
+
+        for (let i = 0; i < 2; i++) {
+            cy.getByTestId(`${CAROUSEL_CARD}-${i}`).should('be.visible');
+        }
+
+        cy.getByTestId('carousel-forward').should('not.be.visible');
+        cy.getByTestId('carousel-back').should('not.be.visible');
+
+        cy.scrollTo('top');
+        cy.screenshot('carousel-360', { capture: 'viewport' });
+    });
+});
+
+describe('Allergens Functionality', () => {
+    it('Нет выбора аллергенов на 768px', () => {
+        cy.viewport(768, 1080);
+        cy.visit('/');
+
+        cy.getByTestId(ALLERGEN_SWITCHER).should('not.exist');
+        cy.getByTestId(ALLERGEN_BUTTON).should('not.exist');
+    });
+
+    it('Выбор аллергенов', () => {
+        cy.viewport(1920, 750);
+        cy.visit('/');
+        setElementPosition();
+
+        cy.getByTestId(ALLERGEN_SWITCHER).should('not.have.attr', 'data-checked');
+        cy.getByTestId(ALLERGEN_BUTTON).should('be.disabled');
+
+        cy.getByTestId(VEGAN).click();
+        cy.wait(700);
+        cy.getByTestId(ALLERGEN_SWITCHER).click();
+        cy.getByTestId(ALLERGEN_SWITCHER).should('have.attr', 'data-checked');
+        cy.getByTestId(ALLERGEN_BUTTON).should('not.be.disabled').contains('Выберите из списка');
+        cy.getByTestId(ALLERGEN_BUTTON).click();
+        cy.getByTestId('allergens-menu').should('be.visible');
+        cy.getByTestId('allergen-1').click();
+        cy.getByTestId('allergen-5').click();
+        cy.getByTestId(ADD_OTHER_ALLERGEN).type('Гриб{enter}');
+        cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 5);
+
+        cy.scrollTo('top');
+        cy.screenshot('allergens-1920', { capture: 'viewport' });
+
+        cy.getByTestId(ALLERGEN_SWITCHER).click();
+        cy.scrollTo('top');
+        cy.getByTestId(ALLERGEN_BUTTON).should('be.disabled').contains('Выберите из списка');
+    });
+});
+
+describe('Filters Functionality', () => {
+    it('Выбраны 4 фильтра, 1920px', () => {
+        cy.viewport(1920, 750);
+        cy.visit('/');
+        setElementPosition();
+
+        cy.getByTestId(FILTER_DRAWER).should('not.exist');
+        cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
+        cy.getByTestId(FILTER_DRAWER).should('exist').contains('Фильтр');
+        cy.getByTestId(FIND_RECIPE_BUTTON).should('have.css', 'pointer-events', 'none');
+
+        cy.getByTestId(FILTER_CATEGORY).click();
+        cy.getByTestId(VEGAN_CHECKBOX).click();
+        cy.scrollTo('top');
+        cy.screenshot('filter-open-1920', { capture: 'viewport' });
+        cy.getByTestId(FILTER_CATEGORY).click();
+
+        cy.getByTestId(FILTER_AUTHOR).click();
+        cy.getByTestId(PETROVA_CHECKBOX).click();
+        cy.getByTestId(FILTER_AUTHOR).click();
+
+        cy.getByTestId('checkbox-картошка').click();
+
+        cy.getByTestId(ALLERGEN_SWITCHER_FILTER).click();
+        cy.getByTestId(ALLERGEN_BUTTON_FILTER).click();
+        cy.getByTestId(ADD_OTHER_ALLERGEN).type('лук');
+        cy.getByTestId(ADD_ALLERGEN_BUTTON).click();
+        cy.getByTestId(ALLERGEN_BUTTON_FILTER).click();
+
+        cy.getByTestId(FILTER_TAG).should('have.length', 4);
+
+        cy.getByTestId(FIND_RECIPE_BUTTON).click();
+        cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 2);
+    });
+
+    it('Выбор и очистка фильтров, 768px', () => {
+        cy.viewport(768, 1120);
+        cy.visit('/');
+        setElementPosition();
+
+        cy.getByTestId(FILTER_DRAWER).should('not.exist');
+
+        cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
+        cy.get('body').click(100, 200);
+        cy.getByTestId(FILTER_DRAWER).should('not.exist');
+
+        cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
+        cy.getByTestId(FILTER_DRAWER).should('exist').contains('Фильтр');
+
+        cy.getByTestId(FILTER_CATEGORY).click();
+        cy.getByTestId(VEGAN_CHECKBOX).click();
+        cy.getByTestId(FILTER_CATEGORY).click();
+
+        cy.getByTestId(FILTER_AUTHOR).click();
+        cy.getByTestId(PETROVA_CHECKBOX).click();
+        cy.getByTestId(FILTER_AUTHOR).click();
+
+        cy.getByTestId(FILTER_TAG).should('have.length', 2);
+
+        cy.getByTestId(FIND_RECIPE_BUTTON).click();
+        cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 6);
+        cy.wait(700);
+
+        cy.screenshot('filter-cards-768', { capture: 'fullPage' });
+
+        cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
+
+        cy.getByTestId(FILTER_CATEGORY).click();
+        cy.getByTestId(VEGAN_CHECKBOX).click();
+        cy.getByTestId(FILTER_CATEGORY).click();
+
+        cy.getByTestId(FILTER_AUTHOR).click();
+        cy.getByTestId(PETROVA_CHECKBOX).click();
+        cy.getByTestId(FILTER_AUTHOR).click();
+
+        cy.getByTestId('checkbox-картошка').click();
+
+        cy.getByTestId(ALLERGEN_SWITCHER_FILTER).click();
+        cy.getByTestId(ALLERGEN_BUTTON_FILTER).click();
+        cy.getByTestId('allergen-5').click();
+        cy.getByTestId(ALLERGEN_BUTTON_FILTER).click();
+
+        cy.getByTestId(FILTER_TAG).should('have.length', 4);
+        cy.screenshot('filter-before-clear-768', { capture: 'viewport' });
+
+        cy.getByTestId('clear-filter-button').should('be.visible').click();
+        cy.getByTestId(FILTER_TAG).should('have.length', 0);
+        cy.getByTestId(FIND_RECIPE_BUTTON).should('have.css', 'pointer-events', 'none');
+
+        cy.screenshot('filter-clear-768', { capture: 'viewport' });
+    });
+
+    it('Закрытие фильтра, поиск отфильтрованных карточек, 360px', () => {
+        cy.viewport(393, 800);
+        cy.visit('/');
+        setElementPosition();
+
+        cy.getByTestId(FILTER_DRAWER).should('not.exist');
+
+        cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
+        cy.getByTestId(FILTER_DRAWER).should('exist');
+
+        cy.getByTestId('close-filter-drawer').click();
+        cy.getByTestId(FILTER_DRAWER).should('not.exist');
+
+        cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
+        cy.getByTestId(FILTER_DRAWER).should('be.visible');
+        cy.screenshot('open-drawer-360', { capture: 'viewport' });
+
+        cy.getByTestId(FILTER_CATEGORY).click();
+        cy.getByTestId(VEGAN_CHECKBOX).click();
+        cy.getByTestId(FILTER_CATEGORY).click();
+
+        cy.getByTestId(FILTER_AUTHOR).click();
+        cy.getByTestId(PETROVA_CHECKBOX).click();
+        cy.getByTestId(FILTER_AUTHOR).click();
+        cy.getByTestId(FIND_RECIPE_BUTTON).click();
+
+        cy.getByTestId(SEARCH_INPUT).type('овощ');
+        cy.getByTestId(SEARCH_BUTTON).click();
+
+        cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 1);
+        cy.screenshot('search-filter-360', { capture: 'fullPage' });
     });
 });

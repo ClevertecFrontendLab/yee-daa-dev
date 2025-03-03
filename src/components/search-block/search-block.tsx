@@ -10,7 +10,6 @@ import {
 } from '../../redux/features/allergens-slice.ts';
 import { clearSelectedAuthors } from '../../redux/features/authors-slice.ts';
 import { clearSelectedCategories } from '../../redux/features/categories-slice.ts';
-import { clearSelectedCuisines } from '../../redux/features/cuisines-slice.ts';
 import { openDrawer } from '../../redux/features/drawer.ts';
 import { clearSelectedMeats } from '../../redux/features/meats-slice.ts';
 import { clearFilteredRecipes } from '../../redux/features/recipies-slice.ts';
@@ -62,7 +61,6 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
         dispatch(clearFilteredByAllergens());
         dispatch(clearSelectedAuthors());
         dispatch(clearSelectedCategories());
-        dispatch(clearSelectedCuisines());
         dispatch(clearSelectedMeats());
         dispatch(clearSelectedSides());
 
@@ -73,6 +71,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
         <Stack spacing={4} maxWidth={{ base: '100%', sm: '520px' }} ml='auto' mr='auto' pb={8}>
             <Stack direction='row' spacing={3}>
                 <IconButton
+                    data-test-id='filter-button'
                     aria-label={'filter'}
                     icon={<FilterIcon />}
                     size={{ base: 'sm', md: 'lg' }}
@@ -100,6 +99,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
                         onChange={(e) => dispatch(setInputValue(e.target.value))}
                         onKeyDown={handleKeyDown}
                         value={inputValue}
+                        data-test-id='search-input'
                     />
                     <InputRightElement
                         height={{ base: '32px', md: '48px' }}
@@ -109,6 +109,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
                             cursor: isButtonDisabled ? 'not-allowed' : 'pointer',
                             opacity: isButtonDisabled ? 0.4 : 1,
                         }}
+                        data-test-id='search-button'
                     >
                         <SearchIcon
                             width={{ base: '14px', md: '18px' }}

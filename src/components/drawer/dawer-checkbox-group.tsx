@@ -31,6 +31,7 @@ export const DrawerCheckboxGroup: React.FC<CheckboxGroupProps> = ({ filterTitle,
             <Heading className={styles.drawerType}>{filterTitle}:</Heading>
             {items.map((item) => (
                 <Checkbox
+                    data-test-id={`checkbox-${item.label.toLowerCase()}`}
                     borderColor='var(--chakra-colors-lime-300)'
                     iconColor='black'
                     _hidden={{ display: 'none' }}

@@ -1,39 +1,23 @@
 import { FoodItem } from '../types/food-item';
 import { UserProps } from '../types/user';
 
-export const cuisines: FoodItem[] = [
-    { id: '1', value: 'American', label: 'Американская кухня' },
-    { id: '2', value: 'Italian', label: 'Итальянская кухня' },
-    { id: '3', value: 'Mexican', label: 'Мексиканская кухня' },
-    { id: '4', value: 'Japanese', label: 'Японская кухня' },
-    { id: '5', value: 'French', label: 'Французская кухня' },
-    { id: '6', value: 'Chinese', label: 'Китайская кухня' },
-    { id: '7', value: 'Indian', label: 'Индийская кухня' },
-    { id: '8', value: 'Spanish', label: 'Испанская кухня' },
-    { id: '9', value: 'Thai', label: 'Тайская кухня' },
-    { id: '10', value: 'Greek', label: 'Греческая кухня' },
-    { id: '11', value: 'Brazilian', label: 'Бразильская кухня' },
-    { id: '12', value: 'Vietvaluese', label: 'Вьетнамская кухня' },
-    { id: '13', value: 'SouthAfrican', label: 'Южноафриканская кухня' },
-];
-
 export const meats: FoodItem[] = [
-    { id: '1', value: 'Beef', label: 'Говядина' },
-    { id: '2', value: 'Chicken', label: 'Курица' },
-    { id: '3', value: 'Pork', label: 'Свинина' },
-    { id: '5', value: 'Turkey', label: 'Индейка' },
-    { id: '7', value: 'Duck', label: 'Утка' },
+    { id: '1', value: 'Chicken', label: 'Курица' },
+    { id: '2', value: 'Pork', label: 'Свинина' },
+    { id: '3', value: 'Beef', label: 'Говядина' },
+    { id: '4', value: 'Turkey', label: 'Индейка' },
+    { id: '5', value: 'Duck', label: 'Утка' },
 ];
 
 export const sides: FoodItem[] = [
-    { id: '1', value: 'Rice', label: 'Рис' },
-    { id: '2', value: 'Potatoes', label: 'Картофель' },
+    { id: '1', value: 'Potatoes', label: 'Картошка' },
+    { id: '2', value: 'Buckwheat', label: 'Гречка' },
     { id: '3', value: 'Pasta', label: 'Паста' },
-    { id: '4', value: 'Salad', label: 'Салат' },
-    { id: '5', value: 'Vegetables', label: 'Овощи' },
-    { id: '6', value: 'Bread', label: 'Хлеб' },
-    { id: '7', value: 'Quinoa', label: 'Киноа' },
-    { id: '8', value: 'Beans', label: 'Бобы' },
+    { id: '4', value: 'Spaghetti', label: 'Спагетти' },
+    { id: '5', value: 'Rice', label: 'Рис' },
+    { id: '6', value: 'Cabbage', label: 'Капуста' },
+    { id: '7', value: 'Beans', label: 'Фасоль' },
+    { id: '8', value: 'Vegetables', label: 'Другие овощи' },
 ];
 
 export const authors: UserProps[] = [
@@ -121,7 +105,7 @@ export const authors: UserProps[] = [
     {
         firstName: 'Анна',
         lastName: 'Петрова',
-        login: 'annapetrova',
+        login: 'petrova',
         imageUrl: 'https://example.com/images/anna.jpg',
         likes: 160,
         bookmarks: 55,
