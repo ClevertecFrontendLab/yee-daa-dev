@@ -59,12 +59,12 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const isCategoryPage = pageType === PageType.Category;
     const isJuiciestPage = pageType === PageType.Juiciest;
 
-    const favouritesRecipes = getFavouritesRecipes(recipes);
+    const favoritesRecipes = getFavouritesRecipes(recipes);
     const categoryRecipes = getCategoryRecipes(recipes, selectedCategory);
 
     const searchRecipes: Record<PageType, Recipe[]> = {
         main: recipes,
-        juiciest: favouritesRecipes,
+        juiciest: favoritesRecipes,
         category: categoryRecipes,
     };
 
@@ -87,14 +87,14 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     useEffect(() => {
         dispatch(setInputValue(''));
         setStartSearch(false);
-    }, [selectedCategory]);
+    }, [dispatch, selectedCategory]);
 
     useEffect(() => {
         if (!searchValue) {
             dispatch(setMatchedRecipes([]));
             setStartSearch(false);
         }
-    }, [searchValue]);
+    }, [dispatch, searchValue]);
 
     useEffect(() => {
         const randomCategory = categories[Math.floor(Math.random() * categories.length)];
@@ -125,6 +125,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
         } else {
             dispatch(setFilteredByAllergens([]));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedAllergens]);
 
     return (
@@ -164,7 +165,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
                             {isCategoryPage && <KitchenTabs recipeList={categoryRecipes} />}
                             {isJuiciestPage && (
                                 <SectionBox>
-                                    <RecipeCardList recipeList={favouritesRecipes} />
+                                    <RecipeCardList recipeList={favoritesRecipes} />
                                 </SectionBox>
                             )}
                             {(isMainPage || !selectedCategory) && (

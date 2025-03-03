@@ -5,7 +5,6 @@ import { ReactNode, StrictMode } from 'react';
 import { createPortal } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router';
 
 import { App } from './components/app';
 import { AppNotification } from './components/app-notification/app-notification.tsx';
@@ -18,10 +17,8 @@ createRoot(rootElement).render(
     <StrictMode>
         <Provider store={store}>
             <ChakraProvider theme={theme}>
-                <BrowserRouter>
-                    <App />
-                    {createPortal(<AppNotification />, document.body) as ReactNode}
-                </BrowserRouter>
+                <App />
+                {createPortal(<AppNotification />, document.body) as ReactNode}
             </ChakraProvider>
         </Provider>
     </StrictMode>,

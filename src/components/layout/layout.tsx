@@ -41,15 +41,16 @@ const Layout = () => {
                 >
                     <Header />
                 </GridItem>
-                {(isTablet && isOpen) || !isTablet ? (
-                    <GridItem
-                        area='nav'
-                        position={{ base: 'absolute', xl: 'sticky' }}
-                        className={`${styles.nav} ${isOpen ? styles.open : ''}`}
-                    >
-                        <SideNav />
-                    </GridItem>
-                ) : null}
+                {(isTablet && isOpen) ||
+                    (!isTablet && (
+                        <GridItem
+                            area='nav'
+                            position={{ base: 'absolute', xl: 'sticky' }}
+                            className={`${styles.nav} ${isOpen ? styles.open : ''}`}
+                        >
+                            <SideNav />
+                        </GridItem>
+                    ))}
                 <GridItem
                     area='main'
                     pt={{ base: 4, md: 8 }}
