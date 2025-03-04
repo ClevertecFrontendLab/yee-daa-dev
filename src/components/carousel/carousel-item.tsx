@@ -13,7 +13,7 @@ import { getPath } from '../../utils/get-path.ts';
 import { CardStat } from '../card-stat/card-stat.tsx';
 import { CategoryTag } from '../category-tag';
 
-export const CarouselItem: FC<{ recipe: Recipe; index: number }> = ({ recipe, index }) => {
+export const CarouselItem: FC<{ recipe: Recipe }> = ({ recipe }) => {
     const dispatch = useAppDispatch();
     const selectedCategory = useAppSelector(selectChoosenCategory);
     const allcategories = useAppSelector(selectCategoriesMenu);
@@ -29,7 +29,6 @@ export const CarouselItem: FC<{ recipe: Recipe; index: number }> = ({ recipe, in
     return (
         <NavLink to={categoryPath} onClick={handleClick}>
             <Card
-                data-test-id={`carousel-card-${index}`}
                 maxWidth={{ base: '158px', xmd: '277px', xl: '322px' }}
                 maxH={{ base: '220px', xmd: '375px', xl: '400px' }}
                 border='1px solid rgba(0, 0, 0, 0.08)'

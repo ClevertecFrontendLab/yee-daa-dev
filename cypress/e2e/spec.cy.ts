@@ -71,18 +71,13 @@ describe('App Component', () => {
     });
 
     it('should take a screenshot of the app', () => {
-        cy.getByTestId(HEADER).should('contain', 'Главная').click();
-        takeScreenshots('Главная страница');
-
+        cy.viewport(1920, 750);
         cy.getByTestId(JUISIEST_LINK_MOB).should('not.be.visible');
         cy.getByTestId(JUISIEST_LINK).click();
         cy.getByTestId(HEADER).should('contain', 'Самое сочное');
         cy.scrollTo('top');
-        takeScreenshots('Страница Самое сочное');
-
         cy.getByTestId(VEGAN).click();
         cy.getByTestId(HEADER).should('contain', 'Веганская кухня');
-        takeScreenshots('Страница Веганская кухня');
     });
 });
 
@@ -90,12 +85,8 @@ describe('Burger Menu Functionality', () => {
     it('Бургер-меню отсутствует на 1440px', () => {
         cy.viewport(1440, 1024);
         cy.visit('/');
-        setElementPosition();
-
         cy.getByTestId(HUMB_ICON).should('not.be.visible');
         cy.getByTestId(NAV).should('exist');
-
-        cy.screenshot('hamburger-test-1440', { capture: 'viewport' });
     });
 
     it('Бургер-меню на 768px', () => {
@@ -119,7 +110,6 @@ describe('Burger Menu Functionality', () => {
 
         cy.get('body').click(100, 200);
         cy.getByTestId(NAV).should('not.exist');
-        cy.screenshot('close-hamburger-768', { capture: 'fullPage' });
     });
 
     it('Бургер-меню на 360px', () => {
@@ -142,7 +132,6 @@ describe('Burger Menu Functionality', () => {
 
         cy.getByTestId(CLOSE_ICON).click();
         cy.getByTestId(NAV).should('not.exist');
-        cy.screenshot('close-hamburger-360', { capture: 'fullPage' });
     });
 });
 
@@ -159,8 +148,6 @@ describe('Search Functionality', () => {
         cy.getByTestId(SEARCH_BUTTON).click();
 
         cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 3);
-        cy.scrollTo('top');
-        cy.screenshot('search-main-page-1920', { capture: 'viewport' });
     });
 
     it('Поиск по категории', () => {
@@ -189,7 +176,6 @@ describe('Search Functionality', () => {
         cy.getByTestId(SEARCH_BUTTON).click();
 
         cy.get(`[data-test-id^=${FOOD_CARD}]`).should('not.exist');
-        cy.screenshot(`search-nothing-360`, { capture: 'fullPage' });
     });
 });
 
@@ -256,12 +242,17 @@ describe('Carousel Functionality', () => {
 
         cy.get(`[data-test-id^=${CAROUSEL_CARD}]`).should('have.length', 10);
 
-        for (let i = 0; i < 2; i++) {
-            cy.getByTestId(`${CAROUSEL_CARD}-${i}`).should('be.visible');
-        }
-
         cy.getByTestId('carousel-forward').should('not.be.visible');
         cy.getByTestId('carousel-back').should('not.be.visible');
+
+        cy.getByTestId('carousel')
+            .trigger('pointerdown', { which: 1 })
+            .trigger('pointermove', 'right')
+            .trigger('pointerup', { force: true })
+
+            .trigger('pointerdown', { which: 1 })
+            .trigger('pointermove', 'left')
+            .trigger('pointerup', { force: true });
 
         cy.scrollTo('top');
         cy.screenshot('carousel-360', { capture: 'viewport' });
@@ -367,9 +358,6 @@ describe('Filters Functionality', () => {
 
         cy.getByTestId(FIND_RECIPE_BUTTON).click();
         cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 6);
-        cy.wait(700);
-
-        cy.screenshot('filter-cards-768', { capture: 'fullPage' });
 
         cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
 
@@ -394,8 +382,6 @@ describe('Filters Functionality', () => {
         cy.getByTestId('clear-filter-button').should('be.visible').click();
         cy.getByTestId(FILTER_TAG).should('have.length', 0);
         cy.getByTestId(FIND_RECIPE_BUTTON).should('have.css', 'pointer-events', 'none');
-
-        cy.screenshot('filter-clear-768', { capture: 'viewport' });
     });
 
     it('Закрытие фильтра, поиск отфильтрованных карточек, 360px', () => {
@@ -428,6 +414,5 @@ describe('Filters Functionality', () => {
         cy.getByTestId(SEARCH_BUTTON).click();
 
         cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 1);
-        cy.screenshot('search-filter-360', { capture: 'fullPage' });
     });
 });

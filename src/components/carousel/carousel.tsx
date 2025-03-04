@@ -43,8 +43,8 @@ export const Carousel = () => {
                 }}
             >
                 {carouselRecipes.map((el, index) => (
-                    <SwiperSlide key={el.id}>
-                        <CarouselItem recipe={el} index={index} />
+                    <SwiperSlide key={el.id} data-test-id={`carousel-card-${index}`}>
+                        <CarouselItem recipe={el} />
                     </SwiperSlide>
                 ))}
             </Swiper>
