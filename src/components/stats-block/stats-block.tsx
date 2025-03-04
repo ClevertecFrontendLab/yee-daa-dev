@@ -11,7 +11,7 @@ export const StatsBlock: FC<UserProps> = ({ followers, likes, bookmarks }) => {
             pr={{ base: 4, md: 0 }}
             pt={{ base: 0, md: 4 }}
             pb={{ base: 0, md: 4 }}
-            mr={14}
+            mr={{ base: 0, md: 16 }}
             flexDirection={{ base: 'row', xl: 'column' }}
             gap={{ base: 0, md: 6 }}
         >

@@ -9,8 +9,9 @@ import styles from './section-header.module.css';
 type SectionHeaderProps = {
     onSearch: (inputValue: string) => void;
     pageType: PageType;
+    startSearch?: boolean;
 };
-export const SectionHeader: FC<SectionHeaderProps> = ({ onSearch, pageType }) => {
+export const SectionHeader: FC<SectionHeaderProps> = ({ onSearch, pageType, startSearch }) => {
     const [isInputFocused, setInputFocused] = useState(false);
 
     const handleSearch = (value: string) => {
@@ -31,6 +32,7 @@ export const SectionHeader: FC<SectionHeaderProps> = ({ onSearch, pageType }) =>
                 onInputFocus={() => setInputFocused(true)}
                 onInputBlur={() => setInputFocused(false)}
                 onSearch={handleSearch}
+                startSearch={startSearch}
             />
         </Box>
     );

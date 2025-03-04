@@ -13,22 +13,35 @@ import { clearSelectedCategories } from '../../redux/features/categories-slice.t
 import { openDrawer } from '../../redux/features/drawer.ts';
 import { clearSelectedMeats } from '../../redux/features/meats-slice.ts';
 import { clearFilteredRecipes } from '../../redux/features/recipies-slice.ts';
-import { selectInputValue, setInputValue } from '../../redux/features/search-slice.ts';
+import {
+    selectInputValue,
+    selectMatchedRecipes,
+    setInputValue,
+} from '../../redux/features/search-slice.ts';
 import { clearSelectedSides } from '../../redux/features/sides-slice.ts';
 import { FilterIcon } from '../icons/filter-icon.tsx';
 import { AllergenSelect } from './allergen-select/allergen-select.tsx';
+import { getBorderColor } from './allergen-select/helpers/get-border-color.ts';
 
 type SearchBlockProps = {
     onInputFocus: () => void;
     onInputBlur: () => void;
     onSearch: (inputValue: string) => void;
+    startSearch?: boolean;
 };
 
 const maxSearchLength = 3;
 
-export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, onSearch }) => {
+export const SearchBlock: FC<SearchBlockProps> = ({
+    onInputFocus,
+    onInputBlur,
+    onSearch,
+    startSearch,
+}) => {
     const dispatch = useAppDispatch();
     const inputValue = useAppSelector(selectInputValue);
+    const matchedRecipes = useAppSelector(selectMatchedRecipes);
+
     const isTablet = useIsTablet();
     const [isFocused, setIsFocused] = useState(false);
 
@@ -36,6 +49,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
 
     const handleSearchClick = () => {
         onSearch(inputValue);
+        setIsFocused(false);
     };
 
     const handleFocus = () => {
@@ -67,6 +81,8 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
         dispatch(openDrawer());
     };
 
+    const isSearchEmpty = startSearch && !matchedRecipes.length;
+
     return (
         <Stack spacing={4} maxWidth={{ base: '100%', sm: '520px' }} ml='auto' mr='auto' pb={8}>
             <Stack direction='row' spacing={3}>
@@ -85,12 +101,10 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
                         type='search'
                         size={{ base: 'sm', md: 'lg' }}
                         placeholder={!isFocused ? 'Название или ингредиент...' : ''}
+                        borderColor={getBorderColor(inputValue, isSearchEmpty)}
                         _placeholder={{ color: 'lime.800' }}
-                        borderColor={
-                            inputValue ? 'var(--chakra-colors-lime-600)' : 'blackAlpha.600'
-                        }
                         _focus={{
-                            borderColor: 'var(--chakra-colors-lime-600)',
+                            borderColor: 'blackAlpha.600',
                             boxShadow: 'none',
                         }}
                         color={'var(--chakra-colors-lime-800)'}
