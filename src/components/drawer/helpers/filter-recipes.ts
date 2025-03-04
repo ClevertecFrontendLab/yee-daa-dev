@@ -1,4 +1,4 @@
-import { Recipe } from '~/types/recipe';
+import { Recipe } from '~/redux/api/types/recipes';
 
 type FilterOptions = {
     selectedCategories: string[];
@@ -9,7 +9,7 @@ type FilterOptions = {
 };
 
 export const normalizeArray = (arr: (string | undefined)[]) =>
-    arr.map((item) => (item ? item.trim().toLowerCase() : ''));
+    arr.map((item) => item?.trim().toLowerCase() ?? '');
 
 export const matchesAny = (normalizedArray: string[], valueArray: string[]) =>
     normalizedArray.length === 0 || valueArray.some((val) => normalizedArray.includes(val));
@@ -25,8 +25,8 @@ export const filterRecipes = (recipes: Recipe[], filterOptions: FilterOptions): 
     const normalizedAllergens = normalizeArray(selectedAllergens);
 
     return recipes.filter((recipe) => {
-        const recipeCategories = normalizeArray(recipe.category);
-        const recipeAuthor = normalizeArray([recipe.author.login])[0];
+        const recipeCategories = normalizeArray(recipe.categoryIds);
+        const recipeAuthor = normalizeArray([recipe.authorId])[0];
         const recipeMeat = normalizeArray([recipe.meat])[0];
         const recipeSide = normalizeArray([recipe.side])[0];
         const recipeAllergens = normalizeArray(

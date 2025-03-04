@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import { appErrorMiddleware } from './api/middleware';
 import { categoryApi } from './api/services/category-api';
+import { recipeApi } from './api/services/recipes-api';
 import { allergenReducer, allergenSlice } from './features/allergens-slice';
 import { appReducer, appSlice } from './features/app-slice';
 import { authorsReducer, authorsSlice } from './features/authors-slice';
@@ -31,6 +32,7 @@ const combinedReducer = {
     [meatsSlice.name]: meatsReducer,
     [sidesSlice.name]: sidesReducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
+    [recipeApi.reducerPath]: recipeApi.reducer,
 };
 
 export const store = configureStore({

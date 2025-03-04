@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { allergens } from '~/mocks/allergens';
+import { Recipe } from '~/redux/api/types/recipes';
 import { Allergen } from '~/types/allergens';
-import { Recipe } from '~/types/recipe';
 
 type AllergensState = {
     allergens: Allergen[];

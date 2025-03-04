@@ -4,11 +4,11 @@ import { FC } from 'react';
 import { NavLink } from 'react-router';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { Recipe } from '~/redux/api/types/recipes.ts';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
 import { selectChoosenCategory } from '~/redux/features/choosen-category-slice.ts';
 import { setSelectedRecipe } from '~/redux/features/choosen-recipe-slice.ts';
 import { selectRecipes } from '~/redux/features/recipies-slice.ts';
-import { Recipe } from '~/types/recipe.ts';
 import { getPath } from '~/utils/get-path.ts';
 
 import { CardStat } from '../card-stat/card-stat.tsx';
@@ -20,7 +20,7 @@ export const CarouselItem: FC<{ recipe: Recipe }> = ({ recipe }) => {
     const allcategories = useAppSelector(selectCategoriesMenu);
     const allRecipes = useAppSelector(selectRecipes);
 
-    const { id, title, image, description, category, likes, bookmarks } = recipe;
+    const { id, title, image, description, categoryIds, likes, bookmarks } = recipe;
     const categoryPath = getPath(allcategories, allRecipes, selectedCategory, id);
 
     const handleClick = () => {
@@ -51,7 +51,7 @@ export const CarouselItem: FC<{ recipe: Recipe }> = ({ recipe }) => {
                         display={{ base: 'block', md: 'none' }}
                         width='100%'
                     >
-                        <CategoryTag category={category} color='lime.150' />
+                        <CategoryTag category={categoryIds} color='lime.150' />
                     </Box>
                 </CardHeader>
                 <CardBody p={{ base: 3, xmd: 6 }} pt={{ base: 3, xmd: 4 }} pb={{ base: 2, xmd: 6 }}>
@@ -77,7 +77,7 @@ export const CarouselItem: FC<{ recipe: Recipe }> = ({ recipe }) => {
                 <CardFooter p={{ base: 3, xmd: 6 }} pt={{ base: 0, xmd: 0 }} display='block'>
                     <HStack justifyContent='space-between' alignItems='center'>
                         <Box display={{ base: 'none', xmd: 'flex' }}>
-                            <CategoryTag category={category} color='lime.150' />
+                            <CategoryTag category={categoryIds} color='lime.150' />
                         </Box>
                         <CardStat likes={likes} bookmarks={bookmarks} />
                     </HStack>

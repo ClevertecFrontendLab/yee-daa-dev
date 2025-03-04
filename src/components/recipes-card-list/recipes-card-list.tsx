@@ -1,7 +1,7 @@
 import { Button, Center } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
-import { Recipe } from '~/types/recipe';
+import { Recipe } from '~/redux/api/types/recipes';
 
 import { CardList } from '../card-list';
 

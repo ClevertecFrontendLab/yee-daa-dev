@@ -1,18 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { recipes } from '~/mocks/recipes';
-import { Recipe } from '~/types/recipe';
+import { Recipe } from '~/redux/api/types/recipes';
 
 type RecipesState = {
     recipes: Recipe[];
     filteredRecipes: Recipe[];
     isLoading: boolean;
+    totalRecipes: number;
 };
 
 const initialState: RecipesState = {
-    recipes: recipes,
+    recipes: [],
     filteredRecipes: [],
     isLoading: false,
+    totalRecipes: 0,
 };
 
 export const recipesSlice = createSlice({
@@ -25,7 +26,9 @@ export const recipesSlice = createSlice({
         setRecipes(state, action: PayloadAction<Recipe[]>) {
             state.recipes = action.payload;
         },
-
+        changeTotalRecipes(state, { payload }: PayloadAction<number>) {
+            state.totalRecipes = payload;
+        },
         setFilteredRecipes(state, action: PayloadAction<Recipe[]>) {
             state.filteredRecipes = action.payload;
         },
@@ -37,11 +40,18 @@ export const recipesSlice = createSlice({
         recipesLoading: (state) => state.isLoading,
         selectRecipes: (state) => state.recipes,
         selectFilteredRecipes: (state) => state.filteredRecipes,
+        selectTotalRecipes: (state) => state.totalRecipes,
     },
 });
 
 export const recipesReducer = recipesSlice.reducer;
-export const { setLoading, setRecipes, setFilteredRecipes, clearFilteredRecipes } =
-    recipesSlice.actions;
+export const {
+    setLoading,
+    changeTotalRecipes,
+    setRecipes,
+    setFilteredRecipes,
+    clearFilteredRecipes,
+} = recipesSlice.actions;
 
-export const { recipesLoading, selectFilteredRecipes, selectRecipes } = recipesSlice.selectors;
+export const { recipesLoading, selectFilteredRecipes, selectRecipes, selectTotalRecipes } =
+    recipesSlice.selectors;

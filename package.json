@@ -4,7 +4,8 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "start": "cross-env NODE_ENV=development vite",
+        "start": "vite",
+        "start:dev": "cross-env NODE_ENV=development vite",
         "build": "vite build",
         "preview": "vite preview",
         "lint:styles": "arui-presets-lint styles",

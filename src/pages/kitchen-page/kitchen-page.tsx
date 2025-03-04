@@ -9,6 +9,8 @@ import { RelevantKitchen } from '~/components/relevant-kitchen';
 import { SectionBox } from '~/components/section-box/section-box.tsx';
 import { SectionHeader } from '~/components/section-header';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { useDetectParams } from '~/hooks/use-detect-params.ts';
+import { Recipe } from '~/redux/api/types/recipes.ts';
 import {
     selectFilteredByAllergens,
     selectisfromFilter,
@@ -16,7 +18,6 @@ import {
     setFilteredByAllergens,
 } from '~/redux/features/allergens-slice.ts';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
-import { selectChoosenCategory } from '~/redux/features/choosen-category-slice.ts';
 import { selectFilteredRecipes, selectRecipes } from '~/redux/features/recipies-slice.ts';
 import {
     selectInputValue,
@@ -25,11 +26,10 @@ import {
     setMatchedRecipes,
 } from '~/redux/features/search-slice.ts';
 import { PageType } from '~/types/page.ts';
-import { Recipe } from '~/types/recipe.ts';
 import { filterRecipes } from '~/utils/filter-recipes.ts';
 
 import { filterRecipesByTitle } from './helpers/filter-by-title.ts';
-import { getCategoryRecipes, getFavouritesRecipes } from './helpers/get-recipes.ts';
+import { getCategoryRecipes, getFavoritesRecipes } from './helpers/get-recipes.ts';
 
 type KitchenPageProps = {
     pageType: PageType;
@@ -38,9 +38,10 @@ type KitchenPageProps = {
 };
 
 export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
+    const { selectedCategory, selectedSubCategory } = useDetectParams();
     const dispatch = useAppDispatch();
     const recipes = useAppSelector(selectRecipes);
-    const selectedCategory = useAppSelector(selectChoosenCategory);
+
     const categories = useAppSelector(selectCategoriesMenu);
     const matchedRecipes = useAppSelector(selectMatchedRecipes);
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
@@ -58,8 +59,8 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const isCategoryPage = pageType === PageType.Category;
     const isJuiciestPage = pageType === PageType.Juiciest;
 
-    const favoritesRecipes = getFavouritesRecipes(recipes);
-    const categoryRecipes = getCategoryRecipes(recipes, selectedCategory);
+    const favoritesRecipes = getFavoritesRecipes(recipes);
+    const categoryRecipes = getCategoryRecipes(recipes, selectedCategory, selectedSubCategory);
 
     const searchRecipes: Record<PageType, Recipe[]> = {
         main: recipes,
@@ -102,7 +103,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
         setRelevantDesc(randomCategory.description ?? '');
 
         const relatedRecipes = recipes.filter((recipe) =>
-            recipe.category.includes(randomCategory.category),
+            recipe.categoryIds.includes(randomCategory.category),
         );
 
         setRelevantRecipes(relatedRecipes);

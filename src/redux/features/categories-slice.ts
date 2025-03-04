@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { navMenu } from '~/mocks/nav-menu';
 import { MenuItem } from '~/types/category';
 import { toggleItemInArray } from '~/utils/toggle-items';
 
@@ -10,7 +9,7 @@ type CategoriesState = {
     isLoading: boolean;
 };
 
-const initialState: CategoriesState = { menu: navMenu, selectedCategories: [], isLoading: false };
+const initialState: CategoriesState = { menu: [], selectedCategories: [], isLoading: false };
 
 export const categoriesSlice = createSlice({
     name: 'categories',

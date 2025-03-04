@@ -7,7 +7,7 @@ import { Paths } from '~/constants/path.js';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { selectRecipes } from '~/redux/features/recipies-slice.ts';
 
-import { CardList } from '../card-list/card-list.tsx';
+import { CardList } from '../card-list';
 import { SectionBox } from '../section-box/section-box.tsx';
 
 export const FavouritesBlock: FC = () => {

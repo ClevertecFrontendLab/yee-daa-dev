@@ -1,13 +1,23 @@
 export const API_BASE_URL = 'https://marathon-api.clevertec.ru/';
-// TODO уточнить потом прод урл апишки
 
 export const API_DEV_URL = 'http://127.0.0.1:4000/'; //localhost
 
-export const API_IMGS_BASE = ' https://training-api.clevertec.ru/';
-// TODO уточнить хранение картинок где будет
+export const API_IMGS_BASE = 'https://training-api.clevertec.ru';
+
+export const NOTIFICATION_STATE_NAME = 'appNotificationState';
 
 export enum ApiEndpoints {
     Category = 'category',
+    Recipe = 'recipe',
+    RecipeByCategory = 'recipe/category',
 }
 
-export const NOTIFICATION_STATE_NAME = 'appNotificationState';
+export enum SortParamsAvailable {
+    DATE = 'createdAt',
+    LIKES = 'likes',
+}
+
+export enum SortOrder {
+    ASC = 'ASC',
+    DESC = 'DESC',
+}

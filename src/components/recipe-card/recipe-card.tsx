@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { Recipe } from '~/types/recipe';
+import { Recipe } from '~/redux/api/types/recipes';
 
 import { CardStat } from '../card-stat/card-stat';
 import { CategoryTag } from '../category-tag';
@@ -43,7 +43,7 @@ export const RecipeCard: FC<{ recipe?: Recipe }> = ({ recipe }) => (
         <Stack>
             <CardHeader display='flex' justifyContent='space-between' p={0} pr={1} pb={8}>
                 <HStack flexWrap='wrap'>
-                    <CategoryTag category={recipe?.category} color='lime.50' />
+                    <CategoryTag category={recipe?.categoryIds} color='lime.50' />
                 </HStack>
                 <CardStat bookmarks={recipe?.bookmarks} likes={recipe?.likes} />
             </CardHeader>

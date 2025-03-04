@@ -4,12 +4,13 @@ import { FC } from 'react';
 import { NavLink } from 'react-router';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { mockAuthors } from '~/mocks/authors.ts';
+import { Recipe } from '~/redux/api/types/recipes.ts';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
 import { selectChoosenCategory } from '~/redux/features/choosen-category-slice.ts';
 import { setSelectedRecipe } from '~/redux/features/choosen-recipe-slice.ts';
 import { selectRecipes } from '~/redux/features/recipies-slice.ts';
 import { selectInputValue } from '~/redux/features/search-slice.ts';
-import { Recipe } from '~/types/recipe.ts';
 import { getPath } from '~/utils/get-path.ts';
 
 import { CardStat } from '../card-stat/card-stat.tsx';
@@ -20,17 +21,22 @@ import { RecommendationTag } from '../recommendation-tag';
 
 export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
     const dispatch = useAppDispatch();
+
     const inputValue = useAppSelector(selectInputValue);
     const allcategories = useAppSelector(selectCategoriesMenu);
     const selectedCategory = useAppSelector(selectChoosenCategory);
     const allRecipes = useAppSelector(selectRecipes);
 
-    const { id, title, image, description, category, likes, bookmarks, recommendation } = recipe;
+    const { id, title, image, description, categoryIds, likes, bookmarks } = recipe;
 
     const categoryPath = getPath(allcategories, allRecipes, selectedCategory, id);
+
     const handleClick = () => {
         dispatch(setSelectedRecipe(recipe));
     };
+
+    // TODO заменить на поиск автора по recommendedByUserId из рецепта
+    const { login, ...authorRecommendInfo } = mockAuthors[1];
 
     return (
         <Card direction='row' variant='outline' gap={6} data-test-id={`food-card-${id}`}>
@@ -44,7 +50,7 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
                     maxWidth='150px'
                     zIndex={2}
                 >
-                    <CategoryTag category={category} color='lime.50' />
+                    <CategoryTag category={categoryIds} color='lime.50' />
                 </Box>
                 <Box
                     position='absolute'
@@ -54,7 +60,7 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
                     right={2}
                     display={{ base: 'none', xxl: 'block' }}
                 >
-                    {recommendation && <RecommendationTag {...recommendation} />}
+                    {login && <RecommendationTag {...authorRecommendInfo} />}
                 </Box>
                 <Image
                     top={0}
@@ -84,7 +90,7 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
                     alignItems='flex-start'
                 >
                     <Box display={{ base: 'none', xmd: 'block' }}>
-                        <CategoryTag category={category} color='lime.50' />
+                        <CategoryTag category={categoryIds} color='lime.50' />
                     </Box>
                     <CardStat bookmarks={bookmarks} likes={likes} />
                 </CardHeader>

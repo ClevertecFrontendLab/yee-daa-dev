@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
-import { Recipe } from '~/types/recipe';
+import { Recipe } from '~/redux/api/types/recipes';
 
 export const IngredientsBlock: FC<{
     ingredients?: Recipe['ingredients'];
@@ -27,7 +27,7 @@ export const IngredientsBlock: FC<{
         const multiply = Number(value);
         const updatedIngredients = ingredients?.map((ingredient) => ({
             ...ingredient,
-            quantity: (ingredient.quantity / (portions ?? 1)) * multiply,
+            quantity: (ingredient.count / (portions ?? 1)) * multiply,
         }));
         setAdjustedIngredients(updatedIngredients);
         setValue(multiply);
@@ -75,7 +75,7 @@ export const IngredientsBlock: FC<{
             <Tbody>
                 {adjustedIngredients?.map((ingredient, index) => (
                     <Tr
-                        key={ingredient.name}
+                        key={ingredient.title}
                         bg={index % 2 === 0 ? 'blackAlfa.100' : 'white'}
                         fontWeight={500}
                         _hover={{ bg: 'blackAlfa.100' }}
@@ -89,7 +89,7 @@ export const IngredientsBlock: FC<{
                             textAlign='end'
                             data-test-id={`ingredient-quantity-${index}`}
                         >
-                            {!!ingredient.quantity && ingredient.quantity} {ingredient.unit}
+                            {ingredient.count && ingredient.count} {ingredient.measureUnit}
                         </Td>
                     </Tr>
                 ))}

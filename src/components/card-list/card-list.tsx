@@ -1,7 +1,7 @@
 import { SimpleGrid } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { Recipe } from '~/types/recipe';
+import { Recipe } from '~/redux/api/types/recipes';
 
 import { FoodCard } from '../food-card';
 

@@ -1,29 +1,32 @@
 import { Box, Card, SimpleGrid, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { Recipe } from '~/types/recipe';
+import { EnergyValue } from '~/redux/api/types/recipes';
+import { Recipe } from '~/redux/api/types/recipes';
 
-const calories: Record<string, string> = {
-    calorie: 'калорийность',
+const calories: Record<keyof EnergyValue, string> = {
+    calories: 'калорийность',
     fats: 'жиры',
     carbohydrates: 'углеводы',
-    proteins: 'белки',
+    protein: 'белки',
 };
 
-const units: Record<string, string> = {
-    calorie: 'ккал',
+const units: Record<keyof EnergyValue, string> = {
+    calories: 'ккал',
     fats: 'грамм',
     carbohydrates: 'грамм',
-    proteins: 'грамм',
+    protein: 'грамм',
 };
 
-export const CalorieCard: FC<{ value?: Recipe['value'] }> = ({ value }) => (
+export const CalorieCard: FC<{ nutritionValue?: Recipe['nutritionValue'] }> = ({
+    nutritionValue,
+}) => (
     <Box p={0}>
         <Text mb={{ base: 3, xl: 5 }} color='blackAlpha.800'>
             * Калорийность на 1 порцию
         </Text>
         <SimpleGrid columns={{ base: 1, sm: 4 }} spacing={3}>
-            {Object.entries(value ?? {}).map(([key, amount]) => (
+            {Object.entries(nutritionValue ?? {}).map(([key, amount]) => (
                 <Card
                     variant='outline'
                     key={key}
@@ -34,7 +37,7 @@ export const CalorieCard: FC<{ value?: Recipe['value'] }> = ({ value }) => (
                     gap={3}
                     flexDirection={{ base: 'row', sm: 'column' }}
                 >
-                    <Text color='blackAlpha.600'>{calories[key]}</Text>
+                    <Text color='blackAlpha.600'>{calories[key as keyof EnergyValue]}</Text>
                     <Box
                         display='flex'
                         flexDirection={{ base: 'row', sm: 'column' }}
@@ -53,7 +56,7 @@ export const CalorieCard: FC<{ value?: Recipe['value'] }> = ({ value }) => (
                             fontWeight={600}
                             fontSize={{ base: 'xs', sm: 'sm' }}
                         >
-                            {units[key]}
+                            {units[key as keyof EnergyValue]}
                         </Text>
                     </Box>
                 </Card>

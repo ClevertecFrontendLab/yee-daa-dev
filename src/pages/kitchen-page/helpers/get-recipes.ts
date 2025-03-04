@@ -1,19 +1,25 @@
-import { ChoosenCategory } from '~/redux/features/choosen-category-slice';
-import { Recipe } from '~/types/recipe';
+import { Recipe } from '~/redux/api/types/recipes';
+import { MenuItem } from '~/types/category';
 
-export const getCategoryRecipes = (recipes: Recipe[], selectedCategory: ChoosenCategory) =>
+export const getCategoryRecipes = (
+    recipes: Recipe[],
+    selectedCategory: MenuItem | null,
+    selectedSubCategory: MenuItem | null,
+) =>
     recipes.filter((recipe) => {
-        if (selectedCategory?.choosenSubCategory?.category) {
+        if (selectedCategory && selectedSubCategory) {
             return (
-                recipe.category.includes(selectedCategory.category) &&
-                recipe.subcategory.includes(selectedCategory?.choosenSubCategory?.category ?? '')
+                recipe.categoryIds.includes(selectedCategory.category) &&
+                recipe.categoryIds.includes(selectedSubCategory.category)
             );
+        } else if (selectedCategory) {
+            return recipe.categoryIds.includes(selectedCategory.category);
         } else {
-            return recipe.category.includes(selectedCategory.category);
+            return true;
         }
     });
 
-export const getFavouritesRecipes = (recipes: Recipe[]) =>
+export const getFavoritesRecipes = (recipes: Recipe[]) =>
     recipes
         .filter((recipe) => recipe.likes !== undefined)
         .sort((a, b) => (b?.likes ?? 0) - (a?.likes ?? 0))

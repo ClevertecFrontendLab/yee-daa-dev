@@ -5,13 +5,13 @@ import { NavLink } from 'react-router';
 
 import { categoriesMap } from '~/constants/categories.ts';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { Recipe } from '~/redux/api/types/recipes';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
 import { selectChoosenCategory } from '~/redux/features/choosen-category-slice.ts';
 import { selectRecipes } from '~/redux/features/recipies-slice.ts';
-import { Recipe } from '~/types/recipe.ts';
 import { getPath } from '~/utils/get-path.ts';
 
-export const ShortFoodCard: FC<Recipe> = ({ id, category, title }) => {
+export const ShortFoodCard: FC<Recipe> = ({ id, categoryIds, title }) => {
     const allRecipes = useAppSelector(selectRecipes);
     const allcategories = useAppSelector(selectCategoriesMenu);
     const choosenCategory = useAppSelector(selectChoosenCategory);
@@ -25,7 +25,7 @@ export const ShortFoodCard: FC<Recipe> = ({ id, category, title }) => {
             alignItems='center'
             spacing={2}
         >
-            <Image src={categoriesMap[category[0]]} alt={category[0]} />
+            <Image src={categoriesMap[categoryIds[0]]} alt={categoryIds[0]} />
             <Heading
                 fontSize={{ base: 'md', md: 'xl' }}
                 noOfLines={1}

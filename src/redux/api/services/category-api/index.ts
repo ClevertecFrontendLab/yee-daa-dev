@@ -1,7 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
-import { NotificationMessages } from '~/constants/notification-messages';
-import { ApiEndpoints, NOTIFICATION_STATE_NAME } from '~/redux/api/constants';
+import { ApiEndpoints } from '~/redux/api/constants';
 import { baseQuery } from '~/redux/api/get-base-query';
 import {
     CategoriesRawResponse,
@@ -9,9 +8,11 @@ import {
     Category,
     CategoryRaw,
 } from '~/redux/api/types/categories';
-import { StatusTypesEnum } from '~/redux/api/types/common';
 import { setCategories } from '~/redux/features/categories-slice';
 import { isArrayWithItems } from '~/utils/is-array-with-items';
+
+import { replaceUnderScoreId } from '../../utils/replace-underscore-id';
+import { transformBaseErrorResponse } from '../../utils/transform-base-error-response';
 
 export const categoryApi = createApi({
     reducerPath: 'categoryApi',
@@ -32,42 +33,15 @@ export const categoryApi = createApi({
                 }
             },
             transformResponse: (response: CategoriesRawResponse): CategoriesResponse =>
-                response.map((resp) =>
-                    resp._id
-                        ? {
-                              ...resp,
-                              id: resp._id,
-                          }
-                        : resp,
-                ),
+                response.map((resp) => replaceUnderScoreId(resp)),
 
-            transformErrorResponse: (response) => ({
-                ...response,
-                [NOTIFICATION_STATE_NAME]: {
-                    status: StatusTypesEnum.Error,
-                    message: NotificationMessages.ERROR_GENERAL_TITLE,
-                    description: NotificationMessages.ERROR_GENERAL_DESCRIPTION,
-                },
-            }),
+            transformErrorResponse: transformBaseErrorResponse,
         }),
         getCategoryById: build.query<Category, void>({
             query: (id) => ({ url: `${ApiEndpoints.Category}/${id}` }),
-            transformResponse: (response: CategoryRaw): Category =>
-                response._id
-                    ? {
-                          ...response,
-                          id: response._id,
-                      }
-                    : response,
+            transformResponse: (response: CategoryRaw): Category => replaceUnderScoreId(response),
 
-            transformErrorResponse: (response) => ({
-                ...response,
-                [NOTIFICATION_STATE_NAME]: {
-                    status: StatusTypesEnum.Error,
-                    message: NotificationMessages.ERROR_GENERAL_TITLE,
-                    description: NotificationMessages.ERROR_GENERAL_DESCRIPTION,
-                },
-            }),
+            transformErrorResponse: transformBaseErrorResponse,
         }),
     }),
 });

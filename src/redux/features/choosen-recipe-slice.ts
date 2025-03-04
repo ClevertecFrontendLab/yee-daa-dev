@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { Recipe } from '~/types/recipe';
+import { Recipe } from '~/redux/api/types/recipes';
 
 type SelectedRecipeState = {
-    selectedRecipe: Recipe | null;
+    selectedRecipe: Recipe;
 };
 
 const initialState: SelectedRecipeState = {
-    selectedRecipe: null,
+    selectedRecipe: {} as Recipe,
 };
 
 export const selectedRecipeSlice = createSlice({
@@ -18,7 +18,7 @@ export const selectedRecipeSlice = createSlice({
             state.selectedRecipe = action.payload;
         },
         clearSelectedRecipe(state) {
-            state.selectedRecipe = null;
+            state.selectedRecipe = {} as Recipe;
         },
     },
     selectors: {

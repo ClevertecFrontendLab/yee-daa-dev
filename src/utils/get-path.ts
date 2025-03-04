@@ -1,6 +1,6 @@
+import { Recipe } from '~/redux/api/types/recipes';
 import { ChoosenCategory } from '~/redux/features/choosen-category-slice';
 import { MenuItem } from '~/types/category';
-import { Recipe } from '~/types/recipe';
 
 export const getPath = (
     allcategories: MenuItem[],
@@ -10,7 +10,7 @@ export const getPath = (
 ) => {
     const currentRecipe = allRecipes.find((recipe) => recipe.id === recipeId);
 
-    const choosenCategory = currentRecipe?.category.find(
+    const choosenCategory = currentRecipe?.categoryIds.find(
         (category) => category === selectedCategory?.category,
     );
 
@@ -18,11 +18,11 @@ export const getPath = (
         return `/${choosenCategory}/${selectedCategory?.choosenSubCategory?.category}/${recipeId}`;
     } else {
         const foundCategory = allcategories.find(
-            (category) => category.category === currentRecipe?.category[0],
+            (category) => category.category === currentRecipe?.categoryIds[0],
         );
 
         const foundSubCategory = foundCategory?.subCategories?.find((subItem) =>
-            currentRecipe?.subcategory.includes(subItem.category),
+            currentRecipe?.categoryIds.includes(subItem.category),
         );
 
         return `/${foundCategory?.category}/${foundSubCategory?.category}/${recipeId}`;

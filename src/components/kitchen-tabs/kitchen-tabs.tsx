@@ -3,9 +3,9 @@ import { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { Recipe } from '~/redux/api/types/recipes';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice';
 import { selectChoosenCategory, setChoosenCategory } from '~/redux/features/choosen-category-slice';
-import { Recipe } from '~/types/recipe';
 
 import { RecipeCardList } from '../recipes-card-list/recipes-card-list';
 
@@ -40,7 +40,7 @@ export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
     const currentSubcategory = subcategories[selectedTabIndex]?.category ?? '';
 
     const filteredRecipes = recipeList.filter((recipe) =>
-        recipe.subcategory.includes(currentSubcategory),
+        recipe.categoryIds.includes(currentSubcategory),
     );
 
     useEffect(() => {

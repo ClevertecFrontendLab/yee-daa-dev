@@ -1,12 +1,12 @@
 import { Card, CardBody, CardHeader, Image, Stack, Tag, TagLabel, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { Recipe } from '~/types/recipe';
+import { Recipe } from '~/redux/api/types/recipes';
 
 export const StepsBlock: FC<{ steps?: Recipe['steps'] }> = ({ steps }) =>
     steps?.map((step) => (
         <Card
-            key={step.number}
+            key={step.stepNumber}
             variant='outline'
             direction='row'
             minH={{ base: step?.image ? '128px' : '88px', xl: step?.image ? '244px' : '100px' }}
@@ -25,9 +25,9 @@ export const StepsBlock: FC<{ steps?: Recipe['steps'] }> = ({ steps }) =>
                     <Tag
                         size='md'
                         p='4px 8px'
-                        bg={step?.number === steps?.length ? 'lime.50' : 'blackAlpha.100'}
+                        bg={step?.stepNumber === steps?.length ? 'lime.50' : 'blackAlpha.100'}
                     >
-                        <TagLabel>Шаг {step?.number}</TagLabel>
+                        <TagLabel>Шаг {step?.stepNumber}</TagLabel>
                     </Tag>
                 </CardHeader>
                 <CardBody p={0}>
