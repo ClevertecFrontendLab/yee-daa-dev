@@ -53,17 +53,17 @@ export const recipes: Recipe[] = [
             { number: 4, description: 'Тушить на медленном огне 30 минут.', image: puriImg },
         ],
         author: {
-            firstName: 'Иван',
-            lastName: 'Иванов',
-            login: 'ivanov',
+            firstName: 'Анна',
+            lastName: 'Петрова',
+            login: 'petrova',
             likes: 200,
             bookmarks: 50,
             imageUrl: man,
             followers: 101,
         },
-        cuisine: 'American',
-        meat: 'pork',
-        side: 'pasta',
+
+        meat: '',
+        side: 'potatoes',
     },
     {
         id: '1',
@@ -94,13 +94,12 @@ export const recipes: Recipe[] = [
             firstName: 'Анна',
             lastName: 'Петрова',
             login: 'petrova',
-            likes: 300,
-            bookmarks: 70,
+            likes: 200,
+            bookmarks: 50,
             imageUrl: man,
             followers: 101,
         },
-        cuisine: 'American',
-        meat: 'chicken',
+
         side: 'potatoes',
     },
 
@@ -138,7 +137,6 @@ export const recipes: Recipe[] = [
             imageUrl: man,
             followers: 577,
         },
-        cuisine: 'American',
     },
     {
         id: '3',
@@ -166,15 +164,14 @@ export const recipes: Recipe[] = [
             { number: 3, description: 'Запекать 30 минут.' },
         ],
         author: {
-            firstName: 'Мария',
-            lastName: 'Кузнецова',
-            login: 'kuznetsova',
-            likes: 250,
-            bookmarks: 60,
+            firstName: 'Анна',
+            lastName: 'Петрова',
+            login: 'petrova',
+            likes: 200,
+            bookmarks: 50,
             imageUrl: man,
-            followers: 46,
+            followers: 101,
         },
-        cuisine: 'Italian',
     },
     {
         id: '4',
@@ -202,14 +199,14 @@ export const recipes: Recipe[] = [
             { number: 3, description: 'Подавать с соусом.', image: puriImg },
         ],
         author: {
-            firstName: 'Елена',
-            lastName: 'Семенова',
-            login: 'semenova',
-            likes: 100,
-            bookmarks: 30,
+            firstName: 'Анна',
+            lastName: 'Петрова',
+            login: 'petrova',
+            likes: 200,
+            bookmarks: 50,
             imageUrl: man,
+            followers: 101,
         },
-        cuisine: 'Italian',
     },
     {
         id: '5',
@@ -237,14 +234,16 @@ export const recipes: Recipe[] = [
             { number: 3, description: 'Подавать горячей.', image: puriImg },
         ],
         author: {
-            firstName: 'Алексей',
-            lastName: 'Федоров',
-            login: 'fedorov',
-            likes: 150,
-            bookmarks: 40,
-            imageUrl: woman,
+            firstName: 'Анна',
+            lastName: 'Петрова',
+            login: 'petrova',
+            likes: 200,
+            bookmarks: 50,
+            imageUrl: man,
+            followers: 101,
         },
-        cuisine: 'Italian',
+
+        side: 'potatoes',
     },
     {
         id: '6',
@@ -264,6 +263,7 @@ export const recipes: Recipe[] = [
             { name: 'flour', title: 'мука', quantity: 200, unit: 'г' },
             { name: 'water', title: 'вода', quantity: 100, unit: 'мл' },
             { name: 'oil', title: 'масло', quantity: 0, unit: 'для жарки' },
+            { name: 'egg', title: 'яйцо', quantity: 1, unit: 'для жарки' },
         ],
         steps: [
             { number: 1, description: 'Смешать муку с водой.', image: puriImg },
@@ -271,15 +271,14 @@ export const recipes: Recipe[] = [
             { number: 3, description: 'Подавать горячими.', image: puriImg },
         ],
         author: {
-            firstName: 'Кирилл',
-            lastName: 'Соловьев',
-            login: 'solovyev',
-            likes: 80,
-            bookmarks: 20,
-            imageUrl: woman,
-            followers: 456,
+            firstName: 'Анна',
+            lastName: 'Петрова',
+            login: 'petrova',
+            likes: 200,
+            bookmarks: 50,
+            imageUrl: man,
+            followers: 101,
         },
-        cuisine: 'Mexican',
     },
     {
         id: '7',
@@ -313,7 +312,6 @@ export const recipes: Recipe[] = [
             bookmarks: 10,
             imageUrl: woman,
         },
-        cuisine: 'Mexican',
     },
     {
         id: '8',
@@ -338,14 +336,13 @@ export const recipes: Recipe[] = [
             { number: 2, description: 'Обжарить на сковороде.', image: puriImg },
         ],
         author: {
-            firstName: 'Анастасия',
-            lastName: 'Петрова',
-            login: 'petrova',
-            likes: 40,
-            bookmarks: 5,
+            firstName: 'Игорь',
+            lastName: 'Ковалев',
+            login: 'kovalev',
+            likes: 100,
+            bookmarks: 20,
             imageUrl: woman,
         },
-        cuisine: 'Mexican',
     },
     {
         id: '9',
@@ -379,7 +376,6 @@ export const recipes: Recipe[] = [
             bookmarks: 20,
             imageUrl: woman,
         },
-        cuisine: 'Japanese',
     },
     {
         id: '10',
@@ -414,7 +410,6 @@ export const recipes: Recipe[] = [
             imageUrl: woman,
             followers: 68,
         },
-        cuisine: 'Japanese',
     },
 
     {
@@ -450,7 +445,6 @@ export const recipes: Recipe[] = [
             bookmarks: 30,
             imageUrl: 'ivanov_imageUrl.png',
         },
-        cuisine: 'French',
     },
     {
         id: '12',
@@ -489,7 +483,6 @@ export const recipes: Recipe[] = [
             bookmarks: 50,
             followers: 788,
         },
-        cuisine: 'French',
     },
     {
         id: '13',
@@ -527,7 +520,6 @@ export const recipes: Recipe[] = [
             likes: 180,
             bookmarks: 40,
         },
-        cuisine: 'French',
     },
     {
         id: '14',
@@ -561,7 +553,6 @@ export const recipes: Recipe[] = [
             bookmarks: 2,
             followers: 57,
         },
-        cuisine: 'Indian',
     },
     {
         id: '15',
@@ -596,7 +587,6 @@ export const recipes: Recipe[] = [
             likes: 5,
             bookmarks: 1,
         },
-        cuisine: 'Indian',
     },
     {
         id: '16',
@@ -628,7 +618,6 @@ export const recipes: Recipe[] = [
             bookmarks: 5,
             imageUrl: woman,
         },
-        cuisine: 'Indian',
     },
     {
         id: '17',
@@ -1147,6 +1136,7 @@ export const recipes: Recipe[] = [
             { name: 'bell pepper', title: 'болгарский перец', quantity: 1, unit: 'шт.' },
             { name: 'tomato', title: 'помидор', quantity: 2, unit: 'шт.' },
             { name: 'herbs', title: 'травы', quantity: 0, unit: 'по вкусу' },
+            { name: 'tomato sauce', title: 'томатный соус', quantity: 200, unit: 'мл' },
         ],
         steps: [
             { number: 1, description: 'Нарезать все овощи и уложить в форму.' },
@@ -1194,7 +1184,7 @@ export const recipes: Recipe[] = [
             bookmarks: 15,
             imageUrl: 'kovaleva_imageUrl.png',
         },
-        cuisine: 'Vietnamese',
+
         meat: 'chicken',
         side: 'potatoes',
     },
@@ -1230,7 +1220,7 @@ export const recipes: Recipe[] = [
             bookmarks: 20,
             imageUrl: 'ivanova_imageUrl.png',
         },
-        cuisine: 'Vietnamese',
+
         meat: 'chicken',
         side: 'potatoes',
     },
@@ -1266,7 +1256,6 @@ export const recipes: Recipe[] = [
             bookmarks: 30,
             imageUrl: 'sidorova_imageUrl.png',
         },
-        cuisine: 'Vietnamese',
     },
     {
         id: '35',
@@ -1297,7 +1286,6 @@ export const recipes: Recipe[] = [
             bookmarks: 10,
             imageUrl: 'fedorov_imageUrl.png',
         },
-        cuisine: 'Greek',
     },
     {
         id: '36',
@@ -1331,7 +1319,6 @@ export const recipes: Recipe[] = [
             bookmarks: 5,
             imageUrl: 'kuznetsova_imageUrl.png',
         },
-        cuisine: 'Greek',
     },
     {
         id: '37',
@@ -1363,7 +1350,6 @@ export const recipes: Recipe[] = [
             bookmarks: 10,
             imageUrl: 'semenov_imageUrl.png',
         },
-        cuisine: 'Greek',
     },
     {
         id: '38',
@@ -1395,7 +1381,6 @@ export const recipes: Recipe[] = [
             bookmarks: 5,
             imageUrl: 'petrova_imageUrl.png',
         },
-        cuisine: 'Greek',
     },
 
     {
@@ -1429,7 +1414,6 @@ export const recipes: Recipe[] = [
             bookmarks: 12,
             imageUrl: 'solovyev_imageUrl.png',
         },
-        cuisine: 'SouthAfrican',
     },
     {
         id: '40',
@@ -1462,7 +1446,6 @@ export const recipes: Recipe[] = [
             bookmarks: 8,
             imageUrl: 'tikhonova_imageUrl.png',
         },
-        cuisine: 'SouthAfrican',
     },
     {
         id: '41',
@@ -1495,7 +1478,6 @@ export const recipes: Recipe[] = [
             bookmarks: 20,
             imageUrl: 'nikolaeva_imageUrl.png',
         },
-        cuisine: 'SouthAfrican',
     },
     {
         id: '42',
@@ -1528,7 +1510,6 @@ export const recipes: Recipe[] = [
             bookmarks: 15,
             imageUrl: 'sidorova_imageUrl.png',
         },
-        cuisine: 'SouthAfrican',
     },
     {
         id: '43',
@@ -1560,7 +1541,6 @@ export const recipes: Recipe[] = [
             bookmarks: 5,
             imageUrl: 'kovaleva_imageUrl.png',
         },
-        cuisine: 'Brazilian',
     },
     {
         id: '44',
@@ -1593,7 +1573,6 @@ export const recipes: Recipe[] = [
             bookmarks: 10,
             imageUrl: 'semenova_imageUrl.png',
         },
-        cuisine: 'Brazilian',
     },
 
     {
@@ -1629,7 +1608,6 @@ export const recipes: Recipe[] = [
             bookmarks: 8,
             imageUrl: 'ivanova_imageUrl.png',
         },
-        cuisine: 'Brazilian',
     },
     {
         id: '46',
@@ -1662,6 +1640,5 @@ export const recipes: Recipe[] = [
             bookmarks: 20,
             imageUrl: 'sidorov_imageUrl.png',
         },
-        cuisine: 'Indian',
     },
 ];

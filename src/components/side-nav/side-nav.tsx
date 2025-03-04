@@ -32,10 +32,12 @@ export const SideNav = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
         <Stack
+            data-test-id='nav'
             pt={6}
             justifyContent='space-between'
             h='100%'

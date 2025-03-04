@@ -9,7 +9,7 @@ const spin = keyframes`
 `;
 
 export const SearchLoader: FC = () => (
-    <Box className={styles.wrapper}>
+    <Box className={styles.wrapper} data-test-id='search-loader'>
         <Box className={styles.gradientBackground} />
         <Box className={styles.searchLoader} as='div' animation={`${spin} 1s linear infinite`} />
     </Box>

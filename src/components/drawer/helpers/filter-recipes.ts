@@ -2,7 +2,6 @@ import { Recipe } from '~/types/recipe';
 
 type FilterOptions = {
     selectedCategories: string[];
-    selectedCuisines: string[];
     selectedAuthors: string[];
     selectedMeats: string[];
     selectedSides: string[];
@@ -16,17 +15,10 @@ export const matchesAny = (normalizedArray: string[], valueArray: string[]) =>
     normalizedArray.length === 0 || valueArray.some((val) => normalizedArray.includes(val));
 
 export const filterRecipes = (recipes: Recipe[], filterOptions: FilterOptions): Recipe[] => {
-    const {
-        selectedCategories,
-        selectedCuisines,
-        selectedAuthors,
-        selectedMeats,
-        selectedSides,
-        selectedAllergens,
-    } = filterOptions;
+    const { selectedCategories, selectedAuthors, selectedMeats, selectedSides, selectedAllergens } =
+        filterOptions;
 
     const normalizedCategories = normalizeArray(selectedCategories);
-    const normalizedCuisines = normalizeArray(selectedCuisines);
     const normalizedAuthors = normalizeArray(selectedAuthors);
     const normalizedMeats = normalizeArray(selectedMeats);
     const normalizedSides = normalizeArray(selectedSides);
@@ -34,7 +26,6 @@ export const filterRecipes = (recipes: Recipe[], filterOptions: FilterOptions): 
 
     return recipes.filter((recipe) => {
         const recipeCategories = normalizeArray(recipe.category);
-        const recipeCuisine = normalizeArray([recipe.cuisine])[0];
         const recipeAuthor = normalizeArray([recipe.author.login])[0];
         const recipeMeat = normalizeArray([recipe.meat])[0];
         const recipeSide = normalizeArray([recipe.side])[0];
@@ -43,7 +34,6 @@ export const filterRecipes = (recipes: Recipe[], filterOptions: FilterOptions): 
         );
 
         const matchesCategory = matchesAny(normalizedCategories, recipeCategories);
-        const matchesCuisine = matchesAny(normalizedCuisines, [recipeCuisine]);
         const matchesAuthor = matchesAny(normalizedAuthors, [recipeAuthor]);
         const matchesMeat = matchesAny(normalizedMeats, [recipeMeat]);
         const matchesSide = matchesAny(normalizedSides, [recipeSide]);
@@ -51,13 +41,6 @@ export const filterRecipes = (recipes: Recipe[], filterOptions: FilterOptions): 
             recipeAllergens.includes(allergen),
         );
 
-        return (
-            matchesCategory &&
-            matchesCuisine &&
-            matchesAuthor &&
-            matchesMeat &&
-            matchesSide &&
-            !containsAllergen
-        );
+        return matchesCategory && matchesAuthor && matchesMeat && matchesSide && !containsAllergen;
     });
 };

@@ -1,15 +1,13 @@
 import { Allergen } from '~/types/allergens';
 
 export const allergens: Allergen[] = [
+    { label: 'Молочные продукты', value: 'milk' },
+    { label: 'Яйцо', value: 'egg' },
+    { label: 'Рыба', value: 'fish' },
+    { label: 'Моллюски', value: 'molluscs' },
     { label: 'Орехи', value: 'nuts' },
-    { label: 'Молоко', value: 'milk' },
-    { label: 'Яйца', value: 'eggs' },
-    { label: 'Морепродукты', value: 'seafood' },
-    { label: 'Клубника', value: 'strawberry' },
-    { label: 'Мед', value: 'honey' },
-    { label: 'Пшеница', value: 'wheat' },
-    { label: 'Глютен', value: 'gluten' },
-    { label: 'Соя', value: 'soy' },
+    { label: 'Томат (помидор)', value: 'tomato' },
     { label: 'Цитрусовые', value: 'citrus' },
-    { label: 'Кукуруза', value: 'corn' },
+    { label: 'Клубника (ягоды)', value: 'strawberry' },
+    { label: 'Шоколад', value: 'chocolate' },
 ];

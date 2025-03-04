@@ -1,15 +1,20 @@
 import { CloseIcon, HamburgerIcon, IconButton } from '@chakra-ui/icons';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
-import { selectMenu, setClicked, toggleMenu } from '~/redux/features/burger-slice';
+import { closeMenu, openMenu, selectMenu, setClicked } from '~/redux/features/burger-slice';
 
 export const BurgerMenu = () => {
     const dispatch = useAppDispatch();
     const isOpen = useAppSelector(selectMenu);
 
-    const handleToggle = () => {
+    const handleOpen = () => {
         dispatch(setClicked(true));
-        dispatch(toggleMenu());
+        dispatch(openMenu());
+    };
+
+    const handleClose = () => {
+        dispatch(setClicked(true));
+        dispatch(closeMenu());
     };
 
     return (
@@ -18,9 +23,14 @@ export const BurgerMenu = () => {
             aria-label='burger'
             variant='ghost'
             colorScheme='blackAlpha'
-            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+            icon={
+                isOpen ? (
+                    <CloseIcon data-test-id='close-icon' onClick={handleClose} />
+                ) : (
+                    <HamburgerIcon data-test-id='hamburger-icon' onClick={handleOpen} />
+                )
+            }
             isRound
-            onClick={handleToggle}
         />
     );
 };

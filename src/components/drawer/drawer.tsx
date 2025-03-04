@@ -21,11 +21,6 @@ import {
     selectSelectedCategories,
     toggleCategory,
 } from '~/redux/features/categories-slice';
-import {
-    selectCuisines,
-    selectSelectedCuisines,
-    toggleCuisine,
-} from '~/redux/features/cuisines-slice';
 import { closeDrawer, selectDrawer } from '~/redux/features/drawer';
 import { selectMeats, selectSelectedMeats, toggleMeat } from '~/redux/features/meats-slice';
 import { selectSelectedSides, selectSides, toggleSide } from '~/redux/features/sides-slice';
@@ -49,13 +44,11 @@ export const FilterDrawer = () => {
     const dispatch = useAppDispatch();
     const isOpenDrawer = useAppSelector(selectDrawer);
     const allCategories = useAppSelector(selectCategoriesMenu);
-    const cuisines = useAppSelector(selectCuisines);
     const authors = useAppSelector(selectAuthors);
     const meats = useAppSelector(selectMeats);
     const sides = useAppSelector(selectSides);
 
     const selectedCategories = useAppSelector(selectSelectedCategories);
-    const selectedCuisines = useAppSelector(selectSelectedCuisines);
     const selectedAuthors = useAppSelector(selectSelectedAuthors);
     const selectedMeats = useAppSelector(selectSelectedMeats);
     const selectedSides = useAppSelector(selectSelectedSides);
@@ -73,9 +66,6 @@ export const FilterDrawer = () => {
         const englishCategory = getEnglishMenuItem(tag, allCategories);
         if (englishCategory) return TagType.CATEGORY;
 
-        const englishCuisine = getEnglishFoodItem(tag, cuisines);
-        if (englishCuisine) return TagType.CUISINE;
-
         const englishAuthor = getEnglishAuthor(tag, authors);
         if (englishAuthor) return TagType.AUTHOR;
 
@@ -92,10 +82,6 @@ export const FilterDrawer = () => {
         [TagType.CATEGORY]: (tag: string) => {
             const englishValue = getEnglishMenuItem(tag, allCategories);
             if (englishValue) dispatch(toggleCategory(englishValue));
-        },
-        [TagType.CUISINE]: (tag: string) => {
-            const englishValue = getEnglishFoodItem(tag, cuisines);
-            if (englishValue) dispatch(toggleCuisine(englishValue));
         },
         [TagType.AUTHOR]: (tag: string) => {
             const englishValue = getEnglishAuthor(tag, authors);
@@ -122,7 +108,6 @@ export const FilterDrawer = () => {
 
     const tags = [
         ...getTranslatedMenuItem(selectedCategories, allCategories),
-        ...getTranslatedFoodItem(selectedCuisines, cuisines),
         ...getTranslatedAuthor(selectedAuthors, authors),
         ...getTranslatedFoodItem(selectedMeats, meats),
         ...getTranslatedFoodItem(selectedSides, sides),
@@ -137,10 +122,11 @@ export const FilterDrawer = () => {
             size={{ base: '100%', sm: 'sm', lg: 'md' }}
         >
             <DrawerOverlay onClick={onClose} />
-            <DrawerContent className={styles.drawer}>
+            <DrawerContent className={styles.drawer} data-test-id='filter-drawer'>
                 <DrawerHeader className={styles.drawerHeader}>
                     <span className={styles.drawerHeading}>Фильтр</span>
                     <CloseIcon
+                        data-test-id='close-filter-drawer'
                         bg='black'
                         borderRadius='50%'
                         color='white'
@@ -154,7 +140,6 @@ export const FilterDrawer = () => {
                 <DrawerBody className={styles.drawerBody}>
                     <Stack spacing={6}>
                         <DrawerMenu items={allCategories} filterTitle={FILTER_TITLES.CATEGORY} />
-                        <DrawerMenu items={cuisines} filterTitle={FILTER_TITLES.CUISINE} />
                         <DrawerMenu items={authors} filterTitle={FILTER_TITLES.AUTHOR_SEARCH} />
                     </Stack>
                     <Stack spacing={6}>
@@ -165,9 +150,10 @@ export const FilterDrawer = () => {
 
                     <HStack spacing={4} pt={8} pb={8} flexWrap='wrap'>
                         {tags.map((tag) => {
-                            const type = determineTagType(tag);
+                            const type = determineTagType(tag ?? '');
                             return (
                                 <Tag
+                                    data-test-id='filter-tag'
                                     bg='var(--chakra-colors-lime-100)'
                                     border='1px solid var(--chakra-colors-lime-400)'
                                     size='md'
@@ -177,7 +163,7 @@ export const FilterDrawer = () => {
                                     color='#207E00'
                                 >
                                     <TagLabel>{tag}</TagLabel>
-                                    <TagCloseButton onClick={() => deleteFilter(tag, type)} />
+                                    <TagCloseButton onClick={() => deleteFilter(tag ?? '', type)} />
                                 </Tag>
                             );
                         })}

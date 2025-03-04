@@ -64,11 +64,15 @@ export const AllergenSelect: FC<{ isfromFilter: boolean }> = ({ isfromFilter }) 
         <Stack
             spacing={4}
             direction={{ md: 'column', xl: 'row' }}
-            alignItems='center'
+            alignItems={isfromFilter ? 'flex-start' : 'center'}
             display={{ base: 'none', md: 'flex', xl: 'flex' }}
             flexWrap='wrap'
         >
-            <Switcher isSwitchOn={isSwitchOn} handleSwitchChange={handleSwitchChange} />
+            <Switcher
+                isSwitchOn={isSwitchOn}
+                handleSwitchChange={handleSwitchChange}
+                isfromFilter={isfromFilter}
+            />
             <FormControl ref={menuRef} width='fit-content'>
                 <Menu isLazy={true} matchWidth={true} closeOnSelect={false}>
                     <SelectMenuButton
