@@ -6,7 +6,6 @@ import { menuReducer, menuSlice } from './features/burger-slice';
 import { categoriesReducer, categoriesSlice } from './features/categories-slice';
 import { choosenCategoryReducer, choosenCategorySlice } from './features/choosen-category-slice';
 import { selectedRecipeReducer, selectedRecipeSlice } from './features/choosen-recipe-slice';
-import { cuisinesReducer, cuisinesSlice } from './features/cuisines-slice';
 import { drawerReducer, drawerSlice } from './features/drawer';
 import { meatsReducer, meatsSlice } from './features/meats-slice';
 import { recipesReducer, recipesSlice } from './features/recipies-slice';
@@ -23,7 +22,6 @@ export const store = configureStore({
         [selectedRecipeSlice.name]: selectedRecipeReducer,
         [menuSlice.name]: menuReducer,
         [drawerSlice.name]: drawerReducer,
-        [cuisinesSlice.name]: cuisinesReducer,
         [authorsSlice.name]: authorsReducer,
         [meatsSlice.name]: meatsReducer,
         [sidesSlice.name]: sidesReducer,

@@ -14,7 +14,6 @@ import { useAppDispatch } from '../../hooks/typed-react-redux-hooks';
 import { useSelectedItems } from '../../hooks/use-selected-items';
 import { toggleAuthor } from '../../redux/features/authors-slice';
 import { toggleCategory } from '../../redux/features/categories-slice';
-import { toggleCuisine } from '../../redux/features/cuisines-slice';
 import { MenuItem } from '../../types/category';
 import { FoodItem } from '../../types/food-item';
 import { UserProps } from '../../types/user';
@@ -29,10 +28,6 @@ const displayConfig = {
     [FILTER_TITLES.CATEGORY]: {
         key: 'category',
         displayName: 'title',
-    },
-    [FILTER_TITLES.CUISINE]: {
-        key: 'id',
-        displayName: 'label',
     },
     [FILTER_TITLES.AUTHOR_SEARCH]: {
         key: 'login',
@@ -50,6 +45,7 @@ export const DrawerMenu: FC<MenuItemProps> = ({ items, filterTitle }) => {
     return (
         <Menu isLazy={true} matchWidth={true} closeOnSelect={false}>
             <MenuButton
+                data-test-id={`filter-menu-button-${filterTitle.toLocaleLowerCase()}`}
                 p={2}
                 as={Button}
                 color='blackAlpha.700'
@@ -82,18 +78,13 @@ export const DrawerMenu: FC<MenuItemProps> = ({ items, filterTitle }) => {
                     const itemKey =
                         filterTitle === FILTER_TITLES.AUTHOR_SEARCH
                             ? (item as UserProps).login
-                            : filterTitle === FILTER_TITLES.CUISINE
-                              ? (item as FoodItem).value
-                              : (item as MenuItem).category;
+                            : (item as MenuItem).category;
 
                     const isChecked = selectedItemsResult?.includes(itemKey);
 
                     const handleCheckboxChange = () => {
                         if (filterTitle === FILTER_TITLES.CATEGORY) {
                             dispatch(toggleCategory(itemKey));
-                        }
-                        if (filterTitle === FILTER_TITLES.CUISINE) {
-                            dispatch(toggleCuisine(itemKey));
                         }
                         if (filterTitle === FILTER_TITLES.AUTHOR_SEARCH) {
                             dispatch(toggleAuthor(itemKey));
@@ -108,6 +99,7 @@ export const DrawerMenu: FC<MenuItemProps> = ({ items, filterTitle }) => {
                             _hover={{ bg: 'var(--chakra-colors-lime-200)' }}
                         >
                             <Checkbox
+                                data-test-id={`checkbox-${displayNameValue.toLowerCase()}`}
                                 borderColor='var(--chakra-colors-lime-300)'
                                 iconColor='black'
                                 onChange={handleCheckboxChange}

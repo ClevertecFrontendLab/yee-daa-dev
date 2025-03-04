@@ -65,8 +65,8 @@ export const IngredientsBlock: FC<{
                         >
                             <NumberInputField />
                             <NumberInputStepper>
-                                <NumberIncrementStepper />
-                                <NumberDecrementStepper />
+                                <NumberIncrementStepper data-test-id='increment-stepper' />
+                                <NumberDecrementStepper data-test-id='decrement-stepper' />
                             </NumberInputStepper>
                         </NumberInput>
                     </Th>
@@ -83,7 +83,12 @@ export const IngredientsBlock: FC<{
                         <Td fontSize='sm' color={'blackAlfa.900'}>
                             {ingredient.title}
                         </Td>
-                        <Td fontSize='sm' color={'blackAlfa.900'} textAlign='end'>
+                        <Td
+                            fontSize='sm'
+                            color={'blackAlfa.900'}
+                            textAlign='end'
+                            data-test-id={`ingredient-quantity-${index}`}
+                        >
                             {!!ingredient.quantity && ingredient.quantity} {ingredient.unit}
                         </Td>
                     </Tr>

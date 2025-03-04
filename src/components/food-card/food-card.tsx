@@ -32,7 +32,7 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
     };
 
     return (
-        <Card direction='row' variant='outline' gap={6}>
+        <Card direction='row' variant='outline' gap={6} data-test-id={`food-card-${id}`}>
             <Box position='relative' w={{ base: '158px', md: '50%' }} maxW='346px' flex='1'>
                 <Box
                     position='absolute'
@@ -122,7 +122,11 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
                             Сохранить
                         </Box>
                     </Button>
-                    <NavLink to={categoryPath} onClick={handleClick}>
+                    <NavLink
+                        to={categoryPath}
+                        onClick={handleClick}
+                        data-test-id={`card-link-${id}`}
+                    >
                         <Button bg='black' color='white' size={{ base: 'xs', md: 'sm' }}>
                             Готовить
                         </Button>
