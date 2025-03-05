@@ -56,7 +56,7 @@ export const SubNavItem: FC<SubNavItemProps> = ({
             to={subCategoryPath}
             key={category}
             onClick={handleClick}
-            data-test-id={category === 'snacks' ? 'snacks' : ''}
+            data-test-id={`${category}-${isActive ? 'active' : ''}`}
         >
             <Box
                 borderColor='lime.400'

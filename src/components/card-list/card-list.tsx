@@ -21,8 +21,8 @@ export const CardList: FC<CardListProps> = ({ recipeList }) => (
             '2xl': 'repeat(2, 1fr)',
         }}
     >
-        {recipeList.map((el) => (
-            <FoodCard recipe={el} key={el.id} />
+        {recipeList.map((el, index) => (
+            <FoodCard recipe={el} key={el.id} index={index} />
         ))}
     </SimpleGrid>
 );

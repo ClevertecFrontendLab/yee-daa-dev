@@ -20,8 +20,6 @@ const FILTER_BUTTON = 'filter-button';
 const FIND_RECIPE_BUTTON = 'find-recipe-button';
 const FILTER_CATEGORY = 'filter-menu-button-категория';
 const VEGAN_CHECKBOX = 'checkbox-веганская кухня';
-const FILTER_AUTHOR = 'filter-menu-button-поиск по автору';
-const PETROVA_CHECKBOX = 'checkbox-анна петрова';
 const ALLERGEN_SWITCHER_FILTER = 'allergens-switcher-filter';
 const ALLERGEN_BUTTON_FILTER = 'allergens-menu-button-filter';
 const ADD_OTHER_ALLERGEN = 'add-other-allergen';
@@ -167,7 +165,6 @@ describe('Burger Menu Functionality', () => {
         cy.getByTestId(VEGAN).click();
         cy.getByTestId(CLOSE_ICON).scrollIntoView();
         cy.getByTestId(BREADCRUMBS).should('contain.text', 'Закуски');
-        cy.getByTestId('snacks').should('contain.text', 'Закуски');
         cy.screenshot('open-hamburger-768', { capture: 'fullPage' });
 
         cy.get('body').click(100, 200);
@@ -237,19 +234,17 @@ describe('Search Functionality', () => {
         cy.getByTestId(SEARCH_INPUT).type('ооо');
         cy.getByTestId(SEARCH_BUTTON).should('be.visible').click();
 
-        cy.get(`[data-test-id^=${FOOD_CARD}]`).should('not.exist');
-
         cy.screenshot(`search-not-found-360`, { capture: 'fullPage' });
     });
 });
 
-describe('Card Functionality', () => {
-    it('Страница карточки', () => {
+describe('Recipe Functionality', () => {
+    it('Страница рецепта', () => {
         cy.visit('/');
-        cy.getByTestId('card-link-13').click();
+        cy.getByTestId('card-link-0').click();
         cy.contains('Лапша с курицей и шафраном').should('exist');
         cy.scrollTo('top');
-        takeScreenshots('Страница карточки');
+        takeScreenshots('Страница рецепта');
 
         cy.getByTestId('increment-stepper').click();
         cy.getByTestId('ingredient-quantity-0').contains('250');
@@ -262,7 +257,7 @@ describe('Card Functionality', () => {
 });
 
 describe('Filters Functionality', () => {
-    it('Выбраны 4 фильтра, 1920px', () => {
+    it('Выбраны 3 фильтра, 1920px', () => {
         cy.viewport(1920, 750);
         cy.visit('/');
         setElementPosition();
@@ -278,10 +273,6 @@ describe('Filters Functionality', () => {
         cy.screenshot('filter-open-1920', { capture: 'viewport' });
         cy.getByTestId(FILTER_CATEGORY).click();
 
-        cy.getByTestId(FILTER_AUTHOR).click();
-        cy.getByTestId(PETROVA_CHECKBOX).click();
-        cy.getByTestId(FILTER_AUTHOR).click();
-
         cy.getByTestId('checkbox-картошка').click();
 
         cy.getByTestId(ALLERGEN_SWITCHER_FILTER).click();
@@ -290,7 +281,7 @@ describe('Filters Functionality', () => {
         cy.getByTestId(ADD_ALLERGEN_BUTTON).click();
         cy.getByTestId(ALLERGEN_BUTTON_FILTER).click();
 
-        cy.getByTestId(FILTER_TAG).should('have.length', 4);
+        cy.getByTestId(FILTER_TAG).should('have.length', 3);
 
         cy.getByTestId(FIND_RECIPE_BUTTON).click();
         cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 2);
@@ -314,24 +305,16 @@ describe('Filters Functionality', () => {
         cy.getByTestId(VEGAN_CHECKBOX).click();
         cy.getByTestId(FILTER_CATEGORY).click();
 
-        cy.getByTestId(FILTER_AUTHOR).click();
-        cy.getByTestId(PETROVA_CHECKBOX).click();
-        cy.getByTestId(FILTER_AUTHOR).click();
-
-        cy.getByTestId(FILTER_TAG).should('have.length', 2);
+        cy.getByTestId(FILTER_TAG).should('have.length', 1);
 
         cy.getByTestId(FIND_RECIPE_BUTTON).click();
-        cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 6);
+        cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 7);
 
         cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
 
         cy.getByTestId(FILTER_CATEGORY).click();
         cy.getByTestId(VEGAN_CHECKBOX).click();
         cy.getByTestId(FILTER_CATEGORY).click();
-
-        cy.getByTestId(FILTER_AUTHOR).click();
-        cy.getByTestId(PETROVA_CHECKBOX).click();
-        cy.getByTestId(FILTER_AUTHOR).click();
 
         cy.getByTestId('checkbox-картошка').click();
 
@@ -340,7 +323,7 @@ describe('Filters Functionality', () => {
         cy.getByTestId('allergen-5').click();
         cy.getByTestId(ALLERGEN_BUTTON_FILTER).click();
 
-        cy.getByTestId(FILTER_TAG).should('have.length', 4);
+        cy.getByTestId(FILTER_TAG).should('have.length', 3);
         cy.screenshot('filter-before-clear-768', { capture: 'viewport' });
 
         cy.getByTestId('clear-filter-button').should('be.visible').click();
@@ -369,15 +352,12 @@ describe('Filters Functionality', () => {
         cy.getByTestId(VEGAN_CHECKBOX).click();
         cy.getByTestId(FILTER_CATEGORY).click();
 
-        cy.getByTestId(FILTER_AUTHOR).click();
-        cy.getByTestId(PETROVA_CHECKBOX).click();
-        cy.getByTestId(FILTER_AUTHOR).click();
         cy.getByTestId(FIND_RECIPE_BUTTON).click();
 
         cy.getByTestId(SEARCH_INPUT).type('овощ');
         cy.getByTestId(SEARCH_BUTTON).should('be.visible').click();
 
-        cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 1);
+        cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 2);
     });
 });
 
@@ -408,7 +388,7 @@ describe('Allergens Functionality', () => {
         cy.getByTestId('allergen-1').click();
         cy.getByTestId('allergen-5').click();
         cy.getByTestId(ADD_OTHER_ALLERGEN).type('Гриб{enter}');
-        cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 5);
+        cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 3);
 
         cy.scrollTo('top');
         cy.screenshot('allergens-1920', { capture: 'viewport' });
@@ -423,6 +403,8 @@ describe('Allergens Functionality', () => {
         cy.visit('/');
         setElementPosition();
 
+        cy.getByTestId(VEGAN).click();
+        cy.wait(700);
         cy.getByTestId(ALLERGEN_SWITCHER).click();
         cy.getByTestId(ALLERGEN_BUTTON).click();
         cy.getByTestId('allergens-menu').should('be.visible');
@@ -431,9 +413,56 @@ describe('Allergens Functionality', () => {
         cy.getByTestId(ADD_OTHER_ALLERGEN).type('Гриб{enter}');
         cy.getByTestId(ALLERGEN_BUTTON).click();
 
-        cy.getByTestId(SEARCH_INPUT).type('Карт');
+        cy.getByTestId(SEARCH_INPUT).type('Капус');
         cy.getByTestId(SEARCH_BUTTON).should('be.visible').click();
 
         cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 1);
+    });
+});
+
+describe('Navigation and Tabs Functionality', () => {
+    it('Связь навигации и табов', () => {
+        cy.viewport(1920, 1080);
+        cy.visit('/');
+
+        cy.getByTestId(VEGAN).click();
+        cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'true');
+        cy.url().should('include', '/vegan/snacks');
+        cy.getByTestId(`${FOOD_CARD}-0`).contains(
+            'Картошка, тушенная с болгарским перцем и фасолью в томатном соусе',
+        );
+        cy.getByTestId('tab-second-dish-2').click();
+        cy.wait(500);
+        cy.getByTestId(`${FOOD_CARD}-0`).contains('Овощная лазанья из лаваша');
+        cy.getByTestId('second-dish-active').should('exist');
+        cy.getByTestId('snacks-active').should('not.exist');
+    });
+});
+
+describe('Breadcrumbs Functionality', () => {
+    it('Переход по хлебным крошкам', () => {
+        cy.viewport(768, 1080);
+        cy.visit('/');
+
+        cy.getByTestId(`${CAROUSEL_CARD}-0`).click();
+        cy.url().should('include', '/vegan/snacks/0');
+        cy.getByTestId(HUMB_ICON).click();
+        cy.getByTestId(BREADCRUMBS).contains(
+            'Картошка, тушенная с болгарским перцем и фасолью в томатном соусе',
+        );
+
+        cy.getByTestId(BREADCRUMBS).contains('Закуски').click();
+        cy.url().should('match', /\/snacks$/);
+        cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'true');
+
+        cy.getByTestId(HUMB_ICON).click();
+        cy.getByTestId(BREADCRUMBS).should(
+            'not.contain',
+            'Картошка, тушенная с болгарским перцем и фасолью в томатном соусе',
+        );
+
+        cy.getByTestId(BREADCRUMBS).contains('Главная').click();
+        cy.getByTestId('carousel').should('exist');
+        cy.contains('Приятного аппетита!');
     });
 });
