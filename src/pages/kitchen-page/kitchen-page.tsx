@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, Fragment, useEffect, useState } from 'react';
 
 import { BlogSection } from '~/components/blog-section/blog-section.tsx';
 import { Carousel } from '~/components/carousel/carousel.tsx';
@@ -27,6 +27,7 @@ import {
 } from '~/redux/features/search-slice.ts';
 import { PageType } from '~/types/page.ts';
 import { filterRecipes } from '~/utils/filter-recipes.ts';
+import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
 import { filterRecipesByTitle } from './helpers/filter-by-title.ts';
 import { getCategoryRecipes, getFavoritesRecipes } from './helpers/get-recipes.ts';
@@ -68,6 +69,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
         category: categoryRecipes,
     };
 
+    // TODO перенести логику серча в компоненту поиска и закрепить за запросом
     const handleSearch = (inputValue: string) => {
         setStartSearch(true);
 
@@ -103,7 +105,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
         setRelevantDesc(randomCategory.description ?? '');
 
         const relatedRecipes = recipes.filter((recipe) =>
-            recipe.categoryIds.includes(randomCategory.category),
+            recipe.categoriesIds.includes(randomCategory.category),
         );
 
         setRelevantRecipes(relatedRecipes);
@@ -129,41 +131,44 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     }, [selectedAllergens]);
 
     return (
-        <>
+        <Fragment key='kitchen-page'>
             <SectionHeader onSearch={handleSearch} pageType={pageType} startSearch={startSearch} />
 
-            {startSearch && matchedRecipes.length > 0 && (
+            {startSearch && isArrayWithItems(matchedRecipes) && (
                 <RecipeCardList recipeList={matchedRecipes} />
             )}
             {!startSearch && (
-                <>
-                    {isfromFilter && filteredRecipes.length > 0 && (
+                <Fragment key='search-filter-page-flow'>
+                    {isfromFilter && isArrayWithItems(filteredRecipes) && (
                         <RecipeCardList recipeList={filteredRecipes} />
                     )}
-                    {!isfromFilter && filteredByAllergens.length > 0 && (
+                    {!isfromFilter && isArrayWithItems(filteredByAllergens) && (
                         <RecipeCardList recipeList={filteredByAllergens} />
                     )}
-                    {!isfromFilter && !filteredByAllergens.length && filteredRecipes.length > 0 && (
-                        <RecipeCardList recipeList={filteredRecipes} />
-                    )}
-                    {!filteredRecipes.length && !filteredByAllergens.length && (
-                        <>
-                            {isCategoryPage && <KitchenTabs recipeList={categoryRecipes} />}
-                            {isJuiciestPage && (
-                                <SectionBox>
-                                    <RecipeCardList recipeList={favoritesRecipes} />
-                                </SectionBox>
-                            )}
-                            {(isMainPage || !selectedCategory) && (
-                                <>
-                                    <Carousel />
-                                    <FavouritesBlock />
-                                    <BlogSection />
-                                </>
-                            )}
-                        </>
-                    )}
-                </>
+                    {!isfromFilter &&
+                        !isArrayWithItems(filteredByAllergens) &&
+                        isArrayWithItems(filteredRecipes) && (
+                            <RecipeCardList recipeList={filteredRecipes} />
+                        )}
+                    {!isArrayWithItems(filteredRecipes) &&
+                        !isArrayWithItems(filteredByAllergens) && (
+                            <Fragment key='all-pages-flow'>
+                                {isCategoryPage && <KitchenTabs recipeList={categoryRecipes} />}
+                                {isJuiciestPage && (
+                                    <SectionBox>
+                                        <RecipeCardList recipeList={favoritesRecipes} />
+                                    </SectionBox>
+                                )}
+                                {(isMainPage || !selectedCategory) && (
+                                    <Fragment key='main-page-flow'>
+                                        <Carousel />
+                                        <FavouritesBlock />
+                                        <BlogSection />
+                                    </Fragment>
+                                )}
+                            </Fragment>
+                        )}
+                </Fragment>
             )}
 
             <RelevantKitchen
@@ -171,6 +176,6 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
                 title={relevantTitle}
                 description={relevantDesc}
             />
-        </>
+        </Fragment>
     );
 };

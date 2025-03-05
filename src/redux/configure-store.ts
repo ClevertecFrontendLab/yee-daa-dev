@@ -38,6 +38,10 @@ const combinedReducer = {
 export const store = configureStore({
     reducer: combinedReducer,
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(categoryApi.middleware, appErrorMiddleware),
+        getDefaultMiddleware().concat(
+            categoryApi.middleware,
+            recipeApi.middleware,
+            appErrorMiddleware,
+        ),
     devTools: isDevMode,
 });

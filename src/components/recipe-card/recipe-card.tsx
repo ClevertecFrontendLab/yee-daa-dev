@@ -43,7 +43,7 @@ export const RecipeCard: FC<{ recipe?: Recipe }> = ({ recipe }) => (
         <Stack>
             <CardHeader display='flex' justifyContent='space-between' p={0} pr={1} pb={8}>
                 <HStack flexWrap='wrap'>
-                    <CategoryTag category={recipe?.categoryIds} color='lime.50' />
+                    <CategoryTag categoriesIds={recipe?.categoriesIds} color='lime.50' />
                 </HStack>
                 <CardStat bookmarks={recipe?.bookmarks} likes={recipe?.likes} />
             </CardHeader>

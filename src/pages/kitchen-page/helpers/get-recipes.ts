@@ -9,11 +9,11 @@ export const getCategoryRecipes = (
     recipes.filter((recipe) => {
         if (selectedCategory && selectedSubCategory) {
             return (
-                recipe.categoryIds.includes(selectedCategory.category) &&
-                recipe.categoryIds.includes(selectedSubCategory.category)
+                recipe.categoriesIds.includes(selectedCategory.category) &&
+                recipe.categoriesIds.includes(selectedSubCategory.category)
             );
         } else if (selectedCategory) {
-            return recipe.categoryIds.includes(selectedCategory.category);
+            return recipe.categoriesIds.includes(selectedCategory.category);
         } else {
             return true;
         }

@@ -11,6 +11,7 @@ import { ErrorPage } from '~/pages/error-page/error-page.tsx';
 import { JuiciestPage } from '~/pages/juiciest-page';
 import { MainPage } from '~/pages/main-page';
 
+import { ErrorBoundary } from './error-boundary/error-boundary';
 import { rootCategoryLoader } from './loaders/root-category-loader';
 
 const Layout = lazy(() => import('~/components/layout/layout.tsx'));
@@ -20,6 +21,7 @@ const Layout = lazy(() => import('~/components/layout/layout.tsx'));
 export const appRouter = createBrowserRouter(
     createRoutesFromElements(
         <Route
+            ErrorBoundary={ErrorBoundary}
             path={Paths.R_SWITCHER}
             element={
                 <Suspense fallback={<AppLoader isOpen={true} overlayColor='white' />}>

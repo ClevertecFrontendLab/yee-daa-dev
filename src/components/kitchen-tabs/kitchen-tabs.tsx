@@ -40,7 +40,7 @@ export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
     const currentSubcategory = subcategories[selectedTabIndex]?.category ?? '';
 
     const filteredRecipes = recipeList.filter((recipe) =>
-        recipe.categoryIds.includes(currentSubcategory),
+        recipe.categoriesIds.includes(currentSubcategory),
     );
 
     useEffect(() => {

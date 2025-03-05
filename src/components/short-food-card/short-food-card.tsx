@@ -11,7 +11,7 @@ import { selectChoosenCategory } from '~/redux/features/choosen-category-slice.t
 import { selectRecipes } from '~/redux/features/recipies-slice.ts';
 import { getPath } from '~/utils/get-path.ts';
 
-export const ShortFoodCard: FC<Recipe> = ({ id, categoryIds, title }) => {
+export const ShortFoodCard: FC<Recipe> = ({ id, categoriesIds, title }) => {
     const allRecipes = useAppSelector(selectRecipes);
     const allcategories = useAppSelector(selectCategoriesMenu);
     const choosenCategory = useAppSelector(selectChoosenCategory);
@@ -25,7 +25,7 @@ export const ShortFoodCard: FC<Recipe> = ({ id, categoryIds, title }) => {
             alignItems='center'
             spacing={2}
         >
-            <Image src={categoriesMap[categoryIds[0]]} alt={categoryIds[0]} />
+            <Image src={categoriesMap[categoriesIds[0]]} alt={categoriesIds[0]} />
             <Heading
                 fontSize={{ base: 'md', md: 'xl' }}
                 noOfLines={1}

@@ -7,7 +7,7 @@ export type Recipe = {
     title: string;
     description: string;
     time: number;
-    categoryIds: string[];
+    categoriesIds: string[];
     likes: number;
     views: number;
     nutritionValue: EnergyValue;

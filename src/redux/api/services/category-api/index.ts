@@ -23,11 +23,11 @@ export const categoryApi = createApi({
             async onQueryStarted(_, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
-                    const dataWithSubCategories = data.filter((category) =>
+                    const selectCategoriesData = data.filter((category) =>
                         isArrayWithItems(category.subCategories),
                     );
 
-                    dispatch(setCategories(dataWithSubCategories));
+                    dispatch(setCategories(selectCategoriesData));
                 } catch (err: unknown) {
                     console.error('Error get Category list\n', err);
                 }

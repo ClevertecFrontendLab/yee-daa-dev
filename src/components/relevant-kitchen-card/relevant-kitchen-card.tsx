@@ -9,7 +9,7 @@ import { CategoryTag } from '../category-tag';
 
 export const RelevantKitchenCard: FC<Recipe> = ({
     title,
-    categoryIds,
+    categoriesIds,
     description,
     likes,
     bookmarks,
@@ -31,7 +31,7 @@ export const RelevantKitchenCard: FC<Recipe> = ({
         </CardBody>
         <CardFooter p={{ base: 3, md: 4, '2xl': 6 }} pt={{ base: 0, md: 0, '2xl': 0 }}>
             <HStack justifyContent='space-between' width='100%'>
-                <CategoryTag category={categoryIds} color='lime.50' />
+                <CategoryTag categoriesIds={categoriesIds} color='lime.50' />
                 <CardStat bookmarks={bookmarks} likes={likes} />
             </HStack>
         </CardFooter>

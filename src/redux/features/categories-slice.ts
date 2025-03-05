@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { MenuItem } from '~/types/category';
 import { toggleItemInArray } from '~/utils/toggle-items';
 
+import { Category } from '../api/types/categories';
+
 type CategoriesState = {
-    menu: MenuItem[];
+    menu: Category[];
     selectedCategories: string[];
     isLoading: boolean;
 };
@@ -15,7 +16,7 @@ export const categoriesSlice = createSlice({
     name: 'categories',
     initialState,
     reducers: {
-        setCategories(state, action: PayloadAction<MenuItem[]>) {
+        setCategories(state, action: PayloadAction<Category[]>) {
             state.menu = action.payload;
         },
         toggleCategory(state, action: PayloadAction<string>) {

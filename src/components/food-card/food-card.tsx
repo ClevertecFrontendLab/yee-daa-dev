@@ -7,11 +7,11 @@ import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.
 import { mockAuthors } from '~/mocks/authors.ts';
 import { Recipe } from '~/redux/api/types/recipes.ts';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
-import { selectChoosenCategory } from '~/redux/features/choosen-category-slice.ts';
 import { setSelectedRecipe } from '~/redux/features/choosen-recipe-slice.ts';
 import { selectRecipes } from '~/redux/features/recipies-slice.ts';
 import { selectInputValue } from '~/redux/features/search-slice.ts';
 import { getPath } from '~/utils/get-path.ts';
+import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
 import { CardStat } from '../card-stat/card-stat.tsx';
 import { CategoryTag } from '../category-tag';
@@ -23,13 +23,14 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
     const dispatch = useAppDispatch();
 
     const inputValue = useAppSelector(selectInputValue);
-    const allcategories = useAppSelector(selectCategoriesMenu);
-    const selectedCategory = useAppSelector(selectChoosenCategory);
+    const allCategories = useAppSelector(selectCategoriesMenu);
     const allRecipes = useAppSelector(selectRecipes);
 
-    const { id, title, image, description, categoryIds, likes, bookmarks } = recipe;
+    const { id, title, image, description, categoriesIds, likes, bookmarks } = recipe;
+    const categoryId = isArrayWithItems(categoriesIds) ? categoriesIds[0] : '';
+    const selectedCategory = allCategories.find((elem) => elem.id === categoryId);
 
-    const categoryPath = getPath(allcategories, allRecipes, selectedCategory, id);
+    const categoryPath = getPath(allCategories, allRecipes, selectedCategory, id);
 
     const handleClick = () => {
         dispatch(setSelectedRecipe(recipe));
@@ -50,7 +51,7 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
                     maxWidth='150px'
                     zIndex={2}
                 >
-                    <CategoryTag category={categoryIds} color='lime.50' />
+                    <CategoryTag categoriesIds={categoriesIds} color='lime.50' />
                 </Box>
                 <Box
                     position='absolute'
@@ -90,7 +91,7 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
                     alignItems='flex-start'
                 >
                     <Box display={{ base: 'none', xmd: 'block' }}>
-                        <CategoryTag category={categoryIds} color='lime.50' />
+                        <CategoryTag categoriesIds={categoriesIds} color='lime.50' />
                     </Box>
                     <CardStat bookmarks={bookmarks} likes={likes} />
                 </CardHeader>

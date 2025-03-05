@@ -25,7 +25,7 @@ export const filterRecipes = (recipes: Recipe[], filterOptions: FilterOptions): 
     const normalizedAllergens = normalizeArray(selectedAllergens);
 
     return recipes.filter((recipe) => {
-        const recipeCategories = normalizeArray(recipe.categoryIds);
+        const recipeCategories = normalizeArray(recipe.categoriesIds);
         const recipeAuthor = normalizeArray([recipe.authorId])[0];
         const recipeMeat = normalizeArray([recipe.meat])[0];
         const recipeSide = normalizeArray([recipe.side])[0];
