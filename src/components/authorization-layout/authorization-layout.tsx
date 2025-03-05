@@ -3,6 +3,7 @@ import {
     Center,
     Container,
     Heading,
+    Show,
     Tab,
     TabIndicator,
     TabList,
@@ -64,15 +65,16 @@ const AuthorizationLayout: FC = () => {
                     </Container>
                 </Center>
 
-                <Box
-                    maxW='50.65%'
-                    w='full'
-                    bgImage='url(/auth-bg.jpg)'
-                    bgRepeat='no-repeat'
-                    bgPosition='50% 50%'
-                    bgSize='cover'
-                    display={{ base: 'none', lg: 'block' }}
-                />
+                <Show above='lg'>
+                    <Box
+                        maxW='50.65%'
+                        w='full'
+                        bgImage='url(/images/auth-bg.jpg)'
+                        bgRepeat='no-repeat'
+                        bgPosition='50% 50%'
+                        bgSize='cover'
+                    />
+                </Show>
             </Box>
             <Box as='footer' p={{ base: 4, sm: 30 }} pos='fixed' bottom={0} w='full'>
                 <Wrap spacing='4' justify='space-between'>
