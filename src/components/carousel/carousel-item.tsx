@@ -3,38 +3,29 @@ import { Box, Card, CardBody, CardHeader, Heading, HStack, Text } from '@chakra-
 import { FC } from 'react';
 import { NavLink } from 'react-router';
 
-import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { useAppDispatch } from '~/hooks/typed-react-redux-hooks.ts';
+import { useGetRecipePath } from '~/hooks/use-get-recipe-path.ts';
 import { Recipe } from '~/redux/api/types/recipes.ts';
-import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
 import { setSelectedRecipe } from '~/redux/features/choosen-recipe-slice.ts';
-import { selectRecipes } from '~/redux/features/recipies-slice.ts';
 import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
-import { getPath } from '~/utils/get-path.ts';
-import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
 import { CardStat } from '../card-stat/card-stat.tsx';
 import { CategoryTag } from '../category-tag';
 
 export const CarouselItem: FC<{ recipe: Recipe }> = ({ recipe }) => {
     const dispatch = useAppDispatch();
-
-    const allCategories = useAppSelector(selectCategoriesMenu);
-    const allRecipes = useAppSelector(selectRecipes);
+    const recipePagePath = useGetRecipePath(recipe);
 
     const { id, title, image, description, categoriesIds, likes, bookmarks } = recipe;
-    const categoryId = isArrayWithItems(categoriesIds) ? categoriesIds[0] : '';
-    const selectedCategory = allCategories.find((elem) => elem.id === categoryId);
-
-    const categoryPath = getPath(allCategories, allRecipes, selectedCategory, id);
 
     const handleClick = () => {
         dispatch(setSelectedRecipe(recipe));
     };
 
     return (
-        <NavLink to={categoryPath} onClick={handleClick}>
+        <NavLink to={recipePagePath} onClick={handleClick} key={id}>
             <Card
-                w={{ base: '158px', xmd: '277px', xl: '322px' }}
+                maxWidth={{ base: '158px', xmd: '277px', xl: '322px' }}
                 h={{ base: '220px', xmd: '375px', xl: '400px' }}
                 border='1px solid rgba(0, 0, 0, 0.08)'
                 borderRadius='8px'

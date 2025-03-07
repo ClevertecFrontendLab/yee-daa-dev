@@ -15,7 +15,7 @@ import {
     RecipesByCategoryIdArgs,
     RecipesResponse,
 } from '../../types/recipes';
-import { replaceUnderScoreId } from '../../utils/replace-underscore-id';
+import { replaceUnderscoreId } from '../../utils/replace-underscore-id';
 
 export const recipeApi = createApi({
     reducerPath: 'recipeApi',
@@ -40,7 +40,7 @@ export const recipeApi = createApi({
             },
             transformResponse: (response: RawRecipesResponse): RecipesResponse => {
                 const { data } = response;
-                return data.map((resp) => replaceUnderScoreId(resp));
+                return data.map((resp) => replaceUnderscoreId(resp));
             },
             transformErrorResponse: transformBaseErrorResponse,
         }),
@@ -51,13 +51,13 @@ export const recipeApi = createApi({
             }),
             transformResponse: (response: RawRecipesResponse): RecipesResponse => {
                 const { data } = response;
-                return data.map((resp) => replaceUnderScoreId(resp));
+                return data.map((resp) => replaceUnderscoreId(resp));
             },
             transformErrorResponse: transformBaseErrorResponse,
         }),
         getRecipeById: build.query<Recipe, string>({
             query: (id) => ({ url: `${ApiEndpoints.Category}/${id}` }),
-            transformResponse: (response: RawRecipe): Recipe => replaceUnderScoreId(response),
+            transformResponse: (response: RawRecipe): Recipe => replaceUnderscoreId(response),
             transformErrorResponse: transformBaseErrorResponse,
         }),
     }),

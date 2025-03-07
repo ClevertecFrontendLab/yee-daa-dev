@@ -1,4 +1,6 @@
-export const replaceUnderScoreId = <T extends { _id: string }>(response: T) => {
+type UnderscoreId = { _id: string };
+
+export const replaceUnderscoreId = <T extends UnderscoreId, P extends T>(response: T | P) => {
     const { _id, ...rest } = response;
     return { ...rest, id: _id };
 };

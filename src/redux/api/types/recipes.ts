@@ -7,6 +7,7 @@ export type Recipe = {
     title: string;
     description: string;
     time: number;
+    // внутри должен быть массив ИД только подкатегорий (type SubCategory)
     categoriesIds: string[];
     likes: number;
     views: number;

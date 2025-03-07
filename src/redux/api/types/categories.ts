@@ -1,9 +1,15 @@
 import { ReplacedIdToUnderscore } from './common';
 
-export type CategoriesRawResponse = CategoryRaw[];
-export type CategoryRaw = ReplacedIdToUnderscore<Category>;
+export type GetCategoriesRawResponse = Array<CategoryRaw | SubCategoryRaw>;
+export type GetCategoriesResponse = Array<Category | SubCategory>;
 
-export type CategoriesResponse = Category[];
+export type CategoryRaw = Omit<ReplacedIdToUnderscore<Category>, 'subCategories'> & {
+    subCategories: SubCategoryRaw[];
+};
+
+export type SubCategoryRaw = ReplacedIdToUnderscore<SubCategory>;
+
+export type CategoriesResponse = Array<Category | SubCategory>;
 
 export type Category = {
     id: string;
@@ -14,10 +20,9 @@ export type Category = {
     subCategories: SubCategory[];
 };
 
-export interface SubCategory {
+export type SubCategory = {
+    id: string;
     category: string;
     title: string;
-    icon?: string;
-    description: string;
     rootCategoryId: string;
-}
+};
