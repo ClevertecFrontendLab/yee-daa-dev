@@ -1,63 +1,52 @@
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
+import { shallowEqual } from 'react-redux';
 import { useNavigate } from 'react-router';
 
-import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { useDetectParams } from '~/hooks/use-detect-params';
 import { Recipe } from '~/redux/api/types/recipes';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice';
-import { selectChosenCategory, setChosenCategory } from '~/redux/features/chosen-category-slice';
 
 import { RecipeCardList } from '../recipes-card-list/recipes-card-list';
 
 export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
     const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const selectedCategory = useAppSelector(selectChosenCategory);
-    const categories = useAppSelector(selectCategoriesMenu);
+    const { selectedCategory, selectedSubCategory } = useDetectParams();
+
+    const categories = useAppSelector(selectCategoriesMenu, shallowEqual);
+    const currSubCategories = useMemo(
+        () => categories?.find((elem) => elem.id === selectedCategory?.id)?.subCategories ?? [],
+        [categories, selectedCategory?.id],
+    );
 
     const [selectedTabIndex, setSelectedTabIndex] = useState(0);
-    const subcategories = categories
-        .filter((cat) => cat.category === selectedCategory.category)
-        .flatMap((category) => category.subCategories);
 
     const handleTabChange = (index: number) => {
         setSelectedTabIndex(index);
-        const chosenSubCategory = subcategories[index];
+        const chosenSubCategory = currSubCategories[index];
 
-        if (chosenSubCategory) {
-            dispatch(
-                setChosenCategory({
-                    ...selectedCategory,
-                    chosenSubCategory: chosenSubCategory,
-                }),
-            );
-
+        if (chosenSubCategory && selectedCategory) {
             const subCategoryPath = `/${selectedCategory.category}/${chosenSubCategory.category}`;
             navigate(subCategoryPath);
         }
     };
 
-    const currentSubcategory = subcategories[selectedTabIndex]?.category ?? '';
+    const activeSubCategory = selectedSubCategory?.category ?? '';
 
     const filteredRecipes = recipeList.filter((recipe) =>
-        recipe.categoriesIds.includes(currentSubcategory),
+        recipe.categoriesIds.includes(activeSubCategory),
     );
 
     useEffect(() => {
-        const initialIndex = subcategories.findIndex(
-            (subcat) => subcat?.category === selectedCategory.chosenSubCategory?.category,
-        );
-        setSelectedTabIndex(initialIndex >= 0 ? initialIndex : 0);
-    }, [selectedCategory, subcategories]);
+        if (!selectedSubCategory) return;
 
-    useEffect(() => {
-        const initialIndex = subcategories.findIndex(
-            (subcat) => subcat?.category === selectedCategory.chosenSubCategory?.category,
+        const foundActiveIndex = currSubCategories.findIndex(
+            (subCat) => subCat.id === selectedSubCategory.id,
         );
-        if (initialIndex !== -1) {
-            setSelectedTabIndex(initialIndex);
-        }
-    }, [selectedCategory.chosenSubCategory, subcategories]);
+        if (foundActiveIndex === -1) return;
+        setSelectedTabIndex(foundActiveIndex);
+    }, [currSubCategories, selectedSubCategory]);
 
     return (
         <Tabs mb={{ base: 8, md: 10 }} index={selectedTabIndex} onChange={handleTabChange}>
@@ -80,7 +69,7 @@ export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
                     justifyContent='center'
                     flexWrap={{ base: 'nowrap', md: 'wrap' }}
                 >
-                    {subcategories.map((subcategory) => (
+                    {currSubCategories.map((subcategory) => (
                         <Tab
                             key={subcategory?.category}
                             flexShrink={0}
@@ -96,7 +85,7 @@ export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
                 </TabList>
             </Box>
             <TabPanels>
-                {subcategories.map((subcategory) => (
+                {currSubCategories.map((subcategory) => (
                     <TabPanel p={0} key={subcategory?.category}>
                         <RecipeCardList recipeList={filteredRecipes} />
                     </TabPanel>

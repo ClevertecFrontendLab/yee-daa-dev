@@ -3,27 +3,20 @@ import { Box, Card, CardBody, CardHeader, Heading, HStack, Text } from '@chakra-
 import { FC } from 'react';
 import { NavLink } from 'react-router';
 
-import { useAppDispatch } from '~/hooks/typed-react-redux-hooks.ts';
 import { useGetRecipePath } from '~/hooks/use-get-recipe-path.ts';
 import { Recipe } from '~/redux/api/types/recipes.ts';
-import { setSelectedRecipe } from '~/redux/features/chosen-recipe-slice.ts';
 import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
 
 import { CardStat } from '../card-stat/card-stat.tsx';
 import { CategoryTag } from '../category-tag';
 
 export const CarouselItem: FC<{ recipe: Recipe }> = ({ recipe }) => {
-    const dispatch = useAppDispatch();
     const recipePagePath = useGetRecipePath(recipe);
 
     const { id, title, image, description, categoriesIds, likes, bookmarks } = recipe;
 
-    const handleClick = () => {
-        dispatch(setSelectedRecipe(recipe));
-    };
-
     return (
-        <NavLink to={recipePagePath} onClick={handleClick} key={id}>
+        <NavLink to={recipePagePath} key={id}>
             <Card
                 maxWidth={{ base: '158px', xmd: '277px', xl: '322px' }}
                 h={{ base: '220px', xmd: '375px', xl: '400px' }}
