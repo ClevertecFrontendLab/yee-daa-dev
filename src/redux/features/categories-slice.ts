@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { isArrayWithItems } from '~/utils/is-array-with-items';
+import { getDataFromLocalStorage, LOCALSTORAGE_KEYS } from '~/utils/local-storage-util';
 import { toggleItemInArray } from '~/utils/toggle-items';
 
 import { Category, SubCategory } from '../api/types/categories';
@@ -11,9 +13,12 @@ type CategoriesState = {
     isLoading: boolean;
 };
 
+const initCategories = getDataFromLocalStorage(LOCALSTORAGE_KEYS.CATEGORIES) as Category[];
+const initSubCategories = getDataFromLocalStorage(LOCALSTORAGE_KEYS.SUBCATEGORIES) as SubCategory[];
+
 const initialState: CategoriesState = {
-    menu: [],
-    subCategories: [],
+    menu: isArrayWithItems(initCategories) ? initCategories : [],
+    subCategories: isArrayWithItems(initSubCategories) ? initSubCategories : [],
     selectedCategories: [],
     isLoading: false,
 };
@@ -37,6 +42,9 @@ export const categoriesSlice = createSlice({
         setLoading(state, { payload }: PayloadAction<boolean>) {
             state.isLoading = payload;
         },
+        resetToInit() {
+            return initialState;
+        },
     },
     selectors: {
         selectCategoriesLoading: (state) => state.isLoading,
@@ -54,6 +62,7 @@ export const {
     clearSelectedCategories,
     setLoading,
     setSubCategories,
+    resetToInit,
 } = categoriesSlice.actions;
 
 export const {

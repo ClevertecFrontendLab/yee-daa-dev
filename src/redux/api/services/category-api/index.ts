@@ -9,7 +9,8 @@ import {
     GetCategoriesResponse,
     SubCategory,
 } from '~/redux/api/types/categories';
-import { setCategories, setSubCategories } from '~/redux/features/categories-slice';
+import { resetToInit, setCategories, setSubCategories } from '~/redux/features/categories-slice';
+import { LOCALSTORAGE_KEYS, setDataToLocalStorage } from '~/utils/local-storage-util';
 
 import { isCategory, isCategoryRaw } from '../../utils/is-category';
 import { replaceUnderscoreId } from '../../utils/replace-underscore-id';
@@ -39,7 +40,10 @@ export const categoryApi = createApi({
 
                     dispatch(setCategories(categories));
                     dispatch(setSubCategories(subCategories));
+                    setDataToLocalStorage(LOCALSTORAGE_KEYS.CATEGORIES, categories);
+                    setDataToLocalStorage(LOCALSTORAGE_KEYS.SUBCATEGORIES, subCategories);
                 } catch (err: unknown) {
+                    dispatch(resetToInit());
                     console.error('Error get Category list\n', err);
                 }
             },
