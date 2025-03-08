@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.
 import { useGetRecipePath } from '~/hooks/use-get-recipe-path.ts';
 import { mockAuthors } from '~/mocks/authors.ts';
 import { Recipe } from '~/redux/api/types/recipes.ts';
-import { setSelectedRecipe } from '~/redux/features/choosen-recipe-slice.ts';
+import { setSelectedRecipe } from '~/redux/features/chosen-recipe-slice.ts';
 import { selectInputValue } from '~/redux/features/search-slice.ts';
 import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
 

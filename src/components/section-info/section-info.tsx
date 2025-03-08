@@ -3,11 +3,11 @@ import { Heading, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
-import { selectChoosenCategory } from '~/redux/features/choosen-category-slice.ts';
+import { selectChosenCategory } from '~/redux/features/chosen-category-slice.ts';
 import { PageType } from '~/types/page.ts';
 
 export const SectionInfo: FC<{ pageType: PageType }> = ({ pageType }) => {
-    const { title, description } = useAppSelector(selectChoosenCategory);
+    const { title, description } = useAppSelector(selectChosenCategory);
 
     const headingTitle: Record<PageType, string> = {
         main: 'Приятного аппетита!',

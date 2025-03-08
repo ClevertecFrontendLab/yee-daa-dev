@@ -7,15 +7,15 @@ import { categoriesMap } from '~/constants/categories.ts';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { Recipe } from '~/redux/api/types/recipes';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
-import { selectChoosenCategory } from '~/redux/features/choosen-category-slice.ts';
+import { selectChosenCategory } from '~/redux/features/chosen-category-slice.ts';
 import { selectRecipes } from '~/redux/features/recipies-slice.ts';
 import { getPath } from '~/utils/get-path.ts';
 
 export const ShortFoodCard: FC<Recipe> = ({ id, categoriesIds, title }) => {
     const allRecipes = useAppSelector(selectRecipes);
     const allcategories = useAppSelector(selectCategoriesMenu);
-    const choosenCategory = useAppSelector(selectChoosenCategory);
-    const categoryPath = getPath(allcategories, allRecipes, choosenCategory, id);
+    const chosenCategory = useAppSelector(selectChosenCategory);
+    const categoryPath = getPath(allcategories, allRecipes, chosenCategory, id);
 
     return (
         <HStack

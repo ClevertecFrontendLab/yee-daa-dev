@@ -6,10 +6,6 @@ import { Paths } from '~/constants/path.js';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { closeMenu } from '~/redux/features/burger-slice.ts';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
-import {
-    clearChoosenCategory,
-    setChoosenCategory,
-} from '~/redux/features/choosen-category-slice.ts';
 import { selectRecipes } from '~/redux/features/recipies-slice.ts';
 
 export const Breadcrumbs = () => {
@@ -20,23 +16,17 @@ export const Breadcrumbs = () => {
 
     const pathsArr = pathname.split('/').filter(Boolean);
     const categoryItem = navMenu.find((item) => item.category === pathsArr[0]);
-    const subcategory = categoryItem?.subItems?.find((subItem) => subItem.category === pathsArr[1]);
+    const subcategory = categoryItem?.subCategories?.find(
+        (subItem) => subItem.category === pathsArr[1],
+    );
     const recipePath = recipes.find((recipe) => recipe.id === pathsArr[2])?.title || '';
 
-    const isRathsJuiciest = pathname.includes(Paths.JUICIEST);
+    const isJuiciestPath = pathname.includes(Paths.JUICIEST);
 
     const pathsRussianArr = [categoryItem?.title, subcategory?.title, recipePath];
 
     const handleCategoryClick = () => {
-        const choosenCategory = {
-            category: categoryItem?.category ?? '',
-            title: categoryItem?.title ?? '',
-            description: categoryItem?.description ?? '',
-            choosenSubCategory: subcategory ?? null,
-        };
-
         dispatch(closeMenu());
-        dispatch(setChoosenCategory(choosenCategory));
     };
 
     return (
@@ -53,15 +43,11 @@ export const Breadcrumbs = () => {
                 data-test-id='breadcrumbs'
             >
                 <BreadcrumbItem>
-                    <BreadcrumbLink
-                        as={Link}
-                        to={Paths.R_SWITCHER}
-                        onClick={() => dispatch(clearChoosenCategory())}
-                    >
+                    <BreadcrumbLink as={Link} to={Paths.R_SWITCHER}>
                         Главная
                     </BreadcrumbLink>
                 </BreadcrumbItem>
-                {isRathsJuiciest ? (
+                {isJuiciestPath ? (
                     <BreadcrumbItem>
                         <BreadcrumbLink as={Link} to={Paths.JUICIEST}>
                             Самое сочное

@@ -5,14 +5,14 @@ import { useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { Recipe } from '~/redux/api/types/recipes';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice';
-import { selectChoosenCategory, setChoosenCategory } from '~/redux/features/choosen-category-slice';
+import { selectChosenCategory, setChosenCategory } from '~/redux/features/chosen-category-slice';
 
 import { RecipeCardList } from '../recipes-card-list/recipes-card-list';
 
 export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const selectedCategory = useAppSelector(selectChoosenCategory);
+    const selectedCategory = useAppSelector(selectChosenCategory);
     const categories = useAppSelector(selectCategoriesMenu);
 
     const [selectedTabIndex, setSelectedTabIndex] = useState(0);
@@ -26,9 +26,9 @@ export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
 
         if (chosenSubCategory) {
             dispatch(
-                setChoosenCategory({
+                setChosenCategory({
                     ...selectedCategory,
-                    choosenSubCategory: chosenSubCategory,
+                    chosenSubCategory: chosenSubCategory,
                 }),
             );
 
@@ -45,19 +45,19 @@ export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
 
     useEffect(() => {
         const initialIndex = subcategories.findIndex(
-            (subcat) => subcat?.category === selectedCategory.choosenSubCategory?.category,
+            (subcat) => subcat?.category === selectedCategory.chosenSubCategory?.category,
         );
         setSelectedTabIndex(initialIndex >= 0 ? initialIndex : 0);
     }, [selectedCategory, subcategories]);
 
     useEffect(() => {
         const initialIndex = subcategories.findIndex(
-            (subcat) => subcat?.category === selectedCategory.choosenSubCategory?.category,
+            (subcat) => subcat?.category === selectedCategory.chosenSubCategory?.category,
         );
         if (initialIndex !== -1) {
             setSelectedTabIndex(initialIndex);
         }
-    }, [selectedCategory.choosenSubCategory, subcategories]);
+    }, [selectedCategory.chosenSubCategory, subcategories]);
 
     return (
         <Tabs mb={{ base: 8, md: 10 }} index={selectedTabIndex} onChange={handleTabChange}>

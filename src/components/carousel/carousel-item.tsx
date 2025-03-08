@@ -6,7 +6,7 @@ import { NavLink } from 'react-router';
 import { useAppDispatch } from '~/hooks/typed-react-redux-hooks.ts';
 import { useGetRecipePath } from '~/hooks/use-get-recipe-path.ts';
 import { Recipe } from '~/redux/api/types/recipes.ts';
-import { setSelectedRecipe } from '~/redux/features/choosen-recipe-slice.ts';
+import { setSelectedRecipe } from '~/redux/features/chosen-recipe-slice.ts';
 import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
 
 import { CardStat } from '../card-stat/card-stat.tsx';
