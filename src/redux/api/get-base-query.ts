@@ -9,7 +9,7 @@ import { AppState } from '~/types/store';
 
 import { API_BASE_URL, API_DEV_URL } from './constants';
 
-const BASE_URL = process.env.NODE_ENV === 'development' ? API_DEV_URL : API_BASE_URL;
+const BASE_URL = Number(import.meta.env.VITE_START_LOCAL_SERVER) ? API_DEV_URL : API_BASE_URL;
 
 const baseQueryWithAuth = fetchBaseQuery({
     baseUrl: BASE_URL,
