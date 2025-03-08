@@ -5,14 +5,36 @@ import { useNavigate } from 'react-router';
 
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { useDetectParams } from '~/hooks/use-detect-params';
-import { Recipe } from '~/redux/api/types/recipes';
+import { useGetRecipeByCategoryIdInfiniteInfiniteQuery } from '~/redux/api/services/recipes-api';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice';
 
+import { AppLoader } from '../app-loader';
 import { RecipeCardList } from '../recipes-card-list/recipes-card-list';
 
-export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
+const KITCHEN_TABS_RECIPE_LIMIT = 8;
+
+type KitchenTabsProps = {
+    //
+};
+
+export const KitchenTabs: FC<KitchenTabsProps> = () => {
     const navigate = useNavigate();
     const { selectedCategory, selectedSubCategory } = useDetectParams();
+
+    const {
+        data: recipesData,
+        fetchNextPage,
+        isFetching,
+    } = useGetRecipeByCategoryIdInfiniteInfiniteQuery(
+        { id: selectedSubCategory?.id as string, limit: KITCHEN_TABS_RECIPE_LIMIT },
+        { skip: !selectedSubCategory?.id },
+    );
+
+    const loadMore = () => fetchNextPage();
+
+    const totalPages = recipesData?.pages[0]?.meta?.totalPages ?? 1;
+    const currentPage = recipesData?.pages.at(-1)?.meta?.page ?? 1;
+    const recipesForRender = recipesData?.pages?.flatMap((elem) => elem.data) ?? [];
 
     const categories = useAppSelector(selectCategoriesMenu, shallowEqual);
     const currSubCategories = useMemo(
@@ -32,12 +54,6 @@ export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
         }
     };
 
-    const activeSubCategory = selectedSubCategory?.category ?? '';
-
-    const filteredRecipes = recipeList.filter((recipe) =>
-        recipe.categoriesIds.includes(activeSubCategory),
-    );
-
     useEffect(() => {
         if (!selectedSubCategory) return;
 
@@ -45,52 +61,61 @@ export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
             (subCat) => subCat.id === selectedSubCategory.id,
         );
         if (foundActiveIndex === -1) return;
+
         setSelectedTabIndex(foundActiveIndex);
     }, [currSubCategories, selectedSubCategory]);
 
     return (
-        <Tabs mb={{ base: 8, md: 10 }} index={selectedTabIndex} onChange={handleTabChange}>
-            <Box
-                ml='auto'
-                mr='auto'
-                overflow='auto'
-                sx={{
-                    scrollbarWidth: 'none',
-                    '::-webkit-scrollbar': {
-                        display: 'none',
-                    },
-                    WebkitOverflowScrolling: 'touch',
-                }}
-                display='flex'
-                justifyContent='center'
-            >
-                <TabList
-                    w='max-content'
+        <>
+            {isFetching && <AppLoader isOpen={true} />}
+            <Tabs mb={{ base: 8, md: 10 }} index={selectedTabIndex} onChange={handleTabChange}>
+                <Box
+                    ml='auto'
+                    mr='auto'
+                    overflow='auto'
+                    sx={{
+                        scrollbarWidth: 'none',
+                        '::-webkit-scrollbar': {
+                            display: 'none',
+                        },
+                        WebkitOverflowScrolling: 'touch',
+                    }}
+                    display='flex'
                     justifyContent='center'
-                    flexWrap={{ base: 'nowrap', md: 'wrap' }}
                 >
+                    <TabList
+                        w='max-content'
+                        justifyContent='center'
+                        flexWrap={{ base: 'nowrap', md: 'wrap' }}
+                    >
+                        {currSubCategories.map((subcategory) => (
+                            <Tab
+                                key={subcategory?.category}
+                                flexShrink={0}
+                                color='lime.800'
+                                _selected={{
+                                    color: 'lime.600',
+                                    borderColor: 'lime.600',
+                                }}
+                            >
+                                {subcategory?.title}
+                            </Tab>
+                        ))}
+                    </TabList>
+                </Box>
+                <TabPanels>
                     {currSubCategories.map((subcategory) => (
-                        <Tab
-                            key={subcategory?.category}
-                            flexShrink={0}
-                            color='lime.800'
-                            _selected={{
-                                color: 'lime.600',
-                                borderColor: 'lime.600',
-                            }}
-                        >
-                            {subcategory?.title}
-                        </Tab>
+                        <TabPanel p={0} key={subcategory?.category}>
+                            <RecipeCardList
+                                recipeList={recipesForRender}
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                loadMoreCallback={loadMore}
+                            />
+                        </TabPanel>
                     ))}
-                </TabList>
-            </Box>
-            <TabPanels>
-                {currSubCategories.map((subcategory) => (
-                    <TabPanel p={0} key={subcategory?.category}>
-                        <RecipeCardList recipeList={filteredRecipes} />
-                    </TabPanel>
-                ))}
-            </TabPanels>
-        </Tabs>
+                </TabPanels>
+            </Tabs>
+        </>
     );
 };

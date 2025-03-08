@@ -8,7 +8,7 @@ import {
     resetNotification,
 } from '~/redux/features/app-slice';
 
-const ALERT_AUTOCLOSE_TIME_MS = 5000;
+const ALERT_AUTOCLOSE_TIME_MS = 10000;
 
 export const AppNotification = () => {
     const isNotificationShowed = useAppSelector(notificationShowedSelector);

@@ -11,7 +11,7 @@ export const useGetRecipePath = (recipe: Recipe) => {
     const subCategories = useAppSelector(selectSubCategories);
 
     if (selectedCategory && selectedSubCategory)
-        return `/${selectedCategory}${selectedSubCategory}/${recipe.id}`;
+        return `/${selectedCategory.category}/${selectedSubCategory.category}/${recipe.id}`;
 
     return getPathFromRecipe(categories, subCategories, recipe);
 };

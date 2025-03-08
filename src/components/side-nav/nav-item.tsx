@@ -21,7 +21,6 @@ export const NavItem: FC<Category> = ({ category, subCategories, title, icon }) 
     const dispatch = useAppDispatch();
     const [isActive, setIsActive] = useState(false);
     const { selectedCategory, selectedSubCategory } = useDetectParams();
-    console.log(selectedCategory?.category, selectedSubCategory?.category, pathname, category);
 
     const defaultCategoryPath = isArrayWithItems(subCategories)
         ? `/${category}/${subCategories[0].category}`

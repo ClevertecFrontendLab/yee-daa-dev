@@ -48,6 +48,7 @@ export type MetaRequest = Partial<Pick<MetaData, 'limit' | 'page'>>;
 export type RawRecipe = ReplacedIdToUnderscore<Recipe>;
 
 export type RecipesResponse = Recipe[];
+export type RecipesInfiniteResponse = { data: Recipe[]; meta: MetaData };
 export type RecipesResponseWithMeta = { data: RecipesResponse; meta: MetaData };
 
 export type PaginationParams = { page: number; limit: number };

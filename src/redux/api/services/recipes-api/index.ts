@@ -14,6 +14,7 @@ import {
     RawRecipesResponse,
     Recipe,
     RecipesByCategoryIdArgs,
+    RecipesInfiniteResponse,
     RecipesResponse,
     RecipesResponseWithMeta,
 } from '../../types/recipes';
@@ -80,6 +81,33 @@ export const recipeApi = createApi({
             },
             transformErrorResponse: transformBaseErrorResponse,
         }),
+        getRecipeByCategoryIdInfinite: build.infiniteQuery<
+            RecipesInfiniteResponse,
+            RecipesByCategoryIdArgs,
+            MetaRequest
+        >({
+            infiniteQueryOptions: {
+                initialPageParam: { page: 1 },
+                getNextPageParam(firstPage, allPages, firstPageParam) {
+                    const currPage = firstPageParam?.page ?? 1;
+
+                    return { page: currPage + 1 };
+                },
+            },
+            query: ({ queryArg, pageParam }) => {
+                const { id, ...restParams } = queryArg;
+                return {
+                    url: `${ApiEndpoints.RecipeByCategory}/${id}`,
+                    params: { ...restParams, page: pageParam.page },
+                };
+            },
+            transformErrorResponse: transformBaseErrorResponse,
+            transformResponse: (response: RawRecipesResponse): RecipesInfiniteResponse => {
+                const { data } = response;
+                const preparedData = data.map((resp) => replaceUnderscoreId(resp));
+                return { data: preparedData, meta: response.meta };
+            },
+        }),
         getRecipeById: build.query<Recipe, string>({
             query: (id) => ({ url: `${ApiEndpoints.Recipe}/${id}` }),
             transformResponse: (response: RawRecipe): Recipe => replaceUnderscoreId(response),
@@ -96,4 +124,5 @@ export const {
     useGetRecipeByIdQuery,
     useLazyGetRecipeByIdQuery,
     useGetAllRecipesInfiniteInfiniteQuery,
+    useGetRecipeByCategoryIdInfiniteInfiniteQuery,
 } = recipeApi;

@@ -31,7 +31,6 @@ import { filterRecipes } from '~/utils/filter-recipes.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
 import { filterRecipesByTitle } from './helpers/filter-by-title.ts';
-import { getCategoryRecipes } from './helpers/get-recipes.ts';
 
 type KitchenPageProps = {
     pageType: PageType;
@@ -42,7 +41,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const isCategoryPage = pageType === PageType.Category;
     const isJuiciestPage = pageType === PageType.Juiciest;
 
-    const { selectedCategory, selectedSubCategory } = useDetectParams();
+    const { selectedCategory } = useDetectParams();
     const { data: juiciest } = useGetAllRecipesWithParamsQuery(
         { ...JUICIEST_PAGE_PARAMS, page: 1 },
         {
@@ -64,12 +63,10 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const [startSearch, setStartSearch] = useState(false);
     const searchValue = useAppSelector(selectInputValue);
 
-    const categoryRecipes = getCategoryRecipes(recipes, selectedCategory, selectedSubCategory);
-
     const searchRecipes: Record<PageType, Recipe[]> = {
         main: recipes,
         juiciest: recipesJuiciestPage!,
-        category: categoryRecipes,
+        category: [],
     };
 
     // TODO перенести логику серча в компоненту поиска и закрепить за запросом
@@ -103,10 +100,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
 
     useEffect(() => {
         const recipesToFilter =
-            (filteredRecipes.length && filteredRecipes) ||
-            (categoryRecipes.length && categoryRecipes) ||
-            (recipes.length && recipes) ||
-            [];
+            (filteredRecipes.length && filteredRecipes) || (recipes.length && recipes) || [];
 
         if (selectedAllergens.length && !isfromFilter) {
             const getAllergensRecipes = () => filterRecipes(recipesToFilter, selectedAllergens);
@@ -143,7 +137,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
                     {!isArrayWithItems(filteredRecipes) &&
                         !isArrayWithItems(filteredByAllergens) && (
                             <Fragment key='all-pages-flow'>
-                                {isCategoryPage && <KitchenTabs recipeList={categoryRecipes} />}
+                                {isCategoryPage && <KitchenTabs />}
                                 {isJuiciestPage && <JuiciestRecipesList />}
                                 {(isMainPage || (!selectedCategory && !isJuiciestPage)) && (
                                     <Fragment key='main-page-flow'>
