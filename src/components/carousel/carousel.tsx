@@ -14,7 +14,8 @@ import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 import { CarouselItem } from './carousel-item.tsx';
 
 export const Carousel = () => {
-    const { data: carouselItems } = useGetAllRecipesWithParamsQuery(NEWEST_PARAMS);
+    const { data } = useGetAllRecipesWithParamsQuery(NEWEST_PARAMS);
+    const carouselItems = data?.data;
     const swiperRef = useRef<SwiperRef | null>(null);
 
     const carouselRecipes = carouselItems

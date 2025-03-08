@@ -2,14 +2,16 @@ import { FC, Fragment, useEffect, useState } from 'react';
 
 import { BlogSection } from '~/components/blog-section/blog-section.tsx';
 import { Carousel } from '~/components/carousel/carousel.tsx';
-import { FavouritesBlock } from '~/components/favourites-block/favourites-block.tsx';
+import { FavoritesBlock } from '~/components/favourites-block/favourites-block.tsx';
 import { KitchenTabs } from '~/components/kitchen-tabs/kitchen-tabs.tsx';
 import { RecipeCardList } from '~/components/recipes-card-list/recipes-card-list.tsx';
 import { RelevantKitchen } from '~/components/relevant-kitchen';
-import { SectionBox } from '~/components/section-box/section-box.tsx';
 import { SectionHeader } from '~/components/section-header';
+import { JuiciestRecipesList } from '~/containers/juiciest-recipes-list/juiciest-recipes-list.tsx';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { useDetectParams } from '~/hooks/use-detect-params.ts';
+import { JUICIEST_PAGE_PARAMS } from '~/redux/api/constants.ts';
+import { useGetAllRecipesWithParamsQuery } from '~/redux/api/services/recipes-api/index.ts';
 import { Recipe } from '~/redux/api/types/recipes.ts';
 import {
     selectFilteredByAllergens,
@@ -30,7 +32,7 @@ import { filterRecipes } from '~/utils/filter-recipes.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
 import { filterRecipesByTitle } from './helpers/filter-by-title.ts';
-import { getCategoryRecipes, getFavoritesRecipes } from './helpers/get-recipes.ts';
+import { getCategoryRecipes } from './helpers/get-recipes.ts';
 
 type KitchenPageProps = {
     pageType: PageType;
@@ -39,7 +41,20 @@ type KitchenPageProps = {
 };
 
 export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
+    const isMainPage = pageType === PageType.Main;
+    const isCategoryPage = pageType === PageType.Category;
+    const isJuiciestPage = pageType === PageType.Juiciest;
+
     const { selectedCategory, selectedSubCategory } = useDetectParams();
+    const { data } = useGetAllRecipesWithParamsQuery(
+        { ...JUICIEST_PAGE_PARAMS, page: 1 },
+        {
+            skip: !isJuiciestPage,
+        },
+    );
+
+    const recipesJuiciestPage = data?.data;
+
     const dispatch = useAppDispatch();
     const recipes = useAppSelector(selectRecipes);
 
@@ -56,16 +71,11 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const [startSearch, setStartSearch] = useState(false);
     const searchValue = useAppSelector(selectInputValue);
 
-    const isMainPage = pageType === PageType.Main;
-    const isCategoryPage = pageType === PageType.Category;
-    const isJuiciestPage = pageType === PageType.Juiciest;
-
-    const favoritesRecipes = getFavoritesRecipes(recipes);
     const categoryRecipes = getCategoryRecipes(recipes, selectedCategory, selectedSubCategory);
 
     const searchRecipes: Record<PageType, Recipe[]> = {
         main: recipes,
-        juiciest: favoritesRecipes,
+        juiciest: recipesJuiciestPage!,
         category: categoryRecipes,
     };
 
@@ -100,6 +110,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
 
     useEffect(() => {
         const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+        if (!randomCategory) return;
 
         setRelevantTitle(randomCategory.title);
         setRelevantDesc(randomCategory.description ?? '');
@@ -154,15 +165,11 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
                         !isArrayWithItems(filteredByAllergens) && (
                             <Fragment key='all-pages-flow'>
                                 {isCategoryPage && <KitchenTabs recipeList={categoryRecipes} />}
-                                {isJuiciestPage && (
-                                    <SectionBox>
-                                        <RecipeCardList recipeList={favoritesRecipes} />
-                                    </SectionBox>
-                                )}
-                                {(isMainPage || !selectedCategory) && (
+                                {isJuiciestPage && <JuiciestRecipesList />}
+                                {(isMainPage || (!selectedCategory && !isJuiciestPage)) && (
                                     <Fragment key='main-page-flow'>
                                         <Carousel />
-                                        <FavouritesBlock />
+                                        <FavoritesBlock />
                                         <BlogSection />
                                     </Fragment>
                                 )}

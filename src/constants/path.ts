@@ -9,7 +9,7 @@ export const Paths = {
     CATEGORY_ROOT: `:${routeParams.categoryName}`,
     CATEGORY: `:${routeParams.categoryName}/:${routeParams.subCategoryName}`,
     RECIPE: `:${routeParams.categoryName}/:${routeParams.subCategoryName}/:${routeParams.recipeId}`,
-    JUICIEST: 'the-juiciest',
+    JUICIEST: '/the-juiciest',
     ERROR: '/not-found',
     OTHERS: '*',
 };

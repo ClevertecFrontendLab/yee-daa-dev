@@ -37,8 +37,6 @@ export const categoryApi = createApi({
                         { categories: [], subCategories: [] } as GroupedCategories,
                     );
 
-                    console.log(categories, subCategories);
-
                     dispatch(setCategories(categories));
                     dispatch(setSubCategories(subCategories));
                 } catch (err: unknown) {

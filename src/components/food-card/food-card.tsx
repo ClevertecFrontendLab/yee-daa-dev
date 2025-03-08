@@ -4,14 +4,12 @@ import { FC } from 'react';
 import { NavLink } from 'react-router';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { useGetRecipePath } from '~/hooks/use-get-recipe-path.ts';
 import { mockAuthors } from '~/mocks/authors.ts';
 import { Recipe } from '~/redux/api/types/recipes.ts';
-import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
 import { setSelectedRecipe } from '~/redux/features/choosen-recipe-slice.ts';
-import { selectRecipes } from '~/redux/features/recipies-slice.ts';
 import { selectInputValue } from '~/redux/features/search-slice.ts';
-import { getPath } from '~/utils/get-path.ts';
-import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
+import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
 
 import { CardStat } from '../card-stat/card-stat.tsx';
 import { CategoryTag } from '../category-tag';
@@ -23,14 +21,10 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
     const dispatch = useAppDispatch();
 
     const inputValue = useAppSelector(selectInputValue);
-    const allCategories = useAppSelector(selectCategoriesMenu);
-    const allRecipes = useAppSelector(selectRecipes);
 
     const { id, title, image, description, categoriesIds, likes, bookmarks } = recipe;
-    const categoryId = isArrayWithItems(categoriesIds) ? categoriesIds[0] : '';
-    const selectedCategory = allCategories.find((elem) => elem.id === categoryId);
 
-    const categoryPath = getPath(allCategories, allRecipes, selectedCategory, id);
+    const recipePath = useGetRecipePath(recipe);
 
     const handleClick = () => {
         dispatch(setSelectedRecipe(recipe));
@@ -66,7 +60,7 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
                 <Image
                     top={0}
                     left={0}
-                    src={image}
+                    src={getAbsoluteImagePath(image)}
                     alt={title}
                     width='100%'
                     height='100%'
@@ -130,11 +124,7 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
                             Сохранить
                         </Box>
                     </Button>
-                    <NavLink
-                        to={categoryPath}
-                        onClick={handleClick}
-                        data-test-id={`card-link-${id}`}
-                    >
+                    <NavLink to={recipePath} onClick={handleClick} data-test-id={`card-link-${id}`}>
                         <Button bg='black' color='white' size={{ base: 'xs', md: 'sm' }}>
                             Готовить
                         </Button>
