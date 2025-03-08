@@ -1,42 +1,34 @@
 import { AccordionIcon, AccordionItem, AccordionPanel, Image } from '@chakra-ui/icons';
 import { AccordionButton, HStack, Text } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
-import { NavLink, useLocation } from 'react-router';
+import { NavLink } from 'react-router';
 
-import { categoriesMap } from '~/constants/categories.ts';
-import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { useAppDispatch } from '~/hooks/typed-react-redux-hooks.ts';
+import { useDetectParams } from '~/hooks/use-detect-params.ts';
+import { Category } from '~/redux/api/types/categories.ts';
 import {
     clearSelectedAllergens,
     setFilteredByAllergens,
 } from '~/redux/features/allergens-slice.ts';
-import {
-    selectChoosenCategory,
-    setChoosenCategory,
-} from '~/redux/features/choosen-category-slice.ts';
 import { clearFilteredRecipes } from '~/redux/features/recipies-slice.ts';
-import { MenuItem } from '~/types/category.ts';
+import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
 import { SubNavItem } from './sub-nav-item.tsx';
 
-export const NavItem: FC<MenuItem> = ({ category, subCategories, title, description }) => {
-    const location = useLocation();
+export const NavItem: FC<Category> = ({ category, subCategories, title, icon }) => {
     const dispatch = useAppDispatch();
     const [isActive, setIsActive] = useState(false);
-    const choosenCategory = useAppSelector(selectChoosenCategory);
+    const { selectedCategory, selectedSubCategory } = useDetectParams();
 
-    const categoryPath = isArrayWithItems(subCategories)
+    const defaultCategoryPath = isArrayWithItems(subCategories)
         ? `/${category}/${subCategories[0].category}`
         : `/${category}`;
-    const choosenItem = {
-        category,
-        title,
-        description,
-        choosenSubCategory: isArrayWithItems(subCategories) ? subCategories[0] : null,
-    };
+
+    const selectedCategoryPath = `/${selectedCategory?.category}/${selectedSubCategory?.category}`;
+    const isSameCategory = category === selectedCategory?.category;
 
     const handleClick = () => {
-        dispatch(setChoosenCategory(choosenItem));
         dispatch(clearFilteredRecipes());
         dispatch(clearSelectedAllergens());
         dispatch(setFilteredByAllergens([]));
@@ -45,14 +37,14 @@ export const NavItem: FC<MenuItem> = ({ category, subCategories, title, descript
     };
 
     useEffect(() => {
-        setIsActive(location.pathname.split('/')[1] === categoryPath.split('/')[1]);
-    }, [location.pathname, categoryPath]);
+        setIsActive(selectedCategory?.category === category);
+    }, [selectedCategory?.category, category]);
 
     useEffect(() => {
-        if (!choosenCategory?.category) {
+        if (!selectedCategory?.category) {
             setIsActive(false);
         }
-    }, [choosenCategory]);
+    }, [selectedCategory?.category]);
 
     return (
         <AccordionItem
@@ -68,7 +60,12 @@ export const NavItem: FC<MenuItem> = ({ category, subCategories, title, descript
             }}
         >
             <NavLink
-                to={categoryPath}
+                // при toggle категории позволяет сохранить выделение того, что было выделено до закрытия, если категория другая - выбирает первый из списка
+                to={
+                    selectedCategory && selectedSubCategory && isSameCategory
+                        ? selectedCategoryPath
+                        : defaultCategoryPath
+                }
                 key={category}
                 onClick={handleClick}
                 data-test-id={category === 'vegan' ? 'vegan-cuisine' : ''}
@@ -80,7 +77,7 @@ export const NavItem: FC<MenuItem> = ({ category, subCategories, title, descript
                     }}
                 >
                     <HStack as='span' flex='1' textAlign='left' spacing={3}>
-                        <Image src={categoriesMap[category]} alt={category} w={6} h={6} />
+                        <Image src={getAbsoluteImagePath(icon)} alt={category} w={6} h={6} />
                         <Text
                             fontSize='md'
                             lineHeight={6}
@@ -95,13 +92,7 @@ export const NavItem: FC<MenuItem> = ({ category, subCategories, title, descript
             </NavLink>
             <AccordionPanel padding='4px 8px 4px 40px'>
                 {subCategories?.map((el) => (
-                    <SubNavItem
-                        key={el.category}
-                        {...el}
-                        parentCategory={category}
-                        parentTitle={title}
-                        parentDesc={description}
-                    />
+                    <SubNavItem key={el.category} {...el} parentCategory={category} />
                 ))}
             </AccordionPanel>
         </AccordionItem>

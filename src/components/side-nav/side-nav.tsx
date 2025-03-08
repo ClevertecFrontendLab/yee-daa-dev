@@ -46,8 +46,8 @@ export const SideNav = () => {
         >
             {isLg && <Breadcrumbs />}
             <Accordion allowToggle>
-                {navMenu.map((item, i) => (
-                    <NavItem {...item} key={i} />
+                {navMenu.map((item) => (
+                    <NavItem {...item} key={item.id} />
                 ))}
             </Accordion>
             <Stack p={6} display={{ base: 'none', xl: 'block' }}>
