@@ -9,11 +9,13 @@ import { AppState } from '~/types/store';
 import {
     AllRecipeParams,
     MetaData,
+    MetaRequest,
     RawRecipe,
     RawRecipesResponse,
     Recipe,
     RecipesByCategoryIdArgs,
     RecipesResponse,
+    RecipesResponseWithMeta,
 } from '../../types/recipes';
 import { replaceUnderscoreId } from '../../utils/replace-underscore-id';
 
@@ -21,7 +23,7 @@ export const recipeApi = createApi({
     reducerPath: 'recipeApi',
     baseQuery,
     endpoints: (build) => ({
-        getAllRecipesWithParams: build.query<RecipesResponse, AllRecipeParams>({
+        getAllRecipesWithParams: build.query<RecipesResponseWithMeta, AllRecipeParams>({
             query: (params) => ({ url: ApiEndpoints.Recipe, params }),
             async onQueryStarted(_, { getState, dispatch, queryFulfilled }) {
                 try {
@@ -38,10 +40,33 @@ export const recipeApi = createApi({
                     console.error('Error get Recipes\n', err);
                 }
             },
-            transformResponse: (response: RawRecipesResponse): RecipesResponse => {
-                const { data } = response;
-                return data.map((resp) => replaceUnderscoreId(resp));
+            transformResponse: ({ data, meta }: RawRecipesResponse): RecipesResponseWithMeta => ({
+                data: data.map((resp) => replaceUnderscoreId(resp)),
+                meta,
+            }),
+            transformErrorResponse: transformBaseErrorResponse,
+        }),
+        getAllRecipesInfinite: build.infiniteQuery<
+            RecipesResponseWithMeta,
+            AllRecipeParams,
+            MetaRequest
+        >({
+            infiniteQueryOptions: {
+                initialPageParam: { page: 1 },
+                getNextPageParam(firstPage, allPages, firstPageParam) {
+                    const currPage = firstPageParam?.page ?? 1;
+
+                    return { page: currPage + 1 };
+                },
             },
+            query: ({ queryArg, pageParam }) => ({
+                url: ApiEndpoints.Recipe,
+                params: { ...queryArg, page: pageParam.page },
+            }),
+            transformResponse: (response: RawRecipesResponse): RecipesResponseWithMeta => ({
+                data: response.data.map((resp) => replaceUnderscoreId(resp)),
+                meta: response.meta,
+            }),
             transformErrorResponse: transformBaseErrorResponse,
         }),
         getRecipeByCategoryId: build.query<RecipesResponse, RecipesByCategoryIdArgs>({
@@ -70,4 +95,5 @@ export const {
     useLazyGetRecipeByCategoryIdQuery,
     useGetRecipeByIdQuery,
     useLazyGetRecipeByIdQuery,
+    useGetAllRecipesInfiniteInfiniteQuery,
 } = recipeApi;

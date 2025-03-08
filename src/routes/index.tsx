@@ -12,6 +12,7 @@ import { JuiciestPage } from '~/pages/juiciest-page';
 import { MainPage } from '~/pages/main-page';
 
 import { ErrorBoundary } from './error-boundary/error-boundary';
+import { juiciestLoader } from './loaders/juciest-loader';
 import { rootCategoryLoader } from './loaders/root-category-loader';
 
 const Layout = lazy(() => import('~/components/layout/layout.tsx'));
@@ -51,7 +52,7 @@ export const appRouter = createBrowserRouter(
                     </CategoryExistProtected>
                 }
             />
-            <Route path={Paths.JUICIEST} element={<JuiciestPage />} />
+            <Route path={Paths.JUICIEST} element={<JuiciestPage />} loader={juiciestLoader} />
             <Route path={Paths.ERROR} element={<ErrorPage />} />
             <Route path={Paths.OTHERS} element={<Navigate to={Paths.ERROR} replace />} />
         </Route>,
