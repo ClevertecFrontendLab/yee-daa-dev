@@ -8,7 +8,13 @@ export const transformBaseErrorResponse = (response: FetchBaseQueryError) => ({
     ...response,
     [NOTIFICATION_STATE_NAME]: {
         status: StatusTypesEnum.Error,
-        message: NotificationMessages.ERROR_GENERAL_TITLE,
-        description: NotificationMessages.ERROR_GENERAL_DESCRIPTION,
+        title:
+            response.status === 429
+                ? NotificationMessages.ERROR_TOO_MANY_TITLE
+                : NotificationMessages.ERROR_GENERAL_TITLE,
+        description:
+            response.status === 429
+                ? NotificationMessages.ERROR_TOO_MANY_DESCRIPTION
+                : NotificationMessages.ERROR_GENERAL_DESCRIPTION,
     },
 });
