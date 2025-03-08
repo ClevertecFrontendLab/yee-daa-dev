@@ -3,11 +3,10 @@ import { Box, Card, CardBody, CardHeader, Heading, Text } from '@chakra-ui/react
 import { FC } from 'react';
 import { NavLink } from 'react-router';
 
-import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { useGetRecipePath } from '~/hooks/use-get-recipe-path.ts';
 import { mockAuthors } from '~/mocks/authors.ts';
 import { Recipe } from '~/redux/api/types/recipes.ts';
-import { setSelectedRecipe } from '~/redux/features/chosen-recipe-slice.ts';
 import { selectInputValue } from '~/redux/features/search-slice.ts';
 import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
 
@@ -18,17 +17,11 @@ import { BookmarkIcon } from '../icons/bookmark-icon.tsx';
 import { RecommendationTag } from '../recommendation-tag';
 
 export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
-    const dispatch = useAppDispatch();
-
     const inputValue = useAppSelector(selectInputValue);
 
     const { id, title, image, description, categoriesIds, likes, bookmarks } = recipe;
 
     const recipePath = useGetRecipePath(recipe);
-
-    const handleClick = () => {
-        dispatch(setSelectedRecipe(recipe));
-    };
 
     // TODO заменить на поиск автора по recommendedByUserId из рецепта
     const { login, ...authorRecommendInfo } = mockAuthors[1];
@@ -124,7 +117,7 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
                             Сохранить
                         </Box>
                     </Button>
-                    <NavLink to={recipePath} onClick={handleClick} data-test-id={`card-link-${id}`}>
+                    <NavLink to={recipePath} data-test-id={`card-link-${id}`}>
                         <Button bg='black' color='white' size={{ base: 'xs', md: 'sm' }}>
                             Готовить
                         </Button>

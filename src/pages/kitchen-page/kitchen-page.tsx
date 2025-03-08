@@ -19,7 +19,6 @@ import {
     selectSelectedAllergens,
     setFilteredByAllergens,
 } from '~/redux/features/allergens-slice.ts';
-import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
 import { selectFilteredRecipes, selectRecipes } from '~/redux/features/recipies-slice.ts';
 import {
     selectInputValue,
@@ -36,8 +35,6 @@ import { getCategoryRecipes } from './helpers/get-recipes.ts';
 
 type KitchenPageProps = {
     pageType: PageType;
-    relevantTitle?: string;
-    relevantDesc?: string;
 };
 
 export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
@@ -46,28 +43,24 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const isJuiciestPage = pageType === PageType.Juiciest;
 
     const { selectedCategory, selectedSubCategory } = useDetectParams();
-    const { data } = useGetAllRecipesWithParamsQuery(
+    const { data: juiciest } = useGetAllRecipesWithParamsQuery(
         { ...JUICIEST_PAGE_PARAMS, page: 1 },
         {
             skip: !isJuiciestPage,
         },
     );
 
-    const recipesJuiciestPage = data?.data;
+    const recipesJuiciestPage = juiciest?.data;
 
     const dispatch = useAppDispatch();
     const recipes = useAppSelector(selectRecipes);
 
-    const categories = useAppSelector(selectCategoriesMenu);
     const matchedRecipes = useAppSelector(selectMatchedRecipes);
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
     const filteredByAllergens = useAppSelector(selectFilteredByAllergens);
     const filteredRecipes = useAppSelector(selectFilteredRecipes);
     const isfromFilter = useAppSelector(selectisfromFilter);
 
-    const [relevantRecipes, setRelevantRecipes] = useState([] as Recipe[]);
-    const [relevantTitle, setRelevantTitle] = useState('');
-    const [relevantDesc, setRelevantDesc] = useState('');
     const [startSearch, setStartSearch] = useState(false);
     const searchValue = useAppSelector(selectInputValue);
 
@@ -109,20 +102,6 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     }, [dispatch, searchValue]);
 
     useEffect(() => {
-        const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-        if (!randomCategory) return;
-
-        setRelevantTitle(randomCategory.title);
-        setRelevantDesc(randomCategory.description ?? '');
-
-        const relatedRecipes = recipes.filter((recipe) =>
-            recipe.categoriesIds.includes(randomCategory.category),
-        );
-
-        setRelevantRecipes(relatedRecipes);
-    }, [categories, recipes]);
-
-    useEffect(() => {
         const recipesToFilter =
             (filteredRecipes.length && filteredRecipes) ||
             (categoryRecipes.length && categoryRecipes) ||
@@ -140,6 +119,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedAllergens]);
+    console.log('RENDER');
 
     return (
         <Fragment key='kitchen-page'>
@@ -178,11 +158,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
                 </Fragment>
             )}
 
-            <RelevantKitchen
-                recipes={relevantRecipes}
-                title={relevantTitle}
-                description={relevantDesc}
-            />
+            <RelevantKitchen />
         </Fragment>
     );
 };

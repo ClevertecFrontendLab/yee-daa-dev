@@ -16,7 +16,10 @@ import { recipesReducer, recipesSlice } from './features/recipies-slice';
 import { searchReducer, searchSlice } from './features/search-slice';
 import { sidesReducer, sidesSlice } from './features/sides-slice';
 
-const isDevMode = process.env.NODE_ENV === 'development';
+// по дефолту при старте приложения yarn start vite по дефолту устанавливает MODE: 'development'
+// переменные доступны из файла .env.development
+
+const isDevMode = import.meta.env.MODE === 'development';
 
 const combinedReducer = {
     [appSlice.name]: appReducer,

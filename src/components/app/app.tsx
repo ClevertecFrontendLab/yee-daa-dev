@@ -13,11 +13,8 @@ export const App = () => {
     const isLoaderOpen = useAppSelector(appLoadingSelector);
     const { isLoading: loadingCategory } = useGetAllCategoriesQuery(undefined, {
         refetchOnReconnect: true,
-        refetchOnMountOrArgChange: true,
     });
-    const { isLoading: loadingNewest } = useGetAllRecipesWithParamsQuery(NEWEST_PARAMS, {
-        refetchOnMountOrArgChange: true,
-    });
+    const { isLoading: loadingNewest } = useGetAllRecipesWithParamsQuery(NEWEST_PARAMS);
     const { isLoading: loadingJuiciest } = useGetAllRecipesWithParamsQuery(JUICIEST_PARAMS);
 
     const isAppLoading = loadingCategory || loadingNewest || loadingJuiciest;

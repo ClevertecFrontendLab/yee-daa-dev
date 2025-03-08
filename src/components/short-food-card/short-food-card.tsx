@@ -1,21 +1,28 @@
 import { Button, Image } from '@chakra-ui/icons';
 import { Heading, HStack } from '@chakra-ui/react';
 import { FC } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, useLocation } from 'react-router';
 
-import { categoriesMap } from '~/constants/categories.ts';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { useGetRecipePath } from '~/hooks/use-get-recipe-path';
 import { Recipe } from '~/redux/api/types/recipes';
-import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
-import { selectChosenCategory } from '~/redux/features/chosen-category-slice.ts';
-import { selectRecipes } from '~/redux/features/recipies-slice.ts';
-import { getPath } from '~/utils/get-path.ts';
+import { selectCategoriesMenu, selectSubCategories } from '~/redux/features/categories-slice.ts';
+import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path';
 
-export const ShortFoodCard: FC<Recipe> = ({ id, categoriesIds, title }) => {
-    const allRecipes = useAppSelector(selectRecipes);
-    const allcategories = useAppSelector(selectCategoriesMenu);
-    const chosenCategory = useAppSelector(selectChosenCategory);
-    const categoryPath = getPath(allcategories, allRecipes, chosenCategory, id);
+export const ShortFoodCard: FC<Recipe> = (recipe) => {
+    const { title, categoriesIds } = recipe;
+    // для ссылки будем брать первый элемент
+    const { pathname: currPath } = useLocation();
+    const pathToRecipe = useGetRecipePath(recipe);
+
+    const categories = useAppSelector(selectCategoriesMenu);
+    const subCategories = useAppSelector(selectSubCategories);
+
+    const recipeSubCategoryId = categoriesIds?.at(0) ?? '';
+    const foundSubCategory = subCategories.find((elem) => elem.id === recipeSubCategoryId);
+    const foundCategory = categories.find(
+        (category) => category.id === foundSubCategory?.rootCategoryId,
+    );
 
     return (
         <HStack
@@ -25,7 +32,7 @@ export const ShortFoodCard: FC<Recipe> = ({ id, categoriesIds, title }) => {
             alignItems='center'
             spacing={2}
         >
-            <Image src={categoriesMap[categoriesIds[0]]} alt={categoriesIds[0]} />
+            <Image src={getAbsoluteImagePath(foundCategory?.icon)} alt={categoriesIds[0]} />
             <Heading
                 fontSize={{ base: 'md', md: 'xl' }}
                 noOfLines={1}
@@ -41,7 +48,7 @@ export const ShortFoodCard: FC<Recipe> = ({ id, categoriesIds, title }) => {
                 size='sm'
                 flexShrink={0}
             >
-                <NavLink to={categoryPath}>Готовить</NavLink>
+                <NavLink to={pathToRecipe ?? currPath}>Готовить</NavLink>
             </Button>
         </HStack>
     );
