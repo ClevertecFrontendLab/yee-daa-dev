@@ -6,14 +6,17 @@ import { Carousel } from '~/components/carousel/carousel.tsx';
 import { IngredientsBlock } from '~/components/ingredients-block/ingredients-block.tsx';
 import { RecipeCard } from '~/components/recipe-card/recipe-card.tsx';
 import { StepsBlock } from '~/components/stpeps-block/steps-block.js';
+import { useDetectParams } from '~/hooks/use-detect-params';
 import { mockAuthors } from '~/mocks/authors';
-import { Recipe } from '~/redux/api/types/recipes';
+import { useGetRecipeByIdQuery } from '~/redux/api/services/recipes-api';
 
-type RecipePageProps = { recipe: Recipe };
+export const RecipePage = () => {
+    const { recipeId } = useDetectParams();
 
-export const RecipePage = ({ recipe }: RecipePageProps) => {
-    //TODO добавить логику поиска автора по ид из рецепта
+    const { data: recipe } = useGetRecipeByIdQuery(recipeId as string);
+    //TODO добавить логику поиска автора по ид из рецепта когда будет готова коллекция авторов
     const foundAuthor = mockAuthors[0] || null;
+
     return (
         <Stack spacing={10}>
             <RecipeCard recipe={recipe} />

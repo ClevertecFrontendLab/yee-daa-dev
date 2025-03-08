@@ -16,6 +16,7 @@ import {
 import { FC } from 'react';
 
 import { Recipe } from '~/redux/api/types/recipes';
+import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path';
 
 import { CardStat } from '../card-stat/card-stat';
 import { CategoryTag } from '../category-tag';
@@ -34,7 +35,7 @@ export const RecipeCard: FC<{ recipe?: Recipe }> = ({ recipe }) => (
         mb={{ base: 4, xl: 10 }}
     >
         <Image
-            src={recipe?.image}
+            src={getAbsoluteImagePath(recipe?.image)}
             alt={recipe?.title}
             objectFit='cover'
             w={{ base: '100%', sm: '232px', xl: '353px', '2xl': '553px' }}
@@ -64,7 +65,7 @@ export const RecipeCard: FC<{ recipe?: Recipe }> = ({ recipe }) => (
                 <Box mt='auto'>
                     <Tag size='md' p='4px 8px'>
                         <AlarmIcon />
-                        <TagLabel ml={2}>{recipe?.time}</TagLabel>
+                        <TagLabel ml={2}>{recipe?.time}&nbsp;минут</TagLabel>
                     </Tag>
                 </Box>
                 <HStack gap={3} flexWrap='wrap'>

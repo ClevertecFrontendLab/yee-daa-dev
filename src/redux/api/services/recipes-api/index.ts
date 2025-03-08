@@ -81,7 +81,7 @@ export const recipeApi = createApi({
             transformErrorResponse: transformBaseErrorResponse,
         }),
         getRecipeById: build.query<Recipe, string>({
-            query: (id) => ({ url: `${ApiEndpoints.Category}/${id}` }),
+            query: (id) => ({ url: `${ApiEndpoints.Recipe}/${id}` }),
             transformResponse: (response: RawRecipe): Recipe => replaceUnderscoreId(response),
             transformErrorResponse: transformBaseErrorResponse,
         }),

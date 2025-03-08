@@ -4,15 +4,16 @@ import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from '
 import { AppLoader } from '~/components/app-loader';
 import { Paths } from '~/constants/path.js';
 import { CategoryExistProtected } from '~/hoc/category-exist-protected';
-import { RecipeExistProtected } from '~/hoc/recipe-exist-protected';
 import { SubcategoryRedirect } from '~/hoc/subcategory-redirect';
 import { CategoryPage } from '~/pages/category-page';
 import { ErrorPage } from '~/pages/error-page/error-page.tsx';
 import { JuiciestPage } from '~/pages/juiciest-page';
 import { MainPage } from '~/pages/main-page';
+import { RecipePageWrapper } from '~/pages/recipe-page';
 
 import { ErrorBoundary } from './error-boundary/error-boundary';
 import { juiciestLoader } from './loaders/juciest-loader';
+import { recipeLoader } from './loaders/recipe-loader';
 import { rootCategoryLoader } from './loaders/root-category-loader';
 
 const Layout = lazy(() => import('~/components/layout/layout.tsx'));
@@ -48,9 +49,10 @@ export const appRouter = createBrowserRouter(
                 path={Paths.RECIPE}
                 element={
                     <CategoryExistProtected>
-                        <RecipeExistProtected />
+                        <RecipePageWrapper />
                     </CategoryExistProtected>
                 }
+                loader={recipeLoader}
             />
             <Route path={Paths.JUICIEST} element={<JuiciestPage />} loader={juiciestLoader} />
             <Route path={Paths.ERROR} element={<ErrorPage />} />

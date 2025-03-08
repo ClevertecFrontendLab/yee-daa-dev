@@ -1,7 +1,7 @@
 import { AccordionIcon, AccordionItem, AccordionPanel, Image } from '@chakra-ui/icons';
 import { AccordionButton, HStack, Text } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, useLocation } from 'react-router';
 
 import { useAppDispatch } from '~/hooks/typed-react-redux-hooks.ts';
 import { useDetectParams } from '~/hooks/use-detect-params.ts';
@@ -17,9 +17,11 @@ import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 import { SubNavItem } from './sub-nav-item.tsx';
 
 export const NavItem: FC<Category> = ({ category, subCategories, title, icon }) => {
+    const { pathname } = useLocation();
     const dispatch = useAppDispatch();
     const [isActive, setIsActive] = useState(false);
     const { selectedCategory, selectedSubCategory } = useDetectParams();
+    console.log(selectedCategory?.category, selectedSubCategory?.category, pathname, category);
 
     const defaultCategoryPath = isArrayWithItems(subCategories)
         ? `/${category}/${subCategories[0].category}`
@@ -27,6 +29,7 @@ export const NavItem: FC<Category> = ({ category, subCategories, title, icon }) 
 
     const selectedCategoryPath = `/${selectedCategory?.category}/${selectedSubCategory?.category}`;
     const isSameCategory = category === selectedCategory?.category;
+    const isRootPath = pathname === '/';
 
     const handleClick = () => {
         dispatch(clearFilteredRecipes());
@@ -37,14 +40,13 @@ export const NavItem: FC<Category> = ({ category, subCategories, title, icon }) 
     };
 
     useEffect(() => {
-        setIsActive(selectedCategory?.category === category);
-    }, [selectedCategory?.category, category]);
-
-    useEffect(() => {
-        if (!selectedCategory?.category) {
+        if (!selectedCategory?.category || isRootPath) {
             setIsActive(false);
+            return;
         }
-    }, [selectedCategory?.category]);
+
+        setIsActive(selectedCategory.category === category);
+    }, [selectedCategory?.category, category, isRootPath]);
 
     return (
         <AccordionItem
@@ -58,6 +60,7 @@ export const NavItem: FC<Category> = ({ category, subCategories, title, icon }) 
                     transition: 'opacity 0.1s ease',
                 },
             }}
+            id={selectedCategory?.category}
         >
             <NavLink
                 // при toggle категории позволяет сохранить выделение того, что было выделено до закрытия, если категория другая - выбирает первый из списка

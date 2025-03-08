@@ -2,7 +2,7 @@ import { BreadcrumbLink, ChevronRightIcon } from '@chakra-ui/icons';
 import { Box, Breadcrumb, BreadcrumbItem } from '@chakra-ui/react';
 import { Link, useLocation } from 'react-router';
 
-import { Paths } from '~/constants/path.js';
+import { Paths } from '~/constants/path';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { closeMenu } from '~/redux/features/burger-slice.ts';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
@@ -25,9 +25,7 @@ export const Breadcrumbs = () => {
 
     const pathsRussianArr = [categoryItem?.title, subcategory?.title, recipePath];
 
-    const handleCategoryClick = () => {
-        dispatch(closeMenu());
-    };
+    const handleCategoryClick = () => dispatch(closeMenu());
 
     return (
         <Box ml={{ base: 0, lg: 32 }} pb={{ base: 8, lg: 0 }}>

@@ -7,7 +7,6 @@ import {
     clearSelectedCategories,
     selectSelectedCategories,
 } from '~/redux/features/categories-slice';
-import { initialState, setChosenCategory } from '~/redux/features/chosen-category-slice';
 import { closeDrawer } from '~/redux/features/drawer';
 import { clearSelectedMeats, selectSelectedMeats } from '~/redux/features/meats-slice';
 import { selectRecipes, setFilteredRecipes } from '~/redux/features/recipies-slice';
@@ -53,7 +52,6 @@ export const FilterDrawerFooter = () => {
         });
         dispatch(closeDrawer());
         dispatch(setFilteredRecipes(filteredRecipes));
-        dispatch(setChosenCategory(initialState));
     };
 
     return (

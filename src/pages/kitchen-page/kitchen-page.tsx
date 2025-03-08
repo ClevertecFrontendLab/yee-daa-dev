@@ -119,7 +119,6 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedAllergens]);
-    console.log('RENDER');
 
     return (
         <Fragment key='kitchen-page'>

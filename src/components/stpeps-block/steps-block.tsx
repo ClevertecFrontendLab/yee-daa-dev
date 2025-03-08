@@ -2,6 +2,7 @@ import { Card, CardBody, CardHeader, Image, Stack, Tag, TagLabel, Text } from '@
 import { FC } from 'react';
 
 import { Recipe } from '~/redux/api/types/recipes';
+import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path';
 
 export const StepsBlock: FC<{ steps?: Recipe['steps'] }> = ({ steps }) =>
     steps?.map((step) => (
@@ -14,7 +15,7 @@ export const StepsBlock: FC<{ steps?: Recipe['steps'] }> = ({ steps }) =>
         >
             {step?.image && (
                 <Image
-                    src={step?.image}
+                    src={getAbsoluteImagePath(step?.image)}
                     alt={step?.description}
                     objectFit='cover'
                     w={{ base: '158px', xl: '346px' }}

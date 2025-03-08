@@ -14,6 +14,7 @@ export const ShortFoodCard: FC<Recipe> = (recipe) => {
     // для ссылки будем брать первый элемент
     const { pathname: currPath } = useLocation();
     const pathToRecipe = useGetRecipePath(recipe);
+    const { pathname } = useLocation();
 
     const categories = useAppSelector(selectCategoriesMenu);
     const subCategories = useAppSelector(selectSubCategories);
@@ -48,7 +49,9 @@ export const ShortFoodCard: FC<Recipe> = (recipe) => {
                 size='sm'
                 flexShrink={0}
             >
-                <NavLink to={pathToRecipe ?? currPath}>Готовить</NavLink>
+                <NavLink to={pathToRecipe ?? currPath} state={{ fromPage: pathname }}>
+                    Готовить
+                </NavLink>
             </Button>
         </HStack>
     );

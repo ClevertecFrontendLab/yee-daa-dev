@@ -1,7 +1,7 @@
 import { Button, CardFooter, Image, Stack } from '@chakra-ui/icons';
 import { Box, Card, CardBody, CardHeader, Heading, Text } from '@chakra-ui/react';
 import { FC } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, useLocation } from 'react-router';
 
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { useGetRecipePath } from '~/hooks/use-get-recipe-path.ts';
@@ -18,6 +18,7 @@ import { RecommendationTag } from '../recommendation-tag';
 
 export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
     const inputValue = useAppSelector(selectInputValue);
+    const { pathname } = useLocation();
 
     const { id, title, image, description, categoriesIds, likes, bookmarks } = recipe;
 
@@ -117,7 +118,11 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
                             Сохранить
                         </Box>
                     </Button>
-                    <NavLink to={recipePath} data-test-id={`card-link-${id}`}>
+                    <NavLink
+                        to={recipePath}
+                        data-test-id={`card-link-${id}`}
+                        state={{ fromPage: pathname }}
+                    >
                         <Button bg='black' color='white' size={{ base: 'xs', md: 'sm' }}>
                             Готовить
                         </Button>

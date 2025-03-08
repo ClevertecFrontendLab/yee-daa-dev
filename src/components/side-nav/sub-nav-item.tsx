@@ -2,7 +2,7 @@ import './side-nav.module.css';
 
 import { Box, Text } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, useLocation } from 'react-router';
 
 import { useAppDispatch } from '~/hooks/typed-react-redux-hooks';
 import { useDetectParams } from '~/hooks/use-detect-params';
@@ -16,7 +16,9 @@ type SubNavItemProps = MenuItem & {
 
 export const SubNavItem: FC<SubNavItemProps> = ({ parentCategory, category, title }) => {
     const dispatch = useAppDispatch();
+    const { pathname } = useLocation();
     const [isActive, setIsActive] = useState(false);
+    const isRootPath = pathname === '/';
 
     const { selectedSubCategory } = useDetectParams();
     const subCategoryPath = `/${parentCategory}/${category}`;
@@ -28,8 +30,12 @@ export const SubNavItem: FC<SubNavItemProps> = ({ parentCategory, category, titl
     };
 
     useEffect(() => {
+        if (isRootPath) {
+            setIsActive(false);
+            return;
+        }
         setIsActive(selectedSubCategory?.category === subCategoryPath.split('/')[2]);
-    }, [selectedSubCategory?.category, subCategoryPath]);
+    }, [isRootPath, selectedSubCategory?.category, subCategoryPath]);
 
     return (
         <NavLink

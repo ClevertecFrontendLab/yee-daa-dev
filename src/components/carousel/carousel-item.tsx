@@ -1,7 +1,7 @@
 import { CardFooter, Image, Stack } from '@chakra-ui/icons';
 import { Box, Card, CardBody, CardHeader, Heading, HStack, Text } from '@chakra-ui/react';
 import { FC } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, useLocation } from 'react-router';
 
 import { useGetRecipePath } from '~/hooks/use-get-recipe-path.ts';
 import { Recipe } from '~/redux/api/types/recipes.ts';
@@ -12,11 +12,12 @@ import { CategoryTag } from '../category-tag';
 
 export const CarouselItem: FC<{ recipe: Recipe }> = ({ recipe }) => {
     const recipePagePath = useGetRecipePath(recipe);
+    const { pathname } = useLocation();
 
     const { id, title, image, description, categoriesIds, likes, bookmarks } = recipe;
 
     return (
-        <NavLink to={recipePagePath} key={id}>
+        <NavLink to={recipePagePath} key={id} state={{ fromPage: pathname }}>
             <Card
                 maxWidth={{ base: '158px', xmd: '277px', xl: '322px' }}
                 h={{ base: '220px', xmd: '375px', xl: '400px' }}
