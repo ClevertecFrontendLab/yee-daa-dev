@@ -3,7 +3,7 @@ import { Navigate, useParams } from 'react-router';
 import { Paths, routeParams } from '~/constants/path';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { RecipePage } from '~/pages/recipe-page';
-import { selectRecipes } from '~/redux/features/recipies-slice';
+import { selectRecipes } from '~/redux/features/recipes-slice';
 
 export const RecipeExistProtected = () => {
     const { recipeId } = useParams<typeof routeParams>();
@@ -13,5 +13,5 @@ export const RecipeExistProtected = () => {
 
     const recipe = recipes.find((recipe) => recipe.id === recipeId);
 
-    return recipe ? <RecipePage recipe={recipe} /> : <Navigate to={Paths.ERROR} />;
+    return recipe ? <RecipePage /> : <Navigate to={Paths.ERROR} />;
 };

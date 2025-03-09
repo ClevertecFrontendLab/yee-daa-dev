@@ -2,10 +2,6 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { ApiEndpoints } from '~/redux/api/constants';
 import { baseQuery } from '~/redux/api/get-base-query';
-import { transformBaseErrorResponse } from '~/redux/api/utils/transform-base-error-response';
-import { changeTotalRecipes } from '~/redux/features/recipies-slice';
-import { AppState } from '~/types/store';
-
 import {
     AllRecipeParams,
     MetaData,
@@ -17,8 +13,11 @@ import {
     RecipesInfiniteResponse,
     RecipesResponse,
     RecipesResponseWithMeta,
-} from '../../types/recipes';
-import { replaceUnderscoreId } from '../../utils/replace-underscore-id';
+} from '~/redux/api/types/recipes';
+import { replaceUnderscoreId } from '~/redux/api/utils/replace-underscore-id';
+import { transformBaseErrorResponse } from '~/redux/api/utils/transform-base-error-response';
+import { changeTotalRecipes } from '~/redux/features/recipes-slice';
+import { AppState } from '~/types/store';
 
 export const recipeApi = createApi({
     reducerPath: 'recipeApi',
@@ -60,6 +59,14 @@ export const recipeApi = createApi({
                     return { page: currPage + 1 };
                 },
             },
+            onQueryStarted: async (args, { getState, dispatch, queryFulfilled }) => {
+                try {
+                    const data = await queryFulfilled;
+                    console.log(data, 'RTK_DATA');
+                } catch (error) {
+                    //
+                }
+            },
             query: ({ queryArg, pageParam }) => ({
                 url: ApiEndpoints.Recipe,
                 params: { ...queryArg, page: pageParam.page },
@@ -70,6 +77,13 @@ export const recipeApi = createApi({
             }),
             transformErrorResponse: transformBaseErrorResponse,
         }),
+        // getAllRecipesMerge: build.query<RecipesResponseWithMeta, AllRecipeParams>({
+        //     query: (params) => ({
+        //         url: ApiEndpoints.Recipe,
+        //         params: params,
+        //     }),
+
+        // }),
         getRecipeByCategoryId: build.query<RecipesResponse, RecipesByCategoryIdArgs>({
             query: ({ id, ...params }) => ({
                 url: `${ApiEndpoints.RecipeByCategory}/${id}`,

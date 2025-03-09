@@ -7,7 +7,7 @@ import { NavLink, useLocation } from 'react-router';
 import { useAppDispatch } from '~/hooks/typed-react-redux-hooks';
 import { useDetectParams } from '~/hooks/use-detect-params';
 import { clearSelectedAllergens, setFilteredByAllergens } from '~/redux/features/allergens-slice';
-import { clearFilteredRecipes } from '~/redux/features/recipies-slice';
+import { clearFilteredRecipes } from '~/redux/features/recipes-slice';
 import { MenuItem } from '~/types/category';
 
 type SubNavItemProps = MenuItem & {

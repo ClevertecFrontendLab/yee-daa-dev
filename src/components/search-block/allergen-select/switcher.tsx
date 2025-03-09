@@ -5,15 +5,15 @@ import { BUTTON_EXCLUDE_ALLERGENS } from '~/constants/select';
 
 type SwitcherProps = {
     isSwitchOn: boolean;
-    isfromFilter: boolean;
+    fromFilter: boolean;
     handleSwitchChange: () => void;
 };
 
-export const Switcher: FC<SwitcherProps> = ({ isSwitchOn, handleSwitchChange, isfromFilter }) => (
+export const Switcher: FC<SwitcherProps> = ({ isSwitchOn, handleSwitchChange, fromFilter }) => (
     <HStack>
         <Text fontWeight={500}>{BUTTON_EXCLUDE_ALLERGENS}</Text>
         <Switch
-            data-test-id={isfromFilter ? 'allergens-switcher-filter' : 'allergens-switcher'}
+            data-test-id={fromFilter ? 'allergens-switcher-filter' : 'allergens-switcher'}
             isChecked={isSwitchOn}
             onChange={handleSwitchChange}
             colorScheme='green'

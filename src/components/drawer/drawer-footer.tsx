@@ -7,19 +7,16 @@ import {
     clearSelectedCategories,
     selectSelectedCategories,
 } from '~/redux/features/categories-slice';
-import { closeDrawer } from '~/redux/features/drawer';
+import { closeDrawer, setIsFiltering } from '~/redux/features/filter-drawer-slice';
 import { clearSelectedMeats, selectSelectedMeats } from '~/redux/features/meats-slice';
-import { selectRecipes, setFilteredRecipes } from '~/redux/features/recipies-slice';
 import { clearSelectedSides, selectSelectedSides } from '~/redux/features/sides-slice';
 
 import styles from './drawer.module.css';
-import { filterRecipes } from './helpers/filter-recipes';
 import { isButtonDisabled } from './helpers/is-button-disabled';
 
 export const FilterDrawerFooter = () => {
     const dispatch = useAppDispatch();
 
-    const allRecipes = useAppSelector(selectRecipes);
     const selectedCategories = useAppSelector(selectSelectedCategories);
     const selectedAuthors = useAppSelector(selectSelectedAuthors);
     const selectedMeats = useAppSelector(selectSelectedMeats);
@@ -42,16 +39,9 @@ export const FilterDrawerFooter = () => {
         dispatch(clearSelectedAllergens());
     };
 
-    const findRecipes = () => {
-        const filteredRecipes = filterRecipes(allRecipes, {
-            selectedCategories,
-            selectedAuthors,
-            selectedMeats,
-            selectedSides,
-            selectedAllergens,
-        });
+    const findRecipes = async () => {
+        dispatch(setIsFiltering(true));
         dispatch(closeDrawer());
-        dispatch(setFilteredRecipes(filteredRecipes));
     };
 
     return (

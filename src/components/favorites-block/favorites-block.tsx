@@ -10,7 +10,7 @@ import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
 import { CardList } from '../card-list';
 import { Loader } from '../loader';
-import { SectionBox } from '../section-box/section-box.tsx';
+import { SectionBox } from '../section-box/section-box';
 
 export const FavoritesBlock: FC = () => {
     const { isLoading, data } = useGetAllRecipesWithParamsQuery(JUICIEST_PARAMS);

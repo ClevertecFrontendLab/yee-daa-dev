@@ -10,9 +10,9 @@ export const rootCategoryLoader: LoaderFunction = ({
 }: {
     params: Params<typeof routeParams.categoryName>;
 }) => {
-    const { menu } = store.getState().categories;
+    const { categories } = store.getState().categories;
 
-    const selectedCategory = menu.find((elem) => elem.category === categoryName);
+    const selectedCategory = categories.find((elem) => elem.category === categoryName);
 
     if (!categoryName || !selectedCategory) {
         return { path: null };

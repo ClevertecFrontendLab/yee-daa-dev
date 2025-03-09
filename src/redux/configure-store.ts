@@ -8,10 +8,9 @@ import { appReducer, appSlice } from './features/app-slice';
 import { authorsReducer, authorsSlice } from './features/authors-slice';
 import { menuReducer, menuSlice } from './features/burger-slice';
 import { categoriesReducer, categoriesSlice } from './features/categories-slice';
-import { selectedRecipeReducer, selectedRecipeSlice } from './features/chosen-recipe-slice';
-import { drawerReducer, drawerSlice } from './features/drawer';
+import { filterDrawerReducer, filterDrawerSlice } from './features/filter-drawer-slice';
 import { meatsReducer, meatsSlice } from './features/meats-slice';
-import { recipesReducer, recipesSlice } from './features/recipies-slice';
+import { recipesReducer, recipesSlice } from './features/recipes-slice';
 import { searchReducer, searchSlice } from './features/search-slice';
 import { sidesReducer, sidesSlice } from './features/sides-slice';
 
@@ -26,9 +25,8 @@ const combinedReducer = {
     [categoriesSlice.name]: categoriesReducer,
     [recipesSlice.name]: recipesReducer,
     [allergenSlice.name]: allergenReducer,
-    [selectedRecipeSlice.name]: selectedRecipeReducer,
     [menuSlice.name]: menuReducer,
-    [drawerSlice.name]: drawerReducer,
+    [filterDrawerSlice.name]: filterDrawerReducer,
     [authorsSlice.name]: authorsReducer,
     [meatsSlice.name]: meatsReducer,
     [sidesSlice.name]: sidesReducer,

@@ -14,14 +14,15 @@ import {
 
 import { FILTER_TITLES } from '~/constants/filters';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { authors as mockAuthors } from '~/mocks/filters';
 import { deselectAllergen, selectSelectedAllergens } from '~/redux/features/allergens-slice';
-import { selectAuthors, selectSelectedAuthors, toggleAuthor } from '~/redux/features/authors-slice';
+import { selectSelectedAuthors, toggleAuthor } from '~/redux/features/authors-slice';
 import {
     selectCategoriesMenu,
     selectSelectedCategories,
     toggleCategory,
 } from '~/redux/features/categories-slice';
-import { closeDrawer, selectDrawer } from '~/redux/features/drawer';
+import { closeDrawer, selectDrawer } from '~/redux/features/filter-drawer-slice';
 import { selectMeats, selectSelectedMeats, toggleMeat } from '~/redux/features/meats-slice';
 import { selectSelectedSides, selectSides, toggleSide } from '~/redux/features/sides-slice';
 import { TagType } from '~/types/type-tags';
@@ -44,7 +45,9 @@ export const FilterDrawer = () => {
     const dispatch = useAppDispatch();
     const isOpenDrawer = useAppSelector(selectDrawer);
     const allCategories = useAppSelector(selectCategoriesMenu);
-    const authors = useAppSelector(selectAuthors);
+
+    //TODO заменить на данные из запроса для авторов когда будет коллекция с авторами
+    const authors = mockAuthors;
     const meats = useAppSelector(selectMeats);
     const sides = useAppSelector(selectSides);
 
@@ -54,9 +57,7 @@ export const FilterDrawer = () => {
     const selectedSides = useAppSelector(selectSelectedSides);
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
 
-    const onClose = () => {
-        dispatch(closeDrawer());
-    };
+    const onClose = () => dispatch(closeDrawer());
 
     const determineTagType = (tag: string | null): TagType | null => {
         if (tag && selectedAllergens.includes(tag)) {
@@ -145,7 +146,7 @@ export const FilterDrawer = () => {
                     <Stack spacing={6}>
                         <DrawerCheckboxGroup filterTitle={FILTER_TITLES.MEAT} items={meats} />
                         <DrawerCheckboxGroup filterTitle={FILTER_TITLES.SIDE} items={sides} />
-                        <AllergenSelect isfromFilter={true} />
+                        <AllergenSelect fromFilter={true} />
                     </Stack>
 
                     <HStack spacing={4} pt={8} pb={8} flexWrap='wrap'>

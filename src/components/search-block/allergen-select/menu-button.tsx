@@ -13,7 +13,7 @@ type SelectMenuButtonProps = {
     handleMenuToggle: () => void;
     setIsOpen: (value: boolean) => void;
     isOpen: boolean;
-    isfromFilter: boolean;
+    fromFilter: boolean;
 };
 
 export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
@@ -22,7 +22,7 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
     handleMenuToggle,
     setIsOpen,
     isOpen,
-    isfromFilter,
+    fromFilter,
 }) => {
     const dispatch = useAppDispatch();
     const clearSelection = (event: React.MouseEvent) => {
@@ -33,8 +33,8 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
 
     return (
         <MenuButton
-            data-test-id={isfromFilter ? 'allergens-menu-button-filter' : 'allergens-menu-button'}
-            w={isfromFilter ? '370px' : '270px'}
+            data-test-id={fromFilter ? 'allergens-menu-button-filter' : 'allergens-menu-button'}
+            w={fromFilter ? '370px' : '270px'}
             h='100%'
             minHeight='40px'
             p={2}
@@ -82,7 +82,7 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
                 </span>
             }
         >
-            <SelectedItems selectedItems={selectedAllergens} isfromFilter={isfromFilter} />
+            <SelectedItems selectedItems={selectedAllergens} fromFilter={fromFilter} />
         </MenuButton>
     );
 };

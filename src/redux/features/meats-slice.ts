@@ -24,14 +24,12 @@ export const meatsSlice = createSlice({
             state.meats = action.payload;
             state.isLoading = false;
         },
-
         toggleMeat(state, action: PayloadAction<string>) {
             state.selectedMeats = toggleItemInArray(state.selectedMeats, action.payload);
         },
         clearSelectedMeats(state) {
             state.selectedMeats = [];
         },
-
         setLoading(state, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;
         },

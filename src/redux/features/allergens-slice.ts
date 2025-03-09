@@ -8,7 +8,7 @@ type AllergensState = {
     allergens: Allergen[];
     selectedAllergens: string[];
     filteredByAllergens: Recipe[];
-    isfromFilter: boolean;
+    fromFilter: boolean;
     isLoading: boolean;
 };
 
@@ -16,7 +16,7 @@ const initialState: AllergensState = {
     allergens: allergens,
     selectedAllergens: [],
     filteredByAllergens: [],
-    isfromFilter: false,
+    fromFilter: false,
     isLoading: false,
 };
 
@@ -55,8 +55,8 @@ export const allergenSlice = createSlice({
         clearFilteredByAllergens(state) {
             state.filteredByAllergens = [];
         },
-        setisfromFilter(state, action: PayloadAction<boolean>) {
-            state.isfromFilter = action.payload;
+        setFromFilter(state, action: PayloadAction<boolean>) {
+            state.fromFilter = action.payload;
         },
         setLoading(state, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;
@@ -66,7 +66,7 @@ export const allergenSlice = createSlice({
         selectAllergens: (state) => state.allergens,
         selectSelectedAllergens: (state) => state.selectedAllergens,
         selectFilteredByAllergens: (state) => state.filteredByAllergens,
-        selectisfromFilter: (state) => state.isfromFilter,
+        selectFromFilter: (state) => state.fromFilter,
         selectIsLoading: (state) => state.isLoading,
     },
 });
@@ -80,7 +80,7 @@ export const {
     setLoading,
     setFilteredByAllergens,
     clearFilteredByAllergens,
-    setisfromFilter,
+    setFromFilter,
 } = allergenSlice.actions;
 
 export const {
@@ -88,7 +88,7 @@ export const {
     selectFilteredByAllergens,
     selectIsLoading,
     selectSelectedAllergens,
-    selectisfromFilter,
+    selectFromFilter,
 } = allergenSlice.selectors;
 
 export const allergenReducer = allergenSlice.reducer;

@@ -10,9 +10,9 @@ import {
 } from '~/redux/features/allergens-slice.ts';
 import { clearSelectedAuthors } from '~/redux/features/authors-slice.ts';
 import { clearSelectedCategories } from '~/redux/features/categories-slice.ts';
-import { openDrawer } from '~/redux/features/drawer.ts';
+import { openDrawer } from '~/redux/features/filter-drawer-slice.js';
 import { clearSelectedMeats } from '~/redux/features/meats-slice.ts';
-import { clearFilteredRecipes } from '~/redux/features/recipies-slice.ts';
+import { clearFilteredRecipes } from '~/redux/features/recipes-slice.ts';
 import {
     selectInputValue,
     selectMatchedRecipes,
@@ -135,7 +135,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({
                     </InputRightElement>
                 </InputGroup>
             </Stack>
-            {!isTablet && <AllergenSelect isfromFilter={false} />}
+            {!isTablet && <AllergenSelect fromFilter={false} />}
         </Stack>
     );
 };

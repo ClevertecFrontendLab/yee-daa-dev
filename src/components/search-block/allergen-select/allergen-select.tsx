@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks'
 import {
     clearSelectedAllergens,
     selectSelectedAllergens,
-    setisfromFilter,
+    setFromFilter,
 } from '~/redux/features/allergens-slice';
 import { setInputValue } from '~/redux/features/search-slice';
 
@@ -13,7 +13,7 @@ import { SelectMenuButton } from './menu-button';
 import { SelectMenuList } from './menu-list';
 import { Switcher } from './switcher';
 
-export const AllergenSelect: FC<{ isfromFilter: boolean }> = ({ isfromFilter }) => {
+export const AllergenSelect: FC<{ fromFilter: boolean }> = ({ fromFilter }) => {
     const dispatch = useAppDispatch();
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
 
@@ -25,7 +25,7 @@ export const AllergenSelect: FC<{ isfromFilter: boolean }> = ({ isfromFilter }) 
     const menuRef = useRef<HTMLDivElement>(null);
 
     const handleMenuToggle = () => {
-        dispatch(setisfromFilter(isfromFilter));
+        dispatch(setFromFilter(fromFilter));
 
         if (isSwitchOn) {
             setIsOpen((prev) => !prev);
@@ -64,14 +64,14 @@ export const AllergenSelect: FC<{ isfromFilter: boolean }> = ({ isfromFilter }) 
         <Stack
             spacing={4}
             direction={{ md: 'column', xl: 'row' }}
-            alignItems={isfromFilter ? 'flex-start' : 'center'}
+            alignItems={fromFilter ? 'flex-start' : 'center'}
             display={{ base: 'none', md: 'flex', xl: 'flex' }}
             flexWrap='wrap'
         >
             <Switcher
                 isSwitchOn={isSwitchOn}
                 handleSwitchChange={handleSwitchChange}
-                isfromFilter={isfromFilter}
+                fromFilter={fromFilter}
             />
             <FormControl ref={menuRef} width='fit-content'>
                 <Menu isLazy={true} matchWidth={true} closeOnSelect={false}>
@@ -81,7 +81,7 @@ export const AllergenSelect: FC<{ isfromFilter: boolean }> = ({ isfromFilter }) 
                         handleMenuToggle={handleMenuToggle}
                         setIsOpen={setIsOpen}
                         isOpen={isOpen}
-                        isfromFilter={isfromFilter}
+                        fromFilter={fromFilter}
                     />
 
                     {isOpen && (

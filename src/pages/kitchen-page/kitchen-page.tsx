@@ -2,7 +2,7 @@ import { FC, Fragment, useEffect, useState } from 'react';
 
 import { BlogSection } from '~/components/blog-section/blog-section.tsx';
 import { Carousel } from '~/components/carousel/carousel.tsx';
-import { FavoritesBlock } from '~/components/favourites-block/favourites-block.tsx';
+import { FavoritesBlock } from '~/components/favorites-block/favorites-block';
 import { KitchenTabs } from '~/components/kitchen-tabs/kitchen-tabs.tsx';
 import { RecipeCardList } from '~/components/recipes-card-list/recipes-card-list.tsx';
 import { RelevantKitchen } from '~/components/relevant-kitchen';
@@ -10,16 +10,16 @@ import { SectionHeader } from '~/components/section-header';
 import { JuiciestRecipesList } from '~/containers/juiciest-recipes-list/juiciest-recipes-list.tsx';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { useDetectParams } from '~/hooks/use-detect-params.ts';
-import { JUICIEST_PAGE_PARAMS } from '~/redux/api/constants.ts';
-import { useGetAllRecipesWithParamsQuery } from '~/redux/api/services/recipes-api/index.ts';
-import { Recipe } from '~/redux/api/types/recipes.ts';
+// import { JUICIEST_PAGE_PARAMS } from '~/redux/api/constants.ts';
+// import { useGetAllRecipesWithParamsQuery } from '~/redux/api/services/recipes-api/index.ts';
+// import { Recipe } from '~/redux/api/types/recipes.ts';
 import {
     selectFilteredByAllergens,
-    selectisfromFilter,
+    selectFromFilter,
     selectSelectedAllergens,
     setFilteredByAllergens,
 } from '~/redux/features/allergens-slice.ts';
-import { selectFilteredRecipes, selectRecipes } from '~/redux/features/recipies-slice.ts';
+import { selectFilteredRecipes, selectRecipes } from '~/redux/features/recipes-slice';
 import {
     selectInputValue,
     selectMatchedRecipes,
@@ -30,7 +30,7 @@ import { PageType } from '~/types/page.ts';
 import { filterRecipes } from '~/utils/filter-recipes.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
-import { filterRecipesByTitle } from './helpers/filter-by-title.ts';
+// import { filterRecipesByTitle } from './helpers/filter-by-title.ts';
 
 type KitchenPageProps = {
     pageType: PageType;
@@ -42,14 +42,14 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const isJuiciestPage = pageType === PageType.Juiciest;
 
     const { selectedCategory } = useDetectParams();
-    const { data: juiciest } = useGetAllRecipesWithParamsQuery(
-        { ...JUICIEST_PAGE_PARAMS, page: 1 },
-        {
-            skip: !isJuiciestPage,
-        },
-    );
+    // const { data: juiciest } = useGetAllRecipesWithParamsQuery(
+    //     { ...JUICIEST_PAGE_PARAMS, page: 1 },
+    //     {
+    //         skip: !isJuiciestPage,
+    //     },
+    // );
 
-    const recipesJuiciestPage = juiciest?.data;
+    // const recipesJuiciestPage = juiciest?.data;
 
     const dispatch = useAppDispatch();
     const recipes = useAppSelector(selectRecipes);
@@ -58,32 +58,33 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
     const filteredByAllergens = useAppSelector(selectFilteredByAllergens);
     const filteredRecipes = useAppSelector(selectFilteredRecipes);
-    const isfromFilter = useAppSelector(selectisfromFilter);
+    const fromFilter = useAppSelector(selectFromFilter);
 
     const [startSearch, setStartSearch] = useState(false);
     const searchValue = useAppSelector(selectInputValue);
 
-    const searchRecipes: Record<PageType, Recipe[]> = {
-        main: recipes,
-        juiciest: recipesJuiciestPage!,
-        category: [],
-    };
+    // const searchRecipes: Record<PageType, Recipe[]> = {
+    //     main: recipes,
+    //     juiciest: recipesJuiciestPage!,
+    //     category: [],
+    // };
 
     // TODO перенести логику серча в компоненту поиска и закрепить за запросом
     const handleSearch = (inputValue: string) => {
-        setStartSearch(true);
+        console.log('SEARCH_CHANGED', inputValue);
+        // setStartSearch(true);
 
-        let nameFiltered: Recipe[] | undefined;
+        // let nameFiltered: Recipe[] | undefined;
 
-        if (filteredRecipes.length) {
-            nameFiltered = filterRecipesByTitle(filteredRecipes, inputValue);
-        } else if (filteredByAllergens.length) {
-            nameFiltered = filterRecipesByTitle(filteredByAllergens, inputValue);
-        } else {
-            nameFiltered = filterRecipesByTitle(searchRecipes[pageType] || [], inputValue);
-        }
+        // if (filteredRecipes.length) {
+        //     nameFiltered = filterRecipesByTitle(filteredRecipes, inputValue);
+        // } else if (filteredByAllergens.length) {
+        //     nameFiltered = filterRecipesByTitle(filteredByAllergens, inputValue);
+        // } else {
+        //     nameFiltered = filterRecipesByTitle(searchRecipes[pageType] || [], inputValue);
+        // }
 
-        dispatch(setMatchedRecipes(nameFiltered));
+        // dispatch(setMatchedRecipes(nameFiltered));
     };
 
     useEffect(() => {
@@ -102,7 +103,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
         const recipesToFilter =
             (filteredRecipes.length && filteredRecipes) || (recipes.length && recipes) || [];
 
-        if (selectedAllergens.length && !isfromFilter) {
+        if (selectedAllergens.length && !fromFilter) {
             const getAllergensRecipes = () => filterRecipes(recipesToFilter, selectedAllergens);
 
             const allergensRecipes = getAllergensRecipes();
@@ -123,13 +124,13 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
             )}
             {!startSearch && (
                 <Fragment key='search-filter-page-flow'>
-                    {isfromFilter && isArrayWithItems(filteredRecipes) && (
+                    {fromFilter && isArrayWithItems(filteredRecipes) && (
                         <RecipeCardList recipeList={filteredRecipes} />
                     )}
-                    {!isfromFilter && isArrayWithItems(filteredByAllergens) && (
+                    {!fromFilter && isArrayWithItems(filteredByAllergens) && (
                         <RecipeCardList recipeList={filteredByAllergens} />
                     )}
-                    {!isfromFilter &&
+                    {!fromFilter &&
                         !isArrayWithItems(filteredByAllergens) &&
                         isArrayWithItems(filteredRecipes) && (
                             <RecipeCardList recipeList={filteredRecipes} />

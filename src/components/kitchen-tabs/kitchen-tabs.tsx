@@ -13,11 +13,7 @@ import { RecipeCardList } from '../recipes-card-list/recipes-card-list';
 
 const KITCHEN_TABS_RECIPE_LIMIT = 8;
 
-type KitchenTabsProps = {
-    //
-};
-
-export const KitchenTabs: FC<KitchenTabsProps> = () => {
+export const KitchenTabs: FC = () => {
     const navigate = useNavigate();
     const { selectedCategory, selectedSubCategory } = useDetectParams();
 

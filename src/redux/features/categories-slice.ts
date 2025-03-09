@@ -7,9 +7,9 @@ import { toggleItemInArray } from '~/utils/toggle-items';
 import { Category, SubCategory } from '../api/types/categories';
 
 type CategoriesState = {
-    menu: Category[];
+    categories: Category[];
     subCategories: SubCategory[];
-    selectedCategories: string[];
+    selectedSubCategoriesIds: string[];
     isLoading: boolean;
 };
 
@@ -17,9 +17,9 @@ const initCategories = getDataFromLocalStorage(LOCALSTORAGE_KEYS.CATEGORIES) as 
 const initSubCategories = getDataFromLocalStorage(LOCALSTORAGE_KEYS.SUBCATEGORIES) as SubCategory[];
 
 const initialState: CategoriesState = {
-    menu: isArrayWithItems(initCategories) ? initCategories : [],
+    categories: isArrayWithItems(initCategories) ? initCategories : [],
     subCategories: isArrayWithItems(initSubCategories) ? initSubCategories : [],
-    selectedCategories: [],
+    selectedSubCategoriesIds: [],
     isLoading: false,
 };
 
@@ -28,16 +28,19 @@ export const categoriesSlice = createSlice({
     initialState,
     reducers: {
         setCategories(state, { payload }: PayloadAction<Category[]>) {
-            state.menu = payload;
+            state.categories = payload;
         },
         setSubCategories(state, { payload }: PayloadAction<SubCategory[]>) {
             state.subCategories = payload;
         },
         toggleCategory(state, { payload }: PayloadAction<string>) {
-            state.selectedCategories = toggleItemInArray(state.selectedCategories, payload);
+            state.selectedSubCategoriesIds = toggleItemInArray(
+                state.selectedSubCategoriesIds,
+                payload,
+            );
         },
         clearSelectedCategories(state) {
-            state.selectedCategories = [];
+            state.selectedSubCategoriesIds = [];
         },
         setLoading(state, { payload }: PayloadAction<boolean>) {
             state.isLoading = payload;
@@ -48,8 +51,8 @@ export const categoriesSlice = createSlice({
     },
     selectors: {
         selectCategoriesLoading: (state) => state.isLoading,
-        selectCategoriesMenu: (state) => state.menu,
-        selectSelectedCategories: (state) => state.selectedCategories,
+        selectCategoriesMenu: (state) => state.categories,
+        selectSelectedCategories: (state) => state.selectedSubCategoriesIds,
         selectSubCategories: (state) => state.subCategories,
     },
 });

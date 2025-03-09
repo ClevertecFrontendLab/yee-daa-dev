@@ -10,7 +10,7 @@ import {
     clearSelectedAllergens,
     setFilteredByAllergens,
 } from '~/redux/features/allergens-slice.ts';
-import { clearFilteredRecipes } from '~/redux/features/recipies-slice.ts';
+import { clearFilteredRecipes } from '~/redux/features/recipes-slice.ts';
 import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
