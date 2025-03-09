@@ -25,9 +25,15 @@ body,
     padding: 0;
     box-sizing: border-box;
     scroll-behavior: smooth;
-    font-feature-settings: 'clig' off, 'liga' off;
+    font-feature-settings:
+        'clig' off,
+        'liga' off;
 }
 
 .no-scroll {
     overflow-y: hidden;
+}
+
+.chakra-alert[data-status='error'] {
+    --alert-bg: var(--chakra-colors-red-500);
 }

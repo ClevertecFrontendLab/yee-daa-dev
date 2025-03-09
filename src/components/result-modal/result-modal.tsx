@@ -15,7 +15,7 @@ import { ModalCloseIcon } from '../modal-close-icon/modal-close-icon';
 
 type ResultModalProps = PropsWithChildren &
     ModalProps & {
-        title?: ReactNode;
+        title?: ReactNode | ReactNode[];
         imageUrl?: string;
     };
 
@@ -50,7 +50,12 @@ export const ResultModal: FC<ResultModalProps> = ({
                     <Stack align='center' gap={8}>
                         {imageUrl && <Image src={imageUrl} alt='breakfast' />}
                         {title && (
-                            <Heading as='h2' fontSize='xl' textAlign='center'>
+                            <Heading
+                                as='h2'
+                                fontSize='xl'
+                                textAlign='center'
+                                flexDirection='column'
+                            >
                                 {title}
                             </Heading>
                         )}

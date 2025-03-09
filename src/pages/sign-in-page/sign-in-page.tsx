@@ -12,7 +12,7 @@ import {
     useDisclosure,
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { NavLink } from 'react-router';
 
@@ -21,10 +21,16 @@ import { SignInSchema } from './constants/sign-in-form';
 import { Label } from './label';
 import { SignInForm } from './types/sign-in-form';
 
+import { TOAST_MESSAGE } from '~/constants/toast';
+import { useAuthToast } from '~/hooks/use-auth-toast';
+
+const { signInError } = TOAST_MESSAGE;
+
 const SignInPage: FC = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
 
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const { toast } = useAuthToast();
 
     const {
         register,
@@ -41,6 +47,12 @@ const SignInPage: FC = () => {
         console.log(data);
         onOpen();
     };
+
+    useEffect(() => {
+        if (!toast.isActive(signInError.id)) {
+            toast(signInError);
+        }
+    }, []);
 
     return (
         <>

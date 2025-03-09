@@ -1,4 +1,4 @@
-import { Box, Heading, Progress } from '@chakra-ui/react';
+import { Box, Heading, Progress, useDisclosure } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -7,12 +7,20 @@ import { SignUpSchema, SignUpStep, SignUpStepComponent } from './constants/sign-
 import { SignUpPropgessLabel } from './label';
 import styles from './sign-up-page.module.css';
 import { SignUpForm } from './types/sign-up-form';
+import { SignUpSuccessModal } from './components/sign-up-success-modal/sign-up-success-modal';
+
+import { useAuthToast } from '~/hooks/use-auth-toast';
+import { TOAST_MESSAGE } from '~/constants/toast';
+
+const { signUpError } = TOAST_MESSAGE;
 
 const SignUpPage: FC = () => {
     const [step, setStep] = useState(SignUpStep.PersonalInfo);
 
     const StepComponent = SignUpStepComponent[step];
 
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { toast } = useAuthToast();
     const registrationForm = useForm<SignUpForm>({
         mode: 'onChange',
         resolver: yupResolver<SignUpForm>(SignUpSchema[step]),
@@ -35,8 +43,15 @@ const SignUpPage: FC = () => {
     const onSubmit: Parameters<typeof handleSubmit>[0] = (data) => {
         if (step === SignUpStep.PersonalInfo) {
             setStep(SignUpStep.Credentials);
+
+            return;
         }
 
+        if (!toast.isActive(signUpError.id)) {
+            toast(signUpError);
+        }
+
+        onOpen();
         console.log(data);
     };
     return (
@@ -56,6 +71,8 @@ const SignUpPage: FC = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <StepComponent form={registrationForm} {...{ changeStep }} />
             </form>
+
+            <SignUpSuccessModal email={watchFields.email} {...{ isOpen, onClose }} />
         </Box>
     );
 };
