@@ -10,6 +10,7 @@ type CategoriesState = {
     categories: Category[];
     subCategories: SubCategory[];
     selectedSubCategoriesIds: string[];
+    selectedCategories: string[];
     isLoading: boolean;
 };
 
@@ -20,6 +21,7 @@ const initialState: CategoriesState = {
     categories: isArrayWithItems(initCategories) ? initCategories : [],
     subCategories: isArrayWithItems(initSubCategories) ? initSubCategories : [],
     selectedSubCategoriesIds: [],
+    selectedCategories: [],
     isLoading: false,
 };
 
@@ -34,16 +36,26 @@ export const categoriesSlice = createSlice({
             state.subCategories = payload;
         },
         toggleCategory(state, { payload }: PayloadAction<string>) {
-            state.selectedSubCategoriesIds = toggleItemInArray(
-                state.selectedSubCategoriesIds,
-                payload,
-            );
+            state.selectedCategories = toggleItemInArray(state.selectedCategories, payload);
         },
-        clearSelectedCategories(state) {
-            state.selectedSubCategoriesIds = [];
+        updateSelectedSubCategoriesIds(state) {
+            const currSelectedCategories = state.categories;
+
+            const foundSubCategories = currSelectedCategories.reduce<string[]>((_, curr) => {
+                const { subCategories } = curr;
+                return subCategories.map((elem) => elem.id);
+            }, []);
+
+            const uniqueFoundSubCategories = Array.from(new Set(foundSubCategories));
+
+            state.selectedSubCategoriesIds = uniqueFoundSubCategories;
         },
         setLoading(state, { payload }: PayloadAction<boolean>) {
             state.isLoading = payload;
+        },
+        resetSelectedCategories(state) {
+            state.selectedCategories = [];
+            state.selectedSubCategoriesIds = [];
         },
         resetToInit() {
             return initialState;
@@ -52,7 +64,8 @@ export const categoriesSlice = createSlice({
     selectors: {
         selectCategoriesLoading: (state) => state.isLoading,
         selectCategoriesMenu: (state) => state.categories,
-        selectSelectedCategories: (state) => state.selectedSubCategoriesIds,
+        selectSelectedCategories: (state) => state.selectedCategories,
+        selectSelectedSubCategoriesIds: (state) => state.selectedSubCategoriesIds,
         selectSubCategories: (state) => state.subCategories,
     },
 });
@@ -62,10 +75,11 @@ export const categoriesReducer = categoriesSlice.reducer;
 export const {
     setCategories,
     toggleCategory,
-    clearSelectedCategories,
+    resetSelectedCategories,
     setLoading,
     setSubCategories,
     resetToInit,
+    updateSelectedSubCategoriesIds,
 } = categoriesSlice.actions;
 
 export const {
@@ -73,4 +87,5 @@ export const {
     selectCategoriesMenu,
     selectSelectedCategories,
     selectSubCategories,
+    selectSelectedSubCategoriesIds,
 } = categoriesSlice.selectors;

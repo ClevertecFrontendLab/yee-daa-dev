@@ -13,7 +13,7 @@ import { FILTER_TITLES } from '~/constants/filters';
 import { useAppDispatch } from '~/hooks/typed-react-redux-hooks';
 import { useSelectedItems } from '~/hooks/use-selected-items';
 import { toggleAuthor } from '~/redux/features/authors-slice';
-import { toggleCategory } from '~/redux/features/categories-slice';
+import { toggleCategory, updateSelectedSubCategoriesIds } from '~/redux/features/categories-slice';
 import { MenuItem } from '~/types/category';
 import { FoodItem } from '~/types/food-item';
 import { UserProps } from '~/types/user';
@@ -86,6 +86,7 @@ export const DrawerMenu: FC<MenuItemProps> = ({ items, filterTitle }) => {
                     const handleCheckboxChange = () => {
                         if (filterTitle === FILTER_TITLES.CATEGORY) {
                             dispatch(toggleCategory(itemKey));
+                            dispatch(updateSelectedSubCategoriesIds());
                         }
                         if (filterTitle === FILTER_TITLES.AUTHOR_SEARCH) {
                             dispatch(toggleAuthor(itemKey));

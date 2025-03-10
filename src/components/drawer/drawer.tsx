@@ -21,6 +21,7 @@ import {
     selectCategoriesMenu,
     selectSelectedCategories,
     toggleCategory,
+    updateSelectedSubCategoriesIds,
 } from '~/redux/features/categories-slice';
 import { closeDrawer, selectDrawer } from '~/redux/features/filter-drawer-slice';
 import { selectMeats, selectSelectedMeats, toggleMeat } from '~/redux/features/meats-slice';
@@ -82,7 +83,10 @@ export const FilterDrawer = () => {
     const actionMapper = {
         [TagType.CATEGORY]: (tag: string) => {
             const englishValue = getEnglishMenuItem(tag, allCategories);
-            if (englishValue) dispatch(toggleCategory(englishValue));
+            if (englishValue) {
+                dispatch(toggleCategory(englishValue));
+                dispatch(updateSelectedSubCategoriesIds());
+            }
         },
         [TagType.AUTHOR]: (tag: string) => {
             const englishValue = getEnglishAuthor(tag, authors);

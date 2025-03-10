@@ -14,8 +14,8 @@ import { recipesReducer, recipesSlice } from './features/recipes-slice';
 import { searchReducer, searchSlice } from './features/search-slice';
 import { sidesReducer, sidesSlice } from './features/sides-slice';
 
-// по дефолту при старте приложения yarn start vite по дефолту устанавливает MODE: 'development'
-// переменные доступны из файла .env.development
+// по дефолту при старте приложения yarn start vite по устанавливает MODE: 'development'
+// переменные доступны из файла .env.development - чтобы reduxDevTools работал
 
 const isDevMode = import.meta.env.MODE === 'development';
 
@@ -38,9 +38,9 @@ export const store = configureStore({
     reducer: combinedReducer,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
+            appErrorMiddleware,
             categoryApi.middleware,
             recipeApi.middleware,
-            appErrorMiddleware,
         ),
     devTools: isDevMode,
 });

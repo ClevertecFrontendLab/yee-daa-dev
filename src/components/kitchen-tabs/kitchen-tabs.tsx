@@ -63,7 +63,7 @@ export const KitchenTabs: FC = () => {
 
     return (
         <>
-            {isFetching && <AppLoader isOpen={true} />}
+            {isFetching && <AppLoader isOpen={true} overlayColor='transparent' />}
             <Tabs mb={{ base: 8, md: 10 }} index={selectedTabIndex} onChange={handleTabChange}>
                 <Box
                     ml='auto'

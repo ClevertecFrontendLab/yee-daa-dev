@@ -67,6 +67,6 @@ export type SearchParams = {
     searchString: string;
 };
 
-export type AllRecipeParams = Partial<PaginationParams & FilterParams & SortParams>;
+export type AllRecipeParams = Partial<PaginationParams & FilterParams & SortParams & SearchParams>;
 
 export type RecipesByCategoryIdArgs = { id: string } & Partial<PaginationParams & SearchParams>;

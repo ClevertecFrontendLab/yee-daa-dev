@@ -1,27 +1,35 @@
 import { Button, DrawerFooter } from '@chakra-ui/react';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
-import { clearSelectedAllergens, selectSelectedAllergens } from '~/redux/features/allergens-slice';
-import { clearSelectedAuthors, selectSelectedAuthors } from '~/redux/features/authors-slice';
+import { useClearFiltersWithSearch } from '~/hooks/use-clear-filters-with-search';
+import { useLazyGetAllRecipesMergeQuery } from '~/redux/api/services/recipes-api';
+import { selectSelectedAllergens } from '~/redux/features/allergens-slice';
+import { selectSelectedAuthors } from '~/redux/features/authors-slice';
 import {
-    clearSelectedCategories,
     selectSelectedCategories,
+    selectSelectedSubCategoriesIds,
 } from '~/redux/features/categories-slice';
 import { closeDrawer, setIsFiltering } from '~/redux/features/filter-drawer-slice';
-import { clearSelectedMeats, selectSelectedMeats } from '~/redux/features/meats-slice';
-import { clearSelectedSides, selectSelectedSides } from '~/redux/features/sides-slice';
+import { selectSelectedMeats } from '~/redux/features/meats-slice';
+import { selectInputValue } from '~/redux/features/search-slice';
+import { selectSelectedSides } from '~/redux/features/sides-slice';
 
 import styles from './drawer.module.css';
+import { getRequestParams } from './helpers/get-request-params';
 import { isButtonDisabled } from './helpers/is-button-disabled';
 
 export const FilterDrawerFooter = () => {
     const dispatch = useAppDispatch();
+    const { clearDrawerFilters } = useClearFiltersWithSearch();
+    const [fetchRecipes, { isFetching }] = useLazyGetAllRecipesMergeQuery();
 
     const selectedCategories = useAppSelector(selectSelectedCategories);
     const selectedAuthors = useAppSelector(selectSelectedAuthors);
     const selectedMeats = useAppSelector(selectSelectedMeats);
     const selectedSides = useAppSelector(selectSelectedSides);
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
+    const selectedSubCategories = useAppSelector(selectSelectedSubCategoriesIds);
+    const searchInput = useAppSelector(selectInputValue);
 
     const disabled = isButtonDisabled(
         selectedCategories,
@@ -31,16 +39,20 @@ export const FilterDrawerFooter = () => {
         selectedAllergens,
     );
 
-    const clearFilters = () => {
-        dispatch(clearSelectedAuthors());
-        dispatch(clearSelectedCategories());
-        dispatch(clearSelectedMeats());
-        dispatch(clearSelectedSides());
-        dispatch(clearSelectedAllergens());
-    };
+    const clearFilters = () => clearDrawerFilters();
 
     const findRecipes = async () => {
+        const requestParams = getRequestParams({
+            allergens: selectedAllergens,
+            meats: selectedMeats,
+            sides: selectedSides,
+            subCategories: selectedSubCategories,
+            searchInput,
+        });
+
         dispatch(setIsFiltering(true));
+        await fetchRecipes(requestParams);
+
         dispatch(closeDrawer());
     };
 
@@ -60,6 +72,8 @@ export const FilterDrawerFooter = () => {
                 bg='black'
                 color='white'
                 onClick={findRecipes}
+                isLoading={isFetching}
+                loadingText='Ищем рецепты...'
                 size='lg'
                 sx={{
                     pointerEvents: disabled ? 'none' : 'auto',
