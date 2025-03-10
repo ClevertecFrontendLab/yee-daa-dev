@@ -31,7 +31,7 @@ export const Carousel = () => {
                 modules={[Navigation]}
                 navigation={false}
                 spaceBetween={12}
-                slidesPerView={2}
+                slidesPerView={1}
                 loop={true}
                 grabCursor={true}
                 breakpoints={{

@@ -132,6 +132,24 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
             {startSearch && matchedRecipes.length > 0 && (
                 <RecipeCardList recipeList={matchedRecipes} />
             )}
+
+            {startSearch && !matchedRecipes.length && (
+                <>
+                    {isCategoryPage && <KitchenTabs recipeList={categoryRecipes} />}
+                    {isJuiciestPage && (
+                        <SectionBox>
+                            <RecipeCardList recipeList={favouritesRecipes} />
+                        </SectionBox>
+                    )}
+                    {(isMainPage || !selectedCategory) && (
+                        <>
+                            <Carousel />
+                            <FavouritesBlock />
+                            <BlogSection />
+                        </>
+                    )}
+                </>
+            )}
             {!startSearch && (
                 <>
                     {isfromFilter && filteredRecipes.length > 0 && (
