@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { clearFilteredByAllergens, clearSelectedAllergens } from '~/redux/features/allergens-slice';
+import { clearSelectedAllergens } from '~/redux/features/allergens-slice';
 import { clearSelectedAuthors } from '~/redux/features/authors-slice';
 import { resetSelectedCategories } from '~/redux/features/categories-slice';
 import { clearSelectedMeats } from '~/redux/features/meats-slice';
@@ -24,7 +24,6 @@ export const useClearFiltersWithSearch = () => {
     const clearSearchInputBlock = useCallback(() => {
         dispatch(setInputValue(''));
         dispatch(clearFilteredRecipes());
-        dispatch(clearFilteredByAllergens());
         dispatch(resetSelectedCategories());
     }, [dispatch]);
 

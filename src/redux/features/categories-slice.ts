@@ -11,7 +11,6 @@ type CategoriesState = {
     subCategories: SubCategory[];
     selectedSubCategoriesIds: string[];
     selectedCategories: string[];
-    isLoading: boolean;
 };
 
 const initCategories = getDataFromLocalStorage(LOCALSTORAGE_KEYS.CATEGORIES) as Category[];
@@ -22,7 +21,6 @@ const initialState: CategoriesState = {
     subCategories: isArrayWithItems(initSubCategories) ? initSubCategories : [],
     selectedSubCategoriesIds: [],
     selectedCategories: [],
-    isLoading: false,
 };
 
 export const categoriesSlice = createSlice({
@@ -50,9 +48,6 @@ export const categoriesSlice = createSlice({
 
             state.selectedSubCategoriesIds = uniqueFoundSubCategories;
         },
-        setLoading(state, { payload }: PayloadAction<boolean>) {
-            state.isLoading = payload;
-        },
         resetSelectedCategories(state) {
             state.selectedCategories = [];
             state.selectedSubCategoriesIds = [];
@@ -62,7 +57,6 @@ export const categoriesSlice = createSlice({
         },
     },
     selectors: {
-        selectCategoriesLoading: (state) => state.isLoading,
         selectCategoriesMenu: (state) => state.categories,
         selectSelectedCategories: (state) => state.selectedCategories,
         selectSelectedSubCategoriesIds: (state) => state.selectedSubCategoriesIds,
@@ -76,14 +70,12 @@ export const {
     setCategories,
     toggleCategory,
     resetSelectedCategories,
-    setLoading,
     setSubCategories,
     resetToInit,
     updateSelectedSubCategoriesIds,
 } = categoriesSlice.actions;
 
 export const {
-    selectCategoriesLoading,
     selectCategoriesMenu,
     selectSelectedCategories,
     selectSubCategories,

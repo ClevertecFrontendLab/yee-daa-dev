@@ -1,4 +1,4 @@
-import { FC, Fragment, useState } from 'react';
+import { FC, Fragment, useEffect, useState } from 'react';
 
 import { BlogSection } from '~/components/blog-section/blog-section.tsx';
 import { Carousel } from '~/components/carousel/carousel.tsx';
@@ -63,6 +63,13 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
         setCurrentPage((prev) => prev + 1);
         refetch();
     };
+
+    useEffect(
+        () => () => {
+            console.log('CLEAN_UNMOUNT');
+        },
+        [],
+    );
 
     const isFilteredRecipesShowed = isArrayWithItems(filteredRecipes);
 

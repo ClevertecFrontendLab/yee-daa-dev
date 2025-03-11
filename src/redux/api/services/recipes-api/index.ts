@@ -19,7 +19,6 @@ import { transformBaseErrorResponse } from '~/redux/api/utils/transform-base-err
 import {
     setFilteredRecipes,
     setIsFilterError,
-    setIsFilterLoading,
     setShowedEmptyText,
 } from '~/redux/features/recipes-slice';
 import { AppState } from '~/types/store';
@@ -72,7 +71,6 @@ export const recipeApi = createApi({
                 // для отлова именно запроса из дровера или серч инпута
                 if (!isFiltering) return;
 
-                dispatch(setIsFilterLoading(true));
                 dispatch(setIsFilterError(false));
                 dispatch(setShowedEmptyText(false));
 
@@ -82,17 +80,11 @@ export const recipeApi = createApi({
                         dispatch(setFilteredRecipes(data.data));
                         dispatch(setShowedEmptyText(!data.data.length));
                     }
-
-                    dispatch(setIsFilterLoading(false));
                 } catch (error) {
                     dispatch(setIsFilterError(true));
-                    dispatch(setIsFilterLoading(false));
                 }
             },
-            serializeQueryArgs: ({ endpointName }) => {
-                console.log(endpointName);
-                return endpointName;
-            },
+            serializeQueryArgs: ({ endpointName }) => endpointName,
             merge: (currentCacheData, responseData, otherArgs) => {
                 const {
                     arg: { page },

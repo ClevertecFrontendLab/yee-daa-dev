@@ -7,13 +7,11 @@ import { toggleItemInArray } from '~/utils/toggle-items';
 type SidesState = {
     sides: FoodItem[];
     selectedSides: string[];
-    isLoading: boolean;
 };
 
 const initialState: SidesState = {
     sides: sides,
     selectedSides: [],
-    isLoading: false,
 };
 
 export const sidesSlice = createSlice({
@@ -22,7 +20,6 @@ export const sidesSlice = createSlice({
     reducers: {
         setSides(state, action: PayloadAction<FoodItem[]>) {
             state.sides = action.payload;
-            state.isLoading = false;
         },
 
         toggleSide(state, action: PayloadAction<string>) {
@@ -31,20 +28,15 @@ export const sidesSlice = createSlice({
         clearSelectedSides(state) {
             state.selectedSides = [];
         },
-
-        setLoading(state, action: PayloadAction<boolean>) {
-            state.isLoading = action.payload;
-        },
     },
     selectors: {
         selectSides: (state) => state.sides,
         selectSelectedSides: (state) => state.selectedSides,
-        selectIsLoading: (state) => state.isLoading,
     },
 });
 
-export const { selectIsLoading, selectSelectedSides, selectSides } = sidesSlice.selectors;
+export const { selectSelectedSides, selectSides } = sidesSlice.selectors;
 
-export const { setSides, toggleSide, setLoading, clearSelectedSides } = sidesSlice.actions;
+export const { setSides, toggleSide, clearSelectedSides } = sidesSlice.actions;
 
 export const sidesReducer = sidesSlice.reducer;
