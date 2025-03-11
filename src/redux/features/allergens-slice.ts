@@ -8,6 +8,7 @@ type AllergensState = {
     allergens: Allergen[];
     selectedAllergens: string[];
     filteredByAllergens: Recipe[];
+    switcherState: boolean;
     fromFilter: boolean;
     isLoading: boolean;
 };
@@ -16,6 +17,7 @@ const initialState: AllergensState = {
     allergens: allergens,
     selectedAllergens: [],
     filteredByAllergens: [],
+    switcherState: false,
     fromFilter: false,
     isLoading: false,
 };
@@ -61,6 +63,10 @@ export const allergenSlice = createSlice({
         setLoading(state, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;
         },
+        toggleSwitcher: (state) => {
+            state.switcherState = !state.switcherState;
+        },
+        resetAllergenSlice: () => initialState,
     },
     selectors: {
         selectAllergens: (state) => state.allergens,
@@ -68,6 +74,7 @@ export const allergenSlice = createSlice({
         selectFilteredByAllergens: (state) => state.filteredByAllergens,
         selectFromFilter: (state) => state.fromFilter,
         selectIsLoading: (state) => state.isLoading,
+        selectSwitcherState: (state) => state.switcherState,
     },
 });
 
@@ -81,6 +88,8 @@ export const {
     setFilteredByAllergens,
     clearFilteredByAllergens,
     setFromFilter,
+    toggleSwitcher,
+    resetAllergenSlice,
 } = allergenSlice.actions;
 
 export const {
@@ -89,6 +98,7 @@ export const {
     selectIsLoading,
     selectSelectedAllergens,
     selectFromFilter,
+    selectSwitcherState,
 } = allergenSlice.selectors;
 
 export const allergenReducer = allergenSlice.reducer;

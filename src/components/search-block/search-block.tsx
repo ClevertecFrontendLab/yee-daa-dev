@@ -1,55 +1,62 @@
 import { IconButton, InputGroup, InputRightElement, SearchIcon, Stack } from '@chakra-ui/icons';
-import { Input } from '@chakra-ui/react';
+import { Flex, Input } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
 import { useIsTablet } from '~/hooks/media-query.ts';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
-import {
-    clearFilteredByAllergens,
-    clearSelectedAllergens,
-} from '~/redux/features/allergens-slice.ts';
-import { clearSelectedAuthors } from '~/redux/features/authors-slice.ts';
-import { clearSelectedCategories } from '~/redux/features/categories-slice.ts';
-import { openDrawer } from '~/redux/features/filter-drawer-slice.js';
-import { clearSelectedMeats } from '~/redux/features/meats-slice.ts';
-import { clearFilteredRecipes } from '~/redux/features/recipes-slice.ts';
-import {
-    selectInputValue,
-    selectMatchedRecipes,
-    setInputValue,
-} from '~/redux/features/search-slice.ts';
-import { clearSelectedSides } from '~/redux/features/sides-slice.ts';
+import { useLazyGetAllRecipesMergeQuery } from '~/redux/api/services/recipes-api/index.ts';
+import { selectSelectedAllergens } from '~/redux/features/allergens-slice.ts';
+import { selectSelectedSubCategoriesIds } from '~/redux/features/categories-slice.ts';
+import { openDrawer, setIsFiltering } from '~/redux/features/filter-drawer-slice.js';
+import { selectSelectedMeats } from '~/redux/features/meats-slice.ts';
+import { selectFilteredRecipes, selectShowEmptyText } from '~/redux/features/recipes-slice.ts';
+import { selectInputValue, setInputValue } from '~/redux/features/search-slice.ts';
+import { selectSelectedSides } from '~/redux/features/sides-slice.ts';
+import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
+import { getRequestParams } from '../drawer/helpers/get-request-params.ts';
 import { FilterIcon } from '../icons/filter-icon.tsx';
+import { Loader } from '../loader/loader.tsx';
 import { AllergenSelect } from './allergen-select/allergen-select.tsx';
 import { getBorderColor } from './allergen-select/helpers/get-border-color.ts';
 
 type SearchBlockProps = {
     onInputFocus: () => void;
     onInputBlur: () => void;
-    onSearch: (inputValue: string) => void;
-    startSearch?: boolean;
+    onSearchCb: () => void;
 };
 
-const maxSearchLength = 3;
+const MIN_SEARCH_LENGTH = 3;
 
-export const SearchBlock: FC<SearchBlockProps> = ({
-    onInputFocus,
-    onInputBlur,
-    onSearch,
-    startSearch,
-}) => {
+export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, onSearchCb }) => {
     const dispatch = useAppDispatch();
     const inputValue = useAppSelector(selectInputValue);
-    const matchedRecipes = useAppSelector(selectMatchedRecipes);
+    const recipes = useAppSelector(selectFilteredRecipes);
+
+    const selectedMeats = useAppSelector(selectSelectedMeats);
+    const selectedSides = useAppSelector(selectSelectedSides);
+    const selectedAllergens = useAppSelector(selectSelectedAllergens);
+    const selectedSubCategories = useAppSelector(selectSelectedSubCategoriesIds);
+    const isEmptyTextShowed = useAppSelector(selectShowEmptyText);
+
+    const [fetchRecipes, { isFetching }] = useLazyGetAllRecipesMergeQuery();
 
     const isTablet = useIsTablet();
     const [isFocused, setIsFocused] = useState(false);
 
-    const isButtonDisabled = inputValue.length < maxSearchLength;
+    const isButtonDisabled = inputValue.length < MIN_SEARCH_LENGTH;
 
-    const handleSearchClick = () => {
-        onSearch(inputValue);
+    const handleSearchClick = async () => {
+        onSearchCb();
+        dispatch(setIsFiltering(true));
+        const requestParams = getRequestParams({
+            allergens: selectedAllergens,
+            meats: selectedMeats,
+            searchInput: inputValue,
+            sides: selectedSides,
+            subCategories: selectedSubCategories,
+        });
+        await fetchRecipes(requestParams);
         setIsFocused(false);
     };
 
@@ -69,23 +76,23 @@ export const SearchBlock: FC<SearchBlockProps> = ({
         }
     };
 
-    const handleDrawerClick = () => {
-        dispatch(setInputValue(''));
-        dispatch(clearSelectedAllergens());
-        dispatch(clearFilteredRecipes());
-        dispatch(clearFilteredByAllergens());
-        dispatch(clearSelectedAuthors());
-        dispatch(clearSelectedCategories());
-        dispatch(clearSelectedMeats());
-        dispatch(clearSelectedSides());
+    const handleDrawerClick = () => dispatch(openDrawer());
 
-        dispatch(openDrawer());
-    };
+    const isSearchEmpty = !isArrayWithItems(recipes) && isEmptyTextShowed;
 
-    const isSearchEmpty = startSearch && !matchedRecipes.length;
-
-    return (
-        <Stack spacing={4} maxWidth={{ base: '100%', sm: '520px' }} ml='auto' mr='auto' pb={8}>
+    return isFetching ? (
+        <Flex alignItems='center' justifyContent='center' w='100%'>
+            <Loader boxSize='134px' m='auto' />
+        </Flex>
+    ) : (
+        <Stack
+            spacing={4}
+            maxWidth={{ base: '100%', sm: '520px' }}
+            ml='auto'
+            mr='auto'
+            pb={8}
+            alignItems={isFetching ? 'center' : undefined}
+        >
             <Stack direction='row' spacing={3}>
                 <IconButton
                     data-test-id='filter-button'

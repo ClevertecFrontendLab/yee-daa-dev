@@ -16,8 +16,12 @@ import {
 } from '~/redux/api/types/recipes';
 import { replaceUnderscoreId } from '~/redux/api/utils/replace-underscore-id';
 import { transformBaseErrorResponse } from '~/redux/api/utils/transform-base-error-response';
-import { setIsFiltering } from '~/redux/features/filter-drawer-slice';
-import { setFilteredRecipes, setIsFilterError } from '~/redux/features/recipes-slice';
+import {
+    setFilteredRecipes,
+    setIsFilterError,
+    setIsFilterLoading,
+    setShowedEmptyText,
+} from '~/redux/features/recipes-slice';
 import { AppState } from '~/types/store';
 
 export const recipeApi = createApi({
@@ -55,7 +59,7 @@ export const recipeApi = createApi({
             }),
             transformErrorResponse: transformBaseErrorResponse,
         }),
-        // старая версия - как в РТК можно сделать инфинит запрос - сделано, т.к. в инфинит нет lazy query
+        // старая версия - как в РТК можно сделать инфинит запрос - сделано, т.к. в инфинит нет lazy query - пока для фильрации и поиска больше подходит
         getAllRecipesMerge: build.query<RecipesResponseWithMeta, AllRecipeParams>({
             query: (params) => ({
                 url: ApiEndpoints.Recipe,
@@ -67,17 +71,22 @@ export const recipeApi = createApi({
                 } = getState() as AppState;
                 // для отлова именно запроса из дровера или серч инпута
                 if (!isFiltering) return;
+
+                dispatch(setIsFilterLoading(true));
                 dispatch(setIsFilterError(false));
+                dispatch(setShowedEmptyText(false));
+
                 try {
                     const { data } = await queryFulfilled;
                     if (Array.isArray(data?.data)) {
                         dispatch(setFilteredRecipes(data.data));
+                        dispatch(setShowedEmptyText(!data.data.length));
                     }
+
+                    dispatch(setIsFilterLoading(false));
                 } catch (error) {
                     dispatch(setIsFilterError(true));
-                } finally {
-                    dispatch(setIsFiltering(false));
-                    dispatch(setFilteredRecipes([]));
+                    dispatch(setIsFilterLoading(false));
                 }
             },
             serializeQueryArgs: ({ endpointName }) => {

@@ -2,13 +2,12 @@ import { ChevronDownIcon, ChevronUpIcon, CloseIcon } from '@chakra-ui/icons';
 import { Button, MenuButton } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { useAppDispatch } from '~/hooks/typed-react-redux-hooks';
-import { clearSelectedAllergens } from '~/redux/features/allergens-slice';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { clearSelectedAllergens, selectSwitcherState } from '~/redux/features/allergens-slice';
 
 import { SelectedItems } from './selected-allergens';
 
 type SelectMenuButtonProps = {
-    isSwitchOn: boolean;
     selectedAllergens: string[];
     handleMenuToggle: () => void;
     setIsOpen: (value: boolean) => void;
@@ -17,7 +16,6 @@ type SelectMenuButtonProps = {
 };
 
 export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
-    isSwitchOn,
     selectedAllergens,
     handleMenuToggle,
     setIsOpen,
@@ -25,6 +23,8 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
     fromFilter,
 }) => {
     const dispatch = useAppDispatch();
+    const isSwitchOn = useAppSelector(selectSwitcherState);
+
     const clearSelection = (event: React.MouseEvent) => {
         event.stopPropagation();
         dispatch(clearSelectedAllergens());

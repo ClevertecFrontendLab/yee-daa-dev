@@ -8,17 +8,12 @@ import { SectionInfo } from '../section-info';
 import styles from './section-header.module.css';
 
 type SectionHeaderProps = {
-    onSearch: (inputValue: string) => void;
     pageType: PageType;
-    startSearch?: boolean;
 };
-export const SectionHeader: FC<SectionHeaderProps> = ({ onSearch, pageType, startSearch }) => {
+export const SectionHeader: FC<SectionHeaderProps> = ({ pageType }) => {
     const [isInputFocused, setInputFocused] = useState(false);
 
-    const handleSearch = (value: string) => {
-        setInputFocused(false);
-        onSearch(value);
-    };
+    const handleSearch = () => setInputFocused(false);
 
     return (
         <Box
@@ -32,8 +27,7 @@ export const SectionHeader: FC<SectionHeaderProps> = ({ onSearch, pageType, star
             <SearchBlock
                 onInputFocus={() => setInputFocused(true)}
                 onInputBlur={() => setInputFocused(false)}
-                onSearch={handleSearch}
-                startSearch={startSearch}
+                onSearchCb={handleSearch}
             />
         </Box>
     );

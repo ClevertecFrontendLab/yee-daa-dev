@@ -5,9 +5,9 @@ import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks'
 import {
     clearSelectedAllergens,
     selectSelectedAllergens,
+    selectSwitcherState,
     setFromFilter,
 } from '~/redux/features/allergens-slice';
-import { setInputValue } from '~/redux/features/search-slice';
 
 import { SelectMenuButton } from './menu-button';
 import { SelectMenuList } from './menu-list';
@@ -16,11 +16,11 @@ import { Switcher } from './switcher';
 export const AllergenSelect: FC<{ fromFilter: boolean }> = ({ fromFilter }) => {
     const dispatch = useAppDispatch();
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
+    const isSwitchOn = useAppSelector(selectSwitcherState);
 
     const [isOpen, setIsOpen] = useState(false);
     const [newAllergen, setNewAllergen] = useState('');
     const [isAdding, setIsAdding] = useState(false);
-    const [isSwitchOn, setIsSwitchOn] = useState(false);
 
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -32,10 +32,8 @@ export const AllergenSelect: FC<{ fromFilter: boolean }> = ({ fromFilter }) => {
         }
     };
 
-    const handleSwitchChange = () => {
-        setIsSwitchOn((prev) => !prev);
+    const handleSwitchChangeCb = () => {
         dispatch(clearSelectedAllergens());
-        dispatch(setInputValue(''));
 
         if (!isSwitchOn) {
             setIsOpen(false);
@@ -68,15 +66,10 @@ export const AllergenSelect: FC<{ fromFilter: boolean }> = ({ fromFilter }) => {
             display={{ base: 'none', md: 'flex', xl: 'flex' }}
             flexWrap='wrap'
         >
-            <Switcher
-                isSwitchOn={isSwitchOn}
-                handleSwitchChange={handleSwitchChange}
-                fromFilter={fromFilter}
-            />
+            <Switcher handleSwitchChangeCb={handleSwitchChangeCb} fromFilter={fromFilter} />
             <FormControl ref={menuRef} width='fit-content'>
                 <Menu isLazy={true} matchWidth={true} closeOnSelect={false}>
                     <SelectMenuButton
-                        isSwitchOn={isSwitchOn}
                         selectedAllergens={selectedAllergens}
                         handleMenuToggle={handleMenuToggle}
                         setIsOpen={setIsOpen}

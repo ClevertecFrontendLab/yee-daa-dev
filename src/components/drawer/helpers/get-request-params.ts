@@ -7,12 +7,14 @@ export const getRequestParams = ({
     sides,
     allergens,
     searchInput,
+    page = 1,
 }: {
     subCategories: string[];
     meats: string[];
     sides: string[];
     allergens: string[];
     searchInput: string;
+    page?: number;
 }): AllRecipeParams => {
     const result: AllRecipeParams = {};
     if (isArrayWithItems(subCategories)) {
@@ -32,6 +34,6 @@ export const getRequestParams = ({
         result.searchString = searchInput;
     }
 
-    result.page = 1;
+    result.page = page;
     return result;
 };
