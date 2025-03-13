@@ -1,13 +1,10 @@
 import './side-nav.module.css';
 
 import { Box, Text } from '@chakra-ui/react';
-import { FC, useEffect, useState } from 'react';
+import { FC, MouseEventHandler, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 
-import { useAppDispatch } from '~/hooks/typed-react-redux-hooks';
 import { useDetectParams } from '~/hooks/use-detect-params';
-import { clearSelectedAllergens, setFilteredByAllergens } from '~/redux/features/allergens-slice';
-import { clearFilteredRecipes } from '~/redux/features/recipes-slice';
 import { MenuItem } from '~/types/category';
 
 type SubNavItemProps = MenuItem & {
@@ -15,7 +12,6 @@ type SubNavItemProps = MenuItem & {
 };
 
 export const SubNavItem: FC<SubNavItemProps> = ({ parentCategory, category, title }) => {
-    const dispatch = useAppDispatch();
     const { pathname } = useLocation();
     const [isActive, setIsActive] = useState(false);
     const isRootPath = pathname === '/';
@@ -23,10 +19,11 @@ export const SubNavItem: FC<SubNavItemProps> = ({ parentCategory, category, titl
     const { selectedSubCategory } = useDetectParams();
     const subCategoryPath = `/${parentCategory}/${category}`;
 
-    const handleClick = () => {
-        dispatch(clearFilteredRecipes());
-        dispatch(clearSelectedAllergens());
-        dispatch(setFilteredByAllergens([]));
+    const handleClick: MouseEventHandler<HTMLAnchorElement> = (e) => {
+        //предотвращает перерендер и перенавигацию при клике по тому же самому элементу
+        if (selectedSubCategory?.category === category) {
+            e.preventDefault();
+        }
     };
 
     useEffect(() => {
@@ -40,8 +37,8 @@ export const SubNavItem: FC<SubNavItemProps> = ({ parentCategory, category, titl
     return (
         <NavLink
             to={subCategoryPath}
-            key={category}
             onClick={handleClick}
+            key={category}
             data-test-id={category === 'snacks' ? 'snacks' : ''}
         >
             <Box

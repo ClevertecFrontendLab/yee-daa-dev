@@ -12,6 +12,7 @@ import { MainPage } from '~/pages/main-page';
 import { RecipePageWrapper } from '~/pages/recipe-page';
 
 import { ErrorBoundary } from './error-boundary/error-boundary';
+import { clearFilterStateLoader } from './loaders/clear-filter-state-loader';
 import { juiciestLoader } from './loaders/juciest-loader';
 import { recipeLoader } from './loaders/recipe-loader';
 import { rootCategoryLoader } from './loaders/root-category-loader';
@@ -31,7 +32,7 @@ export const appRouter = createBrowserRouter(
                 </Suspense>
             }
         >
-            <Route index element={<MainPage />} />
+            <Route index element={<MainPage />} loader={clearFilterStateLoader} />
             <Route
                 path={Paths.CATEGORY_ROOT}
                 loader={rootCategoryLoader}
@@ -44,6 +45,7 @@ export const appRouter = createBrowserRouter(
                         <CategoryPage />
                     </CategoryExistProtected>
                 }
+                loader={clearFilterStateLoader}
             />
             <Route
                 path={Paths.RECIPE}

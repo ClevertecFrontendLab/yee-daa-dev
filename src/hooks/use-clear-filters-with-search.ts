@@ -1,10 +1,11 @@
 import { useCallback } from 'react';
 
-import { clearSelectedAllergens } from '~/redux/features/allergens-slice';
+import { resetAllergenSlice } from '~/redux/features/allergens-slice';
 import { clearSelectedAuthors } from '~/redux/features/authors-slice';
 import { resetSelectedCategories } from '~/redux/features/categories-slice';
+import { setIsFiltering } from '~/redux/features/filter-drawer-slice';
 import { clearSelectedMeats } from '~/redux/features/meats-slice';
-import { clearFilteredRecipes } from '~/redux/features/recipes-slice';
+import { clearFilteredRecipes, setShowedEmptyText } from '~/redux/features/recipes-slice';
 import { setInputValue } from '~/redux/features/search-slice';
 import { clearSelectedSides } from '~/redux/features/sides-slice';
 
@@ -18,7 +19,7 @@ export const useClearFiltersWithSearch = () => {
         dispatch(resetSelectedCategories());
         dispatch(clearSelectedMeats());
         dispatch(clearSelectedSides());
-        dispatch(clearSelectedAllergens());
+        dispatch(resetAllergenSlice());
     }, [dispatch]);
 
     const clearSearchInputBlock = useCallback(() => {
@@ -27,5 +28,10 @@ export const useClearFiltersWithSearch = () => {
         dispatch(resetSelectedCategories());
     }, [dispatch]);
 
-    return { clearDrawerFilters, clearSearchInputBlock };
+    const commonClear = useCallback(() => {
+        dispatch(setShowedEmptyText(false));
+        dispatch(setIsFiltering(false));
+    }, [dispatch]);
+
+    return { clearDrawerFilters, clearSearchInputBlock, commonClear };
 };

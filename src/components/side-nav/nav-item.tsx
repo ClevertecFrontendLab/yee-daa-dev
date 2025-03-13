@@ -1,16 +1,10 @@
 import { AccordionIcon, AccordionItem, AccordionPanel, Image } from '@chakra-ui/icons';
 import { AccordionButton, HStack, Text } from '@chakra-ui/react';
-import { FC, useEffect, useState } from 'react';
+import { FC, MouseEventHandler, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 
-import { useAppDispatch } from '~/hooks/typed-react-redux-hooks.ts';
 import { useDetectParams } from '~/hooks/use-detect-params.ts';
 import { Category } from '~/redux/api/types/categories.ts';
-import {
-    clearSelectedAllergens,
-    setFilteredByAllergens,
-} from '~/redux/features/allergens-slice.ts';
-import { clearFilteredRecipes } from '~/redux/features/recipes-slice.ts';
 import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
@@ -18,24 +12,22 @@ import { SubNavItem } from './sub-nav-item.tsx';
 
 export const NavItem: FC<Category> = ({ category, subCategories, title, icon }) => {
     const { pathname } = useLocation();
-    const dispatch = useAppDispatch();
     const [isActive, setIsActive] = useState(false);
-    const { selectedCategory, selectedSubCategory } = useDetectParams();
+    const { selectedCategory } = useDetectParams();
 
     const defaultCategoryPath = isArrayWithItems(subCategories)
         ? `/${category}/${subCategories[0].category}`
         : `/${category}`;
 
-    const selectedCategoryPath = `/${selectedCategory?.category}/${selectedSubCategory?.category}`;
     const isSameCategory = category === selectedCategory?.category;
     const isRootPath = pathname === '/';
 
-    const handleClick = () => {
-        dispatch(clearFilteredRecipes());
-        dispatch(clearSelectedAllergens());
-        dispatch(setFilteredByAllergens([]));
-
+    const handleClick: MouseEventHandler<HTMLAnchorElement> = (e) => {
         setIsActive((prev) => !prev);
+        // чтобы по клику на ту же самую категорию не происходило перерендера и перенавигации
+        if (isSameCategory) {
+            e.preventDefault();
+        }
     };
 
     useEffect(() => {
@@ -62,12 +54,7 @@ export const NavItem: FC<Category> = ({ category, subCategories, title, icon }) 
             id={selectedCategory?.category}
         >
             <NavLink
-                // при toggle категории позволяет сохранить выделение того, что было выделено до закрытия, если категория другая - выбирает первый из списка
-                to={
-                    selectedCategory && selectedSubCategory && isSameCategory
-                        ? selectedCategoryPath
-                        : defaultCategoryPath
-                }
+                to={defaultCategoryPath}
                 key={category}
                 onClick={handleClick}
                 data-test-id={category === 'vegan' ? 'vegan-cuisine' : ''}
