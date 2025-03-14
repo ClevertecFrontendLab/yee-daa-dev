@@ -1,6 +1,6 @@
 import { IconButton, InputGroup, InputRightElement, SearchIcon, Stack } from '@chakra-ui/icons';
 import { Flex, Input } from '@chakra-ui/react';
-import { FC, useState } from 'react';
+import { ChangeEventHandler, FC, useState } from 'react';
 
 import { useIsTablet } from '~/hooks/media-query.ts';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
@@ -76,6 +76,11 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
         }
     };
 
+    const handleSearchChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        dispatch(setInputValue(e.target.value));
+        dispatch(setIsFiltering(false));
+    };
+
     const handleDrawerClick = () => dispatch(openDrawer());
 
     const isSearchEmpty = !isArrayWithItems(recipes) && isEmptyTextShowed;
@@ -118,7 +123,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
                         color='var(--chakra-colors-lime-800)'
                         onFocus={handleFocus}
                         onBlur={handleBlur}
-                        onChange={(e) => dispatch(setInputValue(e.target.value))}
+                        onChange={handleSearchChange}
                         onKeyDown={handleKeyDown}
                         value={inputValue}
                         data-test-id='search-input'

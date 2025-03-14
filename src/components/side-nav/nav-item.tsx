@@ -3,10 +3,10 @@ import { AccordionButton, HStack, Text } from '@chakra-ui/react';
 import { FC, MouseEventHandler, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 
-import { useAppDispatch } from '~/hooks/typed-react-redux-hooks.ts';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { useDetectParams } from '~/hooks/use-detect-params.ts';
 import { Category } from '~/redux/api/types/categories.ts';
-import { setActiveIndex } from '~/redux/features/accordion-slice.ts';
+import { selectActiveIndex, setActiveIndex } from '~/redux/features/accordion-slice.ts';
 import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
@@ -23,6 +23,7 @@ export const NavItem: FC<Category & { index: number }> = ({
     const { pathname } = useLocation();
     const [isActive, setIsActive] = useState(false);
     const { selectedCategory } = useDetectParams();
+    const activeIndex = useAppSelector(selectActiveIndex);
 
     const defaultCategoryPath = isArrayWithItems(subCategories)
         ? `/${category}/${subCategories[0].category}`
@@ -48,6 +49,14 @@ export const NavItem: FC<Category & { index: number }> = ({
 
         setIsActive(selectedCategory.category === category);
     }, [selectedCategory?.category, category, isRootPath]);
+
+    useEffect(() => {
+        //при перезагрузке страницы с тем же путем чтобы активной становилось сразу выбранная категория
+        if (selectedCategory?.category === category && activeIndex === -1) {
+            dispatch(setActiveIndex(index));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedCategory?.category]);
 
     return (
         <AccordionItem

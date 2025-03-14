@@ -68,7 +68,7 @@ export const FilterDrawer = () => {
                         <DrawerCheckboxGroup filterTitle={FILTER_TITLES.SIDE} items={sides} />
                         <AllergenSelect fromFilter={true} />
                     </Stack>
-                    <CriteriaTagsList />
+                    <CriteriaTagsList forDrawer={true} />
                 </DrawerBody>
                 <FilterDrawerFooter />
             </DrawerContent>

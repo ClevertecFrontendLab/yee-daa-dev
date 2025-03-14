@@ -11,6 +11,7 @@ import {
     updateSelectedSubCategoriesIds,
 } from '~/redux/features/categories-slice';
 import { selectSelectedMeats, toggleMeat } from '~/redux/features/meats-slice';
+import { setShowedEmptyText } from '~/redux/features/recipes-slice';
 import { selectSelectedSides, toggleSide } from '~/redux/features/sides-slice';
 import { TagType } from '~/types/type-tags';
 import { isArrayWithItems } from '~/utils/is-array-with-items';
@@ -26,7 +27,15 @@ import {
 
 //TODO заменить моки для авторов когда будет коллекция авторов
 
-export const CriteriaTagsList = ({ withAllergens = true }: { withAllergens?: boolean }) => {
+type CriteriaTagsListProps = {
+    forDrawer?: boolean;
+    withAllergens?: boolean;
+};
+
+export const CriteriaTagsList = ({
+    withAllergens = true,
+    forDrawer = false,
+}: CriteriaTagsListProps) => {
     const dispatch = useAppDispatch();
     const selectedCategories = useAppSelector(selectSelectedCategories);
     const categories = useAppSelector(selectCategoriesMenu);
@@ -83,6 +92,9 @@ export const CriteriaTagsList = ({ withAllergens = true }: { withAllergens?: boo
     const deleteFilter = (tag: string | null, type: TagType | null) => {
         if (type && actionMapper[type] && tag) {
             actionMapper[type](tag);
+        }
+        if (!forDrawer) {
+            dispatch(setShowedEmptyText(false));
         }
     };
 
