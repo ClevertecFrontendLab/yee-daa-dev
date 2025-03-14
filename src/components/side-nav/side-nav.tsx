@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 
 import { useIsLg } from '~/hooks/media-query.ts';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { selectActiveIndex } from '~/redux/features/accordion-slice.ts';
 import { closeMenu, selectIsClicked } from '~/redux/features/burger-slice';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
 
@@ -27,6 +28,8 @@ export const SideNav = () => {
         }
     };
 
+    const activeIndex = useAppSelector(selectActiveIndex);
+
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
@@ -45,9 +48,9 @@ export const SideNav = () => {
             ref={navRef}
         >
             {isLg && <Breadcrumbs />}
-            <Accordion allowToggle={true}>
-                {navMenu.map((item) => (
-                    <NavItem {...item} key={item.id} />
+            <Accordion allowToggle={true} index={activeIndex}>
+                {navMenu.map((item, index) => (
+                    <NavItem {...item} key={item.id} index={index} />
                 ))}
             </Accordion>
             <Stack p={6} display={{ base: 'none', xl: 'block' }}>

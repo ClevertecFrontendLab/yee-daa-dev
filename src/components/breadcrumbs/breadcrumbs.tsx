@@ -6,6 +6,7 @@ import { Paths } from '~/constants/path';
 import { useAppDispatch } from '~/hooks/typed-react-redux-hooks.ts';
 import { useDetectParams } from '~/hooks/use-detect-params';
 import { useGetRecipeByIdQuery } from '~/redux/api/services/recipes-api';
+import { resetAccordion } from '~/redux/features/accordion-slice';
 import { closeMenu } from '~/redux/features/burger-slice.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items';
 
@@ -30,6 +31,8 @@ export const Breadcrumbs = () => {
 
     const handleCategoryClick = () => dispatch(closeMenu());
 
+    const handleHomePageClick = () => dispatch(resetAccordion());
+
     return (
         <Box ml={{ base: 0, lg: 32 }} pb={{ base: 8, lg: 0 }}>
             <Breadcrumb
@@ -44,7 +47,7 @@ export const Breadcrumbs = () => {
                 data-test-id='breadcrumbs'
             >
                 <BreadcrumbItem>
-                    <BreadcrumbLink as={Link} to={Paths.R_SWITCHER}>
+                    <BreadcrumbLink as={Link} to={Paths.R_SWITCHER} onClick={handleHomePageClick}>
                         Главная
                     </BreadcrumbLink>
                 </BreadcrumbItem>

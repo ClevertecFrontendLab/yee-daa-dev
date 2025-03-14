@@ -3,14 +3,23 @@ import { AccordionButton, HStack, Text } from '@chakra-ui/react';
 import { FC, MouseEventHandler, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 
+import { useAppDispatch } from '~/hooks/typed-react-redux-hooks.ts';
 import { useDetectParams } from '~/hooks/use-detect-params.ts';
 import { Category } from '~/redux/api/types/categories.ts';
+import { setActiveIndex } from '~/redux/features/accordion-slice.ts';
 import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
 import { SubNavItem } from './sub-nav-item.tsx';
 
-export const NavItem: FC<Category> = ({ category, subCategories, title, icon }) => {
+export const NavItem: FC<Category & { index: number }> = ({
+    category,
+    subCategories,
+    title,
+    icon,
+    index,
+}) => {
+    const dispatch = useAppDispatch();
     const { pathname } = useLocation();
     const [isActive, setIsActive] = useState(false);
     const { selectedCategory } = useDetectParams();
@@ -24,6 +33,7 @@ export const NavItem: FC<Category> = ({ category, subCategories, title, icon }) 
 
     const handleClick: MouseEventHandler<HTMLAnchorElement> = (e) => {
         setIsActive((prev) => !prev);
+        dispatch(setActiveIndex(index));
         // чтобы по клику на ту же самую категорию не происходило перерендера и перенавигации
         if (isSameCategory) {
             e.preventDefault();

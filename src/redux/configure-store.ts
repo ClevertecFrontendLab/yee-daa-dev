@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { appErrorMiddleware } from './api/middleware';
 import { categoryApi } from './api/services/category-api';
 import { recipeApi } from './api/services/recipes-api';
+import { accordionReducer, accordionSlice } from './features/accordion-slice';
 import { allergenReducer, allergenSlice } from './features/allergens-slice';
 import { appReducer, appSlice } from './features/app-slice';
 import { authorsReducer, authorsSlice } from './features/authors-slice';
@@ -30,6 +31,7 @@ const combinedReducer = {
     [authorsSlice.name]: authorsReducer,
     [meatsSlice.name]: meatsReducer,
     [sidesSlice.name]: sidesReducer,
+    [accordionSlice.name]: accordionReducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
     [recipeApi.reducerPath]: recipeApi.reducer,
 };
