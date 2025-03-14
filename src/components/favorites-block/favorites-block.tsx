@@ -19,7 +19,11 @@ export const FavoritesBlock: FC = () => {
 
     return (
         <>
-            {isLoading && <Loader boxSize={16} />}
+            {isLoading && (
+                <Center w='100%' margin='auto'>
+                    <Loader boxSize={16} />
+                </Center>
+            )}
             <SectionBox>
                 <HStack justifyContent='space-between' mb={6}>
                     <Heading

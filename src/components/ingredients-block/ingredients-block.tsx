@@ -34,10 +34,15 @@ export const IngredientsBlock: FC<{
     };
 
     return (
-        <Table variant='striped' colorScheme='gray'>
+        <Table
+            variant='striped'
+            colorScheme='gray'
+            __css={{ 'table-layout': 'fixed', width: '100%' }}
+        >
             <Thead>
-                <Tr>
+                <Tr display='flex' alignItems='center' flex={1}>
                     <Th
+                        borderBottom='none'
                         fontSize='sm'
                         textTransform='uppercase'
                         fontWeight={700}
@@ -45,7 +50,15 @@ export const IngredientsBlock: FC<{
                     >
                         ингредиенты
                     </Th>
-                    <Th display='flex' justifyContent='flex-end' gap={4} alignItems='center' pr={0}>
+                    <Th
+                        borderBottom='none'
+                        display='flex'
+                        justifyContent='flex-end'
+                        gap={4}
+                        alignItems='center'
+                        pr={0}
+                        maxWidth='100%'
+                    >
                         <Box
                             p={0}
                             fontSize='sm'
@@ -63,7 +76,7 @@ export const IngredientsBlock: FC<{
                             max={100}
                             step={1}
                         >
-                            <NumberInputField />
+                            <NumberInputField w={{ base: '73px', md: '90px' }} />
                             <NumberInputStepper>
                                 <NumberIncrementStepper data-test-id='increment-stepper' />
                                 <NumberDecrementStepper data-test-id='decrement-stepper' />
@@ -72,7 +85,7 @@ export const IngredientsBlock: FC<{
                     </Th>
                 </Tr>
             </Thead>
-            <Tbody>
+            <Tbody w='100%'>
                 {adjustedIngredients?.map((ingredient, index) => (
                     <Tr
                         key={ingredient.title}

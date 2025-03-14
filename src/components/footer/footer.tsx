@@ -20,7 +20,7 @@ const user: UserProps = {
 };
 
 export const Footer = () => {
-    // TODO: заменить на селектор
+    // TODO: заменить на селектор когда будет коллекция пользователей
     const { firstName, lastName, imageUrl } = user;
 
     return (

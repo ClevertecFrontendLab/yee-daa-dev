@@ -29,6 +29,8 @@ const Layout = () => {
         };
     }, [isOpen]);
 
+    const showNavigation = (isTablet && isOpen) || !isTablet;
+
     return (
         <div className={styles.wrapper}>
             <Grid
@@ -54,16 +56,15 @@ const Layout = () => {
                 >
                     <Header />
                 </GridItem>
-                {(isTablet && isOpen) ||
-                    (!isTablet && (
-                        <GridItem
-                            area='nav'
-                            position={{ base: 'absolute', xl: 'sticky' }}
-                            className={`${styles.nav} ${isOpen ? styles.open : ''}`}
-                        >
-                            <SideNav />
-                        </GridItem>
-                    ))}
+                {showNavigation && (
+                    <GridItem
+                        area='nav'
+                        position={{ base: 'absolute', xl: 'sticky' }}
+                        className={`${styles.nav} ${isOpen ? styles.open : ''}`}
+                    >
+                        <SideNav />
+                    </GridItem>
+                )}
                 <GridItem
                     area='main'
                     pt={{ base: 4, md: 8 }}
@@ -83,7 +84,7 @@ const Layout = () => {
                 <GridItem
                     bg='lime.50'
                     area='footer'
-                    display={{ xl: 'none', base: 'block' }}
+                    display={{ base: 'block', xl: 'none' }}
                     className={`${styles.footer} ${isOpen ? styles.blur : ''}`}
                     data-test-id='footer'
                 >

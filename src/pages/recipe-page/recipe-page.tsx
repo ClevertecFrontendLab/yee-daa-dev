@@ -1,4 +1,4 @@
-import { Stack } from '@chakra-ui/react';
+import { Stack, VStack } from '@chakra-ui/react';
 
 import { AuthorCard } from '~/components/author-card/author-card.tsx';
 import { CalorieCard } from '~/components/calorie/calorie.tsx';
@@ -18,9 +18,9 @@ export const RecipePage = () => {
     const foundAuthor = mockAuthors[0] || null;
 
     return (
-        <Stack spacing={10}>
+        <VStack spacing={10}>
             <RecipeCard recipe={recipe} />
-            <Stack spacing={10} maxW={{ base: '100%', xl: '758px' }} margin='0 auto'>
+            <Stack spacing={10} maxW={{ base: '100%', xl: '758px' }} margin='0 auto' w='100%'>
                 <CalorieCard {...recipe} />
                 <IngredientsBlock {...recipe} />
                 <Stack gap={5}>
@@ -29,6 +29,6 @@ export const RecipePage = () => {
                 {foundAuthor && <AuthorCard author={foundAuthor} />}
             </Stack>
             <Carousel />
-        </Stack>
+        </VStack>
     );
 };
