@@ -27,3 +27,7 @@
         'clig' off,
         'liga' off;
 }
+
+.no-scroll {
+    overflow-y: hidden;
+}

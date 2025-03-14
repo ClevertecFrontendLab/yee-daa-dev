@@ -57,7 +57,7 @@ export const NavItem: FC<Category> = ({ category, subCategories, title, icon }) 
                 to={defaultCategoryPath}
                 key={category}
                 onClick={handleClick}
-                data-test-id={category === 'vegan' ? 'vegan-cuisine' : ''}
+                data-test-id={`${category === 'vegan' ? 'vegan-cuisine' : category}`}
             >
                 <AccordionButton
                     padding='8px 12px'

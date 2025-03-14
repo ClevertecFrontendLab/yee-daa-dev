@@ -16,11 +16,11 @@ import { HighlightText } from '../highlight/highlight-text.tsx';
 import { BookmarkIcon } from '../icons/bookmark-icon.tsx';
 import { RecommendationTag } from '../recommendation-tag';
 
-export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
+export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index }) => {
     const inputValue = useAppSelector(selectInputValue);
     const { pathname } = useLocation();
 
-    const { id, title, image, description, categoriesIds, likes, bookmarks } = recipe;
+    const { title, image, description, categoriesIds, likes, bookmarks } = recipe;
 
     const recipePath = useGetRecipePath(recipe);
 
@@ -28,7 +28,7 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
     const { login, ...authorRecommendInfo } = mockAuthors[1];
 
     return (
-        <Card direction='row' variant='outline' gap={6} data-test-id={`food-card-${id}`}>
+        <Card direction='row' variant='outline' gap={6} data-test-id={`food-card-${index}`}>
             <Box position='relative' w={{ base: '158px', md: '50%' }} maxW='346px' flex='1'>
                 <Box
                     position='absolute'
@@ -120,7 +120,7 @@ export const FoodCard: FC<{ recipe: Recipe }> = ({ recipe }) => {
                     </Button>
                     <NavLink
                         to={recipePath}
-                        data-test-id={`card-link-${id}`}
+                        data-test-id={`card-link-${index}`}
                         state={{ fromPage: pathname }}
                     >
                         <Button bg='black' color='white' size={{ base: 'xs', md: 'sm' }}>

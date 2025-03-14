@@ -84,8 +84,9 @@ export const KitchenTabs: FC = () => {
                         justifyContent='center'
                         flexWrap={{ base: 'nowrap', md: 'wrap' }}
                     >
-                        {currSubCategories.map((subcategory) => (
+                        {currSubCategories.map((subcategory, index) => (
                             <Tab
+                                data-test-id={`tab-${subcategory?.category}-${index}`}
                                 key={subcategory?.category}
                                 flexShrink={0}
                                 color='lime.800'
