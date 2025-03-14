@@ -41,7 +41,7 @@ export const FilterDrawerFooter = () => {
 
     const clearFilters = () => clearDrawerFilters();
 
-    const findRecipes = async () => {
+    const findRecipes = () => {
         const requestParams = getRequestParams({
             allergens: selectedAllergens,
             meats: selectedMeats,
@@ -51,7 +51,7 @@ export const FilterDrawerFooter = () => {
         });
 
         dispatch(setIsFiltering(true));
-        await fetchRecipes(requestParams);
+        fetchRecipes(requestParams);
 
         dispatch(closeDrawer());
     };

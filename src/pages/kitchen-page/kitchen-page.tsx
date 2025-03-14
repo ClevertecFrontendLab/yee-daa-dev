@@ -1,7 +1,9 @@
+import { Center } from '@chakra-ui/react';
 import { FC, Fragment, useState } from 'react';
 
 import { BlogSection } from '~/components/blog-section/blog-section.tsx';
 import { Carousel } from '~/components/carousel/carousel.tsx';
+import { CriteriaTagsList } from '~/components/criteria-tags-list';
 import { getRequestParams } from '~/components/drawer/helpers/get-request-params';
 import { FavoritesBlock } from '~/components/favorites-block/favorites-block';
 import { KitchenTabs } from '~/components/kitchen-tabs/kitchen-tabs.tsx';
@@ -71,13 +73,18 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
             <SectionHeader pageType={pageType} />
 
             {isFilteredRecipesShowed && (
-                <RecipeCardList
-                    recipeList={filteredRecipes}
-                    currentPage={currentPage}
-                    isLoading={isFetching}
-                    totalPages={totalPages}
-                    loadMoreCallback={loadMoreCallback}
-                />
+                <>
+                    <Center w='100%' flexWrap='wrap'>
+                        <CriteriaTagsList withAllergens={false} />
+                    </Center>
+                    <RecipeCardList
+                        recipeList={filteredRecipes}
+                        currentPage={currentPage}
+                        isLoading={isFetching}
+                        totalPages={totalPages}
+                        loadMoreCallback={loadMoreCallback}
+                    />
+                </>
             )}
             {!isFilteredRecipesShowed && (
                 <Fragment key='search-filter-page-flow'>
