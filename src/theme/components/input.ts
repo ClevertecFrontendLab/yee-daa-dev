@@ -9,7 +9,7 @@ const authVariant = definePartsStyle(({ theme }) => ({
     field: {
         bgColor: 'white',
         border: `1px solid ${theme.colors.lime[150]}`,
-        color: 'lime.800',
+        color: theme.colors.lime[800],
         _focus: {
             borderColor: theme.colors.lime[700],
         },

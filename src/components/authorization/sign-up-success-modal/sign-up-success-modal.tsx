@@ -2,8 +2,7 @@ import { ModalBody, ModalFooter, ModalProps, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
 import { Label } from './label';
-
-import { ResultModal } from '~/components/result-modal/result-modal';
+import { ResultModal } from '../../result-modal/result-modal';
 
 type SignUpSuccessModalProps = Omit<ModalProps, 'children'> & { email: string };
 
@@ -27,15 +26,15 @@ export const SignUpSuccessModal: FC<SignUpSuccessModalProps> = ({ email, ...prop
                         textAlign='center'
                         fontSize='md'
                         fontWeight={index === 1 ? 'semibold' : 'normal'}
-                        key={subTitle}
+                        key={index}
                     >
                         {subTitle}
                     </Text>
                 ))}
             </ModalBody>
             <ModalFooter mt={8} flexDirection='column'>
-                {Label.Extra.map((subTitle) => (
-                    <Text color='blackAlpha.600' textAlign='center' fontSize='xs' key={subTitle}>
+                {Label.Extra.map((subTitle, index) => (
+                    <Text color='blackAlpha.600' textAlign='center' fontSize='xs' key={index}>
                         {subTitle}
                     </Text>
                 ))}

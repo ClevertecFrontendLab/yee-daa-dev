@@ -40,6 +40,7 @@ export const ResultModal: FC<ResultModalProps> = ({
                         h={6}
                         top={5}
                         right={6}
+                        lineHeight={0}
                         onClick={onClose}
                         variant='unstyled'
                         _hover={{
@@ -52,9 +53,10 @@ export const ResultModal: FC<ResultModalProps> = ({
                         {title && (
                             <Heading
                                 as='h2'
-                                fontSize='xl'
+                                fontSize='2xl'
                                 textAlign='center'
                                 flexDirection='column'
+                                mt={imageUrl ? 0 : 5}
                             >
                                 {title}
                             </Heading>

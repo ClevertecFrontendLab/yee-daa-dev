@@ -9,14 +9,16 @@ import {
 import { FC } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import { SignUpForm } from '../../types/sign-up-form';
 import { Label } from './label';
+import { PasswordInput } from '../password-input/password-input';
 
-type CredentialsStepProps = {
-    form: UseFormReturn<SignUpForm>;
+import { SignUpFormData } from '~/types/authorization';
+
+type CredentialsFormProps = {
+    form: UseFormReturn<SignUpFormData>;
 };
 
-export const CredentialsStep: FC<CredentialsStepProps> = ({
+export const CredentialsForm: FC<CredentialsFormProps> = ({
     form: {
         register,
         formState: { errors, isSubmitting },
@@ -38,21 +40,14 @@ export const CredentialsStep: FC<CredentialsStepProps> = ({
 
             <FormControl isInvalid={!!errors.password} mt={6}>
                 <FormLabel>{Label.Password.Label}</FormLabel>
-                <Input
-                    variant='auth'
-                    size='lg'
-                    placeholder={Label.Password.Placeholder}
-                    {...register('password')}
-                />
+                <PasswordInput placeholder={Label.Password.Placeholder} {...register('password')} />
                 <FormHelperText>{Label.Password.Helper}</FormHelperText>
                 <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
             </FormControl>
 
             <FormControl isInvalid={!!errors.repeatPassword} mt={6}>
                 <FormLabel>{Label.RepeatPassword.Label}</FormLabel>
-                <Input
-                    variant='auth'
-                    size='lg'
+                <PasswordInput
                     placeholder={Label.RepeatPassword.Placeholder}
                     {...register('repeatPassword')}
                 />

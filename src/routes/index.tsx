@@ -24,6 +24,9 @@ const AuthorizationLayout = lazy(
 
 const SignInPage = lazy(() => import('../pages/sign-in-page/sign-in-page.tsx'));
 const SignUpPage = lazy(() => import('../pages/sign-up-page/sign-up-page.tsx'));
+const RestoreCredentialsPage = lazy(
+    () => import('../pages/restore-credentials-page/restore-credentials-page.tsx'),
+);
 
 // createBrowserRouter только с ним можно юзать loader, action, useLoaderData
 // createRoutesFromElements позволяет сделать из обычного классического рута подкапотно children

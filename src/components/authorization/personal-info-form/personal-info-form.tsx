@@ -2,14 +2,15 @@ import { Button, FormControl, FormErrorMessage, FormLabel, Input } from '@chakra
 import { FC } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import { SignUpForm } from '../../types/sign-up-form';
 import { Label } from './label';
 
-type PersonalInfoStepProps = {
-    form: UseFormReturn<SignUpForm>;
+import { SignUpFormData } from '~/types/authorization';
+
+type PersonalInfoFormProps = {
+    form: UseFormReturn<SignUpFormData>;
 };
 
-export const PersonalInfoStep: FC<PersonalInfoStepProps> = ({
+export const PersonalInfoForm: FC<PersonalInfoFormProps> = ({
     form: {
         register,
         formState: { errors, isSubmitting },

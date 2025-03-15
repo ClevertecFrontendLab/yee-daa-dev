@@ -2,8 +2,7 @@ import { Button, ModalBody, ModalFooter, ModalProps, Text } from '@chakra-ui/rea
 import { FC } from 'react';
 
 import { Label } from './label';
-
-import { ResultModal } from '~/components/result-modal/result-modal';
+import { ResultModal } from '../../result-modal/result-modal';
 
 type SignInErrorModalProps = Omit<ModalProps, 'children'> & {
     repeat: () => void;

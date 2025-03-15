@@ -4,8 +4,8 @@ export const TOAST_MESSAGE = {
         title: 'Неверный логин или пароль',
         description: 'Попробуйте снова',
     },
-    signUpError: {
-        id: 'sign-up-error',
+    serverError: {
+        id: 'server-error',
         title: 'Ошибка сервера',
         description: 'Попробуйте немного позже',
     },

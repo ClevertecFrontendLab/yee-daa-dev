@@ -3,16 +3,16 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { SignUpSchema, SignUpStep, SignUpStepComponent } from './constants/sign-up-form';
 import { SignUpPropgessLabel } from './label';
 import styles from './sign-up-page.module.css';
-import { SignUpForm } from './types/sign-up-form';
-import { SignUpSuccessModal } from './components/sign-up-success-modal/sign-up-success-modal';
 
+import { SignUpSchema, SignUpStep, SignUpStepComponent } from '~/constants/authorization';
 import { useAuthToast } from '~/hooks/use-auth-toast';
 import { TOAST_MESSAGE } from '~/constants/toast';
+import { SignUpFormData } from '~/types/authorization';
+import { SignUpSuccessModal, VerificationFailedModal } from '~/components/authorization';
 
-const { signUpError } = TOAST_MESSAGE;
+const { serverError } = TOAST_MESSAGE;
 
 const SignUpPage: FC = () => {
     const [step, setStep] = useState(SignUpStep.PersonalInfo);
@@ -21,9 +21,9 @@ const SignUpPage: FC = () => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { toast } = useAuthToast();
-    const registrationForm = useForm<SignUpForm>({
+    const registrationForm = useForm<SignUpFormData>({
         mode: 'onChange',
-        resolver: yupResolver<SignUpForm>(SignUpSchema[step]),
+        resolver: yupResolver<SignUpFormData>(SignUpSchema[step]),
     });
 
     const {
@@ -47,10 +47,7 @@ const SignUpPage: FC = () => {
             return;
         }
 
-        if (!toast.isActive(signUpError.id)) {
-            toast(signUpError);
-        }
-
+        toast(serverError, false);
         onOpen();
         console.log(data);
     };
@@ -73,6 +70,7 @@ const SignUpPage: FC = () => {
             </form>
 
             <SignUpSuccessModal email={watchFields.email} {...{ isOpen, onClose }} />
+            <VerificationFailedModal {...{ isOpen, onClose }} />
         </Box>
     );
 };

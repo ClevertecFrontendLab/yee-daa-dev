@@ -1,0 +1,25 @@
+import { ModalBody, ModalFooter, ModalProps, Text } from '@chakra-ui/react';
+import { FC } from 'react';
+
+import { Label } from './label';
+import { ResultModal } from '../../result-modal/result-modal';
+
+export const VerificationFailedModal: FC<Omit<ModalProps, 'children'>> = (props) => (
+    <ResultModal title={Label.Header} imageUrl='/public/images/tea-ceremony.png' {...props}>
+        <ModalBody>
+            <Text
+                color='blackAlpha.700'
+                textAlign='center'
+                fontSize='md'
+                paddingX={{ bage: 0, md: 8 }}
+            >
+                {Label.Body}
+            </Text>
+        </ModalBody>
+        <ModalFooter mt={8} flexDirection='column'>
+            <Text color='blackAlpha.600' textAlign='center' fontSize='xs'>
+                {Label.Extra}
+            </Text>
+        </ModalFooter>
+    </ResultModal>
+);

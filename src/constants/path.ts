@@ -7,6 +7,7 @@ export const routeParams = {
 export const Paths = {
     SIGN_IN: '/sign-in',
     SIGN_UP: '/sign-up',
+    RESTORE_CREDENTIALS: 'restore-credentials',
 
     R_SWITCHER: '/',
 <<<<<<< HEAD
