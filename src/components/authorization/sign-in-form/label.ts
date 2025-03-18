@@ -8,5 +8,4 @@ export const Label = {
         Placeholder: 'Пароль для сайта',
     },
     LoginBtn: 'Войти',
-    ForgotPassword: 'Забыли логин или пароль?',
 } as const;

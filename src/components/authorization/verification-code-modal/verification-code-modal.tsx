@@ -1,11 +1,11 @@
 import { HStack, ModalBody, ModalFooter, PinInput, PinInputField, Text } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
-import { ModalLabel } from './label';
-import { ResultModal } from '../../result-modal/result-modal';
-
 import { RestoreStep } from '~/constants/authorization';
 import { RestoreModalProps } from '~/types/authorization';
+
+import { ResultModal } from '../../result-modal/result-modal';
+import { ModalLabel } from './label';
 
 const Pin = [1, 2, 3, 4, 5, 6];
 

@@ -1,16 +1,16 @@
 import { ModalBody } from '@chakra-ui/react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { FC } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 
-import { ModalLabel } from './label';
+import { CredentialsSchema } from '~/constants/authorization';
+import { TOAST_MESSAGE } from '~/constants/toast';
+import { useAuthToast } from '~/hooks/use-auth-toast';
+import { CredentialsFormData, RestoreModalProps, SignUpFormData } from '~/types/authorization';
+
 import { ResultModal } from '../../result-modal/result-modal';
 import { CredentialsForm } from '../credentials-form/credentials-form';
-
-import { CredentialsFormData, RestoreModalProps, SignUpFormData } from '~/types/authorization';
-import { CredentialsSchema } from '~/constants/authorization';
-import { useAuthToast } from '~/hooks/use-auth-toast';
-import { TOAST_MESSAGE } from '~/constants/toast';
+import { ModalLabel } from './label';
 
 const { serverError } = TOAST_MESSAGE;
 

@@ -7,19 +7,13 @@ export const routeParams = {
 export const Paths = {
     SIGN_IN: '/sign-in',
     SIGN_UP: '/sign-up',
-    RESTORE_CREDENTIALS: 'restore-credentials',
+    RESTORE_CREDENTIALS: '/sign-in/restore-credentials',
 
     R_SWITCHER: '/',
-<<<<<<< HEAD
     CATEGORY_ROOT: `:${routeParams.categoryName}`,
     CATEGORY: `:${routeParams.categoryName}/:${routeParams.subCategoryName}`,
     RECIPE: `:${routeParams.categoryName}/:${routeParams.subCategoryName}/:${routeParams.recipeId}`,
     JUICIEST: '/the-juiciest',
     ERROR: '/not-found',
     OTHERS: '*',
-};
-=======
-    JUICIEST: 'the-juiciest',
-    ERROR: '*',
 } as const;
->>>>>>> 8102645 (feat(auth-layout): add auth layout)

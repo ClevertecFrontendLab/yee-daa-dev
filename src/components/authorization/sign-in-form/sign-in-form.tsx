@@ -1,5 +1,4 @@
 import {
-    Box,
     Button,
     FormControl,
     FormErrorMessage,
@@ -8,23 +7,22 @@ import {
     useDisclosure,
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FC, useEffect } from 'react';
+import { FC, PropsWithChildren, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { NavLink, Outlet } from 'react-router';
+import { Outlet } from 'react-router';
 
-import { Label } from './label';
-import { SignInErrorModal } from '../sign-in-error-modal/sign-in-error-modal';
-import { PasswordInput } from '../password-input/password-input';
-
+import { SignInSchema } from '~/constants/authorization';
 import { TOAST_MESSAGE } from '~/constants/toast';
 import { useAuthToast } from '~/hooks/use-auth-toast';
-import { Paths } from '~/constants/path';
 import type { SignInFormData } from '~/types/authorization';
-import { SignInSchema } from '~/constants/authorization';
+
+import { PasswordInput } from '../password-input/password-input';
+import { SignInErrorModal } from '../sign-in-error-modal/sign-in-error-modal';
+import { Label } from './label';
 
 const { signInError } = TOAST_MESSAGE;
 
-export const SignInForm: FC = () => {
+export const SignInForm: FC<PropsWithChildren> = ({ children }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { toast } = useAuthToast();
 
@@ -43,6 +41,7 @@ export const SignInForm: FC = () => {
 
     useEffect(() => {
         toast(signInError, false);
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -81,20 +80,7 @@ export const SignInForm: FC = () => {
                     {Label.LoginBtn}
                 </Button>
 
-                <Box
-                    mt={4}
-                    width='full'
-                    textAlign='center'
-                    fontWeight='semibold'
-                    fontSize='md'
-                    _hover={{
-                        textDecoration: 'underline',
-                    }}
-                >
-                    <NavLink to={Paths.RESTORE_CREDENTIALS} replace>
-                        {Label.ForgotPassword}
-                    </NavLink>
-                </Box>
+                {children}
             </form>
 
             <SignInErrorModal {...{ isOpen, onClose }} repeat={() => {}} />

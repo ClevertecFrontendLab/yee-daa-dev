@@ -26,46 +26,44 @@ export const ResultModal: FC<ResultModalProps> = ({
     imageUrl,
     onClose,
     ...props
-}) => {
-    return (
-        <Modal isCentered {...{ variant, onClose }} {...props}>
-            <ModalOverlay />
-            <ModalContent>
-                <ModalHeader mb={4}>
-                    <IconButton
-                        aria-label='Close modal'
-                        icon={<ModalCloseIcon />}
-                        position='absolute'
-                        minW={6}
-                        h={6}
-                        top={5}
-                        right={6}
-                        lineHeight={0}
-                        onClick={onClose}
-                        variant='unstyled'
-                        _hover={{
-                            color: 'blackAlpha.800',
-                        }}
-                    />
+}) => (
+    <Modal isCentered {...{ variant, onClose }} {...props}>
+        <ModalOverlay />
+        <ModalContent>
+            <ModalHeader mb={4}>
+                <IconButton
+                    aria-label='Close modal'
+                    icon={<ModalCloseIcon />}
+                    position='absolute'
+                    minW={6}
+                    h={6}
+                    top={5}
+                    right={6}
+                    lineHeight={0}
+                    onClick={onClose}
+                    variant='unstyled'
+                    _hover={{
+                        color: 'blackAlpha.800',
+                    }}
+                />
 
-                    <Stack align='center' gap={8}>
-                        {imageUrl && <Image src={imageUrl} alt='breakfast' />}
-                        {title && (
-                            <Heading
-                                as='h2'
-                                fontSize='2xl'
-                                textAlign='center'
-                                flexDirection='column'
-                                mt={imageUrl ? 0 : 5}
-                            >
-                                {title}
-                            </Heading>
-                        )}
-                    </Stack>
-                </ModalHeader>
+                <Stack align='center' gap={8}>
+                    {imageUrl && <Image src={imageUrl} alt='breakfast' />}
+                    {title && (
+                        <Heading
+                            as='h2'
+                            fontSize='2xl'
+                            textAlign='center'
+                            flexDirection='column'
+                            mt={imageUrl ? 0 : 5}
+                        >
+                            {title}
+                        </Heading>
+                    )}
+                </Stack>
+            </ModalHeader>
 
-                {children}
-            </ModalContent>
-        </Modal>
-    );
-};
+            {children}
+        </ModalContent>
+    </Modal>
+);

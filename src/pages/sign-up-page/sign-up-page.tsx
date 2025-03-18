@@ -3,14 +3,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { SignUpSuccessModal, VerificationFailedModal } from '~/components/authorization';
+import { SignUpSchema, SignUpStep, SignUpStepComponent } from '~/constants/authorization';
+import { TOAST_MESSAGE } from '~/constants/toast';
+import { useAuthToast } from '~/hooks/use-auth-toast';
+import { SignUpFormData } from '~/types/authorization';
+
 import { SignUpPropgessLabel } from './label';
 import styles from './sign-up-page.module.css';
-
-import { SignUpSchema, SignUpStep, SignUpStepComponent } from '~/constants/authorization';
-import { useAuthToast } from '~/hooks/use-auth-toast';
-import { TOAST_MESSAGE } from '~/constants/toast';
-import { SignUpFormData } from '~/types/authorization';
-import { SignUpSuccessModal, VerificationFailedModal } from '~/components/authorization';
 
 const { serverError } = TOAST_MESSAGE;
 

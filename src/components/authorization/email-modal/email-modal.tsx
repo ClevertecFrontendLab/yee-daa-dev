@@ -8,15 +8,15 @@ import {
     ModalFooter,
     Text,
 } from '@chakra-ui/react';
-import { FC } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { ModalLabel, EmailFormLabel } from './label';
-
 import { ResultModal } from '~/components/result-modal/result-modal';
-import { EmailRestoreForm, RestoreModalProps } from '~/types/authorization';
 import { EmailRestoreSchema, RestoreStep } from '~/constants/authorization';
+import { EmailRestoreForm, RestoreModalProps } from '~/types/authorization';
+
+import { EmailFormLabel, ModalLabel } from './label';
 
 type EmailModalProps = RestoreModalProps & {
     setEmail: (email: string) => void;

@@ -1,8 +1,8 @@
 import { ModalBody, ModalFooter, ModalProps, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { Label } from './label';
 import { ResultModal } from '../../result-modal/result-modal';
+import { Label } from './label';
 
 type SignUpSuccessModalProps = Omit<ModalProps, 'children'> & { email: string };
 

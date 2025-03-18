@@ -1,10 +1,10 @@
-import { FC, useRef, useState } from 'react';
 import { useDisclosure } from '@chakra-ui/react';
+import { FC, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { Paths } from '~/constants/path';
-import { RestoreStep } from '~/constants/authorization';
 import { EmailModal, RestoreFormModal, VerificationCodeModal } from '~/components/authorization';
+import { RestoreStep } from '~/constants/authorization';
+import { Paths } from '~/constants/path';
 
 const RestoreCredentialsPage: FC = () => {
     const email = useRef('');
