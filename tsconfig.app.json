@@ -21,13 +21,7 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
-        "noUncheckedSideEffectImports": true,
-
-        "baseUrl": ".",
-        "paths": {
-            "~/*": ["./src/*"],
-            "~public/*": ["./public/*"]
-        }
+        "noUncheckedSideEffectImports": true
     },
     "extends": ["./tsconfig.json"],
     "include": ["src"]

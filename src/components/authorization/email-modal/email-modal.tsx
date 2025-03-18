@@ -13,8 +13,9 @@ import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { ResultModal } from '~/components/result-modal/result-modal';
-import { EmailRestoreSchema, RestoreStep } from '~/constants/authorization';
-import { EmailRestoreForm, RestoreModalProps } from '~/types/authorization';
+import { EmailRestoreFormSchema, EmailRestoreSchema, RestoreStep } from '~/constants/authorization';
+import { useTrimInputBlur } from '~/hooks/use-trim-input-blur';
+import { RestoreModalProps } from '~/types/authorization';
 
 import { EmailFormLabel, ModalLabel } from './label';
 
@@ -25,11 +26,14 @@ type EmailModalProps = RestoreModalProps & {
 export const EmailModal: FC<EmailModalProps> = ({ updateStep, setEmail, ...props }) => {
     const {
         register,
+        setValue,
         handleSubmit,
         formState: { errors, isSubmitting },
-    } = useForm<EmailRestoreForm>({
+    } = useForm<EmailRestoreFormSchema>({
         resolver: yupResolver(EmailRestoreSchema),
     });
+
+    const { handleBlur } = useTrimInputBlur(setValue);
 
     const onSubmit: Parameters<typeof handleSubmit>[0] = ({ email }) => {
         setEmail(email);
@@ -57,6 +61,7 @@ export const EmailModal: FC<EmailModalProps> = ({ updateStep, setEmail, ...props
                             size='lg'
                             placeholder={EmailFormLabel.Email.Placeholder}
                             {...register('email')}
+                            onBlur={handleBlur('email')}
                         />
                         <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
                     </FormControl>

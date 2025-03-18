@@ -11,10 +11,10 @@ import { FC, PropsWithChildren, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Outlet } from 'react-router';
 
-import { SignInSchema } from '~/constants/authorization';
+import { SignInFormSchema, SignInSchema } from '~/constants/authorization';
 import { TOAST_MESSAGE } from '~/constants/toast';
 import { useAuthToast } from '~/hooks/use-auth-toast';
-import type { SignInFormData } from '~/types/authorization';
+import { useTrimInputBlur } from '~/hooks/use-trim-input-blur';
 
 import { PasswordInput } from '../password-input/password-input';
 import { SignInErrorModal } from '../sign-in-error-modal/sign-in-error-modal';
@@ -28,11 +28,14 @@ export const SignInForm: FC<PropsWithChildren> = ({ children }) => {
 
     const {
         register,
+        setValue,
         handleSubmit,
         formState: { errors, isSubmitting },
-    } = useForm<SignInFormData>({
+    } = useForm<SignInFormSchema>({
         resolver: yupResolver(SignInSchema),
     });
+
+    const { handleBlur } = useTrimInputBlur(setValue);
 
     const onSubmit: Parameters<typeof handleSubmit>[0] = (data) => {
         console.log(data);
@@ -47,15 +50,16 @@ export const SignInForm: FC<PropsWithChildren> = ({ children }) => {
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <FormControl isInvalid={!!errors.email}>
+                <FormControl isInvalid={!!errors.login}>
                     <FormLabel>{Label.Login.Label}</FormLabel>
                     <Input
                         variant='auth'
                         size='lg'
                         placeholder={Label.Login.Placeholder}
-                        {...register('email')}
+                        {...register('login')}
+                        onBlur={handleBlur('login')}
                     />
-                    <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+                    <FormErrorMessage>{errors.login?.message}</FormErrorMessage>
                 </FormControl>
 
                 <FormControl isInvalid={!!errors.password} mt={6}>
@@ -64,6 +68,7 @@ export const SignInForm: FC<PropsWithChildren> = ({ children }) => {
                     <PasswordInput
                         placeholder={Label.Password.Placeholder}
                         {...register('password')}
+                        onBlur={handleBlur('password')}
                     />
 
                     <FormErrorMessage>{errors.password?.message}</FormErrorMessage>

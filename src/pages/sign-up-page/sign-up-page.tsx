@@ -3,16 +3,25 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { SignUpSuccessModal, VerificationFailedModal } from '~/components/authorization';
-import { SignUpSchema, SignUpStep, SignUpStepComponent } from '~/constants/authorization';
+import {
+    CredentialsForm,
+    PersonalInfoForm,
+    SignUpSuccessModal,
+    VerificationFailedModal,
+} from '~/components/authorization';
+import { SignUpFormSchema, SignUpSchema, SignUpStep } from '~/constants/authorization';
 import { TOAST_MESSAGE } from '~/constants/toast';
 import { useAuthToast } from '~/hooks/use-auth-toast';
-import { SignUpFormData } from '~/types/authorization';
 
 import { SignUpPropgessLabel } from './label';
 import styles from './sign-up-page.module.css';
 
 const { serverError } = TOAST_MESSAGE;
+
+const SignUpStepComponent = {
+    [SignUpStep.PersonalInfo]: PersonalInfoForm,
+    [SignUpStep.Credentials]: CredentialsForm,
+};
 
 const SignUpPage: FC = () => {
     const [step, setStep] = useState(SignUpStep.PersonalInfo);
@@ -21,9 +30,9 @@ const SignUpPage: FC = () => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { toast } = useAuthToast();
-    const registrationForm = useForm<SignUpFormData>({
+    const registrationForm = useForm<SignUpFormSchema>({
         mode: 'onChange',
-        resolver: yupResolver<SignUpFormData>(SignUpSchema[step]),
+        resolver: yupResolver<SignUpFormSchema>(SignUpSchema[step]),
     });
 
     const {

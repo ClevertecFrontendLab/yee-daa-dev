@@ -1,4 +1,4 @@
-import { SignUpStep } from '../../constants/authorization/sign-up-form';
+import { SignUpStep } from '~/constants/authorization';
 
 export const SignUpPropgessLabel = {
     [SignUpStep.PersonalInfo]: 'Шаг 1. Личная информация',

@@ -3,10 +3,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FC } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 
-import { CredentialsSchema } from '~/constants/authorization';
+import {
+    CredentialsFormSchema,
+    CredentialsSchema,
+    SignUpFormSchema,
+} from '~/constants/authorization';
 import { TOAST_MESSAGE } from '~/constants/toast';
 import { useAuthToast } from '~/hooks/use-auth-toast';
-import { CredentialsFormData, RestoreModalProps, SignUpFormData } from '~/types/authorization';
+import { RestoreModalProps } from '~/types/authorization';
 
 import { ResultModal } from '../../result-modal/result-modal';
 import { CredentialsForm } from '../credentials-form/credentials-form';
@@ -17,9 +21,9 @@ const { serverError } = TOAST_MESSAGE;
 export const RestoreFormModal: FC<Omit<RestoreModalProps, 'updateStep'>> = ({ ...props }) => {
     const { toast } = useAuthToast();
 
-    const registrationForm = useForm<CredentialsFormData>({
+    const registrationForm = useForm<CredentialsFormSchema>({
         mode: 'onChange',
-        resolver: yupResolver<CredentialsFormData>(CredentialsSchema),
+        resolver: yupResolver<CredentialsFormSchema>(CredentialsSchema),
     });
 
     const onSubmit = () => {
@@ -32,7 +36,7 @@ export const RestoreFormModal: FC<Omit<RestoreModalProps, 'updateStep'>> = ({ ..
             <ModalBody>
                 <form onSubmit={registrationForm.handleSubmit(onSubmit)}>
                     <CredentialsForm
-                        form={registrationForm as unknown as UseFormReturn<SignUpFormData>}
+                        form={registrationForm as unknown as UseFormReturn<SignUpFormSchema>}
                     />
                 </form>
             </ModalBody>
