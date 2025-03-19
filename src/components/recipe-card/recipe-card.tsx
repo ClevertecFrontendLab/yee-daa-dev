@@ -20,7 +20,7 @@ import { CardStat } from '../card-stat/card-stat';
 import { CategoryTag } from '../category-tag';
 import { AlarmIcon } from '../icons/alarm-icon';
 import { BookmarkIcon } from '../icons/bookmark-icon';
-import { CalendarIcon } from '../icons/calendar-icon';
+import { LikeIcon } from '../icons/like-icon';
 
 export const RecipeCard: FC<{ recipe?: Recipe }> = ({ recipe }) => (
     <Card
@@ -71,11 +71,11 @@ export const RecipeCard: FC<{ recipe?: Recipe }> = ({ recipe }) => (
                         variant='outline'
                         size={{ base: 'sm', '2xl': 'lg' }}
                         p={0}
-                        leftIcon={<CalendarIcon />}
+                        leftIcon={<LikeIcon />}
                         color='blackAlpha.800'
                         fontSize={{ base: 'xs', lg: 'sm' }}
                     >
-                        Добавить в мой календарь
+                        Оценить рецепт
                     </Button>
                     <Button
                         bg={'var(--chakra-colors-lime-400)'}
