@@ -32,7 +32,8 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
 
     return (
         <MenuButton
-            w={isfromFilter ? '400px' : '270px'}
+            data-test-id={isfromFilter ? 'allergens-menu-button-filter' : 'allergens-menu-button'}
+            w={isfromFilter ? '370px' : '270px'}
             h='100%'
             minHeight='40px'
             p={2}
@@ -72,7 +73,11 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
                             _hover={{ bg: 'none', color: 'var(--chakra-colors-lime-600)' }}
                         />
                     )}
-                    {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                    {isOpen ? (
+                        <ChevronUpIcon />
+                    ) : (
+                        <ChevronDownIcon data-test-id='allergens-menu-icon' />
+                    )}
                 </span>
             }
         >

@@ -6,20 +6,17 @@ import {
 } from '../components/drawer/helpers/get-selected-items';
 import { selectAuthors, selectSelectedAuthors } from '../redux/features/authors-slice';
 import { selectCategoriesMenu, selectSelectedCategories } from '../redux/features/categories-slice';
-import { selectCuisines, selectSelectedCuisines } from '../redux/features/cuisines-slice';
 import { selectMeats, selectSelectedMeats } from '../redux/features/meats-slice';
 import { selectSelectedSides, selectSides } from '../redux/features/sides-slice';
 import { useAppSelector } from './typed-react-redux-hooks';
 
 export const useSelectedItems = (filterTitle: string) => {
     const selectedCategories = useAppSelector(selectSelectedCategories);
-    const selectedCuisines = useAppSelector(selectSelectedCuisines);
     const selectedAuthors = useAppSelector(selectSelectedAuthors);
     const selectedMeats = useAppSelector(selectSelectedMeats);
     const selectedSides = useAppSelector(selectSelectedSides);
 
     const allCategories = useAppSelector(selectCategoriesMenu);
-    const allCuisines = useAppSelector(selectCuisines);
     const allAuthors = useAppSelector(selectAuthors);
     const allMeats = useAppSelector(selectMeats);
     const allSides = useAppSelector(selectSides);
@@ -27,23 +24,21 @@ export const useSelectedItems = (filterTitle: string) => {
     const selectedItems = useMemo(
         () => ({
             selectedCategories,
-            selectedCuisines,
             selectedAuthors,
             selectedMeats,
             selectedSides,
         }),
-        [selectedCategories, selectedCuisines, selectedAuthors, selectedMeats, selectedSides],
+        [selectedCategories, selectedAuthors, selectedMeats, selectedSides],
     );
 
     const allItems = useMemo(
         () => ({
             allCategories,
-            allCuisines,
             allAuthors,
             allMeats,
             allSides,
         }),
-        [allCategories, allCuisines, allAuthors, allMeats, allSides],
+        [allCategories, allAuthors, allMeats, allSides],
     );
 
     const selectedItemsResult = useMemo(() => {

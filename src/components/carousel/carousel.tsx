@@ -26,11 +26,12 @@ export const Carousel = () => {
             </Heading>
 
             <Swiper
+                data-test-id='carousel'
                 ref={swiperRef}
                 modules={[Navigation]}
                 navigation={false}
                 spaceBetween={12}
-                slidesPerView={2}
+                slidesPerView={1}
                 loop={true}
                 grabCursor={true}
                 breakpoints={{
@@ -41,14 +42,15 @@ export const Carousel = () => {
                     1640: { slidesPerView: 4 },
                 }}
             >
-                {carouselRecipes.map((el) => (
-                    <SwiperSlide key={el.id}>
+                {carouselRecipes.map((el, index) => (
+                    <SwiperSlide key={el.id} data-test-id={`carousel-card-${index}`}>
                         <CarouselItem recipe={el} />
                     </SwiperSlide>
                 ))}
             </Swiper>
 
             <IconButton
+                data-test-id='carousel-back'
                 aria-label='carousel-back'
                 icon={<ArrowBackIcon />}
                 onClick={() => swiperRef.current?.swiper.slidePrev()}
@@ -63,6 +65,7 @@ export const Carousel = () => {
                 display={{ base: 'none', xmd: 'block' }}
             />
             <IconButton
+                data-test-id='carousel-forward'
                 aria-label='carousel-forward'
                 icon={<ArrowForwardIcon />}
                 onClick={() => swiperRef.current?.swiper.slideNext()}

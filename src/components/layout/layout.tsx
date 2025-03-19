@@ -1,4 +1,5 @@
 import { Grid, GridItem } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { Outlet } from 'react-router';
 
 import { useIsTablet } from '../../hooks/media-query';
@@ -14,6 +15,18 @@ import styles from './layout.module.css';
 const Layout = () => {
     const isOpen = useAppSelector(selectMenu);
     const isTablet = useIsTablet();
+
+    useEffect(() => {
+        if (isOpen) {
+            document.body.classList.add('no-scroll');
+        } else {
+            document.body.classList.remove('no-scroll');
+        }
+
+        return () => {
+            document.body.classList.remove('no-scroll');
+        };
+    }, [isOpen]);
 
     return (
         <div className={styles.wrapper}>

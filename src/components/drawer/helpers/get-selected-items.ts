@@ -5,7 +5,6 @@ import { UserProps } from '../../../types/user';
 
 type SelectedItems = {
     selectedCategories: string[];
-    selectedCuisines: string[];
     selectedAuthors: string[];
     selectedMeats: string[];
     selectedSides: string[];
@@ -13,7 +12,6 @@ type SelectedItems = {
 
 type AllItems = {
     allCategories: MenuItem[];
-    allCuisines: FoodItem[];
     allAuthors: UserProps[];
     allMeats: FoodItem[];
     allSides: FoodItem[];
@@ -23,8 +21,6 @@ export const getSelectedItems = (filterTitle: string, selectedItems: SelectedIte
     switch (filterTitle) {
         case FILTER_TITLES.CATEGORY:
             return selectedItems.selectedCategories;
-        case FILTER_TITLES.CUISINE:
-            return selectedItems.selectedCuisines;
         case FILTER_TITLES.AUTHOR_SEARCH:
             return selectedItems.selectedAuthors;
         case FILTER_TITLES.MEAT:
@@ -71,9 +67,6 @@ export const translateSelectedItems = (
     switch (filterTitle) {
         case FILTER_TITLES.CATEGORY:
             return getTranslatedMenuItem(selectedItems.selectedCategories, allItems.allCategories);
-
-        case FILTER_TITLES.CUISINE:
-            return getTranslatedFoodItem(selectedItems.selectedCuisines, allItems.allCuisines);
 
         case FILTER_TITLES.AUTHOR_SEARCH:
             return getTranslatedAuthor(selectedItems.selectedAuthors, allItems.allAuthors);

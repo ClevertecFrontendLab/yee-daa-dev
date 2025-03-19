@@ -35,6 +35,7 @@ export const SideNav = () => {
 
     return (
         <Stack
+            data-test-id='nav'
             pt={6}
             justifyContent='space-between'
             h='100%'

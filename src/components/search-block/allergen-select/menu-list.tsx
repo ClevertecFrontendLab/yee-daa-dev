@@ -1,14 +1,4 @@
-import { PlusSquareIcon } from '@chakra-ui/icons';
-import {
-    Box,
-    Button,
-    Checkbox,
-    Input,
-    InputGroup,
-    InputRightElement,
-    MenuItem,
-    MenuList,
-} from '@chakra-ui/react';
+import { Box, Button, Checkbox, Input, InputGroup, MenuItem, MenuList } from '@chakra-ui/react';
 import { FC, useEffect, useRef } from 'react';
 
 import { BUTTON_ADD_OTHER_ALLERGEN, PLACEHOLDER_ALLERGEN } from '../../../constants/select';
@@ -19,6 +9,7 @@ import {
     selectAllergens,
     selectSelectedAllergens,
 } from '../../../redux/features/allergens-slice';
+import { PlusCircleIcon } from '../../icons/plus-circle-icon';
 
 type SelectMenuListProps = {
     isAdding: boolean;
@@ -72,7 +63,7 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
 
     return (
         <Box position='absolute' top='40px' zIndex={3}>
-            <MenuList pt={3} pb={3}>
+            <MenuList pt={3} pb={3} data-test-id='allergens-menu'>
                 {allergens.map((allergen, index) => (
                     <MenuItem
                         key={allergen.value}
@@ -81,6 +72,7 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
                         bg={index % 2 === 0 ? 'gray.100' : 'white'}
                     >
                         <Checkbox
+                            data-test-id={`allergen-${index}`}
                             borderColor='var(--chakra-colors-lime-300)'
                             iconColor='black'
                             isChecked={selectedAllergens.includes(allergen.label)}
@@ -97,12 +89,16 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
                         </Checkbox>
                     </MenuItem>
                 ))}
-                {isAdding ? (
-                    <InputGroup>
+                <InputGroup
+                    alignItems='center'
+                    padding='0 12px'
+                    margin='8px auto'
+                    justifyContent='space-between'
+                >
+                    {isAdding ? (
                         <Input
                             display='block'
-                            margin='8px auto'
-                            width='220px'
+                            w='205px'
                             ref={inputRef}
                             color={'var(--chakra-colors-lime-800)'}
                             value={newAllergen}
@@ -116,25 +112,27 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
                                 boxShadow: 'none',
                             }}
                         />
-                        <InputRightElement>
-                            <PlusSquareIcon cursor={'pointer'} onClick={handleAddAllergen} />
-                        </InputRightElement>
-                    </InputGroup>
-                ) : (
-                    <Button
-                        display={'block'}
-                        textAlign='start'
-                        w='220px'
-                        margin='8px 16px'
-                        fontWeight={400}
-                        color={'var(--chakra-colors-lime-800)'}
-                        background={'--chakra-ring-offset-color'}
-                        border='1px solid var(--chakra-colors-blackAlpha-200)'
-                        onClick={handleAddClick}
-                    >
-                        {BUTTON_ADD_OTHER_ALLERGEN}
-                    </Button>
-                )}
+                    ) : (
+                        <Button
+                            data-test-id='add-other-allergen'
+                            display={'block'}
+                            textAlign='start'
+                            w='205px'
+                            fontWeight={400}
+                            color={'var(--chakra-colors-lime-800)'}
+                            background={'--chakra-ring-offset-color'}
+                            border='1px solid var(--chakra-colors-blackAlpha-200)'
+                            onClick={handleAddClick}
+                        >
+                            {BUTTON_ADD_OTHER_ALLERGEN}
+                        </Button>
+                    )}
+                    <PlusCircleIcon
+                        cursor={'pointer'}
+                        onClick={handleAddAllergen}
+                        data-test-id='add-allergen-button'
+                    />
+                </InputGroup>
             </MenuList>
         </Box>
     );

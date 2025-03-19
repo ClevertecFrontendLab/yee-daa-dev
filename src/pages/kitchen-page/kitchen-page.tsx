@@ -1,4 +1,3 @@
-import { Heading } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
 
 import { BlogSection } from '../../components/blog-section/blog-section.tsx';
@@ -128,25 +127,29 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
 
     return (
         <>
-            <SectionHeader onSearch={handleSearch} pageType={pageType} />
+            <SectionHeader onSearch={handleSearch} pageType={pageType} startSearch={startSearch} />
 
-            {startSearch && matchedRecipes.length ? (
+            {startSearch && matchedRecipes.length > 0 && (
                 <RecipeCardList recipeList={matchedRecipes} />
-            ) : (
-                startSearch &&
-                !matchedRecipes.length && (
-                    <SectionBox>
-                        <Heading
-                            fontSize={{ base: 'xl', xl: '2xl' }}
-                            lineHeight='none'
-                            textAlign='center'
-                        >
-                            По вашему запросу ничего не найдено...
-                        </Heading>
-                    </SectionBox>
-                )
             )}
 
+            {startSearch && !matchedRecipes.length && (
+                <>
+                    {isCategoryPage && <KitchenTabs recipeList={categoryRecipes} />}
+                    {isJuiciestPage && (
+                        <SectionBox>
+                            <RecipeCardList recipeList={favouritesRecipes} />
+                        </SectionBox>
+                    )}
+                    {(isMainPage || !selectedCategory) && (
+                        <>
+                            <Carousel />
+                            <FavouritesBlock />
+                            <BlogSection />
+                        </>
+                    )}
+                </>
+            )}
             {!startSearch && (
                 <>
                     {isfromFilter && filteredRecipes.length > 0 && (

@@ -50,6 +50,7 @@ export const Breadcrumbs = () => {
                         flexWrap: 'wrap',
                     },
                 }}
+                data-test-id='breadcrumbs'
             >
                 <BreadcrumbItem>
                     <BreadcrumbLink
