@@ -1,12 +1,13 @@
 import { Category } from '~/redux/api/types/categories';
 import { Recipe } from '~/redux/api/types/recipes';
 import { MenuItem } from '~/types/category';
+import { Nullable } from '~/types/common';
 
 export const getPath = (
     allcategories: MenuItem[],
     allRecipes: Recipe[],
-    selectedCategory: Category | null | undefined,
     recipeId: string,
+    selectedCategory?: Nullable<Category>,
 ) => {
     const currentRecipe = allRecipes.find((recipe) => recipe.id === recipeId);
 

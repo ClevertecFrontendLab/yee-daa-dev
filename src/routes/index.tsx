@@ -15,6 +15,7 @@ import { ErrorBoundary } from './error-boundary/error-boundary';
 import { clearFilterStateLoader } from './loaders/clear-filter-state-loader';
 import { juiciestLoader } from './loaders/juciest-loader';
 import { recipeLoader } from './loaders/recipe-loader';
+import { rootAppLoader } from './loaders/root-app-loader';
 import { rootCategoryLoader } from './loaders/root-category-loader';
 
 const Layout = lazy(() => import('~/components/layout/layout.tsx'));
@@ -26,6 +27,7 @@ export const appRouter = createBrowserRouter(
         <Route
             ErrorBoundary={ErrorBoundary}
             path={Paths.R_SWITCHER}
+            loader={rootAppLoader}
             element={
                 <Suspense fallback={<AppLoader isOpen={true} overlayColor='white' />}>
                     <Layout />

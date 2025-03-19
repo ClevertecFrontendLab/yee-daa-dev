@@ -1,7 +1,4 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
-
 import { ApiEndpoints } from '~/redux/api/constants';
-import { baseQuery } from '~/redux/api/get-base-query';
 import {
     AllRecipeParams,
     MetaData,
@@ -23,9 +20,9 @@ import {
 } from '~/redux/features/recipes-slice';
 import { AppState } from '~/types/store';
 
-export const recipeApi = createApi({
-    reducerPath: 'recipeApi',
-    baseQuery,
+import { baseApi } from '../base-api';
+
+export const recipeApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         getAllRecipesWithParams: build.query<RecipesResponseWithMeta, AllRecipeParams>({
             query: (params) => ({ url: ApiEndpoints.Recipe, params }),
@@ -162,6 +159,7 @@ export const recipeApi = createApi({
             transformErrorResponse: transformBaseErrorResponse,
         }),
     }),
+    overrideExisting: false,
 });
 
 export const {

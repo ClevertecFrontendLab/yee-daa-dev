@@ -34,7 +34,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const isCategoryPage = pageType === PageType.Category;
     const isJuiciestPage = pageType === PageType.Juiciest;
 
-    const { selectedCategory } = useDetectParams();
+    const { selectedCategory, selectedSubCategory } = useDetectParams();
 
     const filteredRecipes = useAppSelector(selectFilteredRecipes);
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
@@ -52,42 +52,62 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
         searchInput: searchInputValue,
         sides: selectedSides,
         subCategories: selectedSubcategories,
+        page: currentPage,
     });
+    console.log(currentPage, 'CURR', requestParams);
 
+    const isFilteringWithCategory = selectedSubCategory?.id && isFiltering;
+
+    // для запросов с главной страницы
     const { data, refetch, isFetching } = useGetAllRecipesMergeQuery(
         { ...requestParams, limit: FILTERED_RECIPES_LIMIT },
-        { skip: isJuiciestPage || !isFiltering },
+        { skip: isJuiciestPage || !isFiltering || Boolean(selectedSubCategory?.id) },
     );
 
-    const totalPages = data?.meta?.totalPages ?? 1;
+    // для запросов внутри выбранной категории
+    const {
+        data: recipesData,
+        refetch: refetchWithCategory,
+        isFetching: isFetchingByCategory,
+    } = useGetAllRecipesMergeQuery(
+        {
+            ...requestParams,
+            limit: FILTERED_RECIPES_LIMIT,
+            subcategoriesIds: selectedSubCategory?.id ? [selectedSubCategory.id] : [],
+        },
+        { skip: isJuiciestPage || !selectedSubCategory?.id || !isFiltering },
+    );
+    const subCategoryRecipes = recipesData?.data ?? [];
+
+    const totalPages = data?.meta?.totalPages || 1;
 
     const loadMoreCallback = () => {
         setCurrentPage((prev) => prev + 1);
-        refetch();
+        isFetchingByCategory ? refetchWithCategory() : refetch();
     };
 
-    const isFilteredRecipesShowed = isArrayWithItems(filteredRecipes);
+    const isFilteredRecipesShowed =
+        isArrayWithItems(filteredRecipes) || isArrayWithItems(subCategoryRecipes);
 
     return (
         <Fragment key='kitchen-page'>
             <SectionHeader pageType={pageType} />
 
-            {isFilteredRecipesShowed && (
-                <>
+            {isFilteredRecipesShowed ? (
+                <Fragment key='filtered part'>
                     <Center w='100%' flexWrap='wrap'>
                         <CriteriaTagsList withAllergens={false} />
                     </Center>
                     <RecipeCardList
-                        recipeList={filteredRecipes}
+                        recipeList={isFilteringWithCategory ? subCategoryRecipes : filteredRecipes}
                         currentPage={currentPage}
-                        isLoading={isFetching}
+                        isLoading={isFetching || isFetchingByCategory}
                         totalPages={totalPages}
                         loadMoreCallback={loadMoreCallback}
                     />
-                </>
-            )}
-            {!isFilteredRecipesShowed && (
-                <Fragment key='search-filter-page-flow'>
+                </Fragment>
+            ) : (
+                <Fragment key='usual part'>
                     {isCategoryPage && <KitchenTabs />}
                     {isJuiciestPage && <JuiciestRecipesList />}
                     {(isMainPage || (!selectedCategory && !isJuiciestPage)) && (

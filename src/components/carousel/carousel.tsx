@@ -9,14 +9,15 @@ import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 import { SLIDER_RECIPES_LIMIT } from '~/constants/general.ts';
 import { NEWEST_PARAMS } from '~/redux/api/constants.ts';
 import { useGetAllRecipesWithParamsQuery } from '~/redux/api/services/recipes-api/index.ts';
+import { Nullable } from '~/types/common.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
 import { CarouselItem } from './carousel-item.tsx';
 
 export const Carousel = () => {
     const { data } = useGetAllRecipesWithParamsQuery(NEWEST_PARAMS);
-    const carouselItems = data?.data;
-    const swiperRef = useRef<SwiperRef | null>(null);
+    const carouselItems = data?.data ?? [];
+    const swiperRef = useRef<Nullable<SwiperRef>>(null);
 
     const carouselRecipes = carouselItems
         ?.slice()

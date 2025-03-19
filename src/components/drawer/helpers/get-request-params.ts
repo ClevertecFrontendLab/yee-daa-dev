@@ -1,3 +1,4 @@
+import { FILTERED_RECIPES_LIMIT } from '~/constants/general';
 import { AllRecipeParams } from '~/redux/api/types/recipes';
 import { isArrayWithItems } from '~/utils/is-array-with-items';
 
@@ -8,6 +9,7 @@ export const getRequestParams = ({
     allergens,
     searchInput,
     page = 1,
+    limit = FILTERED_RECIPES_LIMIT,
 }: {
     subCategories: string[];
     meats: string[];
@@ -15,6 +17,7 @@ export const getRequestParams = ({
     allergens: string[];
     searchInput: string;
     page?: number;
+    limit?: number;
 }): AllRecipeParams => {
     const result: AllRecipeParams = {};
     if (isArrayWithItems(subCategories)) {
@@ -35,5 +38,6 @@ export const getRequestParams = ({
     }
 
     result.page = page;
+    result.limit = limit;
     return result;
 };

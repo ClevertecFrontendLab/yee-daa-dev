@@ -13,7 +13,7 @@ type Props = {
 };
 
 export const CategoryTag: FC<Props> = ({ categoriesIds, color }) => {
-    const subCategories = useAppSelector(selectSubCategories) ?? [];
+    const subCategories = useAppSelector(selectSubCategories);
     const rootCategoryIds = subCategories.reduce<string[]>((acc, curr) => {
         if (!categoriesIds?.includes(curr.id)) return acc;
 
