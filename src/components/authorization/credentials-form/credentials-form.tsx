@@ -10,6 +10,7 @@ import { FC } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 import { SignUpFormSchema } from '~/constants/authorization';
+import { CyTestId } from '~/cy-test-id';
 import { useTrimInputBlur } from '~/hooks/use-trim-input-blur';
 
 import { PasswordInput } from '../password-input/password-input';
@@ -33,6 +34,7 @@ export const CredentialsForm: FC<CredentialsFormProps> = ({
             <FormControl isInvalid={!!errors.login}>
                 <FormLabel>{Label.Login.Label}</FormLabel>
                 <Input
+                    data-test-id={CyTestId.Auth.LoginInput}
                     variant='auth'
                     size='lg'
                     placeholder={Label.Login.Placeholder}
@@ -46,6 +48,7 @@ export const CredentialsForm: FC<CredentialsFormProps> = ({
             <FormControl isInvalid={!!errors.password} mt={6}>
                 <FormLabel>{Label.Password.Label}</FormLabel>
                 <PasswordInput
+                    data-test-id={CyTestId.Auth.PasswordInput}
                     placeholder={Label.Password.Placeholder}
                     {...register('password')}
                     onBlur={handleBlur('password')}
@@ -57,6 +60,7 @@ export const CredentialsForm: FC<CredentialsFormProps> = ({
             <FormControl isInvalid={!!errors.repeatPassword} mt={6}>
                 <FormLabel>{Label.RepeatPassword.Label}</FormLabel>
                 <PasswordInput
+                    data-test-id={CyTestId.Auth.RepeatPasswordInput}
                     placeholder={Label.RepeatPassword.Placeholder}
                     {...register('repeatPassword')}
                 />
@@ -64,6 +68,7 @@ export const CredentialsForm: FC<CredentialsFormProps> = ({
             </FormControl>
 
             <Button
+                data-test-id={CyTestId.Auth.SubmitButton}
                 mt={12}
                 w='full'
                 variant='black'

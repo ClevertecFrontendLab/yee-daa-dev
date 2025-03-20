@@ -11,6 +11,7 @@ import {
 } from '~/components/authorization';
 import { SignUpFormSchema, SignUpSchema, SignUpStep } from '~/constants/authorization';
 import { TOAST_MESSAGE } from '~/constants/toast';
+import { CyTestId } from '~/cy-test-id';
 import { useAuthToast } from '~/hooks/use-auth-toast';
 
 import { SignUpPropgessLabel } from './label';
@@ -66,6 +67,7 @@ const SignUpPage: FC = () => {
                 {SignUpPropgessLabel[step]}
             </Heading>
             <Progress
+                data-test-id={CyTestId.Auth.SignUpProgress}
                 className={styles.signUpProgress}
                 value={(validFieldsCount * 100) / 6}
                 mb={6}
@@ -74,7 +76,7 @@ const SignUpPage: FC = () => {
                 bgColor='blackAlpha.100'
             />
 
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form data-test-id={CyTestId.Auth.SignUpForm} onSubmit={handleSubmit(onSubmit)}>
                 <StepComponent form={registrationForm} {...{ changeStep }} />
             </form>
 

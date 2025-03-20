@@ -18,6 +18,7 @@ import { SignInFormSchema, SignInSchema } from '~/constants/authorization';
 import { HttpStatus } from '~/constants/http-status';
 import { Paths } from '~/constants/path';
 import { TOAST_MESSAGE } from '~/constants/toast';
+import { CyTestId } from '~/cy-test-id';
 import { useAuthToast } from '~/hooks/use-auth-toast';
 import { useTrimInputBlur } from '~/hooks/use-trim-input-blur';
 import { useSignInMutation } from '~/redux/api/services/auth-api';
@@ -73,10 +74,11 @@ export const SignInForm: FC = () => {
 
     return (
         <>
-            <ChakraForm onSubmit={handleSubmit(onSubmit)}>
+            <ChakraForm data-test-id={CyTestId.Auth.SignInForm} onSubmit={handleSubmit(onSubmit)}>
                 <FormControl isDisabled={isSubmitting} isInvalid={!!errors.login}>
                     <FormLabel>{Label.Login.Label}</FormLabel>
                     <Input
+                        data-test-id={CyTestId.Auth.LoginInput}
                         variant='auth'
                         size='lg'
                         placeholder={Label.Login.Placeholder}
@@ -104,6 +106,7 @@ export const SignInForm: FC = () => {
                 </FormControl>
 
                 <Button
+                    data-test-id={CyTestId.Auth.SubmitButton}
                     mt={112}
                     w='full'
                     variant='black'

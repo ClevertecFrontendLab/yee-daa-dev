@@ -3,6 +3,7 @@ import { FC } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 import { SignUpFormSchema } from '~/constants/authorization/sign-up-form';
+import { CyTestId } from '~/cy-test-id';
 import { useTrimInputBlur } from '~/hooks/use-trim-input-blur';
 
 import { Label } from './label';
@@ -25,6 +26,7 @@ export const PersonalInfoForm: FC<PersonalInfoFormProps> = ({
             <FormControl isInvalid={!!errors.firstName}>
                 <FormLabel>{Label.FirstName.Label}</FormLabel>
                 <Input
+                    data-test-id={CyTestId.Auth.FirstNameInput}
                     variant='auth'
                     size='lg'
                     placeholder={Label.FirstName.Placeholder}
@@ -37,6 +39,7 @@ export const PersonalInfoForm: FC<PersonalInfoFormProps> = ({
             <FormControl isInvalid={!!errors.lastName} mt={6}>
                 <FormLabel>{Label.LastName.Label}</FormLabel>
                 <Input
+                    data-test-id={CyTestId.Auth.LastNameInput}
                     variant='auth'
                     size='lg'
                     placeholder={Label.LastName.Placeholder}
@@ -49,6 +52,7 @@ export const PersonalInfoForm: FC<PersonalInfoFormProps> = ({
             <FormControl isInvalid={!!errors.email} mt={6}>
                 <FormLabel>{Label.Email.Label}</FormLabel>
                 <Input
+                    data-test-id={CyTestId.Auth.EmailInput}
                     variant='auth'
                     size='lg'
                     placeholder={Label.Email.Placeholder}
@@ -59,6 +63,7 @@ export const PersonalInfoForm: FC<PersonalInfoFormProps> = ({
             </FormControl>
 
             <Button
+                data-test-id={CyTestId.Auth.SubmitButton}
                 mt={12}
                 w='full'
                 variant='black'
