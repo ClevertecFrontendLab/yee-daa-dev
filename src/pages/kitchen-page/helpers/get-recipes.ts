@@ -1,10 +1,11 @@
 import { Recipe } from '~/redux/api/types/recipes';
 import { MenuItem } from '~/types/category';
+import { Nullable } from '~/types/common';
 
 export const getCategoryRecipes = (
     recipes: Recipe[],
-    selectedCategory: MenuItem | null,
-    selectedSubCategory: MenuItem | null,
+    selectedCategory: Nullable<MenuItem>,
+    selectedSubCategory: Nullable<MenuItem>,
 ) =>
     recipes.filter((recipe) => {
         if (selectedCategory && selectedSubCategory) {

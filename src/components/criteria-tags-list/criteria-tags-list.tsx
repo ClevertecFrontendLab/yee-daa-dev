@@ -13,6 +13,7 @@ import {
 import { selectSelectedMeats, toggleMeat } from '~/redux/features/meats-slice';
 import { setShowedEmptyText } from '~/redux/features/recipes-slice';
 import { selectSelectedSides, toggleSide } from '~/redux/features/sides-slice';
+import { Nullable, StrOrNull } from '~/types/common';
 import { TagType } from '~/types/type-tags';
 import { isArrayWithItems } from '~/utils/is-array-with-items';
 
@@ -27,10 +28,10 @@ import {
 
 //TODO заменить моки для авторов когда будет коллекция авторов
 
-type CriteriaTagsListProps = {
-    forDrawer?: boolean;
-    withAllergens?: boolean;
-};
+type CriteriaTagsListProps = Partial<{
+    forDrawer: boolean;
+    withAllergens: boolean;
+}>;
 
 export const CriteriaTagsList = ({
     withAllergens = true,
@@ -44,7 +45,7 @@ export const CriteriaTagsList = ({
     const selectedMeats = useAppSelector(selectSelectedMeats);
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
 
-    const determineTagType = (tag: string | null): TagType | null => {
+    const determineTagType = (tag: StrOrNull): Nullable<TagType> => {
         if (tag && selectedAllergens.includes(tag)) {
             return TagType.ALLERGEN;
         }
@@ -89,7 +90,7 @@ export const CriteriaTagsList = ({
         },
     };
 
-    const deleteFilter = (tag: string | null, type: TagType | null) => {
+    const deleteFilter = (tag: StrOrNull, type: Nullable<TagType>) => {
         if (type && actionMapper[type] && tag) {
             actionMapper[type](tag);
         }

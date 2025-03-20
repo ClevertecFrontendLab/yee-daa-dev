@@ -1,12 +1,13 @@
 import { Box, Text } from '@chakra-ui/react';
 
 import { PLACEHOLDER_SELECT, PLACEHOLDER_SELECT_DRAWER } from '~/constants/select';
+import { StrOrNull } from '~/types/common';
 import { isArrayWithItems } from '~/utils/is-array-with-items';
 
-type SelectedItemsProps = {
-    selectedItems?: (string | null)[];
-    fromFilter?: boolean;
-};
+type SelectedItemsProps = Partial<{
+    selectedItems: StrOrNull[];
+    fromFilter: boolean;
+}>;
 export const SelectedItems: React.FC<SelectedItemsProps> = ({ selectedItems, fromFilter }) => (
     <Box display='flex' flexWrap='wrap' w='100%'>
         {isArrayWithItems(selectedItems) ? (

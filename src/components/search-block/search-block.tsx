@@ -4,6 +4,7 @@ import { ChangeEventHandler, FC, useState } from 'react';
 
 import { useIsTablet } from '~/hooks/media-query.ts';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { useDetectParams } from '~/hooks/use-detect-params.ts';
 import { useLazyGetAllRecipesMergeQuery } from '~/redux/api/services/recipes-api/index.ts';
 import { selectSelectedAllergens } from '~/redux/features/allergens-slice.ts';
 import { selectSelectedSubCategoriesIds } from '~/redux/features/categories-slice.ts';
@@ -38,6 +39,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
     const selectedSubCategories = useAppSelector(selectSelectedSubCategoriesIds);
     const isEmptyTextShowed = useAppSelector(selectShowEmptyText);
+    const { selectedSubCategory } = useDetectParams();
 
     const [fetchRecipes, { isFetching }] = useLazyGetAllRecipesMergeQuery();
 
@@ -49,12 +51,16 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
     const handleSearchClick = async () => {
         onSearchCb();
         dispatch(setIsFiltering(true));
+
+        // флоу для главной страницы с выбранными параметрами
         const requestParams = getRequestParams({
             allergens: selectedAllergens,
             meats: selectedMeats,
             searchInput: inputValue,
             sides: selectedSides,
-            subCategories: selectedSubCategories,
+            subCategories: selectedSubCategory?.id
+                ? [selectedSubCategory.id]
+                : selectedSubCategories,
         });
         await fetchRecipes(requestParams);
         setIsFocused(false);

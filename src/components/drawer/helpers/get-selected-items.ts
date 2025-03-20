@@ -1,5 +1,6 @@
 import { FILTER_TITLES } from '~/constants/filters';
 import { MenuItem } from '~/types/category';
+import { StrOrNull } from '~/types/common';
 import { FoodItem } from '~/types/food-item';
 import { UserProps } from '~/types/user';
 
@@ -70,17 +71,17 @@ export const translateSelectedItems = (
     }
 };
 
-export const getEnglishMenuItem = (title: string | null, menuItem: MenuItem[]) => {
+export const getEnglishMenuItem = (title: StrOrNull, menuItem: MenuItem[]) => {
     const item = menuItem.find((cat) => cat.title === title);
     return item ? item.category : null;
 };
 
-export const getEnglishFoodItem = (label: string | null, foodItems: FoodItem[]) => {
+export const getEnglishFoodItem = (label: StrOrNull, foodItems: FoodItem[]) => {
     const item = foodItems.find((food) => food.label === label);
     return item ? item.value : null;
 };
 
-export const getEnglishAuthor = (fullName: string | null, allAuthors: UserProps[]) => {
+export const getEnglishAuthor = (fullName: StrOrNull, allAuthors: UserProps[]) => {
     const author = allAuthors.find((au) => `${au.lastName}${au.firstName}` === fullName);
     return author ? author.login : null;
 };

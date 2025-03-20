@@ -44,9 +44,7 @@ export const categoriesSlice = createSlice({
                 return subCategories.map((elem) => elem.id);
             }, []);
 
-            const uniqueFoundSubCategories = Array.from(new Set(foundSubCategories));
-
-            state.selectedSubCategoriesIds = uniqueFoundSubCategories;
+            state.selectedSubCategoriesIds = Array.from(new Set(foundSubCategories));
         },
         resetSelectedCategories(state) {
             state.selectedCategories = [];

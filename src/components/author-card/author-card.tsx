@@ -39,19 +39,19 @@ export const AuthorCard: FC<{ author: UserProps }> = ({ author }) => (
                     Подписаться
                 </Button>
                 <HStack>
-                    {author.bookmarks && (
+                    {author?.bookmarks && (
                         <HStack>
                             {icons['bookmarks']}
                             <Text fontSize='xs' lineHeight={6} color='lime.600'>
-                                {author.bookmarks}
+                                {author?.bookmarks}
                             </Text>
                         </HStack>
                     )}
-                    {author.followers && (
+                    {author?.followers && (
                         <HStack>
                             <FollowersIcon />
                             <Text fontSize='xs' lineHeight={6} color='lime.600'>
-                                {author.followers}
+                                {author?.followers ?? 0}
                             </Text>
                         </HStack>
                     )}

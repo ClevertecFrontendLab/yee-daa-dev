@@ -1,7 +1,4 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
-
 import { ApiEndpoints } from '~/redux/api/constants';
-import { baseQuery } from '~/redux/api/get-base-query';
 import {
     Category,
     CategoryRaw,
@@ -15,12 +12,11 @@ import { LOCALSTORAGE_KEYS, setDataToLocalStorage } from '~/utils/local-storage-
 import { isCategory, isCategoryRaw } from '../../utils/is-category';
 import { replaceUnderscoreId } from '../../utils/replace-underscore-id';
 import { transformBaseErrorResponse } from '../../utils/transform-base-error-response';
+import { baseApi } from '../base-api';
 
 type GroupedCategories = { categories: Category[]; subCategories: SubCategory[] };
 
-export const categoryApi = createApi({
-    reducerPath: 'categoryApi',
-    baseQuery,
+export const categoryApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         getAllCategories: build.query<GetCategoriesResponse, void>({
             query: () => ({ url: ApiEndpoints.Category }),

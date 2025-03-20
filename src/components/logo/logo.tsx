@@ -3,8 +3,6 @@ import { FC } from 'react';
 import { NavLink } from 'react-router';
 
 import { Paths } from '~/constants/path.js';
-// import { useAppDispatch } from '~/hooks/typed-react-redux-hooks';
-// import { resetAccordion } from '~/redux/features/accordion-slice';
 
 const DEFAULT_HEIGHT = 32;
 

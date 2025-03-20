@@ -1,8 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { appErrorMiddleware } from './api/middleware';
-import { categoryApi } from './api/services/category-api';
-import { recipeApi } from './api/services/recipes-api';
+import { baseApi } from './api/services/base-api';
 import { accordionReducer, accordionSlice } from './features/accordion-slice';
 import { allergenReducer, allergenSlice } from './features/allergens-slice';
 import { appReducer, appSlice } from './features/app-slice';
@@ -32,17 +31,12 @@ const combinedReducer = {
     [meatsSlice.name]: meatsReducer,
     [sidesSlice.name]: sidesReducer,
     [accordionSlice.name]: accordionReducer,
-    [categoryApi.reducerPath]: categoryApi.reducer,
-    [recipeApi.reducerPath]: recipeApi.reducer,
+    [baseApi.reducerPath]: baseApi.reducer,
 };
 
 export const store = configureStore({
     reducer: combinedReducer,
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(
-            appErrorMiddleware,
-            categoryApi.middleware,
-            recipeApi.middleware,
-        ),
+        getDefaultMiddleware().concat(appErrorMiddleware, baseApi.middleware),
     devTools: isDevMode,
 });

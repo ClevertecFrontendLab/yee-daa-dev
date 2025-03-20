@@ -2,6 +2,7 @@ import { Button, DrawerFooter } from '@chakra-ui/react';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { useClearFiltersWithSearch } from '~/hooks/use-clear-filters-with-search';
+import { useDetectParams } from '~/hooks/use-detect-params';
 import { useLazyGetAllRecipesMergeQuery } from '~/redux/api/services/recipes-api';
 import { selectSelectedAllergens } from '~/redux/features/allergens-slice';
 import { selectSelectedAuthors } from '~/redux/features/authors-slice';
@@ -22,6 +23,7 @@ export const FilterDrawerFooter = () => {
     const dispatch = useAppDispatch();
     const { clearDrawerFilters } = useClearFiltersWithSearch();
     const [fetchRecipes, { isFetching }] = useLazyGetAllRecipesMergeQuery();
+    const { selectedSubCategory } = useDetectParams();
 
     const selectedCategories = useAppSelector(selectSelectedCategories);
     const selectedAuthors = useAppSelector(selectSelectedAuthors);
@@ -46,10 +48,14 @@ export const FilterDrawerFooter = () => {
             allergens: selectedAllergens,
             meats: selectedMeats,
             sides: selectedSides,
-            subCategories: selectedSubCategories,
             searchInput,
+            subCategories: selectedSubCategory?.id
+                ? [selectedSubCategory.id]
+                : selectedSubCategories,
         });
 
+        // если выбрана подкатегория то не нужен запрос в рамках выбранной подкатегории
+        // если категории нет - то это главная страница и все выбранные подкакатегории
         dispatch(setIsFiltering(true));
         fetchRecipes(requestParams);
 

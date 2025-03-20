@@ -1,10 +1,10 @@
-import { lazy, Suspense } from 'react';
+import { lazy } from 'react';
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from 'react-router';
 
-import { AppLoader } from '~/components/app-loader';
 import { Paths } from '~/constants/path.js';
 import { CategoryExistProtected } from '~/hoc/category-exist-protected';
 import { SubcategoryRedirect } from '~/hoc/subcategory-redirect';
+import { AppLayout } from '~/layout/app-layout';
 import { CategoryPage } from '~/pages/category-page';
 import { ErrorPage } from '~/pages/error-page/error-page';
 import { JuiciestPage } from '~/pages/juiciest-page';
@@ -15,9 +15,9 @@ import { ErrorBoundary } from './error-boundary/error-boundary';
 import { clearFilterStateLoader } from './loaders/clear-filter-state-loader';
 import { juiciestLoader } from './loaders/juciest-loader';
 import { recipeLoader } from './loaders/recipe-loader';
+import { rootAppLoader } from './loaders/root-app-loader';
 import { rootCategoryLoader } from './loaders/root-category-loader';
 
-const Layout = lazy(() => import('../components/layout/layout.tsx'));
 const AuthorizationLayout = lazy(
     () => import('../components/authorization-layout/authorization-layout.tsx'),
 );
@@ -42,11 +42,8 @@ export const appRouter = createBrowserRouter(
             <Route
                 path={Paths.R_SWITCHER}
                 ErrorBoundary={ErrorBoundary}
-                element={
-                    <Suspense fallback={<AppLoader isOpen={true} overlayColor='white' />}>
-                        <Layout />
-                    </Suspense>
-                }
+                loader={rootAppLoader}
+                element={<AppLayout />}
             >
                 <Route index element={<MainPage />} loader={clearFilterStateLoader} />
                 <Route
