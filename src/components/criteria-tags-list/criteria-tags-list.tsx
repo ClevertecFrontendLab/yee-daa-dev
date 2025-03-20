@@ -22,7 +22,6 @@ import {
     getEnglishFoodItem,
     getEnglishMenuItem,
     getTranslatedAuthor,
-    getTranslatedFoodItem,
     getTranslatedMenuItem,
 } from '../drawer/helpers/get-selected-items';
 
@@ -78,12 +77,10 @@ export const CriteriaTagsList = ({
             if (englishValue) dispatch(toggleAuthor(englishValue));
         },
         [TagType.MEAT]: (tag: string) => {
-            const englishValue = getEnglishFoodItem(tag, meats);
-            if (englishValue) dispatch(toggleMeat(englishValue));
+            dispatch(toggleMeat(tag));
         },
         [TagType.SIDE]: (tag: string) => {
-            const englishValue = getEnglishFoodItem(tag, sides);
-            if (englishValue) dispatch(toggleSide(englishValue));
+            dispatch(toggleSide(tag));
         },
         [TagType.ALLERGEN]: (tag: string) => {
             dispatch(deselectAllergen(tag));
@@ -102,8 +99,8 @@ export const CriteriaTagsList = ({
     const tags = [
         ...getTranslatedMenuItem(selectedCategories, categories),
         ...getTranslatedAuthor(selectedAuthors, authors),
-        ...getTranslatedFoodItem(selectedMeats, meats),
-        ...getTranslatedFoodItem(selectedSides, sides),
+        ...selectedMeats,
+        ...selectedSides,
     ];
 
     const tagsForRender = withAllergens ? tags.concat(selectedAllergens) : tags;
