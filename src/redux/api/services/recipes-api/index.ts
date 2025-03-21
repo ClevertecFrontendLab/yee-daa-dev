@@ -55,7 +55,7 @@ export const recipeApi = baseApi.injectEndpoints({
             }),
             transformErrorResponse: transformBaseErrorResponse,
         }),
-        // старая версия - как в РТК можно сделать инфинит запрос - сделано, т.к. в инфинит нет lazy query - пока для фильрации и поиска больше подходит
+        // старая версия - как в РТК можно сделать инфинит запрос - сделано, т.к. в инфинит нет lazy query - пока для фильтрации и поиска больше подходит
         getAllRecipesMerge: build.query<RecipesResponseWithMeta, AllRecipeParams>({
             query: (params) => ({
                 url: ApiEndpoints.Recipe,

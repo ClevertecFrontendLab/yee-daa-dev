@@ -6,7 +6,7 @@ import { resetSelectedCategories } from '~/redux/features/categories-slice';
 import { setIsFiltering } from '~/redux/features/filter-drawer-slice';
 import { clearSelectedMeats } from '~/redux/features/meats-slice';
 import { clearFilteredRecipes, setShowedEmptyText } from '~/redux/features/recipes-slice';
-import { setInputValue } from '~/redux/features/search-slice';
+import { setInputValue, setSelectedPage } from '~/redux/features/search-slice';
 import { clearSelectedSides } from '~/redux/features/sides-slice';
 
 import { useAppDispatch } from './typed-react-redux-hooks';
@@ -31,6 +31,7 @@ export const useClearFiltersWithSearch = () => {
     const commonClear = useCallback(() => {
         dispatch(setShowedEmptyText(false));
         dispatch(setIsFiltering(false));
+        dispatch(setSelectedPage(1));
     }, [dispatch]);
 
     return { clearDrawerFilters, clearSearchInputBlock, commonClear };

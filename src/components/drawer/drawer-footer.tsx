@@ -12,7 +12,7 @@ import {
 } from '~/redux/features/categories-slice';
 import { closeDrawer, setIsFiltering } from '~/redux/features/filter-drawer-slice';
 import { selectSelectedMeats } from '~/redux/features/meats-slice';
-import { selectInputValue } from '~/redux/features/search-slice';
+import { selectInputValue, setSelectedPage } from '~/redux/features/search-slice';
 import { selectSelectedSides } from '~/redux/features/sides-slice';
 
 import styles from './drawer.module.css';
@@ -57,6 +57,7 @@ export const FilterDrawerFooter = () => {
         // если выбрана подкатегория то не нужен запрос в рамках выбранной подкатегории
         // если категории нет - то это главная страница и все выбранные подкакатегории
         dispatch(setIsFiltering(true));
+        dispatch(setSelectedPage(1));
         fetchRecipes(requestParams);
 
         dispatch(closeDrawer());
