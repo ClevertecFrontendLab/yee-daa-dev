@@ -18,8 +18,8 @@ import { selectSides } from '~/redux/features/sides-slice';
 
 import { CriteriaTagsList } from '../criteria-tags-list';
 import { AllergenSelect } from '../search-block/allergen-select';
-import { DrawerCheckboxGroup } from './dawer-checkbox-group';
 import styles from './drawer.module.css';
+import { DrawerCheckboxGroup } from './drawer-checkbox-group';
 import { FilterDrawerFooter } from './drawer-footer';
 import { DrawerMenu } from './drawer-menu';
 

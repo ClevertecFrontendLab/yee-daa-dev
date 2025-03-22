@@ -8,7 +8,7 @@ export const useTrimInputBlur = <Form extends FieldValues>(
     const handleBlur = useCallback(
         <Element extends HTMLInputElement>(field: Path<Form>) =>
             (e: React.FocusEvent<Element>) => {
-                const trimmedValue = e.target.value.trim();
+                const trimmedValue = e.target.value.trim().replace(/\s+/g, ' ');
 
                 setValue(field, trimmedValue as PathValue<Form, Path<Form>>, {
                     shouldValidate,

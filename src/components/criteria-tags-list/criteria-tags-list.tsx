@@ -12,6 +12,7 @@ import {
 } from '~/redux/features/categories-slice';
 import { selectSelectedMeats, toggleMeat } from '~/redux/features/meats-slice';
 import { setShowedEmptyText } from '~/redux/features/recipes-slice';
+import { setSelectedPage } from '~/redux/features/search-slice';
 import { selectSelectedSides, toggleSide } from '~/redux/features/sides-slice';
 import { Nullable, StrOrNull } from '~/types/common';
 import { TagType } from '~/types/type-tags';
@@ -22,7 +23,6 @@ import {
     getEnglishFoodItem,
     getEnglishMenuItem,
     getTranslatedAuthor,
-    getTranslatedFoodItem,
     getTranslatedMenuItem,
 } from '../drawer/helpers/get-selected-items';
 
@@ -78,12 +78,10 @@ export const CriteriaTagsList = ({
             if (englishValue) dispatch(toggleAuthor(englishValue));
         },
         [TagType.MEAT]: (tag: string) => {
-            const englishValue = getEnglishFoodItem(tag, meats);
-            if (englishValue) dispatch(toggleMeat(englishValue));
+            dispatch(toggleMeat(tag));
         },
         [TagType.SIDE]: (tag: string) => {
-            const englishValue = getEnglishFoodItem(tag, sides);
-            if (englishValue) dispatch(toggleSide(englishValue));
+            dispatch(toggleSide(tag));
         },
         [TagType.ALLERGEN]: (tag: string) => {
             dispatch(deselectAllergen(tag));
@@ -93,17 +91,19 @@ export const CriteriaTagsList = ({
     const deleteFilter = (tag: StrOrNull, type: Nullable<TagType>) => {
         if (type && actionMapper[type] && tag) {
             actionMapper[type](tag);
+            dispatch(setSelectedPage(1));
         }
         if (!forDrawer) {
             dispatch(setShowedEmptyText(false));
+            dispatch(setSelectedPage(1));
         }
     };
 
     const tags = [
         ...getTranslatedMenuItem(selectedCategories, categories),
         ...getTranslatedAuthor(selectedAuthors, authors),
-        ...getTranslatedFoodItem(selectedMeats, meats),
-        ...getTranslatedFoodItem(selectedSides, sides),
+        ...selectedMeats,
+        ...selectedSides,
     ];
 
     const tagsForRender = withAllergens ? tags.concat(selectedAllergens) : tags;

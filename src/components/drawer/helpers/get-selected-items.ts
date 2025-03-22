@@ -41,14 +41,6 @@ export const getTranslatedMenuItem = (selectedMenuItems: string[], allMenuItems:
         })
         .filter(Boolean);
 
-export const getTranslatedFoodItem = (selectedFoodItems: string[], allFoodItems: FoodItem[]) =>
-    selectedFoodItems
-        .map((selected) => {
-            const item = allFoodItems.find((it) => it.value === selected);
-            return item ? item.label : null;
-        })
-        .filter(Boolean);
-
 export const getTranslatedAuthor = (selectedAuthors: string[], allAuthors: UserProps[]) =>
     selectedAuthors
         .map((selected) => {

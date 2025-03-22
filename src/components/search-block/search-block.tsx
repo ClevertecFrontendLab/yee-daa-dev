@@ -11,7 +11,7 @@ import { selectSelectedSubCategoriesIds } from '~/redux/features/categories-slic
 import { openDrawer, setIsFiltering } from '~/redux/features/filter-drawer-slice.js';
 import { selectSelectedMeats } from '~/redux/features/meats-slice.ts';
 import { selectFilteredRecipes, selectShowEmptyText } from '~/redux/features/recipes-slice.ts';
-import { selectInputValue, setInputValue } from '~/redux/features/search-slice.ts';
+import { selectInputValue, setInputValue, setSelectedPage } from '~/redux/features/search-slice.ts';
 import { selectSelectedSides } from '~/redux/features/sides-slice.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
@@ -51,8 +51,8 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
     const handleSearchClick = async () => {
         onSearchCb();
         dispatch(setIsFiltering(true));
+        dispatch(setSelectedPage(1));
 
-        // флоу для главной страницы с выбранными параметрами
         const requestParams = getRequestParams({
             allergens: selectedAllergens,
             meats: selectedMeats,
@@ -87,7 +87,10 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
         dispatch(setIsFiltering(false));
     };
 
-    const handleDrawerClick = () => dispatch(openDrawer());
+    const handleDrawerClick = () => {
+        dispatch(openDrawer());
+        dispatch(setIsFiltering(false));
+    };
 
     const isSearchEmpty = !isArrayWithItems(recipes) && isEmptyTextShowed;
 

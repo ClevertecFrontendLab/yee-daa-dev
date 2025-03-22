@@ -1,7 +1,6 @@
 import { Button, Card, CardBody, CardHeader, Heading, HStack, Image, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { icons } from '~/constants/icons';
 import { UserProps } from '~/types/user';
 
 import { FollowersIcon } from '../icons/followers-icon';
@@ -38,23 +37,14 @@ export const AuthorCard: FC<{ author: UserProps }> = ({ author }) => (
                 >
                     Подписаться
                 </Button>
+
                 <HStack>
-                    {author?.bookmarks && (
-                        <HStack>
-                            {icons['bookmarks']}
-                            <Text fontSize='xs' lineHeight={6} color='lime.600'>
-                                {author?.bookmarks}
-                            </Text>
-                        </HStack>
-                    )}
-                    {author?.followers && (
-                        <HStack>
-                            <FollowersIcon />
-                            <Text fontSize='xs' lineHeight={6} color='lime.600'>
-                                {author?.followers ?? 0}
-                            </Text>
-                        </HStack>
-                    )}
+                    <HStack>
+                        <FollowersIcon />
+                        <Text fontSize='xs' lineHeight={6} color='lime.600'>
+                            {author?.followers ?? 0 ?? 0}
+                        </Text>
+                    </HStack>
                 </HStack>
             </HStack>
         </CardBody>

@@ -39,11 +39,12 @@ export const SignInForm: FC = () => {
     const {
         register,
         setValue,
+        setError,
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm<SignInFormSchema>({
         resolver: yupResolver(SignInSchema),
-        mode: 'onSubmit',
+        mode: 'onBlur',
     });
 
     const { handleBlur } = useTrimInputBlur(setValue);
@@ -58,6 +59,8 @@ export const SignInForm: FC = () => {
         } catch (error) {
             if (isFetchBaseQueryError(error) && error.status === HttpStatus.UNAUTHORIZED) {
                 toast(signInError, false);
+                setError('login', { message: '' });
+                setError('password', { message: '' });
             } else {
                 onOpen();
                 reset();
