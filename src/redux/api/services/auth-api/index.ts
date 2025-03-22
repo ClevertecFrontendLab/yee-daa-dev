@@ -21,6 +21,7 @@ export const authApi = unauthorizedApi.injectEndpoints({
         signIn: build.mutation<SigInResponse, SignInBody>({
             query: (body) => ({ url: ApiEndpoints.SignIn, method: 'POST', body }),
             async onQueryStarted(_, { queryFulfilled, dispatch }) {
+<<<<<<< HEAD
                 try {
                     const {
                         data: { refreshToken, accessToken },
@@ -31,6 +32,14 @@ export const authApi = unauthorizedApi.injectEndpoints({
                 } catch (error) {
                     //
                 }
+=======
+                const {
+                    data: { refreshToken, accessToken },
+                } = await queryFulfilled;
+
+                setDataToLocalStorage(LOCALSTORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+                dispatch(setAccessToken(accessToken));
+>>>>>>> fb6bd31 (feat(sign-in, api): add api, add sign-in interaction)
             },
         }),
 
