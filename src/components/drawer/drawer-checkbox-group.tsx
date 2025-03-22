@@ -43,9 +43,9 @@ export const DrawerCheckboxGroup: React.FC<CheckboxGroupProps> = ({ filterTitle,
                         },
                     }}
                     key={item.id}
-                    value={item.value}
-                    isChecked={selectedItemsResult?.includes(item.value)}
-                    onChange={() => handleCheckboxChange(item.value)}
+                    value={item.label}
+                    isChecked={selectedItemsResult?.includes(item.label)}
+                    onChange={() => handleCheckboxChange(item.label)}
                 >
                     {item.label}
                 </Checkbox>
