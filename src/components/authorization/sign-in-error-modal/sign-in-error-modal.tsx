@@ -13,7 +13,7 @@ type SignInErrorModalProps = Omit<ModalProps, 'children'> & {
 
 export const SignInErrorModal: FC<SignInErrorModalProps> = ({ repeat, isSubmitting, ...props }) => (
     <ResultModal
-        data-test-id={CyTestId.Modal.SignInError.Root}
+        dataTestId={CyTestId.Modal.SignInError.Root}
         title={Label.Header}
         imageUrl='/public/images/breakfast.png'
         isClosable={!isSubmitting}

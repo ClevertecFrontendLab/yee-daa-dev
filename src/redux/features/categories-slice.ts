@@ -37,14 +37,21 @@ export const categoriesSlice = createSlice({
             state.selectedCategories = toggleItemInArray(state.selectedCategories, payload);
         },
         updateSelectedSubCategoriesIds(state) {
-            const currSelectedCategories = state.categories;
+            const currSelectedCategories = state.selectedCategories;
+            const selectedCategories = state.categories.filter((elem) =>
+                currSelectedCategories.includes(elem.category),
+            );
 
-            const foundSubCategories = currSelectedCategories.reduce<string[]>((_, curr) => {
+            const selectedSubCategories = selectedCategories.reduce<string[]>((acc, curr) => {
                 const { subCategories } = curr;
-                return subCategories.map((elem) => elem.id);
+                subCategories.forEach((subCat) => {
+                    acc.push(subCat.id);
+                });
+
+                return acc;
             }, []);
 
-            state.selectedSubCategoriesIds = Array.from(new Set(foundSubCategories));
+            state.selectedSubCategoriesIds = Array.from(new Set(selectedSubCategories));
         },
         resetSelectedCategories(state) {
             state.selectedCategories = [];

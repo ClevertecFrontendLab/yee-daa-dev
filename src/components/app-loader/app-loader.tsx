@@ -1,5 +1,6 @@
 import { Modal, ModalContent, ModalOverlay, ModalOverlayProps } from '@chakra-ui/react';
 
+import { CyTestId } from '~/cy-test-id';
 import { useIsMobile } from '~/hooks/media-query';
 
 import { Loader } from '../loader';
@@ -14,7 +15,13 @@ export const AppLoader = ({ isOpen, overlayColor = 'blackAlpha.300' }: AppLoader
     return (
         <Modal isOpen={isOpen} onClose={() => {}} closeOnEsc={false} isCentered={true}>
             <ModalOverlay bgColor={overlayColor} backdropFilter='blur(2px)' pointerEvents='none' />
-            <ModalContent w='fit-content' bg='transparent' border='none' shadow='none'>
+            <ModalContent
+                data-test-id={CyTestId.AppLoader}
+                w='fit-content'
+                bg='transparent'
+                border='none'
+                shadow='none'
+            >
                 <Loader
                     boxSize={isMobileWidth ? 134 : 206}
                     size={isMobileWidth ? 'md' : 'lg'}

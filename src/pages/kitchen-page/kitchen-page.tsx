@@ -1,5 +1,5 @@
 import { Center } from '@chakra-ui/react';
-import { FC, Fragment, useState } from 'react';
+import { FC, Fragment } from 'react';
 
 import { BlogSection } from '~/components/blog-section/blog-section.tsx';
 import { Carousel } from '~/components/carousel/carousel.tsx';
@@ -12,7 +12,7 @@ import { RelevantKitchen } from '~/components/relevant-kitchen';
 import { SectionHeader } from '~/components/section-header';
 import { FILTERED_RECIPES_LIMIT } from '~/constants/general';
 import { JuiciestRecipesList } from '~/containers/juiciest-recipes-list/juiciest-recipes-list.tsx';
-import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { useDetectParams } from '~/hooks/use-detect-params.ts';
 import { useGetAllRecipesMergeQuery } from '~/redux/api/services/recipes-api';
 import { selectSelectedAllergens } from '~/redux/features/allergens-slice';
@@ -20,7 +20,11 @@ import { selectSelectedSubCategoriesIds } from '~/redux/features/categories-slic
 import { selectIsFiltering } from '~/redux/features/filter-drawer-slice';
 import { selectSelectedMeats } from '~/redux/features/meats-slice';
 import { selectFilteredRecipes } from '~/redux/features/recipes-slice';
-import { selectInputValue } from '~/redux/features/search-slice';
+import {
+    selectInputValue,
+    selectSelectedPage,
+    setSelectedPage,
+} from '~/redux/features/search-slice';
 import { selectSelectedSides } from '~/redux/features/sides-slice';
 import { PageType } from '~/types/page.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
@@ -35,16 +39,16 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const isJuiciestPage = pageType === PageType.Juiciest;
 
     const { selectedCategory, selectedSubCategory } = useDetectParams();
+    const dispatch = useAppDispatch();
 
-    const filteredRecipes = useAppSelector(selectFilteredRecipes);
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
+    const filteredRecipes = useAppSelector(selectFilteredRecipes);
     const selectedMeats = useAppSelector(selectSelectedMeats);
     const searchInputValue = useAppSelector(selectInputValue);
     const selectedSides = useAppSelector(selectSelectedSides);
     const selectedSubcategories = useAppSelector(selectSelectedSubCategoriesIds);
     const isFiltering = useAppSelector(selectIsFiltering);
-
-    const [currentPage, setCurrentPage] = useState(1);
+    const selectedPage = useAppSelector(selectSelectedPage);
 
     const requestParams = getRequestParams({
         allergens: selectedAllergens,
@@ -52,24 +56,19 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
         searchInput: searchInputValue,
         sides: selectedSides,
         subCategories: selectedSubcategories,
-        page: currentPage,
+        page: selectedPage,
     });
-    console.log(currentPage, 'CURR', requestParams);
 
     const isFilteringWithCategory = selectedSubCategory?.id && isFiltering;
 
     // для запросов с главной страницы
-    const { data, refetch, isFetching } = useGetAllRecipesMergeQuery(
+    const { data: allRecipes, isFetching } = useGetAllRecipesMergeQuery(
         { ...requestParams, limit: FILTERED_RECIPES_LIMIT },
         { skip: isJuiciestPage || !isFiltering || Boolean(selectedSubCategory?.id) },
     );
 
     // для запросов внутри выбранной категории
-    const {
-        data: recipesData,
-        refetch: refetchWithCategory,
-        isFetching: isFetchingByCategory,
-    } = useGetAllRecipesMergeQuery(
+    const { data: recipesData, isFetching: isFetchingByCategory } = useGetAllRecipesMergeQuery(
         {
             ...requestParams,
             limit: FILTERED_RECIPES_LIMIT,
@@ -78,16 +77,18 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
         { skip: isJuiciestPage || !selectedSubCategory?.id || !isFiltering },
     );
     const subCategoryRecipes = recipesData?.data ?? [];
+    const allFilteredRecipes = allRecipes?.data ?? [];
 
-    const totalPages = data?.meta?.totalPages || 1;
+    const totalPages =
+        (isFilteringWithCategory && recipesData?.meta?.totalPages) ||
+        allRecipes?.meta?.totalPages ||
+        1;
 
     const loadMoreCallback = () => {
-        setCurrentPage((prev) => prev + 1);
-        isFetchingByCategory ? refetchWithCategory() : refetch();
+        dispatch(setSelectedPage(selectedPage + 1));
     };
 
-    const isFilteredRecipesShowed =
-        isArrayWithItems(filteredRecipes) || isArrayWithItems(subCategoryRecipes);
+    const isFilteredRecipesShowed = isArrayWithItems(filteredRecipes);
 
     return (
         <Fragment key='kitchen-page'>
@@ -99,8 +100,10 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
                         <CriteriaTagsList withAllergens={false} />
                     </Center>
                     <RecipeCardList
-                        recipeList={isFilteringWithCategory ? subCategoryRecipes : filteredRecipes}
-                        currentPage={currentPage}
+                        recipeList={
+                            isFilteringWithCategory ? subCategoryRecipes : allFilteredRecipes
+                        }
+                        currentPage={selectedPage}
                         isLoading={isFetching || isFetchingByCategory}
                         totalPages={totalPages}
                         loadMoreCallback={loadMoreCallback}

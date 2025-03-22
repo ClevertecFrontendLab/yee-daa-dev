@@ -1,4 +1,6 @@
 export const CyTestId = {
+    AppLoader: 'app-loader',
+    Breadcrumbs: 'breadcrumbs',
     Auth: {
         SignInForm: 'sign-in-form',
         SignUpForm: 'sign-up-form',
@@ -16,6 +18,7 @@ export const CyTestId = {
         ForgotPasswordButton: 'forgot-password',
     },
     Modal: {
+        CloseButton: 'modal-close-button',
         SignInError: {
             Root: 'sign-in-error-modal',
             RepeatButton: 'repeat-button',
