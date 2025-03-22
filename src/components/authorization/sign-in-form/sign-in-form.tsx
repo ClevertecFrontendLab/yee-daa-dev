@@ -1,5 +1,7 @@
 import {
+    Box,
     Button,
+    chakra,
     FormControl,
     FormErrorMessage,
     FormLabel,
@@ -7,23 +9,31 @@ import {
     useDisclosure,
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FC, PropsWithChildren, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { Outlet } from 'react-router';
+import { FC } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { NavLink, Outlet, useNavigate } from 'react-router';
 
+import { AppLoader } from '~/components/app-loader';
 import { SignInFormSchema, SignInSchema } from '~/constants/authorization';
+import { HttpStatus } from '~/constants/http-status';
+import { Paths } from '~/constants/path';
 import { TOAST_MESSAGE } from '~/constants/toast';
 import { useAuthToast } from '~/hooks/use-auth-toast';
 import { useTrimInputBlur } from '~/hooks/use-trim-input-blur';
+import { useSignInMutation } from '~/redux/api/services/auth-api';
+import { isFetchBaseQueryError } from '~/utils/type-guard';
 
 import { PasswordInput } from '../password-input/password-input';
 import { SignInErrorModal } from '../sign-in-error-modal/sign-in-error-modal';
 import { Label } from './label';
 
+const ChakraForm = chakra('form');
+
 const { signInError } = TOAST_MESSAGE;
 
-export const SignInForm: FC<PropsWithChildren> = ({ children }) => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
+export const SignInForm: FC = () => {
+    const navigate = useNavigate();
+    const { isOpen, onOpen, onClose: onCloseDisclosure } = useDisclosure({ defaultIsOpen: false });
     const { toast } = useAuthToast();
 
     const {
@@ -33,24 +43,38 @@ export const SignInForm: FC<PropsWithChildren> = ({ children }) => {
         formState: { errors, isSubmitting },
     } = useForm<SignInFormSchema>({
         resolver: yupResolver(SignInSchema),
+        mode: 'onSubmit',
     });
 
     const { handleBlur } = useTrimInputBlur(setValue);
 
-    const onSubmit: Parameters<typeof handleSubmit>[0] = (data) => {
-        console.log(data);
-        onOpen();
+    const [signIn, { reset }] = useSignInMutation();
+
+    const onSubmit: SubmitHandler<SignInFormSchema> = async (data) => {
+        try {
+            await signIn(data).unwrap();
+
+            navigate(Paths.R_SWITCHER);
+        } catch (error) {
+            if (isFetchBaseQueryError(error) && error.status === HttpStatus.UNAUTHORIZED) {
+                toast(signInError, false);
+            } else {
+                onOpen();
+                reset();
+            }
+        }
     };
 
-    useEffect(() => {
-        toast(signInError, false);
-        //eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const onClose = () => {
+        if (!isSubmitting) {
+            onCloseDisclosure();
+        }
+    };
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <FormControl isInvalid={!!errors.login}>
+            <ChakraForm onSubmit={handleSubmit(onSubmit)}>
+                <FormControl isDisabled={isSubmitting} isInvalid={!!errors.login}>
                     <FormLabel>{Label.Login.Label}</FormLabel>
                     <Input
                         variant='auth'
@@ -62,13 +86,18 @@ export const SignInForm: FC<PropsWithChildren> = ({ children }) => {
                     <FormErrorMessage>{errors.login?.message}</FormErrorMessage>
                 </FormControl>
 
-                <FormControl isInvalid={!!errors.password} mt={6}>
+                <FormControl isDisabled={isSubmitting} isInvalid={!!errors.password} mt={6}>
                     <FormLabel>{Label.Password.Label}</FormLabel>
 
                     <PasswordInput
-                        placeholder={Label.Password.Placeholder}
-                        {...register('password')}
-                        onBlur={handleBlur('password')}
+                        input={{
+                            placeholder: Label.Password.Placeholder,
+                            onBlur: handleBlur('password'),
+                            register: register('password'),
+                        }}
+                        button={{
+                            isDisabled: isSubmitting,
+                        }}
                     />
 
                     <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
@@ -79,16 +108,36 @@ export const SignInForm: FC<PropsWithChildren> = ({ children }) => {
                     w='full'
                     variant='black'
                     isLoading={isSubmitting}
+                    loadingText={Label.LoginBtn}
                     type='submit'
                     size='lg'
                 >
                     {Label.LoginBtn}
                 </Button>
 
-                {children}
-            </form>
+                <Box
+                    mt={4}
+                    width='full'
+                    textAlign='center'
+                    fontWeight='semibold'
+                    fontSize='md'
+                    pointerEvents={isSubmitting ? 'none' : 'auto'}
+                    _hover={{
+                        textDecoration: 'underline',
+                    }}
+                    opacity={isSubmitting ? 0.5 : 1}
+                >
+                    <NavLink to={Paths.RESTORE_CREDENTIALS} replace>
+                        {Label.ForgotPassword}
+                    </NavLink>
+                </Box>
+            </ChakraForm>
 
-            <SignInErrorModal {...{ isOpen, onClose }} repeat={() => {}} />
+            <SignInErrorModal
+                {...{ isOpen, onClose, isSubmitting }}
+                repeat={handleSubmit(onSubmit)}
+            />
+            <AppLoader isOpen={isSubmitting} />
             <Outlet />
         </>
     );

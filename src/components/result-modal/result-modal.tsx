@@ -17,6 +17,7 @@ type ResultModalProps = PropsWithChildren &
     ModalProps & {
         title?: ReactNode | ReactNode[];
         imageUrl?: string;
+        isClosable?: boolean;
     };
 
 export const ResultModal: FC<ResultModalProps> = ({
@@ -25,27 +26,30 @@ export const ResultModal: FC<ResultModalProps> = ({
     title,
     imageUrl,
     onClose,
+    isClosable = true,
     ...props
 }) => (
     <Modal isCentered {...{ variant, onClose }} {...props}>
         <ModalOverlay />
         <ModalContent>
             <ModalHeader mb={4}>
-                <IconButton
-                    aria-label='Close modal'
-                    icon={<ModalCloseIcon />}
-                    position='absolute'
-                    minW={6}
-                    h={6}
-                    top={5}
-                    right={6}
-                    lineHeight={0}
-                    onClick={onClose}
-                    variant='unstyled'
-                    _hover={{
-                        color: 'blackAlpha.800',
-                    }}
-                />
+                {isClosable && (
+                    <IconButton
+                        aria-label='Close modal'
+                        icon={<ModalCloseIcon />}
+                        position='absolute'
+                        minW={6}
+                        h={6}
+                        top={5}
+                        right={6}
+                        lineHeight={0}
+                        onClick={onClose}
+                        variant='unstyled'
+                        _hover={{
+                            color: 'blackAlpha.800',
+                        }}
+                    />
+                )}
 
                 <Stack align='center' gap={8}>
                     {imageUrl && <Image src={imageUrl} alt='breakfast' />}

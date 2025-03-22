@@ -13,6 +13,13 @@ export const API_IMGS_BASE = 'https://training-api.clevertec.ru';
 export const NOTIFICATION_STATE_NAME = 'appNotificationState';
 
 export enum ApiEndpoints {
+    SignIn = 'sign-in',
+    SignUp = 'sign-up',
+    SignOut = 'sign-out',
+    SendVerificationCode = 'sendVerificationCode',
+    CheckVerificationCode = 'checkVerificationCode',
+    ResetCredentials = 'resetCredentials',
+
     Category = 'category',
     Recipe = 'recipe',
     RecipeByCategory = 'recipe/category',

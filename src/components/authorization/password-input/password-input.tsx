@@ -1,10 +1,24 @@
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { IconButton, Input, InputGroup, InputProps, InputRightElement } from '@chakra-ui/react';
+import {
+    IconButton,
+    IconButtonProps,
+    Input,
+    InputGroup,
+    InputProps,
+    InputRightElement,
+} from '@chakra-ui/react';
 import { FC, useState } from 'react';
+import { UseFormRegisterReturn } from 'react-hook-form';
 
-type PasswordInputProps = InputProps;
+type PasswordInputProps = {
+    input: InputProps & { register: UseFormRegisterReturn };
+    button?: Omit<IconButtonProps, 'aria-label'>;
+};
 
-export const PasswordInput: FC<PasswordInputProps> = (props) => {
+export const PasswordInput: FC<PasswordInputProps> = ({
+    input: { register, ...restInput },
+    button,
+}) => {
     const [passwordVisible, setPasswordVisible] = useState(false);
 
     const showPassword = () => setPasswordVisible(true);
@@ -14,12 +28,13 @@ export const PasswordInput: FC<PasswordInputProps> = (props) => {
         <InputGroup>
             <InputRightElement height='48px'>
                 <IconButton
-                    aria-label='password-visibility'
                     onMouseDown={showPassword}
                     onMouseUp={hidePassword}
                     onMouseLeave={hidePassword}
                     variant='unstyled'
                     height='100%'
+                    {...button}
+                    aria-label='password-visibility'
                 >
                     {passwordVisible ? <ViewIcon /> : <ViewOffIcon />}
                 </IconButton>
@@ -29,7 +44,8 @@ export const PasswordInput: FC<PasswordInputProps> = (props) => {
                 variant='auth'
                 size='lg'
                 type={passwordVisible ? 'text' : 'password'}
-                {...props}
+                {...restInput}
+                {...register}
             />
         </InputGroup>
     );

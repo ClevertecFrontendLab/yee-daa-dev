@@ -5,6 +5,14 @@ const black = defineStyle({
     color: 'white',
     _hover: {
         bgColor: 'blackAlpha.800',
+        _disabled: {
+            opacity: 0.8,
+            bgColor: 'blackAlpha.800',
+        },
+    },
+    _disabled: {
+        opacity: 0.8,
+        bgColor: 'blackAlpha.800',
     },
 });
 

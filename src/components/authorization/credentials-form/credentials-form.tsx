@@ -26,7 +26,7 @@ export const CredentialsForm: FC<CredentialsFormProps> = ({
         formState: { errors, isSubmitting },
     },
 }) => {
-    const { handleBlur } = useTrimInputBlur(setValue);
+    const { handleBlur } = useTrimInputBlur(setValue, true);
 
     return (
         <>

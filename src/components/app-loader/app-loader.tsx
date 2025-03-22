@@ -9,13 +9,17 @@ type AppLoaderProps = {
     overlayColor?: ModalOverlayProps['bgColor'];
 };
 
-export const AppLoader = ({ isOpen, overlayColor = 'black.300' }: AppLoaderProps) => {
+export const AppLoader = ({ isOpen, overlayColor = 'blackAlpha.300' }: AppLoaderProps) => {
     const isMobileWidth = useIsMobile();
     return (
         <Modal isOpen={isOpen} onClose={() => {}} closeOnEsc={false} isCentered={true}>
-            <ModalOverlay bgColor={overlayColor} backdropFilter='blur(4px)' pointerEvents='none' />
+            <ModalOverlay bgColor={overlayColor} backdropFilter='blur(2px)' pointerEvents='none' />
             <ModalContent w='fit-content' bg='transparent' border='none' shadow='none'>
-                <Loader boxSize={isMobileWidth ? 134 : 206} size='xl' color='black' />
+                <Loader
+                    boxSize={isMobileWidth ? 134 : 206}
+                    size={isMobileWidth ? 'md' : 'lg'}
+                    color='black'
+                />
             </ModalContent>
         </Modal>
     );

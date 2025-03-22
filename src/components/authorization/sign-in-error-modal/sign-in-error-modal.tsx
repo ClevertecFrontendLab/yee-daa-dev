@@ -6,10 +6,16 @@ import { Label } from './label';
 
 type SignInErrorModalProps = Omit<ModalProps, 'children'> & {
     repeat: () => void;
+    isSubmitting: boolean;
 };
 
-export const SignInErrorModal: FC<SignInErrorModalProps> = ({ repeat, ...props }) => (
-    <ResultModal title={Label.Header} imageUrl='/public/images/breakfast.png' {...props}>
+export const SignInErrorModal: FC<SignInErrorModalProps> = ({ repeat, isSubmitting, ...props }) => (
+    <ResultModal
+        title={Label.Header}
+        imageUrl='/public/images/breakfast.png'
+        isClosable={!isSubmitting}
+        {...props}
+    >
         <ModalBody>
             {Label.Body.map((subTitle) => (
                 <Text color='blackAlpha.700' textAlign='center' fontSize='md' key={subTitle}>
@@ -18,7 +24,14 @@ export const SignInErrorModal: FC<SignInErrorModalProps> = ({ repeat, ...props }
             ))}
         </ModalBody>
         <ModalFooter>
-            <Button variant='black' w='full' mt={8} onClick={repeat}>
+            <Button
+                variant='black'
+                w='full'
+                mt={8}
+                onClick={repeat}
+                isLoading={isSubmitting}
+                loadingText={Label.Button}
+            >
                 {Label.Button}
             </Button>
         </ModalFooter>
