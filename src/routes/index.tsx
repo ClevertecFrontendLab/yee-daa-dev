@@ -21,38 +21,40 @@ import { rootCategoryLoader } from './loaders/root-category-loader';
 // createRoutesFromElements позволяет сделать из обычного классического рута подкапотно children
 export const appRouter = createBrowserRouter(
     createRoutesFromElements(
-        <Route
-            ErrorBoundary={ErrorBoundary}
-            path={Paths.R_SWITCHER}
-            loader={rootAppLoader}
-            element={<AppLayout />}
-        >
-            <Route index element={<MainPage />} loader={clearFilterStateLoader} />
+        <Route>
             <Route
-                path={Paths.CATEGORY_ROOT}
-                loader={rootCategoryLoader}
-                element={<SubcategoryRedirect />}
-            />
-            <Route
-                path={Paths.CATEGORY}
-                element={
-                    <CategoryExistProtected>
-                        <CategoryPage />
-                    </CategoryExistProtected>
-                }
-                loader={clearFilterStateLoader}
-            />
-            <Route
-                path={Paths.RECIPE}
-                element={
-                    <CategoryExistProtected>
-                        <RecipePageWrapper />
-                    </CategoryExistProtected>
-                }
-                loader={recipeLoader}
-            />
-            <Route path={Paths.JUICIEST} element={<JuiciestPage />} loader={juiciestLoader} />
-            <Route path={Paths.ERROR} element={<ErrorPage />} />
+                ErrorBoundary={ErrorBoundary}
+                path={Paths.R_SWITCHER}
+                loader={rootAppLoader}
+                element={<AppLayout />}
+            >
+                <Route index element={<MainPage />} loader={clearFilterStateLoader} />
+                <Route
+                    path={Paths.CATEGORY_ROOT}
+                    loader={rootCategoryLoader}
+                    element={<SubcategoryRedirect />}
+                />
+                <Route
+                    path={Paths.CATEGORY}
+                    element={
+                        <CategoryExistProtected>
+                            <CategoryPage />
+                        </CategoryExistProtected>
+                    }
+                    loader={clearFilterStateLoader}
+                />
+                <Route
+                    path={Paths.RECIPE}
+                    element={
+                        <CategoryExistProtected>
+                            <RecipePageWrapper />
+                        </CategoryExistProtected>
+                    }
+                    loader={recipeLoader}
+                />
+                <Route path={Paths.JUICIEST} element={<JuiciestPage />} loader={juiciestLoader} />
+                <Route path={Paths.ERROR} element={<ErrorPage />} />
+            </Route>
             <Route path={Paths.OTHERS} element={<Navigate to={Paths.ERROR} replace />} />
         </Route>,
     ),
