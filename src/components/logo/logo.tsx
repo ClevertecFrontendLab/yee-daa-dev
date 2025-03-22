@@ -1,8 +1,5 @@
 import { Box, Flex, FlexProps } from '@chakra-ui/react';
 import { FC } from 'react';
-import { NavLink } from 'react-router';
-
-import { Paths } from '~/constants/path.js';
 
 const DEFAULT_HEIGHT = 32;
 
@@ -12,15 +9,7 @@ type LogoProps = FlexProps & {
 };
 
 export const Logo: FC<LogoProps> = ({ height = DEFAULT_HEIGHT, hideMd = true, ...restProps }) => (
-    <Flex
-        as={NavLink}
-        to={Paths.R_SWITCHER}
-        alignItems='flex-end'
-        h={`${height}px`}
-        justify='center'
-        gap='3%'
-        {...restProps}
-    >
+    <Flex alignItems='flex-end' h={`${height}px`} justify='center' gap='3%' {...restProps}>
         <Box h='full'>
             <svg
                 xmlns='http://www.w3.org/2000/svg'

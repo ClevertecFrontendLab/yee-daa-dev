@@ -46,9 +46,11 @@ export const CredentialsForm: FC<CredentialsFormProps> = ({
             <FormControl isInvalid={!!errors.password} mt={6}>
                 <FormLabel>{Label.Password.Label}</FormLabel>
                 <PasswordInput
-                    placeholder={Label.Password.Placeholder}
-                    {...register('password')}
-                    onBlur={handleBlur('password')}
+                    input={{
+                        placeholder: Label.Password.Placeholder,
+                        onBlur: handleBlur('password'),
+                        register: register('password'),
+                    }}
                 />
                 <FormHelperText>{Label.Password.Helper}</FormHelperText>
                 <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
@@ -57,8 +59,10 @@ export const CredentialsForm: FC<CredentialsFormProps> = ({
             <FormControl isInvalid={!!errors.repeatPassword} mt={6}>
                 <FormLabel>{Label.RepeatPassword.Label}</FormLabel>
                 <PasswordInput
-                    placeholder={Label.RepeatPassword.Placeholder}
-                    {...register('repeatPassword')}
+                    input={{
+                        placeholder: Label.RepeatPassword.Placeholder,
+                        register: register('repeatPassword'),
+                    }}
                 />
                 <FormErrorMessage>{errors.repeatPassword?.message}</FormErrorMessage>
             </FormControl>
