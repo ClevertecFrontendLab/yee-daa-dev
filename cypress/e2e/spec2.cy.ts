@@ -3,6 +3,10 @@ import { TOAST_MESSAGE } from '~/constants/toast';
 import { CyTestId } from '~/cy-test-id';
 import { API_BASE_URL } from '~/redux/api/constants';
 
+//FIXME: убрать ссылки в финальном варианте тестов
+
+const INPUT_OVER_100 = 'А'.repeat(101);
+
 const interceptSignInRequest = ({
     statusCode,
     body = {},
@@ -27,8 +31,14 @@ const fillSignInForm = (login = 'username', password = 'password') => {
     cy.getByTestId(CyTestId.Auth.PasswordInput).type(password);
 };
 
-describe('Sprint 4', () => {
-    describe('Sign in flow', () => {
+const validateField = (inputAlias, value, expectedError, submitAlias = '@submitButton') => {
+    cy.get(inputAlias).clear().type(value);
+    cy.get(submitAlias).click();
+    cy.contains(expectedError).should('be.visible');
+};
+
+describe('sprint 4', () => {
+    describe('sign in flow', () => {
         beforeEach(() => {
             cy.clearLocalStorage();
             cy.visit('/sign-in');
@@ -38,12 +48,22 @@ describe('Sprint 4', () => {
             cy.getByTestId(CyTestId.Auth.SubmitButton).as('submitButton');
         });
 
-        it('Sign in 401 invalid credentials', () => {
+        it('should validate sign in form fields', () => {
             cy.get('@signInForm').within(() => {
                 cy.get('@submitButton').click();
-                cy.contains('Введите логин').should('exist');
-                cy.contains('Введите пароль').should('exist');
+                cy.contains('Введите логин').should('be.visible');
+                cy.contains('Введите пароль').should('be.visible');
 
+                validateField('@loginInput', INPUT_OVER_100, 'Максимум 100 символов');
+
+                cy.get('@loginInput').clear().type('login');
+
+                validateField('@passwordInput', INPUT_OVER_100, 'Максимум 100 символов');
+            });
+        });
+
+        it('should show password only while mouse is holding on visibility button', () => {
+            cy.get('@signInForm').within(() => {
                 fillSignInForm();
 
                 cy.get('@passwordInput').should('have.attr', 'type', 'password');
@@ -58,6 +78,12 @@ describe('Sprint 4', () => {
                     cy.wrap($toggle).trigger('mouseup');
                     cy.get('@passwordInput').should('have.attr', 'type', 'password');
                 });
+            });
+        });
+
+        it('should display error message for 401 invalid credentials', () => {
+            cy.get('@signInForm').within(() => {
+                fillSignInForm();
 
                 interceptSignInRequest({
                     statusCode: 401,
@@ -78,7 +104,7 @@ describe('Sprint 4', () => {
                 .should('contain', TOAST_MESSAGE.signInError.description);
         });
 
-        it('Sign in 500 server error', () => {
+        it('should display error modal for 500 server error', () => {
             interceptSignInRequest({
                 statusCode: 500,
                 delay: 1000,
@@ -95,26 +121,35 @@ describe('Sprint 4', () => {
             cy.wait('@signInRequest500');
 
             cy.getByTestId(CyTestId.Modal.SignInError.Root, { timeout: 2000 })
-                .as('SignInErrorModal')
                 .should('exist')
                 .should('be.visible')
                 .within(() => {
-                    cy.contains('Вход не выполнен').should('exist');
-                    cy.contains('Что-то пошло не так. Попробуйте еще раз').should('exist');
+                    cy.contains('Вход не выполнен').should('be.visible');
+                    cy.contains('Что-то пошло не так. Попробуйте еще раз').should('be.visible');
 
                     cy.getByTestId(CyTestId.Modal.CloseButton).click();
                 });
 
             cy.getByTestId(CyTestId.Modal.SignInError.Root).should('not.exist');
+        });
+
+        it('should send new request on server error retry button', () => {
+            interceptSignInRequest({
+                statusCode: 500,
+                delay: 1000,
+                alias: 'signInRequest500',
+            });
 
             cy.get('@signInForm').within(() => {
+                fillSignInForm();
+
                 cy.get('@passwordInput').type('{enter}');
             });
 
             cy.getByTestId(CyTestId.AppLoader).should('be.visible');
             cy.wait('@signInRequest500');
 
-            cy.get('@SignInErrorModal', { timeout: 2000 }).within(() => {
+            cy.getByTestId(CyTestId.Modal.SignInError.Root, { timeout: 2000 }).within(() => {
                 interceptSignInRequest({
                     statusCode: 200,
                     body: {
@@ -131,10 +166,10 @@ describe('Sprint 4', () => {
             cy.getByTestId(CyTestId.AppLoader, { timeout: 2000 }).should('be.visible');
             cy.wait('@signInRequest200');
             cy.getByTestId(CyTestId.Breadcrumbs).should('be.visible');
-            cy.contains('Главная').should('exist');
+            cy.contains('Главная').should('be.visible');
         });
 
-        it('Sign in 200 success', () => {
+        it('should navigate to main page on sign in success', () => {
             interceptSignInRequest({
                 statusCode: 200,
                 delay: 1000,
@@ -150,7 +185,7 @@ describe('Sprint 4', () => {
             cy.getByTestId(CyTestId.AppLoader, { timeout: 2000 }).should('be.visible');
             cy.wait('@signInRequest200');
             cy.getByTestId(CyTestId.Breadcrumbs).should('exist');
-            cy.contains('Главная').should('exist');
+            cy.contains('Главная').should('be.visible');
         });
     });
 
@@ -171,28 +206,184 @@ describe('Sprint 4', () => {
             cy.getByTestId(CyTestId.Auth.SubmitButton).as('submitButton');
         });
 
-        it('Sign up validation', () => {
-            cy.get('@signUpForm').within(() => {
-                cy.get('@firstNameInput').type('{enter}');
+        describe('should validate sign up form fields', () => {
+            describe('should validate step 1', () => {
+                it('should validate first name field', () => {
+                    cy.get('@signUpForm').within(() => {
+                        cy.get('@lastNameInput').type('Петров');
+                        cy.get('@emailInput').type('example@mail.com');
 
-                cy.contains('Введите фамилию').should('exist');
-                cy.contains('Введите имя').should('exist');
-                cy.contains('Введите email').should('exist');
+                        cy.get('@firstNameInput').type('{enter}');
+                        cy.contains('Введите имя').should('be.visible');
 
-                cy.get('@firstNameInput').type('firstName');
-                cy.get('@lastNameInput').type('lastName');
+                        validateField(
+                            '@firstNameInput',
+                            'firstName',
+                            'Должно начинаться с кириллицы А-Я',
+                        );
+                        validateField('@firstNameInput', INPUT_OVER_100, 'Максимум 100 символов');
+                        validateField(
+                            '@firstNameInput',
+                            'Василий   -Ибн- Петр',
+                            'Только кириллица А-Я, и "-"',
+                        );
+                        validateField(
+                            '@firstNameInput',
+                            '-Василий',
+                            'Должно начинаться с кириллицы А-Я',
+                        );
+                        validateField(
+                            '@firstNameInput',
+                            'ВасилийEnglish',
+                            'Только кириллица А-Я, и "-"',
+                        );
 
-                cy.get(':contains("Должно начинаться с кириллицы А-Я")').should(
-                    'have.length.at.least',
-                    2,
-                );
+                        cy.get('@firstNameInput').clear().type('  Василий   ');
+                        cy.get('@submitButton').click();
+                        cy.get('@firstNameInput').should('have.value', 'Василий');
+
+                        cy.contains('Максимум 100 символов').should('not.exist');
+                        cy.contains('Только кириллица А-Я, и "-"').should('not.exist');
+                        cy.contains('Должно начинаться с кириллицы А-Я').should('not.exist');
+                    });
+                });
+
+                it('should validate last name field', () => {
+                    cy.get('@signUpForm').within(() => {
+                        cy.get('@firstNameInput').type('Василий');
+                        cy.get('@emailInput').type('example@mail.com');
+
+                        cy.get('@lastNameInput').type('{enter}');
+                        cy.contains('Введите фамилию').should('be.visible');
+
+                        validateField(
+                            '@lastNameInput',
+                            'lastName',
+                            'Должно начинаться с кириллицы А-Я',
+                        );
+                        validateField('@lastNameInput', INPUT_OVER_100, 'Максимум 100 символов');
+                        validateField(
+                            '@lastNameInput',
+                            '    Комаров   -Петров   ',
+                            'Только кириллица А-Я, и "-"',
+                        );
+                        validateField(
+                            '@lastNameInput',
+                            '-Василий',
+                            'Должно начинаться с кириллицы А-Я',
+                        );
+                        validateField(
+                            '@lastNameInput',
+                            'ВасилийEnglish',
+                            'Только кириллица А-Я, и "-"',
+                        );
+
+                        cy.get('@lastNameInput').clear().type('  Петров   ');
+                        cy.get('@submitButton').click();
+                        cy.get('@lastNameInput').should('have.value', 'Петров');
+
+                        cy.contains('Максимум 100 символов').should('not.exist');
+                        cy.contains('Только кириллица А-Я, и "-"').should('not.exist');
+                        cy.contains('Должно начинаться с кириллицы А-Я').should('not.exist');
+                    });
+                });
+
+                it('should validate email field', () => {
+                    cy.get('@signUpForm').within(() => {
+                        cy.get('@firstNameInput').type('Василий');
+                        cy.get('@lastNameInput').type('Петров{enter}');
+                        cy.contains('Введите email').should('be.visible');
+
+                        validateField('@emailInput', 'email', 'Введите корректный e-mail');
+                        validateField('@emailInput', 'email@', 'Введите корректный e-mail');
+                        validateField('@emailInput', 'email@mail', 'Введите корректный e-mail');
+                        validateField(
+                            '@emailInput',
+                            'пример@mail.com',
+                            'Введите корректный e-mail',
+                        );
+                        validateField(
+                            '@emailInput',
+                            'example@имейл.com',
+                            'Введите корректный e-mail',
+                        );
+                        validateField('@emailInput', 'email@имейл.ру', 'Введите корректный e-mail');
+                        validateField(
+                            '@emailInput',
+                            'email @имейл.ru',
+                            'Введите корректный e-mail',
+                        );
+                        validateField('@emailInput', INPUT_OVER_100, 'Максимум 100 символов');
+
+                        cy.get('@emailInput').clear().type('  example@mail.com   ');
+                        cy.get('@submitButton').click();
+                        cy.get('@emailInput').should('have.value', 'example@mail.com');
+
+                        cy.contains('Введите корректный e-mail').should('not.exist');
+                        cy.contains('Максимум 100 символов').should('not.exist');
+                    });
+                });
             });
 
-            cy.get('@signUpProgress').within(() => {
-                cy.get('[aria-valuenow=0]').should('exist');
+            describe('should validate step 2', () => {
+                beforeEach(() => {
+                    cy.get('@firstNameInput').type('Василий');
+                    cy.get('@lastNameInput').type('Петров');
+                    cy.get('@emailInput').type('example@mail.com{enter}');
+
+                    cy.getByTestId(CyTestId.Auth.LoginInput).as('loginInput');
+                    cy.getByTestId(CyTestId.Auth.PasswordInput).as('passwordInput');
+                    cy.getByTestId(CyTestId.Auth.RepeatPasswordInput).as('repeatPasswordInput');
+                    cy.getByTestId(CyTestId.Auth.SubmitButton).as('submitButton');
+                });
+
+                it('should validate login field', () => {
+                    cy.get('@signUpForm').within(() => {
+                        cy.get('@passwordInput').type('Password123');
+                        cy.get('@repeatPasswordInput').type('Password123');
+
+                        cy.get('@loginInput').type('{enter}');
+                        cy.contains('Введите логин').should('be.visible');
+
+                        validateField('@loginInput', 'logi', 'Не соответсвует формату');
+                        validateField('@loginInput', 'log in', 'Не соответсвует формату');
+                        validateField('@loginInput', 'login<', 'Не соответсвует формату');
+                        validateField('@loginInput', 'login[', 'Не соответсвует формату');
+                        validateField('@loginInput', INPUT_OVER_100, 'Максимум 100 символов');
+
+                        cy.get('@loginInput').clear().type('  login!@#$&_+-.   ');
+                        cy.get('@submitButton').click();
+                        cy.get('@emailInput').should('have.value', 'login!@#$&_+-.');
+
+                        cy.contains('Не соответсвует формату').should('not.exist');
+                        cy.contains('Максимум 100 символов').should('not.exist');
+                    });
+                });
+
+                it('should validate password field', () => {
+                    cy.get('@signUpForm').within(() => {
+                        cy.get('@loginInput').type('login!{enter}');
+
+                        cy.get('@loginInput').type('{enter}');
+                        cy.contains('Введите логин').should('be.visible');
+
+                        validateField('@loginInput', 'logi', 'Не соответсвует формату');
+                        validateField('@loginInput', 'log in', 'Не соответсвует формату');
+                        validateField('@loginInput', 'login<', 'Не соответсвует формату');
+                        validateField('@loginInput', 'login[', 'Не соответсвует формату');
+                        validateField('@loginInput', INPUT_OVER_100, 'Максимум 100 символов');
+
+                        cy.get('@loginInput').clear().type('  login!@#$&_+-.   ');
+                        cy.get('@submitButton').click();
+                        cy.get('@emailInput').should('have.value', 'login!@#$&_+-.');
+
+                        cy.contains('Не соответсвует формату').should('not.exist');
+                        cy.contains('Максимум 100 символов').should('not.exist');
+                    });
+                });
             });
 
-            cy.get('@signUpForm').within(() => {});
+            it('progress bar shows validation progress', () => {});
         });
     });
 });

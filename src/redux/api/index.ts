@@ -11,6 +11,7 @@ export const unauthorizedApi = createApi({
 });
 
 const authQuery = fetchBaseQuery({
+    baseUrl: BASE_URL,
     prepareHeaders(headers) {
         return headers;
     },
