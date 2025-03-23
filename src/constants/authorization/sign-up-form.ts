@@ -32,7 +32,7 @@ export const CredentialsSchema = yup.object().shape({
         .max(100, 'Максимум 100 символов'),
     repeatPassword: yup
         .string()
-        .required('Введите пароль')
+        .required('Повторите пароль')
         .oneOf([yup.ref('password')], 'Пароли должны совпадать'),
 });
 
