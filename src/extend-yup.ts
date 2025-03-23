@@ -1,13 +1,13 @@
 import * as Yup from 'yup';
 
 const RussianRegex = /^[А-Яа-яЁё]/;
-const basePattern = 'А-Яа-яЁё\\s\\-–';
+const basePattern = 'А-Яа-яЁё\\-–';
 
 export const extendYup = () => {
     Yup.addMethod(
         Yup.string,
         'russianOnly',
-        function (msg = 'Только кириллица А-Я, пробел и "-"', allowPunctuation = false) {
+        function (msg = 'Только кириллица А-Я, и "-"', allowPunctuation = false) {
             const punctuation = allowPunctuation ? '.,' : '';
             const pattern = new RegExp(`^[${basePattern}${punctuation}]+$`);
 

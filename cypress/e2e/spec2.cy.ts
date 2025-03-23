@@ -97,11 +97,11 @@ describe('sprint 4', () => {
             cy.getByTestId(CyTestId.AppLoader, { timeout: 2000 }).should('be.visible');
             cy.wait('@signInRequest401');
 
-            cy.get(`[id*=${TOAST_MESSAGE.signInError.id}]`, { timeout: 2000 })
+            cy.get(`[id*=${TOAST_MESSAGE.SignInToast[401].id}]`, { timeout: 2000 })
                 .should('exist')
                 .should('be.visible')
-                .should('contain', TOAST_MESSAGE.signInError.title)
-                .should('contain', TOAST_MESSAGE.signInError.description);
+                .should('contain', TOAST_MESSAGE.SignInToast[401].title)
+                .should('contain', TOAST_MESSAGE.SignInToast[401].description);
         });
 
         it('should display error modal for 500 server error', () => {
@@ -211,9 +211,7 @@ describe('sprint 4', () => {
                 it('should validate first name field', () => {
                     cy.get('@signUpForm').within(() => {
                         cy.get('@lastNameInput').type('Петров');
-                        cy.get('@emailInput').type('example@mail.com');
-
-                        cy.get('@firstNameInput').type('{enter}');
+                        cy.get('@emailInput').type('example@mail.com{enter}');
                         cy.contains('Введите имя').should('be.visible');
 
                         validateField(
@@ -251,9 +249,7 @@ describe('sprint 4', () => {
                 it('should validate last name field', () => {
                     cy.get('@signUpForm').within(() => {
                         cy.get('@firstNameInput').type('Василий');
-                        cy.get('@emailInput').type('example@mail.com');
-
-                        cy.get('@lastNameInput').type('{enter}');
+                        cy.get('@emailInput').type('example@mail.com{enter}');
                         cy.contains('Введите фамилию').should('be.visible');
 
                         validateField(
@@ -340,22 +336,21 @@ describe('sprint 4', () => {
                 it('should validate login field', () => {
                     cy.get('@signUpForm').within(() => {
                         cy.get('@passwordInput').type('Password123');
-                        cy.get('@repeatPasswordInput').type('Password123');
-
-                        cy.get('@loginInput').type('{enter}');
+                        cy.get('@repeatPasswordInput').type('Password123{enter}');
                         cy.contains('Введите логин').should('be.visible');
 
-                        validateField('@loginInput', 'logi', 'Не соответсвует формату');
-                        validateField('@loginInput', 'log in', 'Не соответсвует формату');
-                        validateField('@loginInput', 'login<', 'Не соответсвует формату');
-                        validateField('@loginInput', 'login[', 'Не соответсвует формату');
+                        validateField('@loginInput', 'logi', 'Не соответствует формату');
+                        validateField('@loginInput', 'логин', 'Не соответствует формату');
+                        validateField('@loginInput', 'log in', 'Не соответствует формату');
+                        validateField('@loginInput', 'login<', 'Не соответствует формату');
+                        validateField('@loginInput', 'login[', 'Не соответствует формату');
                         validateField('@loginInput', INPUT_OVER_100, 'Максимум 100 символов');
 
                         cy.get('@loginInput').clear().type('  login!@#$&_+-.   ');
                         cy.get('@submitButton').click();
                         cy.get('@emailInput').should('have.value', 'login!@#$&_+-.');
 
-                        cy.contains('Не соответсвует формату').should('not.exist');
+                        cy.contains('Не соответствует формату').should('not.exist');
                         cy.contains('Максимум 100 символов').should('not.exist');
                     });
                 });
@@ -363,21 +358,21 @@ describe('sprint 4', () => {
                 it('should validate password field', () => {
                     cy.get('@signUpForm').within(() => {
                         cy.get('@loginInput').type('login!{enter}');
+                        cy.contains('Введите пароль').should('be.visible');
 
-                        cy.get('@loginInput').type('{enter}');
-                        cy.contains('Введите логин').should('be.visible');
+                        validateField('@paswordInput', 'PerovVa', 'Не соответствует формату');
+                        validateField('@paswordInput', 'perovvasia123', 'Не соответствует формату');
+                        validateField('@paswordInput', 'PetrovVasia', 'Не соответствует формату');
+                        validateField('@paswordInput', '12345678', 'Не соответствует формату');
+                        validateField('@paswordInput', 'ПетровВася123', 'Не соответствует формату');
+                        validateField('@paswordInput', 'ПетровВася123', 'Не соответствует формату');
+                        validateField('@paswordInput', INPUT_OVER_100, 'Максимум 100 символов');
 
-                        validateField('@loginInput', 'logi', 'Не соответсвует формату');
-                        validateField('@loginInput', 'log in', 'Не соответсвует формату');
-                        validateField('@loginInput', 'login<', 'Не соответсвует формату');
-                        validateField('@loginInput', 'login[', 'Не соответсвует формату');
-                        validateField('@loginInput', INPUT_OVER_100, 'Максимум 100 символов');
-
-                        cy.get('@loginInput').clear().type('  login!@#$&_+-.   ');
+                        cy.get('@loginInput').clear().type('  PerovVasia123   ');
                         cy.get('@submitButton').click();
-                        cy.get('@emailInput').should('have.value', 'login!@#$&_+-.');
+                        cy.get('@emailInput').should('have.value', 'PerovVasia123');
 
-                        cy.contains('Не соответсвует формату').should('not.exist');
+                        cy.contains('Не соответствует формату').should('not.exist');
                         cy.contains('Максимум 100 символов').should('not.exist');
                     });
                 });

@@ -15,7 +15,6 @@ import { NavLink, Outlet, useNavigate } from 'react-router';
 
 import { AppLoader } from '~/components/app-loader';
 import { SignInFormSchema, SignInSchema } from '~/constants/authorization';
-import { HttpStatus } from '~/constants/http-status';
 import { Paths } from '~/constants/path';
 import { TOAST_MESSAGE } from '~/constants/toast';
 import { CyTestId } from '~/cy-test-id';
@@ -30,7 +29,7 @@ import { Label } from './label';
 
 const ChakraForm = chakra('form');
 
-const { signInError } = TOAST_MESSAGE;
+const { SignInToast } = TOAST_MESSAGE;
 
 export const SignInForm: FC = () => {
     const navigate = useNavigate();
@@ -58,14 +57,22 @@ export const SignInForm: FC = () => {
 
             navigate(Paths.R_SWITCHER);
         } catch (error) {
-            if (isFetchBaseQueryError(error) && error.status === HttpStatus.UNAUTHORIZED) {
-                toast(signInError, false);
-                setError('login', { message: '' });
-                setError('password', { message: '' });
+            if (isFetchBaseQueryError(error)) {
+                const toastData = SignInToast[error.status as keyof typeof SignInToast];
+
+                if (toastData) {
+                    toast(toastData, false);
+
+                    setError('login', { message: '' });
+                    setError('password', { message: '' });
+                } else {
+                    onOpen();
+                }
             } else {
                 onOpen();
-                reset();
             }
+
+            reset();
         }
     };
 

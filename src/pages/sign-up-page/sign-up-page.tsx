@@ -7,17 +7,18 @@ import {
     CredentialsForm,
     PersonalInfoForm,
     SignUpSuccessModal,
-    VerificationFailedModal,
+    // VerificationFailedModal,
 } from '~/components/authorization';
 import { SignUpFormSchema, SignUpSchema, SignUpStep } from '~/constants/authorization';
 import { TOAST_MESSAGE } from '~/constants/toast';
 import { CyTestId } from '~/cy-test-id';
 import { useAuthToast } from '~/hooks/use-auth-toast';
+import { useSignUpMutation } from '~/redux/api/services/auth-api';
 
 import { SignUpPropgessLabel } from './label';
 import styles from './sign-up-page.module.css';
 
-const { serverError } = TOAST_MESSAGE;
+const { ServerErrorToast } = TOAST_MESSAGE;
 
 const SignUpStepComponent = {
     [SignUpStep.PersonalInfo]: PersonalInfoForm,
@@ -36,6 +37,8 @@ const SignUpPage: FC = () => {
         resolver: yupResolver<SignUpFormSchema>(SignUpSchema[step]),
     });
 
+    const [signUp] = useSignUpMutation();
+
     const {
         watch,
         handleSubmit,
@@ -50,16 +53,19 @@ const SignUpPage: FC = () => {
 
     const changeStep = (newStep: SignUpStep) => setStep(newStep);
 
-    const onSubmit: Parameters<typeof handleSubmit>[0] = (data) => {
+    const onSubmit: Parameters<typeof handleSubmit>[0] = async (data) => {
         if (step === SignUpStep.PersonalInfo) {
             setStep(SignUpStep.Credentials);
 
             return;
         }
 
-        toast(serverError, false);
-        onOpen();
-        console.log(data);
+        try {
+            await signUp(data).unwrap();
+            onOpen();
+        } catch (_error) {
+            toast(ServerErrorToast, false);
+        }
     };
     return (
         <Box as='section'>
@@ -81,7 +87,6 @@ const SignUpPage: FC = () => {
             </form>
 
             <SignUpSuccessModal email={watchFields.email} {...{ isOpen, onClose }} />
-            <VerificationFailedModal {...{ isOpen, onClose }} />
         </Box>
     );
 };

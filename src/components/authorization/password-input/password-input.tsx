@@ -15,11 +15,13 @@ import { CyTestId } from '~/cy-test-id';
 type PasswordInputProps = {
     input: InputProps & { register: UseFormRegisterReturn };
     button?: Omit<IconButtonProps, 'aria-label'>;
+    dataTestId?: string;
 };
 
 export const PasswordInput: FC<PasswordInputProps> = ({
     input: { register, ...restInput },
     button,
+    dataTestId = CyTestId.Auth.PasswordInput,
 }) => {
     const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -44,7 +46,7 @@ export const PasswordInput: FC<PasswordInputProps> = ({
             </InputRightElement>
 
             <Input
-                data-test-id={CyTestId.Auth.PasswordInput}
+                data-test-id={dataTestId}
                 variant='auth'
                 size='lg'
                 type={passwordVisible ? 'text' : 'password'}
