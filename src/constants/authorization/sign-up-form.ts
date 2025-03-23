@@ -14,8 +14,9 @@ const PersonalInfoSchema = yup.object().shape({
     lastName: yup
         .string()
         .required('Введите фамилию')
-        .russianOnly()
-        .max(100, 'Максимум 100 символов'),
+        .max(100, 'Максимум 100 символов')
+        .russianOnly(),
+
     email: EmailValidation,
 });
 
@@ -23,16 +24,16 @@ export const CredentialsSchema = yup.object().shape({
     login: yup
         .string()
         .required('Введите логин')
-        .matches(/^[a-zA-Z0-9!@#$&_+-.]{5,}$/, 'Не соответствует формату')
-        .max(100, 'Максимум 100 символов'),
+        .max(100, 'Максимум 100 символов')
+        .matches(/^[a-zA-Z0-9!@#$&_+-.]{5,}$/, 'Не соответствует формату'),
     password: yup
         .string()
         .required('Введите пароль')
+        .max(100, 'Максимум 100 символов')
         .matches(
             /^(?!.*[А-Яа-яЁё\s])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9!@#$&_+-.]{8,}$/,
             'Не соответствует формату',
-        )
-        .max(100, 'Максимум 100 символов'),
+        ),
     repeatPassword: yup
         .string()
         .required('Повторите пароль')
