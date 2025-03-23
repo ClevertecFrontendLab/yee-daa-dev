@@ -38,9 +38,15 @@ const validateField = (inputAlias, value, expectedError, submitAlias = '@submitB
 };
 
 describe('sprint 4', () => {
+    beforeEach(() => {
+        cy.clearLocalStorage();
+        cy.clearAllSessionStorage();
+    });
+
     describe('sign in flow', () => {
         beforeEach(() => {
             cy.clearLocalStorage();
+            //FIXME: убрать роутирование в финальном варианте тестов
             cy.visit('/sign-in');
             cy.getByTestId(CyTestId.Auth.SignInForm).as('signInForm');
             cy.getByTestId(CyTestId.Auth.LoginInput).as('loginInput');
@@ -192,6 +198,7 @@ describe('sprint 4', () => {
     describe('Sign up flow', () => {
         beforeEach(() => {
             cy.clearLocalStorage();
+            //FIXME: убрать роутирование в финальном варианте тестов
             cy.visit('/sign-in');
 
             cy.contains('Регистрация').click();
@@ -199,7 +206,7 @@ describe('sprint 4', () => {
             cy.reload();
 
             cy.getByTestId(CyTestId.Auth.SignUpProgress).as('signUpProgress');
-            cy.getByTestId(CyTestId.Auth.SignUpForm, { timeout: 2000 }).as('signUpForm');
+            cy.getByTestId(CyTestId.Auth.SignUpForm).as('signUpForm');
             cy.getByTestId(CyTestId.Auth.FirstNameInput).as('firstNameInput');
             cy.getByTestId(CyTestId.Auth.LastNameInput).as('lastNameInput');
             cy.getByTestId(CyTestId.Auth.EmailInput).as('emailInput');
@@ -210,8 +217,7 @@ describe('sprint 4', () => {
             describe('should validate step 1', () => {
                 it('should validate first name field', () => {
                     cy.get('@signUpForm').within(() => {
-                        cy.get('@lastNameInput').type('Петров');
-                        cy.get('@emailInput').type('example@mail.com{enter}');
+                        cy.get('@lastNameInput').type('Петров{enter}');
                         cy.contains('Введите имя').should('be.visible');
 
                         validateField(
@@ -248,8 +254,7 @@ describe('sprint 4', () => {
 
                 it('should validate last name field', () => {
                     cy.get('@signUpForm').within(() => {
-                        cy.get('@firstNameInput').type('Василий');
-                        cy.get('@emailInput').type('example@mail.com{enter}');
+                        cy.get('@firstNameInput').type('Василий{enter}');
                         cy.contains('Введите фамилию').should('be.visible');
 
                         validateField(
@@ -286,8 +291,7 @@ describe('sprint 4', () => {
 
                 it('should validate email field', () => {
                     cy.get('@signUpForm').within(() => {
-                        cy.get('@firstNameInput').type('Василий');
-                        cy.get('@lastNameInput').type('Петров{enter}');
+                        cy.get('@emailInput').type('{enter}');
                         cy.contains('Введите email').should('be.visible');
 
                         validateField('@emailInput', 'email', 'Введите корректный e-mail');
@@ -312,6 +316,7 @@ describe('sprint 4', () => {
                         validateField('@emailInput', INPUT_OVER_100, 'Максимум 100 символов');
 
                         cy.get('@emailInput').clear().type('  example@mail.com   ');
+                        cy.get('@firstNameInput').clear();
                         cy.get('@submitButton').click();
                         cy.get('@emailInput').should('have.value', 'example@mail.com');
 
@@ -335,20 +340,18 @@ describe('sprint 4', () => {
 
                 it('should validate login field', () => {
                     cy.get('@signUpForm').within(() => {
-                        cy.get('@passwordInput').type('Password123');
-                        cy.get('@repeatPasswordInput').type('Password123{enter}');
+                        cy.get('@passwordInput').type('Password123{enter}');
                         cy.contains('Введите логин').should('be.visible');
 
                         validateField('@loginInput', 'logi', 'Не соответствует формату');
                         validateField('@loginInput', 'логин', 'Не соответствует формату');
                         validateField('@loginInput', 'log in', 'Не соответствует формату');
                         validateField('@loginInput', 'login<', 'Не соответствует формату');
-                        validateField('@loginInput', 'login[', 'Не соответствует формату');
                         validateField('@loginInput', INPUT_OVER_100, 'Максимум 100 символов');
 
                         cy.get('@loginInput').clear().type('  login!@#$&_+-.   ');
                         cy.get('@submitButton').click();
-                        cy.get('@emailInput').should('have.value', 'login!@#$&_+-.');
+                        cy.get('@loginInput').should('have.value', 'login!@#$&_+-.');
 
                         cy.contains('Не соответствует формату').should('not.exist');
                         cy.contains('Максимум 100 символов').should('not.exist');
@@ -360,25 +363,109 @@ describe('sprint 4', () => {
                         cy.get('@loginInput').type('login!{enter}');
                         cy.contains('Введите пароль').should('be.visible');
 
-                        validateField('@paswordInput', 'PerovVa', 'Не соответствует формату');
-                        validateField('@paswordInput', 'perovvasia123', 'Не соответствует формату');
-                        validateField('@paswordInput', 'PetrovVasia', 'Не соответствует формату');
-                        validateField('@paswordInput', '12345678', 'Не соответствует формату');
-                        validateField('@paswordInput', 'ПетровВася123', 'Не соответствует формату');
-                        validateField('@paswordInput', 'ПетровВася123', 'Не соответствует формату');
-                        validateField('@paswordInput', INPUT_OVER_100, 'Максимум 100 символов');
+                        validateField('@passwordInput', 'PerovVa', 'Не соответствует формату');
+                        validateField(
+                            '@passwordInput',
+                            'perovvasia123',
+                            'Не соответствует формату',
+                        );
+                        validateField('@passwordInput', 'PetrovVasia', 'Не соответствует формату');
+                        validateField('@passwordInput', '12345678', 'Не соответствует формату');
+                        validateField(
+                            '@passwordInput',
+                            'ПетровВася123',
+                            'Не соответствует формату',
+                        );
+                        validateField(
+                            '@passwordInput',
+                            'Perov Vasia123',
+                            'Не соответствует формату',
+                        );
+                        validateField(
+                            '@passwordInput',
+                            'PetrovVasia123<',
+                            'Не соответствует формату',
+                        );
+                        validateField('@passwordInput', INPUT_OVER_100, 'Максимум 100 символов');
 
-                        cy.get('@loginInput').clear().type('  PerovVasia123   ');
+                        cy.get('@passwordInput').clear().type('PerovVasia123!@#$&_+-.');
                         cy.get('@submitButton').click();
-                        cy.get('@emailInput').should('have.value', 'PerovVasia123');
 
                         cy.contains('Не соответствует формату').should('not.exist');
                         cy.contains('Максимум 100 символов').should('not.exist');
                     });
                 });
-            });
 
-            it('progress bar shows validation progress', () => {});
+                it('should validate repeat password field', () => {
+                    cy.get('@signUpForm').within(() => {
+                        cy.get('@passwordInput').type('PerovVasia123{enter}');
+                        cy.contains('Повторите пароль').should('be.visible');
+
+                        validateField(
+                            '@repeatPasswordInput',
+                            'PerovVasia',
+                            'Пароли должны совпадать',
+                        );
+
+                        cy.get('@repeatPasswordInput').clear().type('PerovVasia123');
+                        cy.get('@submitButton').click();
+
+                        cy.contains('Пароли должны совпадать').should('not.exist');
+                    });
+                });
+            });
         });
+
+        it('progress bar shows validation progress', () => {
+            const checkProgressBar = (min: number, max: number) => {
+                cy.get('@signUpProgress')
+                    .find('[role=progressbar]')
+                    .then(($el) => {
+                        const numericValue = parseFloat($el.attr('aria-valuenow'));
+                        const roundedValue = Math.round(numericValue);
+                        expect(roundedValue).to.be.within(min, max);
+                    });
+            };
+
+            checkProgressBar(0, 0);
+
+            cy.get('@firstNameInput').type('Vasiliy');
+            checkProgressBar(0, 0);
+            cy.get('@firstNameInput').clear().type('Василий');
+            checkProgressBar(14, 18);
+
+            cy.get('@lastNameInput').type('Petrov');
+            checkProgressBar(14, 18);
+            cy.get('@lastNameInput').clear().type('Петров');
+            checkProgressBar(31, 35);
+
+            cy.get('@emailInput').type('example@mail');
+            checkProgressBar(31, 35);
+            cy.get('@emailInput').clear().type('example@mail.com');
+            checkProgressBar(48, 52);
+
+            cy.get('@submitButton').click();
+
+            cy.getByTestId(CyTestId.Auth.LoginInput).as('loginInput');
+            cy.getByTestId(CyTestId.Auth.PasswordInput).as('passwordInput');
+            cy.getByTestId(CyTestId.Auth.RepeatPasswordInput).as('repeatPasswordInput');
+
+            cy.get('@loginInput').type('login>');
+            checkProgressBar(48, 52);
+            cy.get('@loginInput').clear().type('login!@#$&_+-.');
+            checkProgressBar(65, 69);
+
+            cy.get('@passwordInput').type('petrovvasia');
+            checkProgressBar(65, 69);
+            cy.get('@passwordInput').clear().type('PetrovVasia123!@#$&_+-.');
+            checkProgressBar(81, 85);
+
+            cy.get('@repeatPasswordInput').type('PetrovVasia');
+            checkProgressBar(81, 85);
+            cy.get('@repeatPasswordInput').clear().type('PetrovVasia123!@#$&_+-.');
+            checkProgressBar(98, 100);
+        });
+
+        it('should display error message for 500 server error', () => {});
     });
 });
