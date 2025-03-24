@@ -3,12 +3,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import {
-    CredentialsForm,
-    PersonalInfoForm,
-    SignUpSuccessModal,
-    // VerificationFailedModal,
-} from '~/components/authorization';
+import { AppLoader } from '~/components/app-loader';
+import { CredentialsForm, PersonalInfoForm, SignUpSuccessModal } from '~/components/authorization';
 import { SignUpFormSchema, SignUpSchema, SignUpStep } from '~/constants/authorization';
 import { TOAST_MESSAGE } from '~/constants/toast';
 import { useAuthToast } from '~/hooks/use-auth-toast';
@@ -41,7 +37,8 @@ const SignUpPage: FC = () => {
     const {
         watch,
         handleSubmit,
-        formState: { errors },
+
+        formState: { errors, isSubmitting },
     } = registrationForm;
 
     const watchFields = watch();
@@ -85,6 +82,7 @@ const SignUpPage: FC = () => {
             </form>
 
             <SignUpSuccessModal email={watchFields.email} {...{ isOpen, onClose }} />
+            <AppLoader isOpen={isSubmitting} />
         </Box>
     );
 };
