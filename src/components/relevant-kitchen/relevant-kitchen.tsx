@@ -12,28 +12,18 @@ import styles from './relevant-kitchen.module.css';
 const RELEVANT_KITCHEN_LIMIT = 5;
 
 export const RelevantKitchen: FC = memo(() => {
-    const { title, description } = useSelectRelatedRecipes();
+    const { title, description, firstSubCategoryId } = useSelectRelatedRecipes();
 
     const { data: relevantRecipesData } = useGetRecipeByCategoryIdQuery({
-        id: '67c47208f51967aa8390bef9',
+        id: firstSubCategoryId,
         limit: RELEVANT_KITCHEN_LIMIT,
         page: 1,
     });
 
-    //TODO фейк данные - заменить после наполнения БД на данные с запроса от firstSubCategoryId из useSelectRelatedRecipes
+    const recipes = relevantRecipesData ?? [];
 
-    const tempArr = relevantRecipesData
-        ? [
-              ...relevantRecipesData,
-              ...relevantRecipesData,
-              ...relevantRecipesData,
-              ...relevantRecipesData,
-              ...relevantRecipesData,
-          ]
-        : [];
-
-    const firstPart = tempArr?.slice(0, 2) ?? [];
-    const lastPart = tempArr?.slice(2, RELEVANT_KITCHEN_LIMIT) ?? [];
+    const firstPart = recipes?.slice(0, 2);
+    const lastPart = recipes?.slice(2, RELEVANT_KITCHEN_LIMIT);
 
     return (
         <Box>

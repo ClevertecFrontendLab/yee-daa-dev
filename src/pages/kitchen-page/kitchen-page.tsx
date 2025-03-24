@@ -1,5 +1,6 @@
 import { Center } from '@chakra-ui/react';
 import { FC, Fragment } from 'react';
+import { shallowEqual } from 'react-redux';
 
 import { BlogSection } from '~/components/blog-section/blog-section.tsx';
 import { Carousel } from '~/components/carousel/carousel.tsx';
@@ -41,12 +42,12 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
     const { selectedCategory, selectedSubCategory } = useDetectParams();
     const dispatch = useAppDispatch();
 
-    const selectedAllergens = useAppSelector(selectSelectedAllergens);
-    const filteredRecipes = useAppSelector(selectFilteredRecipes);
-    const selectedMeats = useAppSelector(selectSelectedMeats);
+    const selectedAllergens = useAppSelector(selectSelectedAllergens, shallowEqual);
+    const filteredRecipes = useAppSelector(selectFilteredRecipes, shallowEqual);
+    const selectedMeats = useAppSelector(selectSelectedMeats, shallowEqual);
     const searchInputValue = useAppSelector(selectInputValue);
-    const selectedSides = useAppSelector(selectSelectedSides);
-    const selectedSubcategories = useAppSelector(selectSelectedSubCategoriesIds);
+    const selectedSides = useAppSelector(selectSelectedSides, shallowEqual);
+    const selectedSubcategories = useAppSelector(selectSelectedSubCategoriesIds, shallowEqual);
     const isFiltering = useAppSelector(selectIsFiltering);
     const selectedPage = useAppSelector(selectSelectedPage);
 

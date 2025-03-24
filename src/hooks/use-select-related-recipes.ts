@@ -7,7 +7,9 @@ import { useAppSelector } from './typed-react-redux-hooks';
 
 export const useSelectRelatedRecipes = () => {
     const categories = useAppSelector(selectCategoriesMenu, shallowEqual);
-    const randomCategory = categories[getRandom(categories.length)];
+
+    const randomInd = getRandom(categories.length);
+    const randomCategory = categories[randomInd];
 
     const title = randomCategory?.title;
     const description = randomCategory?.description;
