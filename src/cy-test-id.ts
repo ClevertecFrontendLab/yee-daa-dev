@@ -4,6 +4,8 @@ export const CyTestId = {
     Auth: {
         SignInForm: 'sign-in-form',
         SignUpForm: 'sign-up-form',
+        RestoreEmailForm: 'restore-email-form',
+        RestoreCredentialsForm: 'restore-credentials-form',
 
         SignUpProgress: 'sign-up-progress',
 
@@ -13,9 +15,12 @@ export const CyTestId = {
         EmailInput: 'email-input',
         FirstNameInput: 'first-name-input',
         LastNameInput: 'last-name-input',
+        VerificationCodeInput: 'verification-code-input',
+
         SubmitButton: 'submit',
         PasswordVisibilityButton: 'password-visibility-button',
         ForgotPasswordButton: 'forgot-password',
+        RestoreCredentialsButton: 'restore-credentials-button',
     },
     Modal: {
         CloseButton: 'modal-close-button',
@@ -28,6 +33,15 @@ export const CyTestId = {
         },
         EmailVerificationFailed: {
             Root: 'email-verification-failed-modal',
+        },
+        RestoreCredentialsEmailModal: {
+            Root: 'restore-credentials-email-modal',
+        },
+        VerificationCodeModal: {
+            Root: 'verification-code-modal',
+        },
+        RestoreFormModal: {
+            Root: 'restore-form-modal',
         },
     },
 } as const;

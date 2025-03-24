@@ -587,6 +587,8 @@ describe('sprint 4', () => {
                 .should('exist')
                 .should('be.visible')
                 .should('contain', TOAST_MESSAGE.EmailVerification[200].title);
+
+            cy.getByTestId(CyTestId.Auth.SignInForm).should('be.visible');
         });
 
         it('should show error modal on email verification fail', () => {
@@ -606,6 +608,7 @@ describe('sprint 4', () => {
                 });
 
             cy.getByTestId(CyTestId.Modal.EmailVerificationFailed.Root).should('not.exist');
+            cy.getByTestId(CyTestId.Auth.SignUpForm).should('be.visible');
         });
     });
 

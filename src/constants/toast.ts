@@ -19,6 +19,19 @@ export const TOAST_MESSAGE = {
             title: 'Верификация прошла успешно',
         },
     },
+    SendVerificationCodeToast: {
+        [HttpStatus.FORBIDDEN]: {
+            id: 'send-verification-code-not-exist',
+            title: 'Такого e-mail нет',
+            description: 'Попробуйте другой e-mail или проверьте правильность его написания',
+        },
+    },
+    RestoreCredentials: {
+        [HttpStatus.OK]: {
+            id: 'restore-credentials-ok',
+            title: 'Восстановление данных успешно',
+        },
+    },
     ServerErrorToast: {
         id: 'server-error',
         title: 'Ошибка сервера',

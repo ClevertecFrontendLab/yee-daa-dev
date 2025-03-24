@@ -140,7 +140,11 @@ export const SignInForm: FC = () => {
                     }}
                     opacity={isSubmitting ? 0.5 : 1}
                 >
-                    <NavLink to={Paths.RESTORE_CREDENTIALS} replace>
+                    <NavLink
+                        data-test-id={CyTestId.Auth.RestoreCredentialsButton}
+                        to={Paths.RESTORE_CREDENTIALS}
+                        replace
+                    >
                         {Label.ForgotPassword}
                     </NavLink>
                 </Box>
