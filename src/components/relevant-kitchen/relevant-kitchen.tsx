@@ -3,7 +3,7 @@ import { Box, Grid, Heading, Text } from '@chakra-ui/react';
 import { FC, memo } from 'react';
 
 import { useSelectRelatedRecipes } from '~/hooks/use-select-related-recipes';
-import { useGetRecipeByCategoryIdQuery } from '~/redux/api/services/recipes-api';
+import { useGetRecipeByCategoryIdQuery } from '~/redux/api/recipes-api';
 
 import { RelevantKitchenCard } from '../relevant-kitchen-card';
 import { ShortFoodCard } from '../short-food-card';

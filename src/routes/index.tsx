@@ -19,7 +19,7 @@ import { rootAppLoader } from './loaders/root-app-loader';
 import { rootCategoryLoader } from './loaders/root-category-loader';
 
 const AuthorizationLayout = lazy(
-    () => import('../components/authorization-layout/authorization-layout.tsx'),
+    () => import('../layout/authorization-layout/authorization-layout.tsx'),
 );
 
 const SignInPage = lazy(() => import('../pages/sign-in-page/sign-in-page.tsx'));

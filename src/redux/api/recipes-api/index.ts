@@ -20,7 +20,7 @@ import {
 } from '~/redux/features/recipes-slice';
 import { AppState } from '~/types/store';
 
-import { authorizedApi } from '../..';
+import { authorizedApi } from '..';
 
 export const recipeApi = authorizedApi.injectEndpoints({
     endpoints: (build) => ({

@@ -16,8 +16,9 @@ import {
 import { FC, useState } from 'react';
 import { Outlet, useMatch, useNavigate } from 'react-router';
 
+import { Logo } from '~/components/logo';
+
 import { Paths } from '../../constants/path';
-import { Logo } from '../logo';
 import { Label } from './label';
 
 const TabNavigation = [Paths.SIGN_IN, Paths.SIGN_UP] as const;

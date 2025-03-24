@@ -1,8 +1,8 @@
 import { setAccessToken } from '~/redux/features/auth-slice';
 import { LOCALSTORAGE_KEYS, setDataToLocalStorage } from '~/utils/local-storage-util';
 
-import { unauthorizedApi } from '../..';
-import { ApiEndpoints } from '../../constants';
+import { unauthorizedApi } from '..';
+import { ApiEndpoints } from '../constants';
 import {
     CheckVerificationCodeBody,
     CheckVerificationCodeResponse,
@@ -14,7 +14,7 @@ import {
     SignInBody,
     SignUpBody,
     SigUpResponse,
-} from '../../types/auth';
+} from '../types/auth';
 
 export const authApi = unauthorizedApi.injectEndpoints({
     endpoints: (build) => ({

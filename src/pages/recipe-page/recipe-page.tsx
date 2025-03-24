@@ -8,7 +8,7 @@ import { RecipeCard } from '~/components/recipe-card/recipe-card.tsx';
 import { StepsBlock } from '~/components/stpeps-block/steps-block.js';
 import { useDetectParams } from '~/hooks/use-detect-params';
 import { mockAuthors } from '~/mocks/authors';
-import { useGetRecipeByIdQuery } from '~/redux/api/services/recipes-api';
+import { useGetRecipeByIdQuery } from '~/redux/api/recipes-api';
 
 export const RecipePage = () => {
     const { recipeId } = useDetectParams();

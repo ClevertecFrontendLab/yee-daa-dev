@@ -2,7 +2,7 @@ import { isRejectedWithValue, Middleware, MiddlewareAPI } from '@reduxjs/toolkit
 
 import { setNotificationData, setNotificationVisibility } from '~/redux/features/app-slice';
 
-import { WithNotificationState } from '../types/common';
+import { WithNotificationState } from '../api/types/common';
 
 export const appErrorMiddleware: Middleware =
     ({ dispatch }: MiddlewareAPI) =>

@@ -12,7 +12,7 @@ import {
 import { SignUpFormSchema, SignUpSchema, SignUpStep } from '~/constants/authorization';
 import { TOAST_MESSAGE } from '~/constants/toast';
 import { useAuthToast } from '~/hooks/use-auth-toast';
-import { useSignUpMutation } from '~/redux/api/services/auth-api';
+import { useSignUpMutation } from '~/redux/api/auth-api';
 
 import { SignUpPropgessLabel } from './label';
 import styles from './sign-up-page.module.css';
