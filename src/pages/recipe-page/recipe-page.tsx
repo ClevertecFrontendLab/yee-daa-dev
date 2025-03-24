@@ -1,4 +1,4 @@
-import { Stack, VStack } from '@chakra-ui/react';
+import { Box, Stack, VStack } from '@chakra-ui/react';
 
 import { AuthorCard } from '~/components/author-card/author-card.tsx';
 import { CalorieCard } from '~/components/calorie/calorie.tsx';
@@ -28,7 +28,9 @@ export const RecipePage = () => {
                 </Stack>
                 {foundAuthor && <AuthorCard author={foundAuthor} />}
             </Stack>
-            <Carousel />
+            <Box width='100%'>
+                <Carousel />
+            </Box>
         </VStack>
     );
 };
