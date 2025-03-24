@@ -2,10 +2,12 @@ import { Box, chakra, Heading, Progress, useDisclosure } from '@chakra-ui/react'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router';
 
 import { AppLoader } from '~/components/app-loader';
 import { CredentialsForm, PersonalInfoForm, SignUpSuccessModal } from '~/components/authorization';
 import { SignUpFormSchema, SignUpSchema, SignUpStep } from '~/constants/authorization';
+import { Paths } from '~/constants/path';
 import { TOAST_MESSAGE } from '~/constants/toast';
 import { CyTestId } from '~/cy-test-id';
 import { useAuthToast } from '~/hooks/use-auth-toast';
@@ -23,6 +25,7 @@ const SignUpStepComponent = {
 };
 
 const SignUpPage: FC = () => {
+    const navigate = useNavigate();
     const [step, setStep] = useState(SignUpStep.PersonalInfo);
 
     const StepComponent = SignUpStepComponent[step];
@@ -60,6 +63,7 @@ const SignUpPage: FC = () => {
 
         try {
             await signUp(data).unwrap();
+            navigate(Paths.SIGN_IN, { replace: true });
             onOpen();
         } catch (_error) {
             toast(ServerErrorToast, false);
