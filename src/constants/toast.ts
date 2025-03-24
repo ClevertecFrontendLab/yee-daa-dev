@@ -13,7 +13,7 @@ export const TOAST_MESSAGE = {
             description: 'Проверьте почту и перейдите по ссылке',
         },
     },
-    EmailVerification: {
+    EmailVerificationToast: {
         [HttpStatus.OK]: {
             id: 'sign-up-verified-ok',
             title: 'Верификация прошла успешно',

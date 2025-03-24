@@ -575,6 +575,7 @@ describe('sprint 4', () => {
                 });
 
             cy.getByTestId(CyTestId.Modal.SignUpSuccess.Root).should('not.exist');
+            cy.getByTestId(CyTestId.Auth.SignInForm).should('be.visible');
         });
     });
 
@@ -583,10 +584,10 @@ describe('sprint 4', () => {
             //FIXME: убрать роутирование в финальном варианте тестов
             cy.visit('/verification?emailVerified=true');
 
-            cy.get(`[id*=${TOAST_MESSAGE.EmailVerification[200].id}]`, { timeout: 2000 })
+            cy.get(`[id*=${TOAST_MESSAGE.EmailVerificationToast[200].id}]`, { timeout: 2000 })
                 .should('exist')
                 .should('be.visible')
-                .should('contain', TOAST_MESSAGE.EmailVerification[200].title);
+                .should('contain', TOAST_MESSAGE.EmailVerificationToast[200].title);
 
             cy.getByTestId(CyTestId.Auth.SignInForm).should('be.visible');
         });

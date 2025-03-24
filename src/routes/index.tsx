@@ -24,6 +24,9 @@ const AuthorizationLayout = lazy(
 
 const SignInPage = lazy(() => import('../pages/sign-in-page/sign-in-page.tsx'));
 const SignUpPage = lazy(() => import('../pages/sign-up-page/sign-up-page.tsx'));
+const VerificationEmailPage = lazy(
+    () => import('../pages/verification-email-page/verification-email-page.tsx'),
+);
 const RestoreCredentialsPage = lazy(
     () => import('../pages/restore-credentials-page/restore-credentials-page.tsx'),
 );
@@ -38,7 +41,7 @@ export const appRouter = createBrowserRouter(
                     <Route path={Paths.RESTORE_CREDENTIALS} element={<RestoreCredentialsPage />} />
                 </Route>
                 <Route path={Paths.SIGN_UP} element={<SignUpPage />} />
-                <Route path={Paths.EMAIL_VERIFICATION} element={<SignInPage verify />} />
+                <Route path={Paths.EMAIL_VERIFICATION} element={<VerificationEmailPage />} />
             </Route>
             <Route
                 ErrorBoundary={ErrorBoundary}
