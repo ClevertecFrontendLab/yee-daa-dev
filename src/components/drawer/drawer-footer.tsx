@@ -3,7 +3,7 @@ import { Button, DrawerFooter } from '@chakra-ui/react';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { useClearFiltersWithSearch } from '~/hooks/use-clear-filters-with-search';
 import { useDetectParams } from '~/hooks/use-detect-params';
-import { useLazyGetAllRecipesMergeQuery } from '~/redux/api/services/recipes-api';
+import { useLazyGetAllRecipesMergeQuery } from '~/redux/api/recipes-api';
 import { selectSelectedAllergens } from '~/redux/features/allergens-slice';
 import { selectSelectedAuthors } from '~/redux/features/authors-slice';
 import {

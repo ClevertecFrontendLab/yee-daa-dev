@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { RecipeCardList } from '~/components/recipes-card-list';
 import { SectionBox } from '~/components/section-box/section-box';
 import { JUICIEST_PAGE_PARAMS } from '~/redux/api/constants';
-import { useGetAllRecipesInfiniteInfiniteQuery } from '~/redux/api/services/recipes-api';
+import { useGetAllRecipesInfiniteInfiniteQuery } from '~/redux/api/recipes-api';
 import { isArrayWithItems } from '~/utils/is-array-with-items';
 
 export const JuiciestRecipesList = memo(() => {

@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router';
 import { Paths } from '~/constants/path';
 import { useAppDispatch } from '~/hooks/typed-react-redux-hooks.ts';
 import { useDetectParams } from '~/hooks/use-detect-params';
-import { useGetRecipeByIdQuery } from '~/redux/api/services/recipes-api';
+import { useGetRecipeByIdQuery } from '~/redux/api/recipes-api';
 import { resetAccordion } from '~/redux/features/accordion-slice';
 import { closeMenu } from '~/redux/features/burger-slice.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items';

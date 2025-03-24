@@ -9,10 +9,10 @@ import {
 import { resetToInit, setCategories, setSubCategories } from '~/redux/features/categories-slice';
 import { LOCALSTORAGE_KEYS, setDataToLocalStorage } from '~/utils/local-storage-util';
 
-import { authorizedApi } from '../..';
-import { isCategory, isCategoryRaw } from '../../utils/is-category';
-import { replaceUnderscoreId } from '../../utils/replace-underscore-id';
-import { transformBaseErrorResponse } from '../../utils/transform-base-error-response';
+import { authorizedApi } from '..';
+import { isCategory, isCategoryRaw } from '../utils/is-category';
+import { replaceUnderscoreId } from '../utils/replace-underscore-id';
+import { transformBaseErrorResponse } from '../utils/transform-base-error-response';
 
 type GroupedCategories = { categories: Category[]; subCategories: SubCategory[] };
 

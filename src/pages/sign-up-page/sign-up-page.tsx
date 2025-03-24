@@ -13,7 +13,7 @@ import { SignUpFormSchema, SignUpSchema, SignUpStep } from '~/constants/authoriz
 import { TOAST_MESSAGE } from '~/constants/toast';
 import { CyTestId } from '~/cy-test-id';
 import { useAuthToast } from '~/hooks/use-auth-toast';
-import { useSignUpMutation } from '~/redux/api/services/auth-api';
+import { useSignUpMutation } from '~/redux/api/auth-api';
 
 import { SignUpPropgessLabel } from './label';
 import styles from './sign-up-page.module.css';

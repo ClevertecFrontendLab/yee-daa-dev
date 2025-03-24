@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 
 import { useIsLg } from '~/hooks/media-query.ts';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { useIsErrorPage } from '~/hooks/use-is-error-page.ts';
 import { selectActiveIndex } from '~/redux/features/accordion-slice.ts';
 import { closeMenu, selectIsClicked } from '~/redux/features/burger-slice';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice.ts';
@@ -30,6 +31,8 @@ export const SideNav = () => {
 
     const activeIndex = useAppSelector(selectActiveIndex);
 
+    const isErrorPage = useIsErrorPage();
+
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
@@ -47,14 +50,22 @@ export const SideNav = () => {
             className={styles.container}
             ref={navRef}
         >
-            {isLg && <Breadcrumbs />}
-            <Accordion allowToggle={true} index={activeIndex}>
-                {navMenu.map((item, index) => (
-                    <NavItem {...item} key={item.id} index={index} />
-                ))}
-            </Accordion>
-            <Stack p={6} display={{ base: 'none', xl: 'block' }}>
-                <Text color='blackAlpha.400' fontSize='xs' lineHeight={4} fontWeight={500}>
+            {isLg && !isErrorPage && <Breadcrumbs />}
+            {!isErrorPage && (
+                <Accordion allowToggle={true} index={activeIndex}>
+                    {navMenu.map((item, index) => (
+                        <NavItem {...item} key={item.id} index={index} />
+                    ))}
+                </Accordion>
+            )}
+            <Stack p={6} display={{ base: 'none', xl: 'block' }} marginTop='auto'>
+                <Text
+                    color='blackAlpha.400'
+                    fontSize='xs'
+                    lineHeight={4}
+                    fontWeight={500}
+                    paddingBottom='24px'
+                >
                     Версия программы 03.25
                 </Text>
                 <Text color='blackAlpha.700' fontSize='xs' lineHeight={4}>

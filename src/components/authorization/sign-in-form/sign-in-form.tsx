@@ -20,7 +20,7 @@ import { TOAST_MESSAGE } from '~/constants/toast';
 import { CyTestId } from '~/cy-test-id';
 import { useAuthToast } from '~/hooks/use-auth-toast';
 import { useTrimInputBlur } from '~/hooks/use-trim-input-blur';
-import { useSignInMutation } from '~/redux/api/services/auth-api';
+import { useSignInMutation } from '~/redux/api/auth-api';
 import { isFetchBaseQueryError } from '~/utils/type-guard';
 
 import { PasswordInput } from '../password-input/password-input';

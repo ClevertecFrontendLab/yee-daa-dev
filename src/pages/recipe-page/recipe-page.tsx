@@ -1,4 +1,4 @@
-import { Stack, VStack } from '@chakra-ui/react';
+import { Box, Stack, VStack } from '@chakra-ui/react';
 
 import { AuthorCard } from '~/components/author-card/author-card.tsx';
 import { CalorieCard } from '~/components/calorie/calorie.tsx';
@@ -8,7 +8,7 @@ import { RecipeCard } from '~/components/recipe-card/recipe-card.tsx';
 import { StepsBlock } from '~/components/stpeps-block/steps-block.js';
 import { useDetectParams } from '~/hooks/use-detect-params';
 import { mockAuthors } from '~/mocks/authors';
-import { useGetRecipeByIdQuery } from '~/redux/api/services/recipes-api';
+import { useGetRecipeByIdQuery } from '~/redux/api/recipes-api';
 
 export const RecipePage = () => {
     const { recipeId } = useDetectParams();
@@ -28,7 +28,9 @@ export const RecipePage = () => {
                 </Stack>
                 {foundAuthor && <AuthorCard author={foundAuthor} />}
             </Stack>
-            <Carousel />
+            <Box width='100%'>
+                <Carousel />
+            </Box>
         </VStack>
     );
 };

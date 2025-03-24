@@ -19,7 +19,7 @@ import { rootAppLoader } from './loaders/root-app-loader';
 import { rootCategoryLoader } from './loaders/root-category-loader';
 
 const AuthorizationLayout = lazy(
-    () => import('../components/authorization-layout/authorization-layout.tsx'),
+    () => import('../layout/authorization-layout/authorization-layout.tsx'),
 );
 
 const SignInPage = lazy(() => import('../pages/sign-in-page/sign-in-page.tsx'));
@@ -40,8 +40,8 @@ export const appRouter = createBrowserRouter(
                 <Route path={Paths.SIGN_UP} element={<SignUpPage />} />
             </Route>
             <Route
-                path={Paths.R_SWITCHER}
                 ErrorBoundary={ErrorBoundary}
+                path={Paths.R_SWITCHER}
                 loader={rootAppLoader}
                 element={<AppLayout />}
             >
@@ -70,8 +70,8 @@ export const appRouter = createBrowserRouter(
                     loader={recipeLoader}
                 />
                 <Route path={Paths.JUICIEST} element={<JuiciestPage />} loader={juiciestLoader} />
+                <Route path={Paths.ERROR} element={<ErrorPage />} />
             </Route>
-            <Route path={Paths.ERROR} element={<ErrorPage />} />
             <Route path={Paths.OTHERS} element={<Navigate to={Paths.ERROR} replace />} />
         </Route>,
     ),

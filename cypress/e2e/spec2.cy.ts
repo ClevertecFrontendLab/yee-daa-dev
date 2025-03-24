@@ -1,7 +1,6 @@
-import { Paths } from '~/constants/path';
 import { TOAST_MESSAGE } from '~/constants/toast';
 import { CyTestId } from '~/cy-test-id';
-import { API_BASE_URL } from '~/redux/api/constants';
+import { API_BASE_URL, ApiEndpoints } from '~/redux/api/constants';
 
 //FIXME: убрать ссылки в финальном варианте тестов
 
@@ -16,7 +15,26 @@ const interceptSignInRequest = ({
     cy.intercept(
         {
             method: 'POST',
-            url: `${API_BASE_URL}${Paths.SIGN_IN}`,
+            url: `${API_BASE_URL}${ApiEndpoints.SignIn}`,
+        },
+        {
+            statusCode,
+            body,
+            delay,
+        },
+    ).as(alias);
+};
+
+const interceptSignUpRequest = ({
+    statusCode,
+    body = {},
+    delay = 1000,
+    alias = 'signInRequest',
+}) => {
+    cy.intercept(
+        {
+            method: 'POST',
+            url: `${API_BASE_URL}${ApiEndpoints.SignUp}`,
         },
         {
             statusCode,
@@ -29,6 +47,22 @@ const interceptSignInRequest = ({
 const fillSignInForm = (login = 'username', password = 'password') => {
     cy.getByTestId(CyTestId.Auth.LoginInput).type(login);
     cy.getByTestId(CyTestId.Auth.PasswordInput).type(password);
+};
+
+const fillSignUpForm = () => {
+    cy.getByTestId(CyTestId.Auth.SignUpForm).within(() => {
+        cy.getByTestId(CyTestId.Auth.FirstNameInput).type('Василий');
+        cy.getByTestId(CyTestId.Auth.LastNameInput).type('Петров');
+        cy.getByTestId(CyTestId.Auth.EmailInput).type('example@mail.com');
+    });
+
+    cy.getByTestId(CyTestId.Auth.SubmitButton).click();
+
+    cy.getByTestId(CyTestId.Auth.SignUpForm).within(() => {
+        cy.getByTestId(CyTestId.Auth.LoginInput).type('login!');
+        cy.getByTestId(CyTestId.Auth.PasswordInput).type('PetrovVasiliy123');
+        cy.getByTestId(CyTestId.Auth.RepeatPasswordInput).type('PetrovVasiliy123');
+    });
 };
 
 const validateField = (inputAlias, value, expectedError, submitAlias = '@submitButton') => {
@@ -45,7 +79,6 @@ describe('sprint 4', () => {
 
     describe('sign in flow', () => {
         beforeEach(() => {
-            cy.clearLocalStorage();
             //FIXME: убрать роутирование в финальном варианте тестов
             cy.visit('/sign-in');
             cy.getByTestId(CyTestId.Auth.SignInForm).as('signInForm');
@@ -108,6 +141,29 @@ describe('sprint 4', () => {
                 .should('be.visible')
                 .should('contain', TOAST_MESSAGE.SignInToast[401].title)
                 .should('contain', TOAST_MESSAGE.SignInToast[401].description);
+        });
+
+        it('should display error message for 403 email is not verified', () => {
+            cy.get('@signInForm').within(() => {
+                fillSignInForm();
+
+                interceptSignInRequest({
+                    statusCode: 403,
+                    delay: 2000,
+                    alias: 'signInRequest403',
+                });
+
+                cy.get('@passwordInput').type('{enter}');
+            });
+
+            cy.getByTestId(CyTestId.AppLoader, { timeout: 2000 }).should('be.visible');
+            cy.wait('@signInRequest403');
+
+            cy.get(`[id*=${TOAST_MESSAGE.SignInToast[403].id}]`, { timeout: 2000 })
+                .should('exist')
+                .should('be.visible')
+                .should('contain', TOAST_MESSAGE.SignInToast[403].title)
+                .should('contain', TOAST_MESSAGE.SignInToast[403].description);
         });
 
         it('should display error modal for 500 server error', () => {
@@ -197,7 +253,6 @@ describe('sprint 4', () => {
 
     describe('Sign up flow', () => {
         beforeEach(() => {
-            cy.clearLocalStorage();
             //FIXME: убрать роутирование в финальном варианте тестов
             cy.visit('/sign-in');
 
@@ -434,6 +489,10 @@ describe('sprint 4', () => {
             cy.get('@firstNameInput').clear().type('Василий');
             checkProgressBar(14, 18);
 
+            cy.get('@firstNameInput').clear();
+            checkProgressBar(0, 0);
+
+            cy.get('@firstNameInput').clear().type('Василий');
             cy.get('@lastNameInput').type('Petrov');
             checkProgressBar(14, 18);
             cy.get('@lastNameInput').clear().type('Петров');
@@ -466,6 +525,89 @@ describe('sprint 4', () => {
             checkProgressBar(98, 100);
         });
 
-        it('should display error message for 500 server error', () => {});
+        it('should display error message for 500 server error', () => {
+            fillSignUpForm();
+
+            interceptSignUpRequest({
+                statusCode: 500,
+                delay: 2000,
+                alias: 'signUpRequest500',
+            });
+
+            cy.getByTestId(CyTestId.Auth.SubmitButton).click();
+
+            cy.getByTestId(CyTestId.AppLoader, { timeout: 2000 }).should('be.visible');
+            cy.wait('@signUpRequest500');
+
+            cy.get(`[id*=${TOAST_MESSAGE.ServerErrorToast.id}]`, { timeout: 2000 })
+                .should('exist')
+                .should('be.visible')
+                .should('contain', TOAST_MESSAGE.ServerErrorToast.title)
+                .should('contain', TOAST_MESSAGE.ServerErrorToast.description);
+        });
+
+        it('should display success modal on sign up success', () => {
+            fillSignUpForm();
+
+            interceptSignUpRequest({
+                statusCode: 200,
+                delay: 2000,
+                alias: 'signUpRequest200',
+            });
+
+            cy.getByTestId(CyTestId.Auth.SubmitButton).click();
+
+            cy.getByTestId(CyTestId.AppLoader, { timeout: 2000 }).should('be.visible');
+            cy.wait('@signUpRequest200');
+
+            cy.getByTestId(CyTestId.Modal.SignUpSuccess.Root, { timeout: 2000 })
+                .should('exist')
+                .should('be.visible')
+                .within(() => {
+                    cy.contains('Остался последний шаг. Нужно верифицировать ваш e-mail').should(
+                        'be.visible',
+                    );
+                    cy.contains(
+                        'Мы отправили вам на почту example@mail.com ссылку для верификации.',
+                    ).should('be.visible');
+
+                    cy.getByTestId(CyTestId.Modal.CloseButton).click();
+                });
+
+            cy.getByTestId(CyTestId.Modal.SignUpSuccess.Root).should('not.exist');
+        });
     });
+
+    describe('Email verification flow', () => {
+        it('should show success message on email verification success', () => {
+            //FIXME: убрать роутирование в финальном варианте тестов
+            cy.visit('/verification?emailVerified=true');
+
+            cy.get(`[id*=${TOAST_MESSAGE.EmailVerification[200].id}]`, { timeout: 2000 })
+                .should('exist')
+                .should('be.visible')
+                .should('contain', TOAST_MESSAGE.EmailVerification[200].title);
+        });
+
+        it('should show error modal on email verification fail', () => {
+            //FIXME: убрать роутирование в финальном варианте тестов
+            cy.visit('/verification?emailVerified=false');
+
+            cy.getByTestId(CyTestId.Modal.EmailVerificationFailed.Root, { timeout: 2000 })
+                .should('exist')
+                .should('be.visible')
+                .within(() => {
+                    cy.contains('Упс! Что-то пошло не так').should('be.visible');
+                    cy.contains(
+                        'Ваша ссылка для верификации недействительна. Попробуйте зарегистрироваться снова.',
+                    ).should('be.visible');
+
+                    cy.getByTestId(CyTestId.Modal.CloseButton).click();
+                });
+
+            cy.getByTestId(CyTestId.Modal.EmailVerificationFailed.Root).should('not.exist');
+        });
+    });
+
+    describe('restore credentials flow', () => {});
 });

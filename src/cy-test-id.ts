@@ -23,5 +23,11 @@ export const CyTestId = {
             Root: 'sign-in-error-modal',
             RepeatButton: 'repeat-button',
         },
+        SignUpSuccess: {
+            Root: 'sign-up-success-modal',
+        },
+        EmailVerificationFailed: {
+            Root: 'email-verification-failed-modal',
+        },
     },
 } as const;
