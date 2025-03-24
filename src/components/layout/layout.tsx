@@ -4,6 +4,7 @@ import { Outlet } from 'react-router';
 
 import { useIsTablet } from '~/hooks/media-query';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { useIsErrorPage } from '~/hooks/use-is-error-page';
 import { selectMenu } from '~/redux/features/burger-slice';
 
 import { Aside } from '../aside';
@@ -16,6 +17,7 @@ import styles from './layout.module.css';
 const Layout = () => {
     const isOpen = useAppSelector(selectMenu);
     const isTablet = useIsTablet();
+    const isErrorPage = useIsErrorPage();
 
     useEffect(() => {
         if (isOpen) {
@@ -73,14 +75,16 @@ const Layout = () => {
                 >
                     <Outlet />
                 </GridItem>
-                <GridItem
-                    area='aside'
-                    className={styles.aside}
-                    display={{ base: 'none', xl: 'block' }}
-                >
-                    <Aside />
-                    <FilterDrawer />
-                </GridItem>
+                {!isErrorPage && (
+                    <GridItem
+                        area='aside'
+                        className={styles.aside}
+                        display={{ base: 'none', xl: 'block' }}
+                    >
+                        <Aside />
+                        <FilterDrawer />
+                    </GridItem>
+                )}
                 <GridItem
                     bg='lime.50'
                     area='footer'

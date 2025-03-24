@@ -27,7 +27,7 @@ export const IngredientsBlock: FC<{
         const multiply = Number(value);
         const updatedIngredients = ingredients?.map((ingredient) => ({
             ...ingredient,
-            quantity: (ingredient.count / (portions ?? 1)) * multiply,
+            count: (ingredient.count / (portions ?? 1)) * multiply,
         }));
         setAdjustedIngredients(updatedIngredients);
         setValue(multiply);

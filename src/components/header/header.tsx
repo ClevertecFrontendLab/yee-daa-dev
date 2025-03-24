@@ -4,6 +4,7 @@ import { NavLink } from 'react-router';
 import { Paths } from '~/constants/path';
 import { useIsLg, useIsTablet } from '~/hooks/media-query.ts';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { useIsErrorPage } from '~/hooks/use-is-error-page';
 import { user, users } from '~/mocks/users.ts';
 import { selectMenu } from '~/redux/features/burger-slice.ts';
 
@@ -17,6 +18,8 @@ export const Header = () => {
     const isTablet = useIsTablet();
     const isLg = useIsLg();
 
+    const isErrorPage = useIsErrorPage();
+
     const isOpen = useAppSelector(selectMenu);
 
     return (
@@ -25,11 +28,15 @@ export const Header = () => {
                 <Logo />
             </NavLink>
 
-            {!isLg && <Breadcrumbs />}
-            <Spacer />
-            {isTablet && !isOpen && <StatsBlock {...users[2]} />}
-            <UserInfo withGutter {...user} />
-            <BurgerMenu />
+            {!isErrorPage && (
+                <>
+                    {!isLg && <Breadcrumbs />}
+                    <Spacer />
+                    {isTablet && !isOpen && <StatsBlock {...users[2]} />}
+                    <UserInfo withGutter {...user} />
+                    <BurgerMenu />
+                </>
+            )}
         </Flex>
     );
 };
