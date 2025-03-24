@@ -38,6 +38,7 @@ export const appRouter = createBrowserRouter(
                     <Route path={Paths.RESTORE_CREDENTIALS} element={<RestoreCredentialsPage />} />
                 </Route>
                 <Route path={Paths.SIGN_UP} element={<SignUpPage />} />
+                <Route path={Paths.EMAIL_VERIFICATION} element={<SignInPage verify />} />
             </Route>
             <Route
                 ErrorBoundary={ErrorBoundary}
