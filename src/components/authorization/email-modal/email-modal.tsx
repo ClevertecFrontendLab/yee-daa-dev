@@ -1,5 +1,6 @@
 import {
     Button,
+    chakra,
     FormControl,
     FormErrorMessage,
     FormLabel,
@@ -12,12 +13,21 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { AppLoader } from '~/components/app-loader';
 import { ResultModal } from '~/components/result-modal/result-modal';
 import { EmailRestoreFormSchema, EmailRestoreSchema, RestoreStep } from '~/constants/authorization';
+import { HttpStatus } from '~/constants/http-status';
+import { TOAST_MESSAGE } from '~/constants/toast';
+import { useAuthToast } from '~/hooks/use-auth-toast';
 import { useTrimInputBlur } from '~/hooks/use-trim-input-blur';
+import { useSendVerificationCodeMutation } from '~/redux/api/auth-api';
 import { RestoreModalProps } from '~/types/authorization';
+import { isFetchBaseQueryError } from '~/utils/type-guard';
 
 import { EmailFormLabel, ModalLabel } from './label';
+
+const ChakraForm = chakra('form');
+const { SendVerificationCodeToast, ServerErrorToast } = TOAST_MESSAGE;
 
 type EmailModalProps = RestoreModalProps & {
     setEmail: (email: string) => void;
@@ -33,57 +43,74 @@ export const EmailModal: FC<EmailModalProps> = ({ updateStep, setEmail, ...props
         resolver: yupResolver(EmailRestoreSchema),
     });
 
+    const [sendVerificationCode, { reset }] = useSendVerificationCodeMutation();
+    const { toast } = useAuthToast();
     const { handleBlur } = useTrimInputBlur(setValue);
 
-    const onSubmit: Parameters<typeof handleSubmit>[0] = ({ email }) => {
-        setEmail(email);
-        updateStep(RestoreStep.Code);
+    const onSubmit: Parameters<typeof handleSubmit>[0] = async ({ email }) => {
+        try {
+            await sendVerificationCode({ email }).unwrap();
+            setEmail(email);
+            updateStep(RestoreStep.Code);
+        } catch (error) {
+            if (isFetchBaseQueryError(error) && error.status === HttpStatus.FORBIDDEN) {
+                toast(SendVerificationCodeToast[403]);
+            } else {
+                toast(ServerErrorToast);
+            }
+
+            reset();
+        }
     };
 
     return (
-        <ResultModal imageUrl='/images/breakfast.png' {...props}>
-            <ModalBody>
-                <Text
-                    color='blackAlpha.900'
-                    textAlign='center'
-                    fontSize='md'
-                    px={{ base: 0, md: 4 }}
-                    mb={4}
-                >
-                    {ModalLabel.Body}
-                </Text>
-
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <FormControl isInvalid={!!errors.email}>
-                        <FormLabel>{EmailFormLabel.Email.Label}</FormLabel>
-                        <Input
-                            variant='auth'
-                            size='lg'
-                            placeholder={EmailFormLabel.Email.Placeholder}
-                            {...register('email')}
-                            onBlur={handleBlur('email')}
-                        />
-                        <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
-                    </FormControl>
-
-                    <Button
-                        mt={6}
-                        w='full'
-                        variant='black'
-                        isLoading={isSubmitting}
-                        type='submit'
-                        size='lg'
+        <>
+            <ResultModal imageUrl='/images/breakfast.png' {...props}>
+                <ModalBody>
+                    <Text
+                        color='blackAlpha.900'
+                        textAlign='center'
+                        fontSize='md'
+                        px={{ base: 0, md: 4 }}
+                        mb={4}
                     >
-                        {EmailFormLabel.SubmitBtnLabel}
-                    </Button>
-                </form>
-            </ModalBody>
+                        {ModalLabel.Body}
+                    </Text>
 
-            <ModalFooter mt={6} flexDirection='column'>
-                <Text color='blackAlpha.600' textAlign='center' fontSize='xs'>
-                    {ModalLabel.Extra}
-                </Text>
-            </ModalFooter>
-        </ResultModal>
+                    <ChakraForm onSubmit={handleSubmit(onSubmit)}>
+                        <FormControl isInvalid={!!errors.email}>
+                            <FormLabel>{EmailFormLabel.Email.Label}</FormLabel>
+                            <Input
+                                variant='auth'
+                                size='lg'
+                                placeholder={EmailFormLabel.Email.Placeholder}
+                                {...register('email')}
+                                onBlur={handleBlur('email')}
+                            />
+                            <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+                        </FormControl>
+
+                        <Button
+                            mt={6}
+                            w='full'
+                            variant='black'
+                            isLoading={isSubmitting}
+                            type='submit'
+                            size='lg'
+                        >
+                            {EmailFormLabel.SubmitBtnLabel}
+                        </Button>
+                    </ChakraForm>
+                </ModalBody>
+
+                <ModalFooter mt={6} flexDirection='column'>
+                    <Text color='blackAlpha.600' textAlign='center' fontSize='xs'>
+                        {ModalLabel.Extra}
+                    </Text>
+                </ModalFooter>
+            </ResultModal>
+
+            <AppLoader isOpen={isSubmitting} />
+        </>
     );
 };

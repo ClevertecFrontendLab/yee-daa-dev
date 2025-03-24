@@ -1,4 +1,4 @@
-import { Box, Heading, Progress, useDisclosure } from '@chakra-ui/react';
+import { Box, chakra, Heading, Progress, useDisclosure } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -17,6 +17,7 @@ import { useSignUpMutation } from '~/redux/api/auth-api';
 import { SignUpPropgessLabel } from './label';
 import styles from './sign-up-page.module.css';
 
+const ChakraForm = chakra('form');
 const { ServerErrorToast } = TOAST_MESSAGE;
 
 const SignUpStepComponent = {
@@ -36,7 +37,7 @@ const SignUpPage: FC = () => {
         resolver: yupResolver<SignUpFormSchema>(SignUpSchema[step]),
     });
 
-    const [signUp] = useSignUpMutation();
+    const [signUp, { reset }] = useSignUpMutation();
 
     const {
         watch,
@@ -64,6 +65,7 @@ const SignUpPage: FC = () => {
             onOpen();
         } catch (_error) {
             toast(ServerErrorToast, false);
+            reset();
         }
     };
     return (
@@ -80,9 +82,9 @@ const SignUpPage: FC = () => {
                 bgColor='blackAlpha.100'
             />
 
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <ChakraForm onSubmit={handleSubmit(onSubmit)}>
                 <StepComponent form={registrationForm} {...{ changeStep }} />
-            </form>
+            </ChakraForm>
 
             <SignUpSuccessModal email={watchFields.email} {...{ isOpen, onClose }} />
         </Box>
