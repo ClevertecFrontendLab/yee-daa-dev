@@ -22,6 +22,6 @@ export type CheckVerificationCodeBody = {
 
 export type CheckVerificationCodeResponse = void;
 
-export type ResetCredentialsBody = CredentialsFormSchema;
+export type ResetCredentialsBody = SendVerificationCodeBody & CredentialsFormSchema;
 
 export type ResetCredentialsResponse = void;

@@ -13,7 +13,7 @@ import { meatsReducer, meatsSlice } from './features/meats-slice';
 import { recipesReducer, recipesSlice } from './features/recipes-slice';
 import { searchReducer, searchSlice } from './features/search-slice';
 import { sidesReducer, sidesSlice } from './features/sides-slice';
-import { appErrorMiddleware, resetAuthMiddleware } from './middleware';
+import { appErrorMiddleware } from './middleware';
 
 // по дефолту при старте приложения yarn start vite по устанавливает MODE: 'development'
 // переменные доступны из файла .env.development - чтобы reduxDevTools работал
@@ -44,7 +44,6 @@ export const store = configureStore({
             appErrorMiddleware,
             authorizedApi.middleware,
             unauthorizedApi.middleware,
-            resetAuthMiddleware,
         ),
     devTools: isDevMode,
 });

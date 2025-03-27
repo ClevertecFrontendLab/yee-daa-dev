@@ -21,7 +21,11 @@ import { ModalLabel } from './label';
 const ChakraForm = chakra('form');
 const { ServerErrorToast, RestoreCredentials } = TOAST_MESSAGE;
 
-export const RestoreFormModal: FC<Omit<RestoreModalProps, 'updateStep'>> = ({ ...props }) => {
+type RestoreFormModalProps = Omit<RestoreModalProps, 'updateStep'> & {
+    email: string;
+};
+
+export const RestoreFormModal: FC<RestoreFormModalProps> = ({ email, ...props }) => {
     const { toast } = useAuthToast();
 
     const restoreForm = useForm<CredentialsFormSchema>({
@@ -33,7 +37,7 @@ export const RestoreFormModal: FC<Omit<RestoreModalProps, 'updateStep'>> = ({ ..
 
     const onSubmit: Parameters<typeof restoreForm.handleSubmit>[0] = async (formData) => {
         try {
-            await restoreCredentials(formData).unwrap();
+            await restoreCredentials({ email, ...formData }).unwrap();
 
             props.onClose();
             toast(RestoreCredentials[200]);

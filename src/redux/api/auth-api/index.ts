@@ -35,21 +35,6 @@ export const authApi = unauthorizedApi.injectEndpoints({
             query: (body) => ({ url: ApiEndpoints.SignUp, method: 'POST', body }),
         }),
 
-        refreshToken: build.mutation<void, void>({
-            query: (body) => ({ url: ApiEndpoints.SignUp, method: 'GET', body }),
-            async onQueryStarted(_, { queryFulfilled, dispatch }) {
-                try {
-                    const { meta } = await queryFulfilled;
-
-                    dispatch(
-                        setAccessToken(meta?.response?.headers.get(ACCESS_TOKEN_HEADER) || ''),
-                    );
-                } catch (error) {
-                    console.error(error);
-                }
-            },
-        }),
-
         sendVerificationCode: build.mutation<
             SendVerificationCodeResponse,
             SendVerificationCodeBody
@@ -65,7 +50,7 @@ export const authApi = unauthorizedApi.injectEndpoints({
         }),
 
         resetCredentials: build.mutation<ResetCredentialsResponse, ResetCredentialsBody>({
-            query: (body) => ({ url: ApiEndpoints.ResetCredentials, method: 'PATCH', body }),
+            query: (body) => ({ url: ApiEndpoints.ResetCredentials, method: 'POST', body }),
         }),
 
         // signOut: build.mutation({
