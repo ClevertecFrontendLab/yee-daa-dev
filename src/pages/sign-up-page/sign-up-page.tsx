@@ -61,7 +61,7 @@ const SignUpPage: FC = () => {
         onCloseDisclosure();
     };
 
-    const onSubmit: Parameters<typeof handleSubmit>[0] = async (data) => {
+    const onSubmit: Parameters<typeof handleSubmit>[0] = async ({ repeatPassword: _, ...body }) => {
         if (step === SignUpStep.PersonalInfo) {
             setStep(SignUpStep.Credentials);
 
@@ -69,7 +69,7 @@ const SignUpPage: FC = () => {
         }
 
         try {
-            await signUp(data).unwrap();
+            await signUp(body).unwrap();
             onOpen();
         } catch (_error) {
             toast(ServerErrorToast, false);

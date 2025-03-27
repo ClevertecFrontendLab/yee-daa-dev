@@ -7,12 +7,7 @@ import {
 
 export type SignInBody = SignInFormSchema;
 
-export type SigInResponse = {
-    refreshToken: string;
-    accessToken: string;
-};
-
-export type SignUpBody = SignUpFormSchema;
+export type SignUpBody = Omit<SignUpFormSchema, 'passwordConfirm'>;
 
 export type SigUpResponse = void;
 
@@ -21,7 +16,8 @@ export type SendVerificationCodeBody = EmailRestoreFormSchema;
 export type SendVerificationCodeResponse = void;
 
 export type CheckVerificationCodeBody = {
-    code: string;
+    email: string;
+    otpToken: string;
 };
 
 export type CheckVerificationCodeResponse = void;

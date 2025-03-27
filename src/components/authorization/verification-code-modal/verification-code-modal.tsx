@@ -38,7 +38,7 @@ export const VerificationCodeModal: FC<VerificationCodeModalProps> = ({
     };
 
     const onCompleteCode = async (value: string) => {
-        const { data, error } = await checkVerificationCode({ code: value });
+        const { data, error } = await checkVerificationCode({ email, otpToken: value });
 
         if (data) {
             setIsInvalid(false);

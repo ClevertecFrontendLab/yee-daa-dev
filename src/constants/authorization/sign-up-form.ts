@@ -34,7 +34,7 @@ export const CredentialsSchema = yup.object().shape({
             /^(?!.*[А-Яа-яЁё\s])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9!@#$&_+-.]{8,}$/,
             'Не соответствует формату',
         ),
-    repeatPassword: yup
+    passwordConfirm: yup
         .string()
         .required('Повторите пароль')
         .oneOf([yup.ref('password')], 'Пароли должны совпадать'),
