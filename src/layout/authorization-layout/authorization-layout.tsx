@@ -45,7 +45,13 @@ const AuthorizationLayout: FC = () => {
                     bgGradient='linear(to-bl, lime.100, #29813F 170%)'
                 >
                     <Container maxW={{ base: 387, md: 493 }}>
-                        <Logo height={isMd ? 64 : 38} hideMd={false} mb={{ base: 16, md: 20 }} />
+                        <h1>
+                            <Logo
+                                height={isMd ? 64 : 38}
+                                hideMd={false}
+                                mb={{ base: 16, md: 20 }}
+                            />
+                        </h1>
 
                         <Tabs
                             variant='auth'
@@ -56,8 +62,12 @@ const AuthorizationLayout: FC = () => {
                             onChange={handleTabsChange}
                         >
                             <TabList>
-                                <Tab>Вход на сайт</Tab>
-                                <Tab>Регистрация</Tab>
+                                <Tab as='h2' cursor='pointer'>
+                                    Вход на сайт
+                                </Tab>
+                                <Tab as='h2' cursor='pointer'>
+                                    Регистрация
+                                </Tab>
                             </TabList>
                             <TabIndicator w='50% !important' />
                         </Tabs>

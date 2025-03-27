@@ -33,7 +33,7 @@ const SignUpPage: FC = () => {
 
     const StepComponent = SignUpStepComponent[step];
 
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen, onOpen, onClose: onCloseDisclosure } = useDisclosure();
     const { toast } = useAuthToast();
     const registrationForm = useForm<SignUpFormSchema>({
         mode: 'onChange',
@@ -56,6 +56,11 @@ const SignUpPage: FC = () => {
 
     const changeStep = (newStep: SignUpStep) => setStep(newStep);
 
+    const onClose = () => {
+        navigate(Paths.SIGN_IN, { replace: true });
+        onCloseDisclosure();
+    };
+
     const onSubmit: Parameters<typeof handleSubmit>[0] = async (data) => {
         if (step === SignUpStep.PersonalInfo) {
             setStep(SignUpStep.Credentials);
@@ -65,7 +70,6 @@ const SignUpPage: FC = () => {
 
         try {
             await signUp(data).unwrap();
-            navigate(Paths.SIGN_IN, { replace: true });
             onOpen();
         } catch (_error) {
             toast(ServerErrorToast, false);
@@ -74,7 +78,7 @@ const SignUpPage: FC = () => {
     };
     return (
         <Box as='section'>
-            <Heading as='h6' fontSize='md' fontWeight='regular' mb={1}>
+            <Heading as='h3' fontSize='md' fontWeight='regular' mb={1}>
                 {SignUpPropgessLabel[step]}
             </Heading>
             <Progress
