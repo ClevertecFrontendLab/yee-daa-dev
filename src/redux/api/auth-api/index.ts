@@ -1,17 +1,13 @@
-import { setAccessToken } from '~/redux/features/auth-slice';
+import { resetAuth, setAccessToken } from '~/redux/features/auth-slice';
 
 import { unauthorizedApi } from '..';
 import { ACCESS_TOKEN_HEADER, ApiEndpoints } from '../constants';
 import {
     CheckVerificationCodeBody,
-    CheckVerificationCodeResponse,
     ResetCredentialsBody,
-    ResetCredentialsResponse,
     SendVerificationCodeBody,
-    SendVerificationCodeResponse,
     SignInBody,
     SignUpBody,
-    SigUpResponse,
 } from '../types/auth';
 
 export const authApi = unauthorizedApi.injectEndpoints({
@@ -26,30 +22,47 @@ export const authApi = unauthorizedApi.injectEndpoints({
                         setAccessToken(meta?.response?.headers.get(ACCESS_TOKEN_HEADER) || ''),
                     );
                 } catch (error) {
+                    dispatch(resetAuth());
+
                     console.error(error);
                 }
             },
         }),
 
-        signUp: build.mutation<SigUpResponse, SignUpBody>({
+        refreshToken: build.mutation<void, void>({
+            query: () => ({
+                url: ApiEndpoints.RefreshToken,
+                method: 'GET',
+                credentials: 'include',
+            }),
+            async onQueryStarted(_, { queryFulfilled, dispatch }) {
+                try {
+                    const { meta } = await queryFulfilled;
+
+                    dispatch(
+                        setAccessToken(meta?.response?.headers.get(ACCESS_TOKEN_HEADER) || ''),
+                    );
+                } catch (error) {
+                    dispatch(resetAuth());
+
+                    console.error(error);
+                }
+            },
+        }),
+
+        signUp: build.mutation<void, SignUpBody>({
             query: (body) => ({ url: ApiEndpoints.SignUp, method: 'POST', body }),
         }),
 
-        sendVerificationCode: build.mutation<
-            SendVerificationCodeResponse,
-            SendVerificationCodeBody
-        >({
+        sendVerificationCode: build.mutation<void, SendVerificationCodeBody>({
             query: (body) => ({ url: ApiEndpoints.SendVerificationCode, method: 'POST', body }),
         }),
 
-        checkVerificationCode: build.mutation<
-            CheckVerificationCodeResponse,
-            CheckVerificationCodeBody
-        >({
+        checkVerificationCode: build.mutation<void, CheckVerificationCodeBody>({
             query: (body) => ({ url: ApiEndpoints.CheckVerificationCode, method: 'POST', body }),
         }),
 
-        resetCredentials: build.mutation<ResetCredentialsResponse, ResetCredentialsBody>({
+        resetCredentials: build.mutation<void, ResetCredentialsBody>({
             query: (body) => ({ url: ApiEndpoints.ResetCredentials, method: 'POST', body }),
         }),
 
@@ -61,6 +74,7 @@ export const authApi = unauthorizedApi.injectEndpoints({
 
 export const {
     useSignInMutation,
+    useRefreshTokenMutation,
     useSignUpMutation,
     useSendVerificationCodeMutation,
     useCheckVerificationCodeMutation,

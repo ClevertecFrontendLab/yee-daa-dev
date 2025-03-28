@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from 'react-router';
 
+import { AuthGuard } from '~/components/authorization/auth-guard/auth-guard.tsx';
 import { Paths } from '~/constants/path.js';
 import { CategoryExistProtected } from '~/hoc/category-exist-protected';
 import { SubcategoryRedirect } from '~/hoc/subcategory-redirect';
@@ -43,39 +44,46 @@ export const appRouter = createBrowserRouter(
                 <Route path={Paths.SIGN_UP} element={<SignUpPage />} />
                 <Route path={Paths.EMAIL_VERIFICATION} element={<VerificationEmailPage />} />
             </Route>
-            <Route
-                ErrorBoundary={ErrorBoundary}
-                path={Paths.R_SWITCHER}
-                loader={rootAppLoader}
-                element={<AppLayout />}
-            >
-                <Route index element={<MainPage />} loader={clearFilterStateLoader} />
+            <Route element={<AuthGuard />}>
                 <Route
-                    path={Paths.CATEGORY_ROOT}
-                    loader={rootCategoryLoader}
-                    element={<SubcategoryRedirect />}
-                />
-                <Route
-                    path={Paths.CATEGORY}
-                    element={
-                        <CategoryExistProtected>
-                            <CategoryPage />
-                        </CategoryExistProtected>
-                    }
-                    loader={clearFilterStateLoader}
-                />
-                <Route
-                    path={Paths.RECIPE}
-                    element={
-                        <CategoryExistProtected>
-                            <RecipePageWrapper />
-                        </CategoryExistProtected>
-                    }
-                    loader={recipeLoader}
-                />
-                <Route path={Paths.JUICIEST} element={<JuiciestPage />} loader={juiciestLoader} />
-                <Route path={Paths.ERROR} element={<ErrorPage />} />
+                    ErrorBoundary={ErrorBoundary}
+                    path={Paths.R_SWITCHER}
+                    loader={rootAppLoader}
+                    element={<AppLayout />}
+                >
+                    <Route index element={<MainPage />} loader={clearFilterStateLoader} />
+                    <Route
+                        path={Paths.CATEGORY_ROOT}
+                        loader={rootCategoryLoader}
+                        element={<SubcategoryRedirect />}
+                    />
+                    <Route
+                        path={Paths.CATEGORY}
+                        element={
+                            <CategoryExistProtected>
+                                <CategoryPage />
+                            </CategoryExistProtected>
+                        }
+                        loader={clearFilterStateLoader}
+                    />
+                    <Route
+                        path={Paths.RECIPE}
+                        element={
+                            <CategoryExistProtected>
+                                <RecipePageWrapper />
+                            </CategoryExistProtected>
+                        }
+                        loader={recipeLoader}
+                    />
+                    <Route
+                        path={Paths.JUICIEST}
+                        element={<JuiciestPage />}
+                        loader={juiciestLoader}
+                    />
+                    <Route path={Paths.ERROR} element={<ErrorPage />} />
+                </Route>
             </Route>
+
             <Route path={Paths.OTHERS} element={<Navigate to={Paths.ERROR} replace />} />
         </Route>,
     ),
