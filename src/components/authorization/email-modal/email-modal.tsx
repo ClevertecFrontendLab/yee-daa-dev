@@ -85,10 +85,7 @@ export const EmailModal: FC<EmailModalProps> = ({ updateStep, setEmail, ...props
                         {ModalLabel.Body}
                     </Text>
 
-                    <ChakraForm
-                        data-test-id={CyTestId.Auth.RestoreEmailForm}
-                        onSubmit={handleSubmit(onSubmit)}
-                    >
+                    <ChakraForm onSubmit={handleSubmit(onSubmit)}>
                         <FormControl isInvalid={!!errors.email}>
                             <FormLabel>{EmailFormLabel.Email.Label}</FormLabel>
                             <Input

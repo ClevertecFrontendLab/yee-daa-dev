@@ -41,7 +41,7 @@ export const RestoreFormModal: FC<RestoreFormModalProps> = ({ email, ...props })
             await restoreCredentials({ email, ...formData }).unwrap();
 
             props.onClose();
-            toast(RestoreCredentials[200]);
+            toast({ ...RestoreCredentials[200], status: 'success' });
         } catch (_error) {
             toast(ServerErrorToast);
             reset();
@@ -56,10 +56,7 @@ export const RestoreFormModal: FC<RestoreFormModalProps> = ({ email, ...props })
                 {...props}
             >
                 <ModalBody>
-                    <ChakraForm
-                        data-test-id={CyTestId.Auth.RestoreCredentialsForm}
-                        onSubmit={restoreForm.handleSubmit(onSubmit)}
-                    >
+                    <ChakraForm onSubmit={restoreForm.handleSubmit(onSubmit)}>
                         <CredentialsForm
                             form={restoreForm as unknown as UseFormReturn<SignUpFormSchema>}
                         />

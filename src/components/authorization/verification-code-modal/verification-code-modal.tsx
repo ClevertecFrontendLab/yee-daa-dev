@@ -96,9 +96,9 @@ export const VerificationCodeModal: FC<VerificationCodeModalProps> = ({
                             autoFocus
                             otp
                         >
-                            {Pin.map((key, index) => (
+                            {Pin.map((key) => (
                                 <PinInputField
-                                    data-test-id={`${CyTestId.Auth.VerificationCodeInput}-${index}`}
+                                    data-test-id={`${CyTestId.Auth.VerificationCodeInput}-${key}`}
                                     _placeholder={{ color: 'lime.800' }}
                                     key={key}
                                 />

@@ -4,8 +4,6 @@ export const CyTestId = {
     Auth: {
         SignInForm: 'sign-in-form',
         SignUpForm: 'sign-up-form',
-        RestoreEmailForm: 'restore-email-form',
-        RestoreCredentialsForm: 'restore-credentials-form',
 
         SignUpProgress: 'sign-up-progress',
 
