@@ -3,14 +3,19 @@ import { FC, useState } from 'react';
 
 import { AppLoader } from '~/components/app-loader';
 import { RestoreStep } from '~/constants/authorization';
+import { HttpStatus } from '~/constants/http-status';
+import { TOAST_MESSAGE } from '~/constants/toast';
 import { CyTestId } from '~/cy-test-id';
+import { useAuthToast } from '~/hooks/use-auth-toast';
 import { useCheckVerificationCodeMutation } from '~/redux/api/auth-api';
 import { RestoreModalProps } from '~/types/authorization';
+import { isFetchBaseQueryError } from '~/utils/type-guard';
 
 import { ResultModal } from '../../result-modal/result-modal';
 import { ModalLabel } from './label';
 
 const Pin = [1, 2, 3, 4, 5, 6];
+const { ServerErrorToast } = TOAST_MESSAGE;
 
 type VerificationCodeModalProps = RestoreModalProps & {
     email: string;
@@ -21,23 +26,37 @@ export const VerificationCodeModal: FC<VerificationCodeModalProps> = ({
     email,
     ...props
 }) => {
-    const [isInvalid, setIsInvalid] = useState(true);
+    const [code, setCode] = useState('');
+    const [isInvalid, setIsInvalid] = useState(false);
     const modalText = [ModalLabel.Body[0], email, ModalLabel.Body[1]];
 
+    const { toast } = useAuthToast();
     const [checkVerificationCode, { isLoading, reset }] = useCheckVerificationCodeMutation();
 
-    const resetIsInvalid = () => setIsInvalid(false);
+    const updateCode = (value: string) => {
+        setIsInvalid(false);
+        setCode(value);
+    };
 
     const onCompleteCode = async (value: string) => {
-        const response = await checkVerificationCode({ code: value });
+        const { data, error } = await checkVerificationCode({ email, otpToken: value });
 
-        if (response.error) {
-            setIsInvalid(true);
-            reset();
-        } else {
+        if (data) {
             setIsInvalid(false);
             updateStep(RestoreStep.Form);
+            reset();
+
+            return;
         }
+
+        if (isFetchBaseQueryError(error) && error.status === HttpStatus.FORBIDDEN) {
+            setIsInvalid(true);
+        } else {
+            toast(ServerErrorToast);
+        }
+
+        setCode('');
+        reset();
     };
 
     return (
@@ -71,8 +90,11 @@ export const VerificationCodeModal: FC<VerificationCodeModalProps> = ({
                     >
                         <PinInput
                             isInvalid={isInvalid}
-                            onChange={resetIsInvalid}
+                            onChange={updateCode}
                             onComplete={onCompleteCode}
+                            value={code}
+                            autoFocus
+                            otp
                         >
                             {Pin.map((key, index) => (
                                 <PinInputField

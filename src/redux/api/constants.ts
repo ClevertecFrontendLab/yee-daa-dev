@@ -12,13 +12,16 @@ export const API_IMGS_BASE = 'https://training-api.clevertec.ru';
 
 export const NOTIFICATION_STATE_NAME = 'appNotificationState';
 
+export const ACCESS_TOKEN_HEADER = 'Authentication-Access';
+
 export enum ApiEndpoints {
-    SignIn = 'sign-in',
-    SignUp = 'sign-up',
-    SignOut = 'sign-out',
-    SendVerificationCode = 'sendVerificationCode',
-    CheckVerificationCode = 'checkVerificationCode',
-    ResetCredentials = 'resetCredentials',
+    SignIn = 'auth/login',
+    SignUp = '/auth/signup',
+    RefreshToken = '/auth/refresh',
+    SendVerificationCode = '/auth/forgot-password',
+    CheckVerificationCode = '/auth/verify-otp',
+    ResetCredentials = '/auth/reset-password',
+    // SignOut = '/auth/logout',
 
     Category = 'category',
     Recipe = 'recipe',

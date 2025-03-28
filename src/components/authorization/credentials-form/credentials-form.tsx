@@ -58,16 +58,16 @@ export const CredentialsForm: FC<CredentialsFormProps> = ({
                 <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
             </FormControl>
 
-            <FormControl isInvalid={!!errors.repeatPassword} mt={6}>
+            <FormControl isInvalid={!!errors.passwordConfirm} mt={6}>
                 <FormLabel>{Label.RepeatPassword.Label}</FormLabel>
                 <PasswordInput
                     dataTestId={CyTestId.Auth.RepeatPasswordInput}
                     input={{
                         placeholder: Label.RepeatPassword.Placeholder,
-                        register: register('repeatPassword'),
+                        register: register('passwordConfirm'),
                     }}
                 />
-                <FormErrorMessage>{errors.repeatPassword?.message}</FormErrorMessage>
+                <FormErrorMessage>{errors.passwordConfirm?.message}</FormErrorMessage>
             </FormControl>
 
             <Button

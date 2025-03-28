@@ -35,5 +35,17 @@ module.exports = {
         'simple-import-sort/exports': 'error',
         'arrow-body-style': 'error',
         'react/jsx-curly-brace-presence': ['error', 'never'],
+        '@typescript-eslint/no-unused-vars': [
+            'error',
+            {
+                args: 'all',
+                argsIgnorePattern: '^_',
+                caughtErrors: 'all',
+                caughtErrorsIgnorePattern: '^_',
+                destructuredArrayIgnorePattern: '^_',
+                varsIgnorePattern: '^_',
+                ignoreRestSiblings: true,
+            },
+        ],
     },
 };

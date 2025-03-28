@@ -37,11 +37,13 @@ type EmailModalProps = RestoreModalProps & {
 export const EmailModal: FC<EmailModalProps> = ({ updateStep, setEmail, ...props }) => {
     const {
         register,
+        setError,
         setValue,
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm<EmailRestoreFormSchema>({
         resolver: yupResolver(EmailRestoreSchema),
+        mode: 'onChange',
     });
 
     const [sendVerificationCode, { reset }] = useSendVerificationCodeMutation();
@@ -59,7 +61,8 @@ export const EmailModal: FC<EmailModalProps> = ({ updateStep, setEmail, ...props
             } else {
                 toast(ServerErrorToast);
             }
-
+            setValue('email', '');
+            setError('email', { message: '' });
             reset();
         }
     };

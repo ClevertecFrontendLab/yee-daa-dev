@@ -31,7 +31,7 @@ const RestoreCredentialsPage: FC = () => {
             );
 
         case RestoreStep.Form:
-            return <RestoreFormModal {...{ isOpen, onClose }} />;
+            return <RestoreFormModal {...{ isOpen, onClose, email: email.current }} />;
 
         default:
             return null;

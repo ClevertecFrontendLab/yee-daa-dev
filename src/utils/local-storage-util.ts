@@ -1,7 +1,6 @@
 export enum LOCALSTORAGE_KEYS {
     CATEGORIES = 'categories',
     SUBCATEGORIES = 'sub_categories',
-    REFRESH_TOKEN = 'refresh_token',
 }
 
 export const setDataToLocalStorage = (key: LOCALSTORAGE_KEYS, data: unknown) => {

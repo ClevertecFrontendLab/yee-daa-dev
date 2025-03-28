@@ -1,72 +1,83 @@
-import { setAccessToken } from '~/redux/features/auth-slice';
-import { LOCALSTORAGE_KEYS, setDataToLocalStorage } from '~/utils/local-storage-util';
+import { resetAuth, setAccessToken } from '~/redux/features/auth-slice';
 
 import { unauthorizedApi } from '..';
-import { ApiEndpoints } from '../constants';
+import { ACCESS_TOKEN_HEADER, ApiEndpoints } from '../constants';
 import {
     CheckVerificationCodeBody,
-    CheckVerificationCodeResponse,
     ResetCredentialsBody,
-    ResetCredentialsResponse,
     SendVerificationCodeBody,
-    SendVerificationCodeResponse,
-    SigInResponse,
     SignInBody,
     SignUpBody,
-    SigUpResponse,
 } from '../types/auth';
 
 export const authApi = unauthorizedApi.injectEndpoints({
     endpoints: (build) => ({
-        signIn: build.mutation<SigInResponse, SignInBody>({
+        signIn: build.mutation<void, SignInBody>({
             query: (body) => ({ url: ApiEndpoints.SignIn, method: 'POST', body }),
             async onQueryStarted(_, { queryFulfilled, dispatch }) {
                 try {
-                    const {
-                        data: { refreshToken, accessToken },
-                    } = await queryFulfilled;
+                    const { meta } = await queryFulfilled;
 
-                    setDataToLocalStorage(LOCALSTORAGE_KEYS.REFRESH_TOKEN, refreshToken);
-                    dispatch(setAccessToken(accessToken));
+                    dispatch(
+                        setAccessToken(meta?.response?.headers.get(ACCESS_TOKEN_HEADER) || ''),
+                    );
                 } catch (error) {
-                    //
+                    dispatch(resetAuth());
+
+                    console.error(error);
                 }
             },
         }),
 
-        signUp: build.mutation<SigUpResponse, SignUpBody>({
+        refreshToken: build.mutation<void, void>({
+            query: () => ({
+                url: ApiEndpoints.RefreshToken,
+                method: 'GET',
+                credentials: 'include',
+            }),
+            async onQueryStarted(_, { queryFulfilled, dispatch }) {
+                try {
+                    const { meta } = await queryFulfilled;
+
+                    dispatch(
+                        setAccessToken(meta?.response?.headers.get(ACCESS_TOKEN_HEADER) || ''),
+                    );
+                } catch (error) {
+                    dispatch(resetAuth());
+
+                    console.error(error);
+                }
+            },
+        }),
+
+        signUp: build.mutation<void, SignUpBody>({
             query: (body) => ({ url: ApiEndpoints.SignUp, method: 'POST', body }),
         }),
 
-        signOut: build.mutation({
-            query: () => ({ url: ApiEndpoints.SignOut }),
-        }),
-
-        sendVerificationCode: build.mutation<
-            SendVerificationCodeResponse,
-            SendVerificationCodeBody
-        >({
+        sendVerificationCode: build.mutation<void, SendVerificationCodeBody>({
             query: (body) => ({ url: ApiEndpoints.SendVerificationCode, method: 'POST', body }),
         }),
 
-        checkVerificationCode: build.mutation<
-            CheckVerificationCodeResponse,
-            CheckVerificationCodeBody
-        >({
+        checkVerificationCode: build.mutation<void, CheckVerificationCodeBody>({
             query: (body) => ({ url: ApiEndpoints.CheckVerificationCode, method: 'POST', body }),
         }),
 
-        resetCredentials: build.mutation<ResetCredentialsResponse, ResetCredentialsBody>({
-            query: (body) => ({ url: ApiEndpoints.ResetCredentials, method: 'PATCH', body }),
+        resetCredentials: build.mutation<void, ResetCredentialsBody>({
+            query: (body) => ({ url: ApiEndpoints.ResetCredentials, method: 'POST', body }),
         }),
+
+        // signOut: build.mutation({
+        //     query: () => ({ url: ApiEndpoints.SignOut }),
+        // }),
     }),
 });
 
 export const {
     useSignInMutation,
+    useRefreshTokenMutation,
     useSignUpMutation,
-    useSignOutMutation,
     useSendVerificationCodeMutation,
     useCheckVerificationCodeMutation,
     useResetCredentialsMutation,
+    // useSignOutMutation,
 } = authApi;

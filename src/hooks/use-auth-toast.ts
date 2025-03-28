@@ -8,7 +8,7 @@ export const useAuthToast = () => {
             toast({
                 status: 'error',
                 duration: 10000,
-                isClosable: false,
+                isClosable: true,
                 position: 'bottom',
                 containerStyle: {
                     width: '100%',

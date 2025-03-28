@@ -9,7 +9,7 @@ export const initialState: AuthSliceState = {
 };
 
 export const authSlice = createSlice({
-    name: 'auth-slice',
+    name: 'auth',
     initialState,
     reducers: {
         setAccessToken: (state, action: PayloadAction<string>) => {
