@@ -29,6 +29,7 @@ export const IngredientsBlock: FC<{
             ...ingredient,
             count: (ingredient.count / (portions ?? 1)) * multiply,
         }));
+
         setAdjustedIngredients(updatedIngredients);
         setValue(multiply);
     };
@@ -86,26 +87,31 @@ export const IngredientsBlock: FC<{
                 </Tr>
             </Thead>
             <Tbody w='100%'>
-                {adjustedIngredients?.map((ingredient, index) => (
-                    <Tr
-                        key={ingredient.title}
-                        bg={index % 2 === 0 ? 'blackAlfa.100' : 'white'}
-                        fontWeight={500}
-                        _hover={{ bg: 'blackAlfa.100' }}
-                    >
-                        <Td fontSize='sm' color='blackAlfa.900'>
-                            {ingredient.title}
-                        </Td>
-                        <Td
-                            fontSize='sm'
-                            color='blackAlfa.900'
-                            textAlign='end'
-                            data-test-id={`ingredient-quantity-${index}`}
+                {adjustedIngredients?.map(({ count, title, measureUnit }, index) => {
+                    let renderCount: string = '';
+                    if (count && count % 1 === 0) renderCount = count.toString();
+                    else if (count) renderCount = count.toFixed(1);
+                    return (
+                        <Tr
+                            key={title}
+                            bg={index % 2 === 0 ? 'blackAlfa.100' : 'white'}
+                            fontWeight={500}
+                            _hover={{ bg: 'blackAlfa.100' }}
                         >
-                            {ingredient.count && ingredient.count} {ingredient.measureUnit}
-                        </Td>
-                    </Tr>
-                ))}
+                            <Td fontSize='sm' color='blackAlfa.900'>
+                                {title}
+                            </Td>
+                            <Td
+                                fontSize='sm'
+                                color='blackAlfa.900'
+                                textAlign='end'
+                                data-test-id={`ingredient-quantity-${index}`}
+                            >
+                                {renderCount && renderCount} {measureUnit}
+                            </Td>
+                        </Tr>
+                    );
+                })}
             </Tbody>
         </Table>
     );
