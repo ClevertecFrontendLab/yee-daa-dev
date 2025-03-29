@@ -70,7 +70,7 @@ export const EmailModal: FC<EmailModalProps> = ({ updateStep, setEmail, ...props
     return (
         <>
             <ResultModal
-                dataTestId={CyTestId.Modal.RestoreCredentialsEmailModal.Root}
+                dataTestId={CyTestId.Modal.SendEmailModal}
                 imageUrl='/images/breakfast.png'
                 {...props}
             >
@@ -89,7 +89,7 @@ export const EmailModal: FC<EmailModalProps> = ({ updateStep, setEmail, ...props
                         <FormControl isInvalid={!!errors.email}>
                             <FormLabel>{EmailFormLabel.Email.Label}</FormLabel>
                             <Input
-                                data-test-id={CyTestId.Auth.EmailInput}
+                                data-test-id={CyTestId.Input.Email}
                                 variant='auth'
                                 size='lg'
                                 placeholder={EmailFormLabel.Email.Placeholder}
@@ -100,7 +100,7 @@ export const EmailModal: FC<EmailModalProps> = ({ updateStep, setEmail, ...props
                         </FormControl>
 
                         <Button
-                            data-test-id={CyTestId.Auth.SubmitButton}
+                            data-test-id={CyTestId.Button.Submit}
                             mt={6}
                             w='full'
                             variant='black'

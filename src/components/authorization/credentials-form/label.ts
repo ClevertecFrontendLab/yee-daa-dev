@@ -9,7 +9,7 @@ export const Label = {
         Placeholder: 'Пароль',
         Helper: 'Пароль не менее 8 символов, с заглавной буквой и цифрой',
     },
-    RepeatPassword: {
+    PasswordConfirm: {
         Label: 'Повторите пароль',
         Placeholder: 'Пароль',
     },

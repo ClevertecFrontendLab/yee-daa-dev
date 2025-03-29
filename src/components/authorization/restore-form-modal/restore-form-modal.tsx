@@ -26,7 +26,7 @@ type RestoreFormModalProps = Omit<RestoreModalProps, 'updateStep'> & {
     email: string;
 };
 
-export const RestoreFormModal: FC<RestoreFormModalProps> = ({ email, ...props }) => {
+export const ResetCredentialsModal: FC<RestoreFormModalProps> = ({ email, ...props }) => {
     const { toast } = useAuthToast();
 
     const restoreForm = useForm<CredentialsFormSchema>({
@@ -51,7 +51,7 @@ export const RestoreFormModal: FC<RestoreFormModalProps> = ({ email, ...props })
     return (
         <>
             <ResultModal
-                dataTestId={CyTestId.Modal.RestoreFormModal.Root}
+                dataTestId={CyTestId.Modal.ResetCredentialsModal}
                 title={ModalLabel.Header}
                 {...props}
             >

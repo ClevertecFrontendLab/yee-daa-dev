@@ -39,7 +39,7 @@ export const ResultModal: FC<ResultModalProps> = ({
             <ModalHeader mb={4}>
                 {isClosable && (
                     <IconButton
-                        data-test-id={CyTestId.Modal.CloseButton}
+                        data-test-id={CyTestId.Button.Close}
                         aria-label='Close modal'
                         icon={<ModalCloseIcon />}
                         position='absolute'

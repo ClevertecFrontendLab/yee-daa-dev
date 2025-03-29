@@ -26,7 +26,7 @@ export const PersonalInfoForm: FC<PersonalInfoFormProps> = ({
             <FormControl isInvalid={!!errors.firstName}>
                 <FormLabel>{Label.FirstName.Label}</FormLabel>
                 <Input
-                    data-test-id={CyTestId.Auth.FirstNameInput}
+                    data-test-id={CyTestId.Input.FirstName}
                     variant='auth'
                     size='lg'
                     placeholder={Label.FirstName.Placeholder}
@@ -39,7 +39,7 @@ export const PersonalInfoForm: FC<PersonalInfoFormProps> = ({
             <FormControl isInvalid={!!errors.lastName} mt={6}>
                 <FormLabel>{Label.LastName.Label}</FormLabel>
                 <Input
-                    data-test-id={CyTestId.Auth.LastNameInput}
+                    data-test-id={CyTestId.Input.LastName}
                     variant='auth'
                     size='lg'
                     placeholder={Label.LastName.Placeholder}
@@ -52,7 +52,7 @@ export const PersonalInfoForm: FC<PersonalInfoFormProps> = ({
             <FormControl isInvalid={!!errors.email} mt={6}>
                 <FormLabel>{Label.Email.Label}</FormLabel>
                 <Input
-                    data-test-id={CyTestId.Auth.EmailInput}
+                    data-test-id={CyTestId.Input.Email}
                     variant='auth'
                     size='lg'
                     placeholder={Label.Email.Placeholder}
@@ -63,7 +63,7 @@ export const PersonalInfoForm: FC<PersonalInfoFormProps> = ({
             </FormControl>
 
             <Button
-                data-test-id={CyTestId.Auth.SubmitButton}
+                data-test-id={CyTestId.Button.Submit}
                 mt={12}
                 w='full'
                 variant='black'

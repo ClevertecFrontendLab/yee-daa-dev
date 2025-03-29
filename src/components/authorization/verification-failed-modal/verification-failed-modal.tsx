@@ -8,9 +8,9 @@ import { Label } from './label';
 
 export const VerificationFailedModal: FC<Omit<ModalProps, 'children'>> = (props) => (
     <ResultModal
-        dataTestId={CyTestId.Modal.EmailVerificationFailed.Root}
+        dataTestId={CyTestId.Modal.EmailVerificationFailed}
         title={Label.Header}
-        imageUrl='/public/images/tea-ceremony.png'
+        imageUrl='/images/tea-ceremony.png'
         {...props}
     >
         <ModalBody>

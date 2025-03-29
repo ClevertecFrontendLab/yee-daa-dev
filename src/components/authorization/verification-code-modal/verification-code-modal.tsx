@@ -62,7 +62,7 @@ export const VerificationCodeModal: FC<VerificationCodeModalProps> = ({
     return (
         <>
             <ResultModal
-                dataTestId={CyTestId.Modal.VerificationCodeModal.Root}
+                dataTestId={CyTestId.Modal.VerificationCodeModal}
                 imageUrl='/images/work.png'
                 {...props}
                 title={isInvalid ? ModalLabel.Header : null}
@@ -98,7 +98,7 @@ export const VerificationCodeModal: FC<VerificationCodeModalProps> = ({
                         >
                             {Pin.map((key) => (
                                 <PinInputField
-                                    data-test-id={`${CyTestId.Auth.VerificationCodeInput}-${key}`}
+                                    data-test-id={`${CyTestId.Input.VerificationCode}-${key}`}
                                     _placeholder={{ color: 'lime.800' }}
                                     key={key}
                                 />

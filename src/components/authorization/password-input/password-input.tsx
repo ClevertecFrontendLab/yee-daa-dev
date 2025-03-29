@@ -21,7 +21,7 @@ type PasswordInputProps = {
 export const PasswordInput: FC<PasswordInputProps> = ({
     input: { register, ...restInput },
     button,
-    dataTestId = CyTestId.Auth.PasswordInput,
+    dataTestId = CyTestId.Input.Password,
 }) => {
     const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -32,7 +32,7 @@ export const PasswordInput: FC<PasswordInputProps> = ({
         <InputGroup>
             <InputRightElement height='48px'>
                 <IconButton
-                    data-test-id={CyTestId.Auth.PasswordVisibilityButton}
+                    data-test-id={CyTestId.Button.PasswordVisibility}
                     onMouseDown={showPassword}
                     onMouseUp={hidePassword}
                     onMouseLeave={hidePassword}

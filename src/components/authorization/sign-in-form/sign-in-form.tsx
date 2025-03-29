@@ -84,11 +84,11 @@ export const SignInForm: FC = () => {
 
     return (
         <>
-            <ChakraForm data-test-id={CyTestId.Auth.SignInForm} onSubmit={handleSubmit(onSubmit)}>
+            <ChakraForm data-test-id={CyTestId.Form.SignIn} onSubmit={handleSubmit(onSubmit)}>
                 <FormControl isDisabled={isSubmitting} isInvalid={!!errors.login}>
                     <FormLabel>{Label.Login.Label}</FormLabel>
                     <Input
-                        data-test-id={CyTestId.Auth.LoginInput}
+                        data-test-id={CyTestId.Input.Login}
                         variant='auth'
                         size='lg'
                         placeholder={Label.Login.Placeholder}
@@ -116,7 +116,7 @@ export const SignInForm: FC = () => {
                 </FormControl>
 
                 <Button
-                    data-test-id={CyTestId.Auth.SubmitButton}
+                    data-test-id={CyTestId.Button.Submit}
                     mt={112}
                     w='full'
                     variant='black'
@@ -141,7 +141,7 @@ export const SignInForm: FC = () => {
                     opacity={isSubmitting ? 0.5 : 1}
                 >
                     <NavLink
-                        data-test-id={CyTestId.Auth.RestoreCredentialsButton}
+                        data-test-id={CyTestId.Button.ForgotPassword}
                         to={Paths.RESTORE_CREDENTIALS}
                         replace
                     >
