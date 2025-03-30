@@ -19,7 +19,7 @@ export const AppLoader = ({ isOpen, overlayColor = 'black.300' }: AppLoaderProps
                     boxSize={isMobileWidth ? 134 : 206}
                     size='xl'
                     color='black'
-                    data-test-id='load-spinner'
+                    data-test-id='app-loader'
                 />
             </ModalContent>
         </Modal>

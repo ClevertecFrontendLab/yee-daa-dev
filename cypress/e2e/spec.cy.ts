@@ -28,7 +28,8 @@ const ADD_OTHER_ALLERGEN = 'add-other-allergen';
 const ADD_ALLERGEN_BUTTON = 'add-allergen-button';
 const FILTER_TAG = 'filter-tag';
 const ERROR_PAGE_GO_HOME = 'error-page-go-home';
-const LOAD_SPINNER = 'load-spinner';
+const APP_LOADER = 'app-loader';
+const LOADER_SEARCH_BLOCK = 'loader-search-block';
 const ERROR_NOTIFICATION = 'error-notification';
 const CLOSE_ALERT_BUTTON = 'close-alert-button';
 const LOAD_MORE_BUTTON = 'load-more-button';
@@ -46,6 +47,7 @@ const LIMIT_QUERY_PARAM = 'limit';
 const DEFAULT_RECIPE_LIMIT = 8;
 
 const SMALL_DELAY_MS = 300;
+const LONG_DELAY_MS = 1000;
 const LOAD_DELAY_MS = 700;
 
 const resolutionFull = [
@@ -1649,6 +1651,26 @@ describe('Test cases for YeeDaa application', () => {
             cy.wait('@getRecipeWithSearchEmpty');
             cy.screenshot(`search-not-found-360`, { capture: 'fullPage' });
         });
+        it('Check loader during search process. Screen 1440px', () => {
+            const searchWord = 'Сала';
+            const recipesBySearch = allRecipes.filter((item) => item.title.includes(searchWord));
+            cy.viewport(1440, 1024);
+            cy.visit('/');
+            setElementPosition();
+            cy.getByTestId(SEARCH_INPUT).type(searchWord);
+            interceptRecipesByCategory(LONG_DELAY_MS, {
+                data: recipesBySearch,
+                meta: metaData,
+            }).as('getRecipeWithSearch');
+            cy.contains('Приятного аппетита').as('titleSearch').should('exist');
+            cy.getByTestId(SEARCH_BUTTON).should('be.visible').click();
+            cy.getByTestId(LOADER_SEARCH_BLOCK).should('exist').and('be.visible');
+            cy.contains('Приятного аппетита').as('titleSearch').should('exist');
+            cy.scrollTo(0, 0);
+            cy.screenshot(`search-loader-1440`, { capture: 'fullPage' });
+            cy.wait('@getRecipeWithSearch');
+            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', recipesBySearch.length);
+        });
     });
     describe('Recipe Functionality', () => {
         beforeEach(() => {
@@ -1941,6 +1963,47 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId('second-dish-active').should('exist');
             cy.getByTestId('snacks-active').should('not.exist');
         });
+
+        it('When click on tab request occures and loader exist. Screen 768px', () => {
+            cy.viewport(768, 1080);
+            cy.visit('/');
+            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
+            interceptRecipesBySubCategory(SMALL_DELAY_MS, {
+                data: veganSnacks,
+                meta: { page: 1, totalPages: 1, limit: 8 },
+            }).as('getVegans');
+
+            cy.getByTestId(HUMB_ICON).should('exist').click();
+            cy.getByTestId(NAV).should('be.visible');
+            cy.getByTestId(VEGAN).click();
+            cy.wait('@getVegans');
+            cy.getByTestId(CLOSE_ICON).should('exist').click();
+
+            cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'true');
+
+            interceptRecipesBySubCategory(SMALL_DELAY_MS, {
+                data: veganGarnish,
+                meta: { page: 1, totalPages: 1, limit: 8 },
+            }).as('getVegansGarnish');
+            cy.getByTestId('tab-first-dish-1').click();
+            cy.getByTestId(APP_LOADER).should('exist').and('be.visible');
+            cy.wait('@getVegansGarnish');
+            cy.getByTestId('tab-first-dish-1').should('have.attr', 'aria-selected', 'true');
+            cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'false');
+            cy.getByTestId(APP_LOADER).should('not.exist');
+
+            interceptRecipesBySubCategory(SMALL_DELAY_MS, {
+                data: veganDesserts,
+                meta: { page: 1, totalPages: 1, limit: 8 },
+            }).as('getVegansDesserts');
+            cy.getByTestId('tab-desserts-4').click();
+            cy.getByTestId(APP_LOADER).should('exist').and('be.visible');
+            cy.wait('@getVegansDesserts');
+            cy.getByTestId('tab-desserts-4').should('have.attr', 'aria-selected', 'true');
+            cy.getByTestId('tab-first-dish-1').should('have.attr', 'aria-selected', 'false');
+            cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'false');
+            cy.getByTestId(APP_LOADER).should('not.exist');
+        });
     });
     describe('Breadcrumbs Functionality', () => {
         beforeEach(() => {
@@ -2011,7 +2074,7 @@ describe('Test cases for YeeDaa application', () => {
             it('Apploader should exist when app is loading screnn 1920px', () => {
                 cy.viewport(1920, 750);
                 cy.visit('/');
-                cy.getByTestId(LOAD_SPINNER).should('exist').and('be.visible');
+                cy.getByTestId(APP_LOADER).should('exist').and('be.visible');
                 cy.screenshot('app-loader-1920', { capture: 'fullPage' });
                 cy.wait([
                     '@getCategories',
@@ -2019,13 +2082,13 @@ describe('Test cases for YeeDaa application', () => {
                     '@getJuiciestRecipes',
                     '@getRelevant',
                 ]);
-                cy.getByTestId(LOAD_SPINNER).should('not.exist');
+                cy.getByTestId(APP_LOADER).should('not.exist');
             });
             it('Apploader should exist when app is loading screnn 360px', () => {
                 interceptRelevantRecipes().as('getRelevant');
                 cy.viewport(360, 800);
                 cy.visit('/');
-                cy.getByTestId(LOAD_SPINNER).should('exist').and('be.visible');
+                cy.getByTestId(APP_LOADER).should('exist').and('be.visible');
                 cy.screenshot('app-loader-360', { capture: 'fullPage' });
                 cy.wait([
                     '@getCategories',
@@ -2033,7 +2096,7 @@ describe('Test cases for YeeDaa application', () => {
                     '@getJuiciestRecipes',
                     '@getRelevant',
                 ]);
-                cy.getByTestId(LOAD_SPINNER).should('not.exist');
+                cy.getByTestId(APP_LOADER).should('not.exist');
             });
         });
         context('Error notification', () => {
@@ -2085,9 +2148,9 @@ describe('Test cases for YeeDaa application', () => {
             cy.contains('Самое сочное').should('exist').and('be.visible');
             interceptJuiciestPage().as('juiciestPageRecipes');
             cy.getByTestId(JUICIEST_LINK).should('exist').click();
-            cy.getByTestId(LOAD_SPINNER).should('exist');
+            cy.getByTestId(APP_LOADER).should('exist');
             cy.wait('@juiciestPageRecipes');
-            cy.getByTestId(LOAD_SPINNER).should('not.exist');
+            cy.getByTestId(APP_LOADER).should('not.exist');
             cy.screenshot('juiciest-page-1920', { capture: 'fullPage' });
             cy.get('@homeHeding').should('not.exist');
             cy.contains('Самое сочное').should('exist').and('be.visible');
