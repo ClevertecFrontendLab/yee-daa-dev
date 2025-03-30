@@ -110,7 +110,7 @@ export const CriteriaTagsList = ({
 
     return isArrayWithItems(tagsForRender) ? (
         <HStack spacing={4} pt={8} pb={8} flexWrap='wrap'>
-            {tags.map((tag) => {
+            {tagsForRender.map((tag) => {
                 const type = determineTagType(tag ?? '');
                 return (
                     <Tag
