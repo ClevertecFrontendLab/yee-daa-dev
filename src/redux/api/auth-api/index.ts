@@ -62,6 +62,14 @@ export const authApi = unauthorizedApi.injectEndpoints({
             },
         }),
 
+        checkAuth: build.query<CommonResponse, void>({
+            query: () => ({
+                url: ApiEndpoints.CheckAuth,
+                method: 'GET',
+                credentials: 'include',
+            }),
+        }),
+
         signUp: build.mutation<CommonResponse, SignUpBody>({
             query: (body) => ({ url: ApiEndpoints.SignUp, method: 'POST', body }),
         }),
@@ -77,10 +85,6 @@ export const authApi = unauthorizedApi.injectEndpoints({
         resetCredentials: build.mutation<CommonResponse, ResetCredentialsBody>({
             query: (body) => ({ url: ApiEndpoints.ResetCredentials, method: 'POST', body }),
         }),
-
-        // signOut: build.mutation({
-        //     query: () => ({ url: ApiEndpoints.SignOut }),
-        // }),
     }),
 });
 
@@ -91,5 +95,5 @@ export const {
     useSendVerificationCodeMutation,
     useCheckVerificationCodeMutation,
     useResetCredentialsMutation,
-    // useSignOutMutation,
+    useCheckAuthQuery,
 } = authApi;

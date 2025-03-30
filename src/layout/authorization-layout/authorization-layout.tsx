@@ -14,9 +14,11 @@ import {
     WrapItem,
 } from '@chakra-ui/react';
 import { FC, useState } from 'react';
-import { Outlet, useMatch, useNavigate } from 'react-router';
+import { Navigate, Outlet, useMatch, useNavigate } from 'react-router';
 
+import { AppLoader } from '~/components/app-loader';
 import { Logo } from '~/components/logo';
+import { useCheckAuthQuery } from '~/redux/api/auth-api';
 
 import { Paths } from '../../constants/path';
 import { Label } from './label';
@@ -29,11 +31,20 @@ const AuthorizationLayout: FC = () => {
 
     const navigate = useNavigate();
     const [isMd] = useMediaQuery(`(min-width: ${theme.breakpoints.md})`);
+    const { isLoading, isSuccess } = useCheckAuthQuery();
 
     const handleTabsChange = (index: number) => {
         setTabIndex(index);
         navigate(TabNavigation[index], { replace: true });
     };
+
+    if (isLoading) {
+        return <AppLoader isOpen={true} />;
+    }
+
+    if (isSuccess) {
+        return <Navigate to={Paths.R_SWITCHER} replace />;
+    }
 
     return (
         <Box pos='relative'>
