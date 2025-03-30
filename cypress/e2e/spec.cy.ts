@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+
 import * as ReactRouter from 'react-router';
 
 const JUICIEST_LINK = 'juiciest-link';
@@ -30,6 +31,7 @@ const ERROR_PAGE_GO_HOME = 'error-page-go-home';
 const LOAD_SPINNER = 'load-spinner';
 const ERROR_NOTIFICATION = 'error-notification';
 const CLOSE_ALERT_BUTTON = 'close-alert-button';
+const LOAD_MORE_BUTTON = 'load-more-button';
 const SLIDER_SIZE = '10';
 const JUICIEST_LIMIT = '4';
 const RELEVANT_KITCHEN_LIMIT = '5';
@@ -1323,6 +1325,35 @@ const MOCK_RECIPES_BY_CATEGORY = {
     meta: { total: 5, limit: RELEVANT_KITCHEN_LIMIT, page: 1, totalPages: 1 },
 };
 
+const juiciestData = {
+    data: [...allRecipes].sort((a, b) => a.likes - b.likes).slice(0, DEFAULT_RECIPE_LIMIT),
+};
+const interceptJuiciestPage = (page: number = 1, mockData = juiciestData) =>
+    cy.intercept(
+        {
+            method: 'GET',
+            url: /recipe\?.*/,
+            query: {
+                [SORT_QUERY_PARAM]: LIKES_SORT_PARAM,
+                [LIMIT_QUERY_PARAM]: String(DEFAULT_RECIPE_LIMIT),
+                page: String(page),
+            },
+        },
+        {
+            delay: SMALL_DELAY_MS,
+            statusCode: 200,
+            body: {
+                ...mockData,
+                meta: {
+                    total: DEFAULT_RECIPE_LIMIT * 3,
+                    page: page,
+                    limit: DEFAULT_RECIPE_LIMIT,
+                    totalPages: 3,
+                },
+            },
+        },
+    );
+
 const interceptNewestRecipes = (delay: number = SMALL_DELAY_MS, mockBody: unknown = null) =>
     cy.intercept(
         {
@@ -1441,7 +1472,6 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId(HEADER).should('contain', 'Веганская кухня');
         });
     });
-
     describe('Carousel functionality', () => {
         beforeEach(() => {
             interceptCategories().as('getCategories');
@@ -1462,7 +1492,7 @@ describe('Test cases for YeeDaa application', () => {
             cy.wait(LOAD_DELAY_MS);
             cy.getByTestId(`${CAROUSEL_CARD}-4`).should('be.visible');
             for (let i = 1; i <= 4; i++) {
-                cy.getByTestId(`${CAROUSEL_CARD}-${i}`).should('be.visible');
+                cy.getByTestId(`${CAROUSEL_CARD}-${i}`).scrollIntoView().should('be.visible');
             }
             cy.getByTestId('carousel-back').click();
             cy.wait(LOAD_DELAY_MS);
@@ -1498,26 +1528,28 @@ describe('Test cases for YeeDaa application', () => {
 
     describe('Burger Menu Functionality', () => {
         beforeEach(() => {
-            const routerParams = {
-                categoryName: 'vegan',
-                subCategoryName: 'snacks',
-            };
-
-            cy.stub(ReactRouter, 'useParams').callsFake(() => routerParams);
-            interceptCategories().as('getCategories');
             interceptNewestRecipes().as('getNewestRecipes');
             interceptJuiciestRecipes().as('getJuiciestRecipes');
             interceptRelevantRecipes().as('getRelevant');
         });
         it('Burger does not exist on 1440px', () => {
+            interceptCategories().as('getCategories');
             cy.viewport(1440, 1024);
             cy.visit('/');
+            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
+
             cy.getByTestId(HUMB_ICON).should('not.be.visible');
             cy.getByTestId(NAV).should('exist');
         });
         it('Burger menu on screen 768px', () => {
             cy.viewport(768, 1024);
             cy.visit('/');
+            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
+            interceptJuiciestPage().as('juiciestPageRecipes');
+
+            cy.getByTestId(JUICIEST_LINK).should('exist').click();
+            cy.wait('@juiciestPageRecipes');
+
             setElementPosition();
             cy.getByTestId(NAV).should('not.exist');
             cy.getByTestId(CLOSE_ICON).should('not.exist');
@@ -1533,8 +1565,16 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId(NAV).should('not.exist');
         });
         it('Burger menu on screen 360px', () => {
+            interceptCategories().as('getCategories');
             cy.viewport(360, 800);
-            cy.visit('/the-juiciest');
+            cy.visit('/');
+            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
+
+            interceptJuiciestPage().as('juiciestPageRecipes');
+
+            cy.getByTestId(JUICIEST_LINK_MOB).should('exist').click();
+            cy.wait('@juiciestPageRecipes');
+
             setElementPosition();
             cy.getByTestId(NAV).should('not.exist');
             cy.getByTestId(CLOSE_ICON).should('not.exist');
@@ -1549,7 +1589,6 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId(NAV).should('not.exist');
         });
     });
-
     describe('Search Functionality', () => {
         const routerParams = {
             categoryName: 'vegan',
@@ -1611,7 +1650,6 @@ describe('Test cases for YeeDaa application', () => {
             cy.screenshot(`search-not-found-360`, { capture: 'fullPage' });
         });
     });
-
     describe('Recipe Functionality', () => {
         beforeEach(() => {
             cy.intercept('GET');
@@ -1640,7 +1678,6 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId('ingredient-quantity-1').contains('4');
         });
     });
-
     describe('Filters Functionality', () => {
         beforeEach(() => {
             interceptCategories().as('getCategories');
@@ -1779,7 +1816,6 @@ describe('Test cases for YeeDaa application', () => {
             cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 2);
         });
     });
-
     describe('Allergens Functionality', () => {
         beforeEach(() => {
             interceptNewestRecipes().as('getNewestRecipes');
@@ -1798,7 +1834,6 @@ describe('Test cases for YeeDaa application', () => {
             cy.visit('/');
             setElementPosition();
             cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
-
             cy.getByTestId(ALLERGEN_SWITCHER).should('not.have.attr', 'data-checked');
             cy.getByTestId(ALLERGEN_BUTTON).should('be.disabled');
             cy.getByTestId(VEGAN).click();
@@ -1813,7 +1848,6 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId('allergen-1').click();
             cy.getByTestId('allergen-5').click();
             cy.getByTestId(ADD_OTHER_ALLERGEN).type('Гриб{enter}');
-
             cy.intercept(
                 {
                     method: 'GET',
@@ -1845,7 +1879,6 @@ describe('Test cases for YeeDaa application', () => {
             cy.visit('/');
             setElementPosition();
             cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
-
             cy.getByTestId(VEGAN).click();
             cy.wait(LOAD_DELAY_MS);
             cy.getByTestId(ALLERGEN_SWITCHER).click();
@@ -1875,12 +1908,10 @@ describe('Test cases for YeeDaa application', () => {
                 },
             ).as('getFilteredRecipes');
             cy.getByTestId(SEARCH_BUTTON).should('be.visible').click();
-
             cy.wait('@getFilteredRecipes');
             cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 1);
         });
     });
-
     describe('Navigation and Tabs Functionality', () => {
         beforeEach(() => {
             interceptNewestRecipes().as('getNewestRecipes');
@@ -1895,13 +1926,11 @@ describe('Test cases for YeeDaa application', () => {
                 data: veganSnacks,
                 meta: { page: 1, totalPages: 1, limit: 8 },
             }).as('getVegans');
-
             cy.getByTestId(VEGAN).click();
             cy.wait('@getVegans');
             cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'true');
             cy.url().should('include', '/vegan/snacks');
             cy.getByTestId(`${FOOD_CARD}-0`).contains(veganSnacks[0].title);
-
             interceptRecipesBySubCategory(SMALL_DELAY_MS, {
                 data: veganGarnish,
                 meta: { page: 1, totalPages: 1, limit: 8 },
@@ -1913,7 +1942,6 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId('snacks-active').should('not.exist');
         });
     });
-
     describe('Breadcrumbs Functionality', () => {
         beforeEach(() => {
             interceptNewestRecipes().as('getNewestRecipes');
@@ -1946,7 +1974,6 @@ describe('Test cases for YeeDaa application', () => {
             cy.contains('Приятного аппетита!');
         });
     });
-
     describe('Error page functionality', () => {
         beforeEach(() => {
             interceptCategories().as('getCategories');
@@ -1954,22 +1981,17 @@ describe('Test cases for YeeDaa application', () => {
             interceptJuiciestRecipes().as('getJuiciestRecipes');
             interceptRelevantRecipes().as('getRelevant');
         });
-
         it('Render error page via redirect if category and subcategory is not exist. Screen 1920px width.', () => {
             cy.viewport(1920, 750);
             cy.visit('some-path/not-exist');
-
             cy.url().should('contain', 'not-found');
-
             cy.getByTestId(ERROR_PAGE_GO_HOME).should('exist');
             cy.get('h1').contains('Такой страницы нет').should('exist').and('be.visible');
             cy.contains('Можете поискать другой').should('exist');
         });
-
         it('Go back to home page. Screen 360px.', () => {
             cy.viewport(360, 800);
             cy.visit('some-path/not-exist');
-
             cy.url().should('contain', 'not-found');
             cy.screenshot('error-page-360', { capture: 'fullPage' });
             cy.getByTestId(ERROR_PAGE_GO_HOME).should('exist').click();
@@ -1991,7 +2013,6 @@ describe('Test cases for YeeDaa application', () => {
                 cy.visit('/');
                 cy.getByTestId(LOAD_SPINNER).should('exist').and('be.visible');
                 cy.screenshot('app-loader-1920', { capture: 'fullPage' });
-
                 cy.wait([
                     '@getCategories',
                     '@getNewestRecipes',
@@ -2000,14 +2021,12 @@ describe('Test cases for YeeDaa application', () => {
                 ]);
                 cy.getByTestId(LOAD_SPINNER).should('not.exist');
             });
-
             it('Apploader should exist when app is loading screnn 360px', () => {
                 interceptRelevantRecipes().as('getRelevant');
                 cy.viewport(360, 800);
                 cy.visit('/');
                 cy.getByTestId(LOAD_SPINNER).should('exist').and('be.visible');
                 cy.screenshot('app-loader-360', { capture: 'fullPage' });
-
                 cy.wait([
                     '@getCategories',
                     '@getNewestRecipes',
@@ -2017,7 +2036,6 @@ describe('Test cases for YeeDaa application', () => {
                 cy.getByTestId(LOAD_SPINNER).should('not.exist');
             });
         });
-
         context('Error notification', () => {
             beforeEach(() => {
                 cy.intercept(
@@ -2032,7 +2050,6 @@ describe('Test cases for YeeDaa application', () => {
             it('Error notification should be visible when the request error occured screen 768px', () => {
                 cy.viewport(768, 1080);
                 cy.visit('/');
-
                 cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
                 cy.screenshot('error-notification-768', { capture: 'fullPage' });
                 cy.getByTestId(ERROR_NOTIFICATION).should('exist').and('be.visible');
@@ -2040,14 +2057,12 @@ describe('Test cases for YeeDaa application', () => {
                 cy.contains('Попробуйте поискать снова попозже').and('be.visible');
                 cy.getByTestId(CLOSE_ALERT_BUTTON).should('exist').and('not.be.disabled');
             });
-
             it('Error notification should be visible when the request error occured and screen 360px. Close alert', () => {
                 cy.viewport(360, 800);
                 cy.visit('/');
                 cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
                 cy.screenshot('error-notification-360', { capture: 'fullPage' });
                 cy.getByTestId(ERROR_NOTIFICATION).should('exist').and('be.visible');
-
                 cy.getByTestId(CLOSE_ALERT_BUTTON).should('exist').and('not.be.disabled').click();
                 cy.screenshot('error-notification-360-not-visible', { capture: 'fullPage' });
                 cy.getByTestId(ERROR_NOTIFICATION).should('not.exist');
@@ -2055,13 +2070,55 @@ describe('Test cases for YeeDaa application', () => {
         });
     });
 
-    // describe('', () => {
-    //     it('', () => {
-    //         //
-    //     });
-
-    //     it('', () => {
-    //         //
-    //     });
-    // });
+    describe('Juiciest page', () => {
+        beforeEach(() => {
+            interceptCategories().as('getCategories');
+            interceptNewestRecipes().as('getNewestRecipes');
+            interceptJuiciestRecipes().as('getJuiciestRecipes');
+            interceptRelevantRecipes().as('getRelevant');
+        });
+        it('Go to juiciest page. Render elements. Screen 1920px', () => {
+            cy.viewport(1920, 750);
+            cy.visit('/');
+            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
+            cy.contains('Приятного аппетита').as('homeHeding').should('exist');
+            cy.contains('Самое сочное').should('exist').and('be.visible');
+            interceptJuiciestPage().as('juiciestPageRecipes');
+            cy.getByTestId(JUICIEST_LINK).should('exist').click();
+            cy.getByTestId(LOAD_SPINNER).should('exist');
+            cy.wait('@juiciestPageRecipes');
+            cy.getByTestId(LOAD_SPINNER).should('not.exist');
+            cy.screenshot('juiciest-page-1920', { capture: 'fullPage' });
+            cy.get('@homeHeding').should('not.exist');
+            cy.contains('Самое сочное').should('exist').and('be.visible');
+            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', DEFAULT_RECIPE_LIMIT);
+            cy.getByTestId(LOAD_MORE_BUTTON)
+                .scrollIntoView()
+                .should('exist')
+                .and('not.be.disabled');
+        });
+        it('Check load more button functionality. Screen 768px and 360px.', () => {
+            cy.viewport(768, 1024);
+            cy.visit('/');
+            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
+            cy.contains('Самое сочное').should('exist').and('be.visible');
+            interceptJuiciestPage().as('juiciestRecipesPage1');
+            cy.getByTestId(JUICIEST_LINK).should('exist').click();
+            cy.wait('@juiciestRecipesPage1');
+            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', DEFAULT_RECIPE_LIMIT);
+            cy.screenshot('juiciest-page-768', { capture: 'fullPage' });
+            interceptJuiciestPage(2).as('juiciestRecipesPage2');
+            cy.getByTestId(LOAD_MORE_BUTTON).scrollIntoView().should('not.be.disabled').click();
+            cy.getByTestId(LOAD_MORE_BUTTON).should('include.text', 'Загрузка');
+            cy.screenshot('juiciest-page-768-loading', { capture: 'fullPage' });
+            cy.wait('@juiciestRecipesPage2');
+            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', DEFAULT_RECIPE_LIMIT * 2);
+            cy.viewport(360, 600);
+            interceptJuiciestPage(3).as('juiciestRecipesPage3');
+            cy.getByTestId(LOAD_MORE_BUTTON).scrollIntoView().should('not.be.disabled').click();
+            cy.wait('@juiciestRecipesPage3');
+            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', DEFAULT_RECIPE_LIMIT * 3);
+            cy.getByTestId(LOAD_MORE_BUTTON).should('not.exist');
+        });
+    });
 });

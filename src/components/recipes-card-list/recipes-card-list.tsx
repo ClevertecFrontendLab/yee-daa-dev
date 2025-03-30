@@ -25,6 +25,7 @@ export const RecipeCardList: FC<RecipeCardListProps> = ({
         {currentPage < totalPages && (
             <Center mt={4}>
                 <Button
+                    data-test-id='load-more-button'
                     bg='lime.400'
                     mb={10}
                     onClick={loadMoreCallback}
