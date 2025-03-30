@@ -46,7 +46,8 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
     const isTablet = useIsTablet();
     const [isFocused, setIsFocused] = useState(false);
 
-    const isButtonDisabled = inputValue.length < MIN_SEARCH_LENGTH;
+    const isButtonDisabled =
+        inputValue.length < MIN_SEARCH_LENGTH && !isArrayWithItems(selectedAllergens);
 
     const handleSearchClick = async () => {
         onSearchCb();
