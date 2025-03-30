@@ -26,6 +26,10 @@ const ALLERGEN_BUTTON_FILTER = 'allergens-menu-button-filter';
 const ADD_OTHER_ALLERGEN = 'add-other-allergen';
 const ADD_ALLERGEN_BUTTON = 'add-allergen-button';
 const FILTER_TAG = 'filter-tag';
+const ERROR_PAGE_GO_HOME = 'error-page-go-home';
+const LOAD_SPINNER = 'load-spinner';
+const ERROR_NOTIFICATION = 'error-notification';
+const CLOSE_ALERT_BUTTON = 'close-alert-button';
 const SLIDER_SIZE = '10';
 const JUICIEST_LIMIT = '4';
 const RELEVANT_KITCHEN_LIMIT = '5';
@@ -1412,8 +1416,8 @@ const interceptRecipesBySubCategory = (delay: number = SMALL_DELAY_MS, mockBody:
         });
     });
 
-describe('All requests wrapper', () => {
-    describe('App Component', () => {
+describe('Test cases for YeeDaa application', () => {
+    describe('рендер App компоненты', () => {
         const routerParams = {
             categoryName: 'vegan',
             subCategoryName: 'snacks',
@@ -1426,7 +1430,7 @@ describe('All requests wrapper', () => {
             interceptRelevantRecipes();
             interceptRecipesBySubCategory().as('getRecipeByCategory');
         });
-        it('should take a screenshot of the app', () => {
+        it('Take a screenshot of the app components', () => {
             cy.viewport(1920, 750);
             cy.getByTestId(JUICIEST_LINK_MOB).should('not.be.visible');
             cy.getByTestId(JUICIEST_LINK).click();
@@ -1438,14 +1442,14 @@ describe('All requests wrapper', () => {
         });
     });
 
-    describe('Carousel Functionality', () => {
+    describe('Carousel functionality', () => {
         beforeEach(() => {
             interceptCategories().as('getCategories');
             interceptNewestRecipes().as('getNewestRecipes');
             interceptJuiciestRecipes().as('getJuiciestRecipes');
             interceptRelevantRecipes().as('getRelevant');
         });
-        it('Карусель на 1920px', () => {
+        it('Carousel on screen 1920px', () => {
             cy.viewport(1920, 750);
             cy.visit('/');
             setElementPosition();
@@ -1473,7 +1477,7 @@ describe('All requests wrapper', () => {
             cy.scrollTo('top');
             cy.screenshot('carousel-1920', { capture: 'viewport' });
         });
-        it('Карусель на 360px', () => {
+        it('Carousel on screen 360px', () => {
             cy.viewport(360, 600);
             cy.visit('/');
             cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
@@ -1494,18 +1498,24 @@ describe('All requests wrapper', () => {
 
     describe('Burger Menu Functionality', () => {
         beforeEach(() => {
+            const routerParams = {
+                categoryName: 'vegan',
+                subCategoryName: 'snacks',
+            };
+
+            cy.stub(ReactRouter, 'useParams').callsFake(() => routerParams);
             interceptCategories().as('getCategories');
             interceptNewestRecipes().as('getNewestRecipes');
             interceptJuiciestRecipes().as('getJuiciestRecipes');
             interceptRelevantRecipes().as('getRelevant');
         });
-        it('Бургер-меню отсутствует на 1440px', () => {
+        it('Burger does not exist on 1440px', () => {
             cy.viewport(1440, 1024);
             cy.visit('/');
             cy.getByTestId(HUMB_ICON).should('not.be.visible');
             cy.getByTestId(NAV).should('exist');
         });
-        it('Бургер-меню на 768px', () => {
+        it('Burger menu on screen 768px', () => {
             cy.viewport(768, 1024);
             cy.visit('/');
             setElementPosition();
@@ -1522,7 +1532,7 @@ describe('All requests wrapper', () => {
             cy.get('body').click(100, 200);
             cy.getByTestId(NAV).should('not.exist');
         });
-        it('Бургер-меню на 360px', () => {
+        it('Burger menu on screen 360px', () => {
             cy.viewport(360, 800);
             cy.visit('/the-juiciest');
             setElementPosition();
@@ -1551,7 +1561,7 @@ describe('All requests wrapper', () => {
             interceptJuiciestRecipes();
             interceptRelevantRecipes();
         });
-        it('Поиск на главной странице', () => {
+        it('Home page search', () => {
             const searchWord = 'Кар';
             const recipesBySearch = allRecipes.filter((item) => item.title.includes(searchWord));
             cy.viewport(1920, 750);
@@ -1567,7 +1577,7 @@ describe('All requests wrapper', () => {
             cy.wait('@getRecipeWithSearch');
             cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', recipesBySearch.length);
         });
-        it('Поиск по категории', () => {
+        it('Search flow on category page', () => {
             const searchWord = 'Карт';
             const recipesBySearch = allRecipes.filter((item) => item.title.includes(searchWord));
             cy.viewport(768, 1024);
@@ -1587,7 +1597,7 @@ describe('All requests wrapper', () => {
             cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 2);
             cy.screenshot(`search-category-768`, { capture: 'fullPage' });
         });
-        it('Ничего не найдено', () => {
+        it('Not found recipes', () => {
             cy.viewport(360, 800);
             cy.visit('/');
             setElementPosition();
@@ -1609,7 +1619,7 @@ describe('All requests wrapper', () => {
             interceptJuiciestRecipes();
             interceptRelevantRecipes();
         });
-        it('Страница рецепта', () => {
+        it('Recipe page render', () => {
             const juiciestRecipes = allRecipes.slice(0, Number(JUICIEST_LIMIT));
             const { _id, title } = juiciestRecipes[0];
             cy.intercept('GET', `recipe/${_id}`).as('getFirstRecipe');
@@ -1638,7 +1648,7 @@ describe('All requests wrapper', () => {
             interceptJuiciestRecipes().as('getJuiciestRecipes');
             interceptRelevantRecipes().as('getRelevant');
         });
-        it('Выбраны 3 фильтра, 1920px', () => {
+        it('Select 3 filters on screen 1920px', () => {
             cy.viewport(1920, 750);
             cy.visit('/');
             setElementPosition();
@@ -1679,7 +1689,7 @@ describe('All requests wrapper', () => {
             cy.wait('@getFilteredRecipes');
             cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 2);
         });
-        it('Выбор и очистка фильтров, 768px', () => {
+        it('Set and clear filters on screen 768px', () => {
             cy.viewport(768, 1120);
             cy.visit('/');
             setElementPosition();
@@ -1730,7 +1740,7 @@ describe('All requests wrapper', () => {
             cy.getByTestId(FILTER_TAG).should('have.length', 0);
             cy.getByTestId(FIND_RECIPE_BUTTON).should('have.css', 'pointer-events', 'none');
         });
-        it('Закрытие фильтра, поиск отфильтрованных карточек, 360px', () => {
+        it('Close filter and search filtered cards on screen 360px', () => {
             cy.viewport(360, 800);
             cy.visit('/');
             setElementPosition();
@@ -1776,14 +1786,14 @@ describe('All requests wrapper', () => {
             interceptJuiciestRecipes().as('getJuiciestRecipes');
             interceptRelevantRecipes().as('getRelevant');
         });
-        it('Нет выбора аллергенов на 768px', () => {
+        it('Without allergens on 768px', () => {
             cy.viewport(768, 1080);
             cy.visit('/');
             cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
             cy.getByTestId(ALLERGEN_SWITCHER).should('not.exist');
             cy.getByTestId(ALLERGEN_BUTTON).should('not.exist');
         });
-        it('Выбор аллергенов по категории', () => {
+        it('Select allergens by category', () => {
             cy.viewport(1920, 750);
             cy.visit('/');
             setElementPosition();
@@ -1830,7 +1840,7 @@ describe('All requests wrapper', () => {
             cy.scrollTo('top');
             cy.getByTestId(ALLERGEN_BUTTON).should('be.disabled').contains('Выберите из списка');
         });
-        it('Поиск после фильтрации по аллергенам', () => {
+        it('Seacrch after allergens filter', () => {
             cy.viewport(1920, 750);
             cy.visit('/');
             setElementPosition();
@@ -1877,7 +1887,7 @@ describe('All requests wrapper', () => {
             interceptJuiciestRecipes().as('getJuiciestRecipes');
             interceptRelevantRecipes().as('getRelevant');
         });
-        it('Связь навигации и табов', () => {
+        it('Check navigation and tabs', () => {
             cy.viewport(1920, 1080);
             cy.visit('/');
             cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
@@ -1910,7 +1920,7 @@ describe('All requests wrapper', () => {
             interceptJuiciestRecipes().as('getJuiciestRecipes');
             interceptRelevantRecipes().as('getRelevant');
         });
-        it('Переход по хлебным крошкам', () => {
+        it('Transfer on breadcrumbs', () => {
             cy.viewport(768, 1080);
             cy.visit('/');
             cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
@@ -1936,4 +1946,122 @@ describe('All requests wrapper', () => {
             cy.contains('Приятного аппетита!');
         });
     });
+
+    describe('Error page functionality', () => {
+        beforeEach(() => {
+            interceptCategories().as('getCategories');
+            interceptNewestRecipes().as('getNewestRecipes');
+            interceptJuiciestRecipes().as('getJuiciestRecipes');
+            interceptRelevantRecipes().as('getRelevant');
+        });
+
+        it('Render error page via redirect if category and subcategory is not exist. Screen 1920px width.', () => {
+            cy.viewport(1920, 750);
+            cy.visit('some-path/not-exist');
+
+            cy.url().should('contain', 'not-found');
+
+            cy.getByTestId(ERROR_PAGE_GO_HOME).should('exist');
+            cy.get('h1').contains('Такой страницы нет').should('exist').and('be.visible');
+            cy.contains('Можете поискать другой').should('exist');
+        });
+
+        it('Go back to home page. Screen 360px.', () => {
+            cy.viewport(360, 800);
+            cy.visit('some-path/not-exist');
+
+            cy.url().should('contain', 'not-found');
+            cy.screenshot('error-page-360', { capture: 'fullPage' });
+            cy.getByTestId(ERROR_PAGE_GO_HOME).should('exist').click();
+            cy.url().should('not.contain', 'not-found');
+            cy.url().should('contain', '/');
+        });
+    });
+
+    describe('Check apploader and error notification', () => {
+        beforeEach(() => {
+            interceptCategories().as('getCategories');
+            interceptNewestRecipes().as('getNewestRecipes');
+            interceptJuiciestRecipes().as('getJuiciestRecipes');
+        });
+        context('apploader flow', () => {
+            beforeEach(() => interceptRelevantRecipes().as('getRelevant'));
+            it('Apploader should exist when app is loading screnn 1920px', () => {
+                cy.viewport(1920, 750);
+                cy.visit('/');
+                cy.getByTestId(LOAD_SPINNER).should('exist').and('be.visible');
+                cy.screenshot('app-loader-1920', { capture: 'fullPage' });
+
+                cy.wait([
+                    '@getCategories',
+                    '@getNewestRecipes',
+                    '@getJuiciestRecipes',
+                    '@getRelevant',
+                ]);
+                cy.getByTestId(LOAD_SPINNER).should('not.exist');
+            });
+
+            it('Apploader should exist when app is loading screnn 360px', () => {
+                interceptRelevantRecipes().as('getRelevant');
+                cy.viewport(360, 800);
+                cy.visit('/');
+                cy.getByTestId(LOAD_SPINNER).should('exist').and('be.visible');
+                cy.screenshot('app-loader-360', { capture: 'fullPage' });
+
+                cy.wait([
+                    '@getCategories',
+                    '@getNewestRecipes',
+                    '@getJuiciestRecipes',
+                    '@getRelevant',
+                ]);
+                cy.getByTestId(LOAD_SPINNER).should('not.exist');
+            });
+        });
+
+        context('Error notification', () => {
+            beforeEach(() => {
+                cy.intercept(
+                    {
+                        method: 'GET',
+                        url: /recipe\/category\/.*/,
+                        query: { [LIMIT_QUERY_PARAM]: RELEVANT_KITCHEN_LIMIT },
+                    },
+                    { body: {}, delay: SMALL_DELAY_MS, statusCode: 404 },
+                ).as('getRelevant');
+            });
+            it('Error notification should be visible when the request error occured screen 768px', () => {
+                cy.viewport(768, 1080);
+                cy.visit('/');
+
+                cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
+                cy.screenshot('error-notification-768', { capture: 'fullPage' });
+                cy.getByTestId(ERROR_NOTIFICATION).should('exist').and('be.visible');
+                cy.contains('Ошибка сервера').should('exist').and('be.visible');
+                cy.contains('Попробуйте поискать снова попозже').and('be.visible');
+                cy.getByTestId(CLOSE_ALERT_BUTTON).should('exist').and('not.be.disabled');
+            });
+
+            it('Error notification should be visible when the request error occured and screen 360px. Close alert', () => {
+                cy.viewport(360, 800);
+                cy.visit('/');
+                cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
+                cy.screenshot('error-notification-360', { capture: 'fullPage' });
+                cy.getByTestId(ERROR_NOTIFICATION).should('exist').and('be.visible');
+
+                cy.getByTestId(CLOSE_ALERT_BUTTON).should('exist').and('not.be.disabled').click();
+                cy.screenshot('error-notification-360-not-visible', { capture: 'fullPage' });
+                cy.getByTestId(ERROR_NOTIFICATION).should('not.exist');
+            });
+        });
+    });
+
+    // describe('', () => {
+    //     it('', () => {
+    //         //
+    //     });
+
+    //     it('', () => {
+    //         //
+    //     });
+    // });
 });

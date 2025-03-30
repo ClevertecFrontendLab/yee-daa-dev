@@ -15,7 +15,12 @@ export const AppLoader = ({ isOpen, overlayColor = 'black.300' }: AppLoaderProps
         <Modal isOpen={isOpen} onClose={() => {}} closeOnEsc={false} isCentered={true}>
             <ModalOverlay bgColor={overlayColor} backdropFilter='blur(4px)' pointerEvents='none' />
             <ModalContent w='fit-content' bg='transparent' border='none' shadow='none'>
-                <Loader boxSize={isMobileWidth ? 134 : 206} size='xl' color='black' />
+                <Loader
+                    boxSize={isMobileWidth ? 134 : 206}
+                    size='xl'
+                    color='black'
+                    data-test-id='load-spinner'
+                />
             </ModalContent>
         </Modal>
     );
