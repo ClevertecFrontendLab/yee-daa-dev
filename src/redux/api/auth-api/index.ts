@@ -14,7 +14,12 @@ import {
 export const authApi = unauthorizedApi.injectEndpoints({
     endpoints: (build) => ({
         signIn: build.mutation<CommonResponse, SignInBody>({
-            query: (body) => ({ url: ApiEndpoints.SignIn, method: 'POST', body }),
+            query: (body) => ({
+                url: ApiEndpoints.SignIn,
+                method: 'POST',
+                body,
+                credentials: 'include',
+            }),
             async onQueryStarted(_, { queryFulfilled, dispatch }) {
                 try {
                     const { meta } = await queryFulfilled;
