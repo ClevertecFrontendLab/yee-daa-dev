@@ -17,6 +17,7 @@ import { AppLoader } from '~/components/app-loader';
 import { SignInFormSchema, SignInSchema } from '~/constants/authorization';
 import { Paths } from '~/constants/path';
 import { TOAST_MESSAGE } from '~/constants/toast';
+import { CyTestId } from '~/cy-test-id';
 import { useAuthToast } from '~/hooks/use-auth-toast';
 import { useTrimInputBlur } from '~/hooks/use-trim-input-blur';
 import { useSignInMutation } from '~/redux/api/auth-api';
@@ -83,10 +84,11 @@ export const SignInForm: FC = () => {
 
     return (
         <>
-            <ChakraForm onSubmit={handleSubmit(onSubmit)}>
+            <ChakraForm data-test-id={CyTestId.Form.SignIn} onSubmit={handleSubmit(onSubmit)}>
                 <FormControl isDisabled={isSubmitting} isInvalid={!!errors.login}>
                     <FormLabel>{Label.Login.Label}</FormLabel>
                     <Input
+                        data-test-id={CyTestId.Input.Login}
                         variant='auth'
                         size='lg'
                         placeholder={Label.Login.Placeholder}
@@ -114,6 +116,7 @@ export const SignInForm: FC = () => {
                 </FormControl>
 
                 <Button
+                    data-test-id={CyTestId.Button.Submit}
                     mt={112}
                     w='full'
                     variant='black'
@@ -137,7 +140,11 @@ export const SignInForm: FC = () => {
                     }}
                     opacity={isSubmitting ? 0.5 : 1}
                 >
-                    <NavLink to={Paths.RESTORE_CREDENTIALS} replace>
+                    <NavLink
+                        data-test-id={CyTestId.Button.ForgotPassword}
+                        to={Paths.RESTORE_CREDENTIALS}
+                        replace
+                    >
                         {Label.ForgotPassword}
                     </NavLink>
                 </Box>

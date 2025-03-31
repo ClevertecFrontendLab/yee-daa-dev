@@ -10,14 +10,18 @@ import {
 import { FC, useState } from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
 
+import { CyTestId } from '~/cy-test-id';
+
 type PasswordInputProps = {
     input: InputProps & { register: UseFormRegisterReturn };
     button?: Omit<IconButtonProps, 'aria-label'>;
+    dataTestId?: string;
 };
 
 export const PasswordInput: FC<PasswordInputProps> = ({
     input: { register, ...restInput },
     button,
+    dataTestId = CyTestId.Input.Password,
 }) => {
     const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -28,6 +32,7 @@ export const PasswordInput: FC<PasswordInputProps> = ({
         <InputGroup>
             <InputRightElement height='48px'>
                 <IconButton
+                    data-test-id={CyTestId.Button.PasswordVisibility}
                     onMouseDown={showPassword}
                     onMouseUp={hidePassword}
                     onMouseLeave={hidePassword}
@@ -41,6 +46,7 @@ export const PasswordInput: FC<PasswordInputProps> = ({
             </InputRightElement>
 
             <Input
+                data-test-id={dataTestId}
                 variant='auth'
                 size='lg'
                 type={passwordVisible ? 'text' : 'password'}

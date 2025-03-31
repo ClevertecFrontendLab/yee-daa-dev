@@ -1,6 +1,8 @@
 import { ModalBody, ModalFooter, ModalProps, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
+import { CyTestId } from '~/cy-test-id';
+
 import { ResultModal } from '../../result-modal/result-modal';
 import { Label } from './label';
 
@@ -11,12 +13,13 @@ export const SignUpSuccessModal: FC<SignUpSuccessModalProps> = ({ email, ...prop
 
     return (
         <ResultModal
+            dataTestId={CyTestId.Modal.SignUpSuccess}
             title={
                 <Text as='span' paddingX={6} display='inline-block'>
                     {Label.Header}
                 </Text>
             }
-            imageUrl='/public/images/party.png'
+            imageUrl='/images/party.png'
             {...props}
         >
             <ModalBody>

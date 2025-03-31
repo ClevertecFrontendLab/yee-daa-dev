@@ -14,9 +14,11 @@ import {
     WrapItem,
 } from '@chakra-ui/react';
 import { FC, useState } from 'react';
-import { Outlet, useMatch, useNavigate } from 'react-router';
+import { Navigate, Outlet, useMatch, useNavigate } from 'react-router';
 
+import { AppLoader } from '~/components/app-loader';
 import { Logo } from '~/components/logo';
+import { useCheckAuthQuery } from '~/redux/api/auth-api';
 
 import { Paths } from '../../constants/path';
 import { Label } from './label';
@@ -29,14 +31,23 @@ const AuthorizationLayout: FC = () => {
 
     const navigate = useNavigate();
     const [isMd] = useMediaQuery(`(min-width: ${theme.breakpoints.md})`);
+    const { isLoading, isSuccess } = useCheckAuthQuery();
 
     const handleTabsChange = (index: number) => {
         setTabIndex(index);
         navigate(TabNavigation[index], { replace: true });
     };
 
+    if (isLoading) {
+        return <AppLoader isOpen={true} />;
+    }
+
+    if (isSuccess) {
+        return <Navigate to={Paths.R_SWITCHER} replace />;
+    }
+
     return (
-        <>
+        <Box pos='relative'>
             <Box as='main' display='flex' minHeight='100dvh'>
                 <Center
                     as='section'
@@ -44,7 +55,7 @@ const AuthorizationLayout: FC = () => {
                     flex={1}
                     bgGradient='linear(to-bl, lime.100, #29813F 170%)'
                 >
-                    <Container maxW={{ base: 387, md: 493 }}>
+                    <Container py={12} maxW={{ base: 387, md: 493 }}>
                         <h1>
                             <Logo
                                 height={isMd ? 64 : 38}
@@ -87,7 +98,7 @@ const AuthorizationLayout: FC = () => {
                     />
                 </Show>
             </Box>
-            <Box as='footer' p={{ base: 4, sm: 30 }} pos='fixed' bottom={0} w='full'>
+            <Box as='footer' p={{ base: 4, sm: 30 }} pos='absolute' bottom={0} w='full'>
                 <Wrap spacing='4' justify='space-between'>
                     <WrapItem>
                         <Heading as='h6' fontSize='xs' fontWeight='semibold'>
@@ -102,7 +113,7 @@ const AuthorizationLayout: FC = () => {
                     </WrapItem>
                 </Wrap>
             </Box>
-        </>
+        </Box>
     );
 };
 

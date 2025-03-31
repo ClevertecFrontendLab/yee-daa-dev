@@ -8,6 +8,7 @@ module.exports = {
         video: false,
         supportFile: 'cypress/support/component.ts',
         screenshotsFolder: 'cypress/report/screenshots',
+        trashAssetsBeforeRuns: true,
         reporter: 'mochawesome',
         reporterOptions: {
             html: false,

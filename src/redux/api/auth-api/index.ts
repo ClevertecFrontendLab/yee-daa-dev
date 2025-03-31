@@ -4,6 +4,7 @@ import { unauthorizedApi } from '..';
 import { ACCESS_TOKEN_HEADER, ApiEndpoints } from '../constants';
 import {
     CheckVerificationCodeBody,
+    CommonResponse,
     ResetCredentialsBody,
     SendVerificationCodeBody,
     SignInBody,
@@ -12,15 +13,25 @@ import {
 
 export const authApi = unauthorizedApi.injectEndpoints({
     endpoints: (build) => ({
-        signIn: build.mutation<void, SignInBody>({
-            query: (body) => ({ url: ApiEndpoints.SignIn, method: 'POST', body }),
+        signIn: build.mutation<CommonResponse, SignInBody>({
+            query: (body) => ({
+                url: ApiEndpoints.SignIn,
+                method: 'POST',
+                body,
+                credentials: 'include',
+            }),
             async onQueryStarted(_, { queryFulfilled, dispatch }) {
                 try {
                     const { meta } = await queryFulfilled;
+                    const accessToken = meta?.response?.headers.get(ACCESS_TOKEN_HEADER);
 
-                    dispatch(
-                        setAccessToken(meta?.response?.headers.get(ACCESS_TOKEN_HEADER) || ''),
-                    );
+                    if (!accessToken) {
+                        throw new Error(
+                            `Access token wasn't found in ${ACCESS_TOKEN_HEADER} response header`,
+                        );
+                    }
+
+                    dispatch(setAccessToken(accessToken));
                 } catch (error) {
                     dispatch(resetAuth());
 
@@ -29,7 +40,7 @@ export const authApi = unauthorizedApi.injectEndpoints({
             },
         }),
 
-        refreshToken: build.mutation<void, void>({
+        refreshToken: build.mutation<CommonResponse, void>({
             query: () => ({
                 url: ApiEndpoints.RefreshToken,
                 method: 'GET',
@@ -39,9 +50,15 @@ export const authApi = unauthorizedApi.injectEndpoints({
                 try {
                     const { meta } = await queryFulfilled;
 
-                    dispatch(
-                        setAccessToken(meta?.response?.headers.get(ACCESS_TOKEN_HEADER) || ''),
-                    );
+                    const accessToken = meta?.response?.headers.get(ACCESS_TOKEN_HEADER);
+
+                    if (!accessToken) {
+                        throw new Error(
+                            `Access token wasn't found in ${ACCESS_TOKEN_HEADER} response header`,
+                        );
+                    }
+
+                    dispatch(setAccessToken(accessToken));
                 } catch (error) {
                     dispatch(resetAuth());
 
@@ -50,25 +67,29 @@ export const authApi = unauthorizedApi.injectEndpoints({
             },
         }),
 
-        signUp: build.mutation<void, SignUpBody>({
+        checkAuth: build.query<CommonResponse, void>({
+            query: () => ({
+                url: ApiEndpoints.CheckAuth,
+                method: 'GET',
+                credentials: 'include',
+            }),
+        }),
+
+        signUp: build.mutation<CommonResponse, SignUpBody>({
             query: (body) => ({ url: ApiEndpoints.SignUp, method: 'POST', body }),
         }),
 
-        sendVerificationCode: build.mutation<void, SendVerificationCodeBody>({
+        sendVerificationCode: build.mutation<CommonResponse, SendVerificationCodeBody>({
             query: (body) => ({ url: ApiEndpoints.SendVerificationCode, method: 'POST', body }),
         }),
 
-        checkVerificationCode: build.mutation<void, CheckVerificationCodeBody>({
+        checkVerificationCode: build.mutation<CommonResponse, CheckVerificationCodeBody>({
             query: (body) => ({ url: ApiEndpoints.CheckVerificationCode, method: 'POST', body }),
         }),
 
-        resetCredentials: build.mutation<void, ResetCredentialsBody>({
+        resetCredentials: build.mutation<CommonResponse, ResetCredentialsBody>({
             query: (body) => ({ url: ApiEndpoints.ResetCredentials, method: 'POST', body }),
         }),
-
-        // signOut: build.mutation({
-        //     query: () => ({ url: ApiEndpoints.SignOut }),
-        // }),
     }),
 });
 
@@ -79,5 +100,5 @@ export const {
     useSendVerificationCodeMutation,
     useCheckVerificationCodeMutation,
     useResetCredentialsMutation,
-    // useSignOutMutation,
+    useCheckAuthQuery,
 } = authApi;

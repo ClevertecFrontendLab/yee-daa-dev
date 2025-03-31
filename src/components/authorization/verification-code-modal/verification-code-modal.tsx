@@ -5,6 +5,7 @@ import { AppLoader } from '~/components/app-loader';
 import { RestoreStep } from '~/constants/authorization';
 import { HttpStatus } from '~/constants/http-status';
 import { TOAST_MESSAGE } from '~/constants/toast';
+import { CyTestId } from '~/cy-test-id';
 import { useAuthToast } from '~/hooks/use-auth-toast';
 import { useCheckVerificationCodeMutation } from '~/redux/api/auth-api';
 import { RestoreModalProps } from '~/types/authorization';
@@ -61,6 +62,7 @@ export const VerificationCodeModal: FC<VerificationCodeModalProps> = ({
     return (
         <>
             <ResultModal
+                dataTestId={CyTestId.Modal.VerificationCodeModal}
                 imageUrl='/images/work.png'
                 {...props}
                 title={isInvalid ? ModalLabel.Header : null}
@@ -95,7 +97,11 @@ export const VerificationCodeModal: FC<VerificationCodeModalProps> = ({
                             otp
                         >
                             {Pin.map((key) => (
-                                <PinInputField _placeholder={{ color: 'lime.800' }} key={key} />
+                                <PinInputField
+                                    data-test-id={`${CyTestId.Input.VerificationCode}-${key}`}
+                                    _placeholder={{ color: 'lime.800' }}
+                                    key={key}
+                                />
                             ))}
                         </PinInput>
                     </HStack>

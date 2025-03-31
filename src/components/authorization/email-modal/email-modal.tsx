@@ -18,6 +18,7 @@ import { ResultModal } from '~/components/result-modal/result-modal';
 import { EmailRestoreFormSchema, EmailRestoreSchema, RestoreStep } from '~/constants/authorization';
 import { HttpStatus } from '~/constants/http-status';
 import { TOAST_MESSAGE } from '~/constants/toast';
+import { CyTestId } from '~/cy-test-id';
 import { useAuthToast } from '~/hooks/use-auth-toast';
 import { useTrimInputBlur } from '~/hooks/use-trim-input-blur';
 import { useSendVerificationCodeMutation } from '~/redux/api/auth-api';
@@ -68,7 +69,11 @@ export const EmailModal: FC<EmailModalProps> = ({ updateStep, setEmail, ...props
 
     return (
         <>
-            <ResultModal imageUrl='/images/breakfast.png' {...props}>
+            <ResultModal
+                dataTestId={CyTestId.Modal.SendEmailModal}
+                imageUrl='/images/breakfast.png'
+                {...props}
+            >
                 <ModalBody>
                     <Text
                         color='blackAlpha.900'
@@ -84,6 +89,7 @@ export const EmailModal: FC<EmailModalProps> = ({ updateStep, setEmail, ...props
                         <FormControl isInvalid={!!errors.email}>
                             <FormLabel>{EmailFormLabel.Email.Label}</FormLabel>
                             <Input
+                                data-test-id={CyTestId.Input.Email}
                                 variant='auth'
                                 size='lg'
                                 placeholder={EmailFormLabel.Email.Placeholder}
@@ -94,6 +100,7 @@ export const EmailModal: FC<EmailModalProps> = ({ updateStep, setEmail, ...props
                         </FormControl>
 
                         <Button
+                            data-test-id={CyTestId.Button.Submit}
                             mt={6}
                             w='full'
                             variant='black'

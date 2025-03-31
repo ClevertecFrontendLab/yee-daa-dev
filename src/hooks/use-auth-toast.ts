@@ -7,7 +7,7 @@ export const useAuthToast = () => {
         if (options.id && !toast.isActive(options.id)) {
             toast({
                 status: 'error',
-                duration: 10000,
+                duration: 15000,
                 isClosable: true,
                 position: 'bottom',
                 containerStyle: {

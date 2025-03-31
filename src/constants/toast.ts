@@ -1,6 +1,11 @@
 import { HttpStatus } from './http-status';
 
 export const TOAST_MESSAGE = {
+    SignUpToast: {
+        [HttpStatus.BAD_REQUEST]: {
+            id: 'sign-up-error-conflict',
+        },
+    },
     SignInToast: {
         [HttpStatus.UNAUTHORIZED]: {
             id: 'sign-in-error-credentials',

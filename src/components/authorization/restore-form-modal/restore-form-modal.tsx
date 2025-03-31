@@ -10,6 +10,7 @@ import {
     SignUpFormSchema,
 } from '~/constants/authorization';
 import { TOAST_MESSAGE } from '~/constants/toast';
+import { CyTestId } from '~/cy-test-id';
 import { useAuthToast } from '~/hooks/use-auth-toast';
 import { useResetCredentialsMutation } from '~/redux/api/auth-api';
 import { RestoreModalProps } from '~/types/authorization';
@@ -25,7 +26,7 @@ type RestoreFormModalProps = Omit<RestoreModalProps, 'updateStep'> & {
     email: string;
 };
 
-export const RestoreFormModal: FC<RestoreFormModalProps> = ({ email, ...props }) => {
+export const ResetCredentialsModal: FC<RestoreFormModalProps> = ({ email, ...props }) => {
     const { toast } = useAuthToast();
 
     const restoreForm = useForm<CredentialsFormSchema>({
@@ -40,7 +41,7 @@ export const RestoreFormModal: FC<RestoreFormModalProps> = ({ email, ...props })
             await restoreCredentials({ email, ...formData }).unwrap();
 
             props.onClose();
-            toast(RestoreCredentials[200]);
+            toast({ ...RestoreCredentials[200], status: 'success' });
         } catch (_error) {
             toast(ServerErrorToast);
             reset();
@@ -49,7 +50,11 @@ export const RestoreFormModal: FC<RestoreFormModalProps> = ({ email, ...props })
 
     return (
         <>
-            <ResultModal title={ModalLabel.Header} {...props}>
+            <ResultModal
+                dataTestId={CyTestId.Modal.ResetCredentialsModal}
+                title={ModalLabel.Header}
+                {...props}
+            >
                 <ModalBody>
                     <ChakraForm onSubmit={restoreForm.handleSubmit(onSubmit)}>
                         <CredentialsForm

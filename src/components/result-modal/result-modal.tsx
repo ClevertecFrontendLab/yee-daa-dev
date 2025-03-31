@@ -11,6 +11,8 @@ import {
 } from '@chakra-ui/react';
 import { FC, PropsWithChildren, ReactNode } from 'react';
 
+import { CyTestId } from '~/cy-test-id';
+
 import { ModalCloseIcon } from '../modal-close-icon/modal-close-icon';
 
 type ResultModalProps = PropsWithChildren &
@@ -18,6 +20,7 @@ type ResultModalProps = PropsWithChildren &
         title?: ReactNode | ReactNode[];
         imageUrl?: string;
         isClosable?: boolean;
+        dataTestId?: string;
     };
 
 export const ResultModal: FC<ResultModalProps> = ({
@@ -27,14 +30,16 @@ export const ResultModal: FC<ResultModalProps> = ({
     imageUrl,
     onClose,
     isClosable = true,
+    dataTestId,
     ...props
 }) => (
     <Modal isCentered {...{ variant, onClose }} {...props}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent data-test-id={dataTestId}>
             <ModalHeader mb={4}>
                 {isClosable && (
                     <IconButton
+                        data-test-id={CyTestId.Button.Close}
                         aria-label='Close modal'
                         icon={<ModalCloseIcon />}
                         position='absolute'

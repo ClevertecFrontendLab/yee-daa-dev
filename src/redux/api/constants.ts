@@ -21,7 +21,7 @@ export enum ApiEndpoints {
     SendVerificationCode = '/auth/forgot-password',
     CheckVerificationCode = '/auth/verify-otp',
     ResetCredentials = '/auth/reset-password',
-    // SignOut = '/auth/logout',
+    CheckAuth = '/auth/check-auth',
 
     Category = 'category',
     Recipe = 'recipe',

@@ -10,6 +10,7 @@ import { FC } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 import { SignUpFormSchema } from '~/constants/authorization';
+import { CyTestId } from '~/cy-test-id';
 import { useTrimInputBlur } from '~/hooks/use-trim-input-blur';
 
 import { PasswordInput } from '../password-input/password-input';
@@ -33,6 +34,7 @@ export const CredentialsForm: FC<CredentialsFormProps> = ({
             <FormControl isInvalid={!!errors.login}>
                 <FormLabel>{Label.Login.Label}</FormLabel>
                 <Input
+                    data-test-id={CyTestId.Input.Login}
                     variant='auth'
                     size='lg'
                     placeholder={Label.Login.Placeholder}
@@ -57,10 +59,11 @@ export const CredentialsForm: FC<CredentialsFormProps> = ({
             </FormControl>
 
             <FormControl isInvalid={!!errors.passwordConfirm} mt={6}>
-                <FormLabel>{Label.RepeatPassword.Label}</FormLabel>
+                <FormLabel>{Label.PasswordConfirm.Label}</FormLabel>
                 <PasswordInput
+                    dataTestId={CyTestId.Input.PasswordConfirm}
                     input={{
-                        placeholder: Label.RepeatPassword.Placeholder,
+                        placeholder: Label.PasswordConfirm.Placeholder,
                         register: register('passwordConfirm'),
                     }}
                 />
@@ -68,6 +71,7 @@ export const CredentialsForm: FC<CredentialsFormProps> = ({
             </FormControl>
 
             <Button
+                data-test-id={CyTestId.Button.Submit}
                 mt={12}
                 w='full'
                 variant='black'

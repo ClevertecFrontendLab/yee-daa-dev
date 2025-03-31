@@ -5,6 +5,13 @@ import {
     SignUpFormSchema,
 } from '~/constants/authorization';
 
+export type CommonResponse = {
+    message: string | string[];
+    statusText?: string;
+    error?: string;
+    statusCode: number;
+};
+
 export type SignInBody = SignInFormSchema;
 
 export type SignUpBody = Omit<SignUpFormSchema, 'passwordConfirm'>;

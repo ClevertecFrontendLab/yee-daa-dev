@@ -2,7 +2,11 @@ import { useDisclosure } from '@chakra-ui/react';
 import { FC, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { EmailModal, RestoreFormModal, VerificationCodeModal } from '~/components/authorization';
+import {
+    EmailModal,
+    ResetCredentialsModal,
+    VerificationCodeModal,
+} from '~/components/authorization';
 import { RestoreStep } from '~/constants/authorization';
 import { Paths } from '~/constants/path';
 
@@ -31,7 +35,7 @@ const RestoreCredentialsPage: FC = () => {
             );
 
         case RestoreStep.Form:
-            return <RestoreFormModal {...{ isOpen, onClose, email: email.current }} />;
+            return <ResetCredentialsModal {...{ isOpen, onClose, email: email.current }} />;
 
         default:
             return null;

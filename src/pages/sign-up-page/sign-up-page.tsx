@@ -4,23 +4,22 @@ import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 
-import {
-    CredentialsForm,
-    PersonalInfoForm,
-    SignUpSuccessModal,
-    // VerificationFailedModal,
-} from '~/components/authorization';
+import { AppLoader } from '~/components/app-loader';
+import { CredentialsForm, PersonalInfoForm, SignUpSuccessModal } from '~/components/authorization';
 import { SignUpFormSchema, SignUpSchema, SignUpStep } from '~/constants/authorization';
+import { HttpStatus } from '~/constants/http-status';
 import { Paths } from '~/constants/path';
 import { TOAST_MESSAGE } from '~/constants/toast';
+import { CyTestId } from '~/cy-test-id';
 import { useAuthToast } from '~/hooks/use-auth-toast';
 import { useSignUpMutation } from '~/redux/api/auth-api';
+import { isFetchBaseQueryErrorWithMessage } from '~/utils/type-guard';
 
 import { SignUpPropgessLabel } from './label';
 import styles from './sign-up-page.module.css';
 
 const ChakraForm = chakra('form');
-const { ServerErrorToast } = TOAST_MESSAGE;
+const { ServerErrorToast, SignUpToast } = TOAST_MESSAGE;
 
 const SignUpStepComponent = {
     [SignUpStep.PersonalInfo]: PersonalInfoForm,
@@ -45,7 +44,8 @@ const SignUpPage: FC = () => {
     const {
         watch,
         handleSubmit,
-        formState: { errors },
+
+        formState: { errors, isSubmitting },
     } = registrationForm;
 
     const watchFields = watch();
@@ -61,7 +61,10 @@ const SignUpPage: FC = () => {
         onCloseDisclosure();
     };
 
-    const onSubmit: Parameters<typeof handleSubmit>[0] = async ({ repeatPassword: _, ...body }) => {
+    const onSubmit: Parameters<typeof handleSubmit>[0] = async ({
+        passwordConfirm: _,
+        ...body
+    }) => {
         if (step === SignUpStep.PersonalInfo) {
             setStep(SignUpStep.Credentials);
 
@@ -71,8 +74,16 @@ const SignUpPage: FC = () => {
         try {
             await signUp(body).unwrap();
             onOpen();
-        } catch (_error) {
-            toast(ServerErrorToast, false);
+        } catch (error) {
+            if (
+                isFetchBaseQueryErrorWithMessage(error) &&
+                error.status === HttpStatus.BAD_REQUEST
+            ) {
+                toast({ ...SignUpToast[400], title: error.data.message }, false);
+            } else {
+                toast(ServerErrorToast, false);
+            }
+
             reset();
         }
     };
@@ -82,6 +93,7 @@ const SignUpPage: FC = () => {
                 {SignUpPropgessLabel[step]}
             </Heading>
             <Progress
+                data-test-id={CyTestId.Progress.SignUp}
                 className={styles.signUpProgress}
                 value={(validFieldsCount * 100) / 6}
                 mb={6}
@@ -90,11 +102,12 @@ const SignUpPage: FC = () => {
                 bgColor='blackAlpha.100'
             />
 
-            <ChakraForm onSubmit={handleSubmit(onSubmit)}>
+            <ChakraForm data-test-id={CyTestId.Form.SignUp} onSubmit={handleSubmit(onSubmit)}>
                 <StepComponent form={registrationForm} {...{ changeStep }} />
             </ChakraForm>
 
             <SignUpSuccessModal email={watchFields.email} {...{ isOpen, onClose }} />
+            <AppLoader isOpen={isSubmitting} />
         </Box>
     );
 };

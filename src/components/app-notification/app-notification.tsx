@@ -45,6 +45,7 @@ export const AppNotification = () => {
                 width={{ base: '328px', md: '328px', lg: '400px' }}
             >
                 <Alert
+                    data-test-id='error-notification'
                     status={status}
                     color='white'
                     backgroundColor='red.500'
@@ -67,6 +68,7 @@ export const AppNotification = () => {
                         )}
                     </Box>
                     <CloseButton
+                        data-test-id='close-alert-button'
                         alignSelf='flex-start'
                         position='relative'
                         right={-1}
