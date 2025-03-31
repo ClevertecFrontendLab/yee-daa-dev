@@ -96,7 +96,12 @@ export const SearchBlock: FC<SearchBlockProps> = ({ onInputFocus, onInputBlur, o
     const isSearchEmpty = !isArrayWithItems(recipes) && isEmptyTextShowed;
 
     return isFetching ? (
-        <Flex alignItems='center' justifyContent='center' w='100%'>
+        <Flex
+            alignItems='center'
+            justifyContent='center'
+            w='100%'
+            data-test-id='loader-search-block'
+        >
             <Loader boxSize='134px' m='auto' />
         </Flex>
     ) : (
