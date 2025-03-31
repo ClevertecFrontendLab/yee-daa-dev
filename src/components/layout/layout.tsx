@@ -1,5 +1,5 @@
 import { Grid, GridItem } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { Outlet } from 'react-router';
 
 import { useIsTablet } from '~/hooks/media-query';
@@ -76,24 +76,27 @@ const Layout = () => {
                     <Outlet />
                 </GridItem>
                 {!isErrorPage && (
-                    <GridItem
-                        area='aside'
-                        className={styles.aside}
-                        display={{ base: 'none', xl: 'block' }}
-                    >
-                        <Aside />
-                        <FilterDrawer />
-                    </GridItem>
+                    <Fragment>
+                        <GridItem
+                            area='aside'
+                            className={styles.aside}
+                            display={{ base: 'none', xl: 'block' }}
+                        >
+                            <Aside />
+                            <FilterDrawer />
+                        </GridItem>
+
+                        <GridItem
+                            bg='lime.50'
+                            area='footer'
+                            display={{ base: 'block', xl: 'none' }}
+                            className={`${styles.footer} ${isOpen ? styles.blur : ''}`}
+                            data-test-id='footer'
+                        >
+                            <Footer />
+                        </GridItem>
+                    </Fragment>
                 )}
-                <GridItem
-                    bg='lime.50'
-                    area='footer'
-                    display={{ base: 'block', xl: 'none' }}
-                    className={`${styles.footer} ${isOpen ? styles.blur : ''}`}
-                    data-test-id='footer'
-                >
-                    <Footer />
-                </GridItem>
             </Grid>
         </div>
     );
