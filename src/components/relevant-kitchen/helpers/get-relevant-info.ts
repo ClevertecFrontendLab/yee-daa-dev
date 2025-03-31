@@ -1,13 +1,7 @@
-import { shallowEqual } from 'react-redux';
-
-import { selectCategoriesMenu } from '~/redux/features/categories-slice';
+import { Category } from '~/redux/api/types/categories';
 import { getRandom } from '~/utils/get-random';
 
-import { useAppSelector } from './typed-react-redux-hooks';
-
-export const useSelectRelatedRecipes = () => {
-    const categories = useAppSelector(selectCategoriesMenu, shallowEqual);
-
+export const getRelevantInfo = (categories: Category[]) => {
     const randomInd = getRandom(categories.length);
     const randomCategory = categories[randomInd];
 

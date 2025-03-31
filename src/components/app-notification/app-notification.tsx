@@ -1,4 +1,12 @@
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, Center } from '@chakra-ui/react';
+import {
+    Alert,
+    AlertDescription,
+    AlertIcon,
+    AlertTitle,
+    Box,
+    Center,
+    CloseButton,
+} from '@chakra-ui/react';
 import { useEffect } from 'react';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
@@ -22,6 +30,8 @@ export const AppNotification = () => {
             clearTimeout(timerId);
         };
     }, [dispatch, isNotificationShowed]);
+
+    const onCloseAlert = () => dispatch(resetNotification());
 
     return (
         isNotificationShowed &&
@@ -56,6 +66,13 @@ export const AppNotification = () => {
                             </AlertDescription>
                         )}
                     </Box>
+                    <CloseButton
+                        alignSelf='flex-start'
+                        position='relative'
+                        right={-1}
+                        top={-1}
+                        onClick={onCloseAlert}
+                    />
                 </Alert>
             </Center>
         )

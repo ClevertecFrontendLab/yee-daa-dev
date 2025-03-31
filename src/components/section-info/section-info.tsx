@@ -1,6 +1,6 @@
 import { Stack } from '@chakra-ui/icons';
 import { Heading, Text } from '@chakra-ui/react';
-import { FC, useEffect } from 'react';
+import { FC, Fragment, useEffect } from 'react';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { useDetectParams } from '~/hooks/use-detect-params';
@@ -30,8 +30,6 @@ export const SectionInfo: FC<{ pageType: PageType }> = ({ pageType }) => {
         [dispatch],
     );
 
-    if (isJuiciestPage) return null;
-
     return (
         <Stack spacing={3} mb={8}>
             {!showEmptyText && (
@@ -39,29 +37,33 @@ export const SectionInfo: FC<{ pageType: PageType }> = ({ pageType }) => {
                     {headingTitle[pageType]}
                 </Heading>
             )}
-            {showEmptyText && (
-                <Text
-                    fontSize={{ base: 'sm', md: 'md' }}
-                    m='auto'
-                    maxWidth={{ base: '100%', md: '50%' }}
-                    lineHeight={{ base: 5, md: 6 }}
-                    fontWeight={600}
-                    color='black'
-                    textAlign='center'
-                >
-                    {'По вашему запросу ничего не найдено.\nПопробуйте другой запрос'}
-                </Text>
-            )}
-            {description && !showEmptyText && (
-                <Text
-                    fontSize={{ base: 'sm', md: 'md' }}
-                    lineHeight={{ base: 5, md: 6 }}
-                    fontWeight={500}
-                    color='blackAlpha.600'
-                    textAlign='center'
-                >
-                    {description}
-                </Text>
+            {!isJuiciestPage && (
+                <Fragment>
+                    {showEmptyText && (
+                        <Text
+                            fontSize={{ base: 'sm', md: 'md' }}
+                            m='auto'
+                            maxWidth={{ base: '100%', md: '50%' }}
+                            lineHeight={{ base: 5, md: 6 }}
+                            fontWeight={600}
+                            color='black'
+                            textAlign='center'
+                        >
+                            {'По вашему запросу ничего не найдено.\nПопробуйте другой запрос'}
+                        </Text>
+                    )}
+                    {description && !showEmptyText && (
+                        <Text
+                            fontSize={{ base: 'sm', md: 'md' }}
+                            lineHeight={{ base: 5, md: 6 }}
+                            fontWeight={500}
+                            color='blackAlpha.600'
+                            textAlign='center'
+                        >
+                            {description}
+                        </Text>
+                    )}
+                </Fragment>
             )}
         </Stack>
     );
