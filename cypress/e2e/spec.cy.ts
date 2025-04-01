@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import * as ReactRouter from 'react-router';
+import { RouteMatcherOptions, StaticResponseWithOptions } from 'cypress/types/net-stubbing';
 
 const RESOLUTION = {
     desktop: [1887, 1120],
@@ -29,7 +29,7 @@ const takeAllScreenshots = (key: string) => {
     (['desktop', 'tablet', 'mobile'] as const).forEach((device) => takeScreenshot(key, device));
 };
 
-const API_BASE_URL = 'https://marathon-api.clevertec.ru/';
+const API_BASE_URL = 'https://marathon-api.clevertec.ru';
 const VERIFICATION_CODE_PIN_ID = [1, 2, 3, 4, 5, 6];
 const INPUT_OVER_50 = 'А'.repeat(51);
 const VERIFICATION_ROUTE = '/verification';
@@ -290,27 +290,33 @@ const CONFIRM_PASSWORD_VALIDATION = [
     ['PerovVa', VALIDATION_MESSAGE.ConfirmPassword.Equal],
 ];
 
-const interceptRequest = ({
-    endpoint,
-    statusCode,
-    alias,
-    method = 'POST',
-    body = {},
-    expectedBody = null,
-    withLoader = false,
-    delay = withLoader ? 5000 : 1000,
-    ...rest
-}) => {
+const interceptApi = (
+    {
+        method = 'GET',
+        url,
+        alias = 'nameless',
+        ...restMatcher
+    }: RouteMatcherOptions & { alias?: string },
+    {
+        statusCode,
+        body = {},
+        expectedBody,
+        withLoader = false,
+        delay = withLoader ? 5000 : 1000,
+        ...restResponse
+    }: StaticResponseWithOptions & { withLoader?: boolean; expectedBody?: object },
+) => {
     cy.intercept(
         {
-            url: `${API_BASE_URL}${endpoint}`,
+            url: `${API_BASE_URL}${url}`,
             method,
+            ...restMatcher,
         },
         {
             statusCode,
             body,
             delay,
-            ...rest,
+            ...restResponse,
         },
     ).as(alias);
 
@@ -483,7 +489,7 @@ const validateConfirmPasswordField = () => {
 };
 
 const fillSignInForm = (
-    login = VALIDATION_TO_TRIM_VALUE.Login,
+    login: string = VALIDATION_TO_TRIM_VALUE.Login,
     password = VALIDATION_PASS_VALUE.Password,
 ) => {
     cy.getByTestId(TEST_ID.Input.Login).type(login);
@@ -534,11 +540,14 @@ const withModal = (modalKey: keyof typeof TEST_ID.Modal, callback = () => {}) =>
 };
 
 const goToCheckVerificationCode = () => {
-    const wait = interceptRequest({
-        endpoint: API_ENDPOINTS.SendVerificationCode,
-        statusCode: 200,
-        alias: 'sendVerificationCode200',
-    });
+    const wait = interceptApi(
+        {
+            url: API_ENDPOINTS.SendVerificationCode,
+            method: 'POST',
+            alias: 'sendVerificationCode200',
+        },
+        { statusCode: 200 },
+    );
 
     withModal('SendEmailModal', () => {
         cy.getByTestId(TEST_ID.Input.Email).type(`${VALIDATION_PASS_VALUE.Email}{enter}`);
@@ -550,11 +559,16 @@ const goToCheckVerificationCode = () => {
 const goToRestoreCredentialsForm = () => {
     goToCheckVerificationCode();
 
-    const wait = interceptRequest({
-        endpoint: API_ENDPOINTS.CheckVerificationCode,
-        statusCode: 200,
-        alias: 'checkVerificationCode200',
-    });
+    const wait = interceptApi(
+        {
+            url: API_ENDPOINTS.CheckVerificationCode,
+            method: 'POST',
+            alias: 'checkVerificationCode200',
+        },
+        {
+            statusCode: 200,
+        },
+    );
 
     withModal('VerificationCodeModal', () => {
         fillVerificationCode();
@@ -563,33 +577,21 @@ const goToRestoreCredentialsForm = () => {
     wait();
 };
 
-describe('sprint 4', () => {
+describe('authorization', () => {
     beforeEach(() => {
         cy.clearLocalStorage();
         cy.clearAllSessionStorage();
-        interceptRequest({
-            endpoint: '**',
-            method: 'GET',
-            statusCode: 200,
-            alias: 'all',
-            delay: 0,
-        });
+        interceptApi({ url: '/**', alias: 'uncaptured' }, { statusCode: 200, delay: 0 });
 
-        interceptRequest({
-            endpoint: API_ENDPOINTS.RefreshToken,
-            method: 'GET',
-            statusCode: 500,
-            alias: 'refreshToken500',
-            delay: 0,
-        });
+        interceptApi(
+            { url: API_ENDPOINTS.RefreshToken, alias: 'refreshToken500' },
+            { statusCode: 500, delay: 0 },
+        );
 
-        interceptRequest({
-            endpoint: API_ENDPOINTS.CheckAuth,
-            method: 'GET',
-            statusCode: 403,
-            alias: 'checkAuth403',
-            delay: 0,
-        });
+        interceptApi(
+            { url: API_ENDPOINTS.CheckAuth, alias: 'checkAuth403' },
+            { statusCode: 403, delay: 0 },
+        );
 
         cy.visit('/');
     });
@@ -637,11 +639,16 @@ describe('sprint 4', () => {
         it('should display error message for 401 invalid credentials', () => {
             cy.viewport(...RESOLUTION.mobile);
 
-            interceptRequest({
-                endpoint: API_ENDPOINTS.SignIn,
-                statusCode: 401,
-                alias: 'signInRequest401',
-            });
+            interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest401',
+                },
+                {
+                    statusCode: 401,
+                },
+            );
 
             cy.get('@signInForm').within(() => {
                 fillSignInForm();
@@ -658,11 +665,16 @@ describe('sprint 4', () => {
         });
 
         it('should display error message for 403 email is not verified', () => {
-            interceptRequest({
-                endpoint: API_ENDPOINTS.SignIn,
-                statusCode: 403,
-                alias: 'signInRequest403',
-            });
+            interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest403',
+                },
+                {
+                    statusCode: 403,
+                },
+            );
 
             cy.get('@signInForm').within(() => {
                 fillSignInForm();
@@ -676,11 +688,16 @@ describe('sprint 4', () => {
         });
 
         it('should display error modal for 500 server error', () => {
-            const wait500 = interceptRequest({
-                endpoint: API_ENDPOINTS.SignIn,
-                statusCode: 500,
-                alias: 'signInRequest500',
-            });
+            const wait500 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest500',
+                },
+                {
+                    statusCode: 500,
+                },
+            );
 
             cy.get('@signInForm').within(() => {
                 fillSignInForm();
@@ -704,12 +721,17 @@ describe('sprint 4', () => {
         it('should send new request on server error retry button', () => {
             cy.viewport(...RESOLUTION.mobile);
 
-            const wait500 = interceptRequest({
-                endpoint: API_ENDPOINTS.SignIn,
-                statusCode: 500,
-                alias: 'signInRequest500',
-                delay: 0,
-            });
+            const wait500 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest500',
+                },
+                {
+                    statusCode: 500,
+                    delay: 0,
+                },
+            );
 
             cy.get('@signInForm').within(() => {
                 fillSignInForm();
@@ -717,40 +739,50 @@ describe('sprint 4', () => {
             });
             wait500();
 
-            const wait200 = interceptRequest({
-                endpoint: API_ENDPOINTS.SignIn,
-                statusCode: 200,
-                alias: 'signInRequest200',
-                headers: {
-                    'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
-                    [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
+            const wait200 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest200',
                 },
-            });
+                {
+                    statusCode: 200,
+                    headers: {
+                        'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
+                        [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
+                    },
+                },
+            );
 
             withModal('SignInError', () => {
                 cy.getByTestId(TEST_ID.Button.Repeat).click();
             });
             wait200();
 
-            cy.wait('@all');
+            cy.wait('@uncaptured');
             cy.contains('Приятного аппетита!').should('be.visible');
         });
 
         it('should navigate to main page on sign in success', () => {
-            const wait200 = interceptRequest({
-                endpoint: API_ENDPOINTS.SignIn,
-                statusCode: 200,
-                alias: 'signInRequest200',
-                withLoader: true,
-                headers: {
-                    'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
-                    [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
+            const wait200 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest200',
                 },
-                expectedBody: {
-                    login: VALIDATION_PASS_VALUE.Login,
-                    password: VALIDATION_PASS_VALUE.Password,
+                {
+                    statusCode: 200,
+                    withLoader: true,
+                    headers: {
+                        'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
+                        [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
+                    },
+                    expectedBody: {
+                        login: VALIDATION_PASS_VALUE.Login,
+                        password: VALIDATION_PASS_VALUE.Password,
+                    },
                 },
-            });
+            );
 
             cy.get('@signInForm').within(() => {
                 fillSignInForm();
@@ -759,7 +791,7 @@ describe('sprint 4', () => {
             cy.wait(500);
             takeScreenshot('sign-in-loader');
             wait200();
-            cy.wait('@all');
+            cy.wait('@uncaptured');
             cy.contains('Приятного аппетита!').should('be.visible');
         });
     });
@@ -864,11 +896,16 @@ describe('sprint 4', () => {
         it('should display error message on sign up 500 server error', () => {
             fillSignUpForm();
 
-            interceptRequest({
-                endpoint: API_ENDPOINTS.SignUp,
-                statusCode: 500,
-                alias: 'signUpRequest500',
-            });
+            interceptApi(
+                {
+                    url: API_ENDPOINTS.SignUp,
+                    method: 'POST',
+                    alias: 'signUpRequest500',
+                },
+                {
+                    statusCode: 500,
+                },
+            );
 
             cy.getByTestId(TEST_ID.Button.Submit).click();
             cy.wait('@signUpRequest500');
@@ -884,16 +921,21 @@ describe('sprint 4', () => {
         it('should display errors messages on email and login conflicts', () => {
             fillSignUpForm();
 
-            const waitLogin400 = interceptRequest({
-                endpoint: API_ENDPOINTS.SignUp,
-                statusCode: 400,
-                alias: 'signUpRequest400',
-                body: {
-                    message: SIGN_UP_LOGIN_CONFLICT_MESSAGE,
-                    statusCode: 400,
+            const waitLogin400 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignUp,
+                    method: 'POST',
+                    alias: 'signUpRequest400',
                 },
-                delay: 0,
-            });
+                {
+                    statusCode: 400,
+                    body: {
+                        message: SIGN_UP_LOGIN_CONFLICT_MESSAGE,
+                        statusCode: 400,
+                    },
+                    delay: 0,
+                },
+            );
 
             cy.getByTestId(TEST_ID.Button.Submit).click();
             waitLogin400();
@@ -904,16 +946,21 @@ describe('sprint 4', () => {
                 callback: () => takeScreenshot('sign-up-login-conflict', 'tablet'),
             });
 
-            const waitEmail400 = interceptRequest({
-                endpoint: API_ENDPOINTS.SignUp,
-                statusCode: 400,
-                alias: 'signUpRequest400',
-                body: {
-                    message: SIGN_UP_EMAIL_CONFLICT_MESSAGE,
-                    statusCode: 400,
+            const waitEmail400 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignUp,
+                    method: 'POST',
+                    alias: 'signUpRequest400',
                 },
-                delay: 0,
-            });
+                {
+                    statusCode: 400,
+                    body: {
+                        message: SIGN_UP_EMAIL_CONFLICT_MESSAGE,
+                        statusCode: 400,
+                    },
+                    delay: 0,
+                },
+            );
 
             cy.getByTestId(TEST_ID.Button.Submit).click();
             waitEmail400();
@@ -929,20 +976,25 @@ describe('sprint 4', () => {
             cy.viewport(...RESOLUTION.mobile);
             fillSignUpForm();
 
-            interceptRequest({
-                endpoint: API_ENDPOINTS.SignUp,
-                statusCode: 200,
-                withLoader: true,
-                alias: 'signUpRequest200',
-                expectedBody: {
-                    login: VALIDATION_PASS_VALUE.Login,
-                    password: VALIDATION_PASS_VALUE.Password,
-                    confirmPassword: VALIDATION_PASS_VALUE.Password,
-                    firstName: VALIDATION_PASS_VALUE.FirstName,
-                    lastName: VALIDATION_PASS_VALUE.LastName,
-                    email: VALIDATION_PASS_VALUE.Email,
+            interceptApi(
+                {
+                    url: API_ENDPOINTS.SignUp,
+                    method: 'POST',
+                    alias: 'signUpRequest200',
                 },
-            });
+                {
+                    statusCode: 200,
+                    withLoader: true,
+                    expectedBody: {
+                        login: VALIDATION_PASS_VALUE.Login,
+                        password: VALIDATION_PASS_VALUE.Password,
+                        confirmPassword: VALIDATION_PASS_VALUE.Password,
+                        firstName: VALIDATION_PASS_VALUE.FirstName,
+                        lastName: VALIDATION_PASS_VALUE.LastName,
+                        email: VALIDATION_PASS_VALUE.Email,
+                    },
+                },
+            );
 
             cy.getByTestId(TEST_ID.Button.Submit).click();
             cy.wait('@signUpRequest200');
@@ -1018,11 +1070,16 @@ describe('sprint 4', () => {
         });
 
         it('should validate send verification form email field', () => {
-            const wait = interceptRequest({
-                endpoint: API_ENDPOINTS.SendVerificationCode,
-                statusCode: 200,
-                alias: 'sendVerificationCode200',
-            });
+            const wait = interceptApi(
+                {
+                    url: API_ENDPOINTS.SendVerificationCode,
+                    method: 'POST',
+                    alias: 'sendVerificationCode200',
+                },
+                {
+                    statusCode: 200,
+                },
+            );
 
             withModal('SendEmailModal', () => {
                 cy.getByTestId(TEST_ID.Button.Submit).as('submitButton');
@@ -1032,11 +1089,16 @@ describe('sprint 4', () => {
         });
 
         it('should show error message on email 403 existance fail', () => {
-            const wait = interceptRequest({
-                endpoint: API_ENDPOINTS.SendVerificationCode,
-                statusCode: 403,
-                alias: 'sendVerificationCode403',
-            });
+            const wait = interceptApi(
+                {
+                    url: API_ENDPOINTS.SendVerificationCode,
+                    method: 'POST',
+                    alias: 'sendVerificationCode403',
+                },
+                {
+                    statusCode: 403,
+                },
+            );
 
             withModal('SendEmailModal', () => {
                 cy.getByTestId(TEST_ID.Input.Email).type(`${VALIDATION_PASS_VALUE.Email}{enter}`);
@@ -1051,11 +1113,16 @@ describe('sprint 4', () => {
         });
 
         it('should show error message on send code 500 server error', () => {
-            const wait = interceptRequest({
-                endpoint: API_ENDPOINTS.SendVerificationCode,
-                statusCode: 500,
-                alias: 'sendVerificationCode500',
-            });
+            const wait = interceptApi(
+                {
+                    url: API_ENDPOINTS.SendVerificationCode,
+                    method: 'POST',
+                    alias: 'sendVerificationCode500',
+                },
+                {
+                    statusCode: 500,
+                },
+            );
 
             withModal('SendEmailModal', () => {
                 cy.getByTestId(TEST_ID.Input.Email).type(`${VALIDATION_PASS_VALUE.Email}{enter}`);
@@ -1095,11 +1162,14 @@ describe('sprint 4', () => {
         it('should handle verification code validation', () => {
             goToCheckVerificationCode();
 
-            const wait403 = interceptRequest({
-                endpoint: API_ENDPOINTS.CheckVerificationCode,
-                statusCode: 403,
-                alias: 'checkVerificationCode403',
-            });
+            const wait403 = interceptApi(
+                {
+                    url: API_ENDPOINTS.CheckVerificationCode,
+                    method: 'POST',
+                    alias: 'checkVerificationCode403',
+                },
+                { statusCode: 403 },
+            );
 
             withModal('VerificationCodeModal', () => {
                 fillVerificationCode();
@@ -1109,11 +1179,14 @@ describe('sprint 4', () => {
             wait403();
             takeScreenshot('verification-code-modal', 'mobile');
 
-            const wait500 = interceptRequest({
-                endpoint: API_ENDPOINTS.CheckVerificationCode,
-                statusCode: 500,
-                alias: 'checkVerificationCode500',
-            });
+            const wait500 = interceptApi(
+                {
+                    url: API_ENDPOINTS.CheckVerificationCode,
+                    method: 'POST',
+                    alias: 'checkVerificationCode500',
+                },
+                { statusCode: 500 },
+            );
 
             const checkPinReset = () => {
                 VERIFICATION_CODE_PIN_ID.forEach((id) => {
@@ -1136,12 +1209,17 @@ describe('sprint 4', () => {
                 callback: () => takeAllScreenshots('verification-code-modal-server-error'),
             });
 
-            const wait200 = interceptRequest({
-                endpoint: API_ENDPOINTS.CheckVerificationCode,
-                statusCode: 200,
-                withLoader: true,
-                alias: 'checkVerificationCode200',
-            });
+            const wait200 = interceptApi(
+                {
+                    url: API_ENDPOINTS.CheckVerificationCode,
+                    method: 'POST',
+                    alias: 'checkVerificationCode200',
+                },
+                {
+                    statusCode: 200,
+                    withLoader: true,
+                },
+            );
 
             withModal('VerificationCodeModal', () => {
                 cy.contains('Неверный код').should('not.exist');
@@ -1169,18 +1247,23 @@ describe('sprint 4', () => {
         it('should show success message on reset success 200', () => {
             goToRestoreCredentialsForm();
 
-            const wait200 = interceptRequest({
-                endpoint: API_ENDPOINTS.ResetCredentials,
-                statusCode: 200,
-                alias: 'resetCredentials200',
-                withLoader: true,
-                expectedBody: {
-                    email: VALIDATION_PASS_VALUE.Email,
-                    login: VALIDATION_PASS_VALUE.Login,
-                    password: VALIDATION_PASS_VALUE.Password,
-                    passwordConfirm: VALIDATION_PASS_VALUE.Password,
+            const wait200 = interceptApi(
+                {
+                    url: API_ENDPOINTS.ResetCredentials,
+                    method: 'POST',
+                    alias: 'resetCredentials200',
                 },
-            });
+                {
+                    statusCode: 200,
+                    withLoader: true,
+                    expectedBody: {
+                        email: VALIDATION_PASS_VALUE.Email,
+                        login: VALIDATION_PASS_VALUE.Login,
+                        password: VALIDATION_PASS_VALUE.Password,
+                        passwordConfirm: VALIDATION_PASS_VALUE.Password,
+                    },
+                },
+            );
 
             withModal('ResetCredentialsModal', () => {
                 fillCredentialsForm();
@@ -1198,11 +1281,14 @@ describe('sprint 4', () => {
         it('should show error message on reset credentials 500 server error', () => {
             goToRestoreCredentialsForm();
 
-            const wait500 = interceptRequest({
-                endpoint: API_ENDPOINTS.ResetCredentials,
-                statusCode: 500,
-                alias: 'resetCredentials500',
-            });
+            const wait500 = interceptApi(
+                {
+                    url: API_ENDPOINTS.ResetCredentials,
+                    method: 'POST',
+                    alias: 'resetCredentials500',
+                },
+                { statusCode: 500 },
+            );
 
             withModal('ResetCredentialsModal', () => {
                 fillCredentialsForm();
@@ -1275,6 +1361,24 @@ const CATEGORIES_RESPONSE = [
         ],
     },
     {
+        _id: '67c46eb2f51967aa8390beec',
+        title: 'Мясные закуски',
+        category: 'meat-snacks',
+        rootCategoryId: '67c46e93f51967aa8390beeb',
+    },
+    {
+        _id: '67c46ec4f51967aa8390beed',
+        title: 'Рыбные закуски',
+        category: 'fish-snacks',
+        rootCategoryId: '67c46e93f51967aa8390beeb',
+    },
+    {
+        _id: '67c46ed2f51967aa8390beee',
+        title: 'Овощные закуски',
+        category: 'vegetables-snacks',
+        rootCategoryId: '67c46e93f51967aa8390beeb',
+    },
+    {
         _id: '67c46dc5f51967aa8390bee6',
         title: 'Салаты',
         description:
@@ -1301,6 +1405,24 @@ const CATEGORIES_RESPONSE = [
                 rootCategoryId: '67c46dc5f51967aa8390bee6',
             },
         ],
+    },
+    {
+        _id: '67c46df5f51967aa8390bee7',
+        title: 'Мясные салаты',
+        category: 'meat-salads',
+        rootCategoryId: '67c46dc5f51967aa8390bee6',
+    },
+    {
+        _id: '67c46e19f51967aa8390bee8',
+        title: 'Рыбные салаты',
+        category: 'fish-salads',
+        rootCategoryId: '67c46dc5f51967aa8390bee6',
+    },
+    {
+        _id: '67c46e2bf51967aa8390bee9',
+        title: 'Овощные салаты',
+        category: 'vegetables-salads',
+        rootCategoryId: '67c46dc5f51967aa8390bee6',
     },
     {
         _id: '67c48d99d02fb83fc3d8100f',
@@ -1330,6 +1452,25 @@ const CATEGORIES_RESPONSE = [
                 rootCategoryId: '67c48d99d02fb83fc3d8100f',
             },
         ],
+    },
+    {
+        _id: '67c48e627b493acd8a41030c',
+        title: 'Закуски',
+        category: 'snacks',
+        rootCategoryId: '67c48d99d02fb83fc3d8100f',
+    },
+
+    {
+        _id: '67c48f60ed67ca980917d64e',
+        title: 'Гарниры',
+        category: 'side-dishes',
+        rootCategoryId: '67c48d99d02fb83fc3d8100f',
+    },
+    {
+        _id: '67c48f6ded67ca980917d64f',
+        title: 'Десерты',
+        category: 'desserts',
+        rootCategoryId: '67c48d99d02fb83fc3d8100f',
     },
 ];
 
@@ -2488,19 +2629,19 @@ const MOCK_RECIPES_BY_CATEGORY = {
 const juiciestData = {
     data: [...allRecipes].sort((a, b) => a.likes - b.likes).slice(0, DEFAULT_RECIPE_LIMIT),
 };
-const interceptJuiciestPage = (page: number = 1, mockData = juiciestData) =>
-    cy.intercept(
+const interceptJuiciestPage = (page: number = 1, delay = DELAY.SM, mockData = juiciestData) =>
+    interceptApi(
         {
-            method: 'GET',
-            url: /recipe\?.*/,
+            url: `${API_ENDPOINTS.Recipe}*`,
             query: {
                 [SEARCH_PARAMS.SORT_QUERY]: SEARCH_PARAMS.LIKES_SORT,
                 [SEARCH_PARAMS.LIMIT_QUERY]: String(DEFAULT_RECIPE_LIMIT),
                 page: String(page),
             },
+            alias: 'juiciestPageRecipes',
         },
         {
-            delay: DELAY.SM,
+            delay,
             statusCode: 200,
             body: {
                 ...mockData,
@@ -2514,51 +2655,51 @@ const interceptJuiciestPage = (page: number = 1, mockData = juiciestData) =>
         },
     );
 
-const interceptNewestRecipes = (delay: number = DELAY.SM, mockBody: unknown = null) =>
-    cy.intercept(
+const interceptNewestRecipes = (delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
         {
-            method: 'GET',
-            url: /recipe\?.*/,
+            url: `${API_ENDPOINTS.Recipe}*`,
             query: {
                 [SEARCH_PARAMS.SORT_QUERY]: SEARCH_PARAMS.CREATED_AT_SORT,
             },
+            alias: 'getNewestRecipes',
         },
-        ({ reply }) => {
-            reply({
-                statusCode: 200,
-                delay,
-                body: mockBody ?? {
-                    data: allRecipes.slice(0, Number(SLIDER_SIZE)),
-                    meta: { ...metaData, limit: Number(SLIDER_SIZE) },
-                },
-            });
+        {
+            statusCode: 200,
+            delay,
+            body: mockBody ?? {
+                data: allRecipes.slice(0, Number(SLIDER_SIZE)),
+                meta: { ...metaData, limit: Number(SLIDER_SIZE) },
+            },
         },
     );
 
-const interceptJuiciestRecipes = (delay: number = DELAY.SM, mockBody: unknown = null) =>
-    cy.intercept(
+const interceptJuiciestRecipes = (delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
         {
-            method: 'GET',
-            url: /recipe\?.*/,
+            url: `${API_ENDPOINTS.Recipe}*`,
             query: {
                 [SEARCH_PARAMS.SORT_QUERY]: SEARCH_PARAMS.LIKES_SORT,
             },
+            alias: 'getJuiciestRecipes',
         },
-        ({ reply }) => {
-            reply({
-                statusCode: 200,
-                delay,
-                body: mockBody ?? {
-                    data: allRecipes.slice(0, Number(JUICIEST_LIMIT)),
-                    meta: { ...metaData, limit: Number(JUICIEST_LIMIT) },
-                },
-            });
+        {
+            statusCode: 200,
+            delay,
+            body: mockBody ?? {
+                data: allRecipes.slice(0, Number(JUICIEST_LIMIT)),
+                meta: { ...metaData, limit: Number(JUICIEST_LIMIT) },
+            },
         },
     );
 
-const interceptRecipeWithSearch = (delay: number = DELAY.SM, mockBody: unknown = null) =>
-    cy.intercept(
-        { method: 'GET', url: /recipe\?.*/, query: { [SEARCH_PARAMS.SEARCH_QUERY]: /.*/ } },
+const interceptRecipeWithSearch = (delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
+        {
+            url: `${API_ENDPOINTS.Recipe}*`,
+            query: { [SEARCH_PARAMS.SEARCH_QUERY]: /.*/ },
+            alias: 'getRecipeWithSearchEmpty',
+        },
         {
             delay,
             body: mockBody ?? {
@@ -2568,121 +2709,136 @@ const interceptRecipeWithSearch = (delay: number = DELAY.SM, mockBody: unknown =
         },
     );
 
-const interceptRecipesByCategory = (delay: number = DELAY.SM, mockBody: unknown = null) =>
-    cy.intercept(
-        { method: 'GET', url: /recipe\?.*/, query: { [SEARCH_PARAMS.SUBCATEGORIES_QUERY]: /.*/ } },
+const interceptRecipesByCategory = (delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
+        { url: `${API_ENDPOINTS.Recipe}*`, query: { [SEARCH_PARAMS.SUBCATEGORIES_QUERY]: /.*/ } },
         {
             delay,
             body: mockBody ?? { data: allRecipes.slice(0, DEFAULT_RECIPE_LIMIT), meta: metaData },
         },
     );
 
-const interceptCategories = () => cy.intercept('GET', /category$/, { body: CATEGORIES_RESPONSE });
+const interceptCategories = (delay = 0) =>
+    interceptApi(
+        { url: API_ENDPOINTS.Category, alias: 'getCategories' },
+        { body: CATEGORIES_RESPONSE, delay },
+    );
 
-const interceptRelevantRecipes = (delay: number = DELAY.SM, mockBody: unknown = null) =>
-    cy.intercept(
+const interceptRelevantRecipes = (delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
         {
-            method: 'GET',
-            url: /recipe\/category\/*/,
+            url: `${API_ENDPOINTS.RecipeByCategory}/*`,
             query: { [SEARCH_PARAMS.LIMIT_QUERY]: RELEVANT_KITCHEN_LIMIT },
+            alias: 'getRelevant',
         },
-        ({ reply }) => {
-            reply({
-                delay,
-                body: mockBody ?? {
-                    data: allRecipes.slice(0, Number(RELEVANT_KITCHEN_LIMIT)),
-                    meta: { ...metaData, limit: Number(RELEVANT_KITCHEN_LIMIT) },
-                },
-                statusCode: 200,
-            });
+        {
+            statusCode: 200,
+            delay,
+            body: mockBody ?? {
+                data: allRecipes.slice(0, Number(RELEVANT_KITCHEN_LIMIT)),
+                meta: { ...metaData, limit: Number(RELEVANT_KITCHEN_LIMIT) },
+            },
         },
     );
 
-const interceptRecipesBySubCategory = (delay: number = DELAY.SM, mockBody: unknown = null) =>
-    cy.intercept('GET', /recipe\/category\/*/, ({ reply }) => {
-        reply({
+const interceptRecipesBySubCategory = (delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
+        { url: `${API_ENDPOINTS.RecipeByCategory}/*`, alias: 'getVegansGarnish' },
+        {
+            statusCode: 200,
             delay,
             body: mockBody ?? MOCK_RECIPES_BY_CATEGORY,
-            statusCode: 200,
-        });
-    });
+        },
+    );
 
 const signIn = () => {
-    interceptRequest({
-        endpoint: API_ENDPOINTS.RefreshToken,
-        method: 'GET',
-        statusCode: 500,
-        alias: 'refreshToken500',
-        delay: 0,
-    });
+    interceptApi(
+        {
+            url: API_ENDPOINTS.RefreshToken,
+            alias: 'refreshToken500',
+        },
+        {
+            statusCode: 500,
+            delay: 0,
+        },
+    );
 
-    interceptRequest({
-        endpoint: API_ENDPOINTS.CheckAuth,
-        method: 'GET',
-        statusCode: 403,
-        alias: 'checkAuth403',
-        delay: 0,
-    });
+    interceptApi(
+        {
+            url: API_ENDPOINTS.CheckAuth,
+            alias: 'checkAuth403',
+        },
+        {
+            statusCode: 403,
+            delay: 0,
+        },
+    );
 
     cy.visit('/');
 
-    const waitSignIn200 = interceptRequest({
-        endpoint: API_ENDPOINTS.SignIn,
-        statusCode: 200,
-        alias: 'signInRequest200',
-        headers: {
-            'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
-            [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
+    const waitSignIn200 = interceptApi(
+        {
+            url: API_ENDPOINTS.SignIn,
+            method: 'POST',
+            alias: 'signInRequest200',
         },
-        delay: 0,
-    });
+        {
+            statusCode: 200,
+            delay: 0,
+            headers: {
+                'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
+                [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
+            },
+        },
+    );
 
     cy.getByTestId(TEST_ID.Form.SignIn).within(() => {
-        fillSignInForm();
+        fillSignInForm(VALIDATION_PASS_VALUE.Login);
         cy.getByTestId(TEST_ID.Button.Submit).click();
     });
 
     waitSignIn200();
 
-    interceptRequest({
-        endpoint: API_ENDPOINTS.RefreshToken,
-        method: 'GET',
-        statusCode: 200,
-        alias: 'refreshToken200',
-        delay: 0,
-        headers: {
-            'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
-            [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
+    interceptApi(
+        {
+            url: API_ENDPOINTS.RefreshToken,
+            alias: 'refreshToken200',
         },
-    });
+        {
+            statusCode: 200,
+            delay: 0,
+            headers: {
+                'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
+                [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
+            },
+        },
+    );
 };
 
-describe('Test cases for YeeDaa application', () => {
+describe('application', () => {
     beforeEach(() => {
         cy.clearLocalStorage();
         cy.clearAllSessionStorage();
-        interceptRequest({
-            endpoint: '**',
-            method: 'GET',
-            statusCode: 200,
-            alias: 'uncaptured',
-            delay: 0,
-        });
+        interceptApi(
+            { url: '/**', alias: 'uncaptured' },
+            {
+                statusCode: 200,
+                delay: 0,
+            },
+        );
+
+        interceptCategories();
+        interceptNewestRecipes();
+        interceptJuiciestRecipes();
+        interceptRelevantRecipes();
+        signIn();
     });
 
-    describe('Carousel functionality', () => {
-        beforeEach(() => {
-            interceptCategories().as('getCategories');
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-            signIn();
-        });
-
-        it('Carousel on screen 1920px', () => {
+    describe('carousel functionality', () => {
+        it('carousel on screen 1920px', () => {
             cy.viewport(1920, 750);
             setElementPosition();
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
+
             cy.get(`[data-test-id^=${TEST_ID.Card.Carousel}]`).should(
                 'have.length',
                 Number(SLIDER_SIZE),
@@ -2708,13 +2864,10 @@ describe('Test cases for YeeDaa application', () => {
             [1, 2].forEach((index) => {
                 cy.getByTestId(`${TEST_ID.Card.Carousel}-${index}`).should('be.visible');
             });
-            cy.scrollTo('top');
-            cy.screenshot('carousel-1920', { capture: 'viewport' });
         });
 
-        it('Carousel on screen 360px', () => {
+        it('carousel on screen 360px', () => {
             cy.viewport(360, 600);
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
             cy.get(`[data-test-id^=${TEST_ID.Card.Carousel}]`).should(
                 'have.length',
                 Number(SLIDER_SIZE),
@@ -2728,35 +2881,21 @@ describe('Test cases for YeeDaa application', () => {
                 .trigger('pointerdown', { which: 1 })
                 .trigger('pointermove', 'left')
                 .trigger('pointerup', { force: true });
-            cy.scrollTo('top');
-            cy.screenshot('carousel-360', { capture: 'viewport' });
         });
     });
 
-    describe('Burger Menu Functionality', () => {
-        beforeEach(() => {
-            interceptCategories().as('getCategories');
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-            signIn();
-
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
-        });
-
-        it('Burger does not exist on 1440px', () => {
+    describe('burger Menu Functionality', () => {
+        it('burger does not exist on 1440px', () => {
             cy.viewport(1440, 1024);
-
             cy.getByTestId(TEST_ID.Button.BurgerOpen).should('not.be.visible');
             cy.getByTestId(TEST_ID.Nav).should('exist');
         });
 
-        it('Burger menu on screen 768px', () => {
+        it('burger menu on screen 768px', () => {
             cy.viewport(768, 1024);
-            interceptJuiciestPage().as('juiciestPageRecipes');
+            interceptJuiciestPage();
 
             cy.getByTestId(TEST_ID.Link.Jusiest).should('exist').click();
-            cy.wait('@juiciestPageRecipes');
 
             setElementPosition();
             cy.getByTestId(TEST_ID.Nav).should('not.exist');
@@ -2766,19 +2905,18 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId(TEST_ID.Button.BurgerClose).should('exist');
             cy.getByTestId(TEST_ID.Nav).should('be.visible');
             cy.getByTestId(TEST_ID.Link.Vegan).click();
+
             cy.getByTestId(TEST_ID.Button.BurgerClose).scrollIntoView();
             cy.getByTestId(TEST_ID.Breadcrumbs).should('contain.text', 'Закуски');
-            cy.screenshot('open-hamburger-768', { capture: 'fullPage' });
             cy.get('body').click(100, 200);
             cy.getByTestId(TEST_ID.Nav).should('not.exist');
         });
 
-        it('Burger menu on screen 360px', () => {
+        it('burger menu on screen 360px', () => {
             cy.viewport(360, 800);
-            interceptJuiciestPage().as('juiciestPageRecipes');
+            interceptJuiciestPage();
 
             cy.getByTestId(TEST_ID.Link.JusiestMob).should('exist').click();
-            cy.wait('@juiciestPageRecipes');
 
             setElementPosition();
             cy.getByTestId(TEST_ID.Nav).should('not.exist');
@@ -2789,45 +2927,34 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId(TEST_ID.Nav).should('be.visible');
             cy.getByTestId(TEST_ID.Button.BurgerClose).scrollIntoView();
             cy.getByTestId(TEST_ID.Breadcrumbs).should('contain.text', 'Самое сочное');
-            cy.screenshot('open-hamburger-360', { capture: 'fullPage' });
             cy.getByTestId(TEST_ID.Button.BurgerClose).click();
             cy.getByTestId(TEST_ID.Nav).should('not.exist');
         });
     });
 
-    describe('Search Functionality', () => {
-        const routerParams = {
-            categoryName: 'vegan',
-            subCategoryName: 'snacks',
-        };
-        beforeEach(() => {
-            signIn();
-            cy.stub(ReactRouter, 'useParams').callsFake(() => routerParams);
-            interceptNewestRecipes();
-            interceptJuiciestRecipes();
-            interceptRelevantRecipes();
-        });
-
-        it('Home page search', () => {
+    describe('search Functionality', () => {
+        it('home page search', () => {
             const searchWord = 'Кар';
             const recipesBySearch = allRecipes.filter((item) => item.title.includes(searchWord));
             cy.viewport(1920, 750);
             setElementPosition();
-            interceptRecipeWithSearch(DELAY.SM, { data: recipesBySearch, meta: metaData }).as(
-                'getRecipeWithSearch',
-            );
+
+            interceptRecipeWithSearch(DELAY.SM, {
+                data: recipesBySearch,
+                meta: metaData,
+            });
             cy.getByTestId(TEST_ID.Input.Search).type('Ка');
             cy.getByTestId(TEST_ID.Button.Search).should('have.css', 'pointer-events', 'none');
             cy.getByTestId(TEST_ID.Input.Search).clear().type(searchWord);
             cy.getByTestId(TEST_ID.Button.Search).should('be.visible').click();
-            cy.wait('@getRecipeWithSearch');
+
             cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
                 'have.length',
                 recipesBySearch.length,
             );
         });
 
-        it('Search flow on category page', () => {
+        it('search flow on category page', () => {
             const searchWord = 'Карт';
             const recipesBySearch = allRecipes.filter((item) => item.title.includes(searchWord));
             cy.viewport(768, 1024);
@@ -2837,66 +2964,63 @@ describe('Test cases for YeeDaa application', () => {
             cy.wait(DELAY.LOAD);
             cy.getByTestId(TEST_ID.Button.BurgerClose).should('be.visible').click();
             cy.getByTestId(TEST_ID.Input.Search).type(searchWord);
+
             interceptRecipesByCategory(DELAY.SM, {
                 data: recipesBySearch,
                 meta: metaData,
-            }).as('getRecipeWithSearch');
+            });
             cy.getByTestId(TEST_ID.Button.Search).should('be.visible').click();
-            cy.wait('@getRecipeWithSearch');
+
             cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should('have.length', 2);
-            cy.screenshot(`search-category-768`, { capture: 'fullPage' });
         });
 
-        it('Not found recipes', () => {
+        it('not found recipes', () => {
             cy.viewport(360, 800);
             setElementPosition();
             cy.getByTestId(TEST_ID.Input.Search).type('ооо');
             interceptRecipeWithSearch(DELAY.SM, {
                 data: [],
                 meta: { ...metaData, totalPage: 1, page: 1 },
-            }).as('getRecipeWithSearchEmpty');
+            });
             cy.getByTestId(TEST_ID.Button.Search).should('be.visible').click();
-            cy.wait('@getRecipeWithSearchEmpty');
-            cy.screenshot(`search-not-found-360`, { capture: 'fullPage' });
         });
 
-        it('Check loader during search process. Screen 1440px', () => {
+        it('check loader during search process. Screen 1440px', () => {
             const searchWord = 'Сала';
             const recipesBySearch = allRecipes.filter((item) => item.title.includes(searchWord));
             cy.viewport(1440, 1024);
             setElementPosition();
             cy.getByTestId(TEST_ID.Input.Search).type(searchWord);
+
             interceptRecipesByCategory(DELAY.LG, {
                 data: recipesBySearch,
                 meta: metaData,
-            }).as('getRecipeWithSearch');
+            });
             cy.contains('Приятного аппетита').as('titleSearch').should('exist');
             cy.getByTestId(TEST_ID.Button.Search).should('be.visible').click();
             cy.getByTestId(TEST_ID.SearchBlockLoader).should('exist').and('be.visible');
             cy.contains('Приятного аппетита').as('titleSearch').should('exist');
             cy.scrollTo(0, 0);
-            cy.screenshot(`search-loader-1440`, { capture: 'fullPage' });
-            cy.wait('@getRecipeWithSearch');
+
             cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
                 'have.length',
                 recipesBySearch.length,
             );
         });
     });
-    describe('Recipe Functionality', () => {
-        beforeEach(() => {
-            cy.intercept('GET');
-            interceptNewestRecipes();
-            interceptJuiciestRecipes();
-            interceptRelevantRecipes();
-        });
 
-        it('Recipe page render', () => {
+    describe('recipe Functionality', () => {
+        it('recipe page render', () => {
             const juiciestRecipes = allRecipes.slice(0, Number(JUICIEST_LIMIT));
             const { _id, title } = juiciestRecipes[0];
-            cy.intercept('GET', `recipe/${_id}`).as('getFirstRecipe');
+            interceptApi(
+                {
+                    url: `${API_ENDPOINTS.Recipe}/${juiciestRecipes[0]._id}`,
+                },
+                { body: juiciestRecipes[0] },
+            );
+
             cy.getByTestId('card-link-0').click();
-            cy.wait('@getFirstRecipe');
             cy.url().should('include', _id);
             cy.contains(title).should('exist');
             cy.scrollTo('top');
@@ -2910,18 +3034,11 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId('ingredient-quantity-1').contains('4');
         });
     });
-    describe('Filters Functionality', () => {
-        beforeEach(() => {
-            interceptCategories().as('getCategories');
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-        });
 
-        it('Select 3 filters on screen 1920px', () => {
+    describe('filters Functionality', () => {
+        it('select 3 filters on screen 1920px', () => {
             cy.viewport(1920, 750);
             setElementPosition();
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
             cy.getByTestId(TEST_ID.Drawer.Filter).should('not.exist');
             cy.getByTestId(TEST_ID.Button.Filter).should('be.visible').click();
             cy.getByTestId(TEST_ID.Drawer.Filter).should('exist').contains('Фильтр');
@@ -2929,7 +3046,6 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId(TEST_ID.Button.FilterCategory).click();
             cy.getByTestId(TEST_ID.Checkbox.Vegan).click();
             cy.scrollTo('top');
-            cy.screenshot('filter-open-1920', { capture: 'viewport' });
             cy.getByTestId(TEST_ID.Button.FilterCategory).click();
             cy.getByTestId('checkbox-картошка').click();
             cy.getByTestId(TEST_ID.Switch.AlergenSwitchFilter).click();
@@ -2938,10 +3054,9 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId(TEST_ID.Button.AddAlergen).click();
             cy.getByTestId(TEST_ID.Button.FilterAlergen).click();
             cy.getByTestId(TEST_ID.Tag.Filter).should('have.length', 3);
-            cy.intercept(
+            interceptApi(
                 {
-                    method: 'GET',
-                    url: /recipe/,
+                    url: `${API_ENDPOINTS.Recipe}*`,
                     query: {
                         [SEARCH_PARAMS.SUBCATEGORIES_QUERY]: /.*/,
                         [SEARCH_PARAMS.GARNISH_QUERY]: /.*/,
@@ -2949,17 +3064,18 @@ describe('Test cases for YeeDaa application', () => {
                     },
                 },
                 {
-                    delay: DELAY.SM,
                     statusCode: 200,
+                    delay: DELAY.SM,
                     body: { data: allRecipes.slice(0, 2), meta: metaData },
                 },
-            ).as('getFilteredRecipes');
+            );
+
             cy.getByTestId(TEST_ID.Button.FindRecipe).click();
-            cy.wait('@getFilteredRecipes');
+
             cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should('have.length', 2);
         });
 
-        it('Set and clear filters on screen 768px', () => {
+        it('set and clear filters on screen 768px', () => {
             cy.viewport(768, 1120);
             setElementPosition();
             cy.getByTestId(TEST_ID.Drawer.Filter).should('not.exist');
@@ -2972,10 +3088,10 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId(TEST_ID.Checkbox.Vegan).click();
             cy.getByTestId(TEST_ID.Button.FilterCategory).click();
             cy.getByTestId(TEST_ID.Tag.Filter).should('have.length', 1);
-            cy.intercept(
+
+            interceptApi(
                 {
-                    method: 'GET',
-                    url: /recipe/,
+                    url: `${API_ENDPOINTS.Recipe}*`,
                     query: {
                         [SEARCH_PARAMS.SUBCATEGORIES_QUERY]: /.*/,
                     },
@@ -2988,7 +3104,8 @@ describe('Test cases for YeeDaa application', () => {
                         meta: metaData,
                     },
                 },
-            ).as('getFilteredRecipes');
+            );
+
             cy.getByTestId(TEST_ID.Button.FindRecipe).click();
             cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
                 'have.length',
@@ -3004,13 +3121,12 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId('allergen-5').click();
             cy.getByTestId(TEST_ID.Button.FilterAlergen).click();
             cy.getByTestId(TEST_ID.Tag.Filter).should('have.length', 3);
-            cy.screenshot('filter-before-clear-768', { capture: 'viewport' });
             cy.getByTestId('clear-filter-button').should('be.visible').click();
             cy.getByTestId(TEST_ID.Tag.Filter).should('have.length', 0);
             cy.getByTestId(TEST_ID.Button.FindRecipe).should('have.css', 'pointer-events', 'none');
         });
 
-        it('Close filter and search filtered cards on screen 360px', () => {
+        it('close filter and search filtered cards on screen 360px', () => {
             cy.viewport(360, 800);
             setElementPosition();
             cy.getByTestId(TEST_ID.Drawer.Filter).should('not.exist');
@@ -3020,54 +3136,44 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId(TEST_ID.Drawer.Filter).should('not.exist');
             cy.getByTestId(TEST_ID.Button.Filter).should('be.visible').click();
             cy.getByTestId(TEST_ID.Drawer.Filter).should('be.visible');
-            cy.screenshot('open-drawer-360', { capture: 'viewport' });
             cy.getByTestId(TEST_ID.Button.FilterCategory).click();
             cy.getByTestId(TEST_ID.Checkbox.Vegan).click();
             cy.getByTestId(TEST_ID.Button.FilterCategory).click();
             cy.getByTestId(TEST_ID.Button.FindRecipe).click();
             cy.getByTestId(TEST_ID.Input.Search).type('овощ');
-            cy.intercept(
+
+            interceptApi(
                 {
-                    method: 'GET',
-                    url: /recipe/,
+                    url: `${API_ENDPOINTS.Recipe}*`,
                     query: {
                         [SEARCH_PARAMS.SEARCH_QUERY]: /.*/,
                     },
                 },
                 {
-                    delay: DELAY.SM,
                     statusCode: 200,
+                    delay: DELAY.SM,
                     body: {
                         data: [...veganGarnish, ...veganSnacks].slice(0, 2),
                         meta: metaData,
                     },
                 },
-            ).as('getFilteredRecipes');
+            );
             cy.getByTestId(TEST_ID.Button.Search).should('be.visible').click();
-            cy.wait('@getFilteredRecipes');
+
             cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should('have.length', 2);
         });
     });
 
-    describe('Allergens Functionality', () => {
-        beforeEach(() => {
-            signIn();
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-        });
-
-        it('Without allergens on 768px', () => {
+    describe('allergens Functionality', () => {
+        it('without allergens on 768px', () => {
             cy.viewport(768, 1080);
-            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
             cy.getByTestId(TEST_ID.Switch.AlergenSwitcher).should('not.exist');
             cy.getByTestId(TEST_ID.Button.AlergenMenu).should('not.exist');
         });
 
-        it('Select allergens by category', () => {
+        it('select allergens by category', () => {
             cy.viewport(1920, 750);
             setElementPosition();
-            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
             cy.getByTestId(TEST_ID.Switch.AlergenSwitcher).should('not.have.attr', 'data-checked');
             cy.getByTestId(TEST_ID.Button.AlergenMenu).should('be.disabled');
             cy.getByTestId(TEST_ID.Link.Vegan).click();
@@ -3082,31 +3188,31 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId('allergen-1').click();
             cy.getByTestId('allergen-5').click();
             cy.getByTestId(TEST_ID.Button.AddOtherAlergen).type('Гриб{enter}');
-            cy.intercept(
+
+            interceptApi(
                 {
-                    method: 'GET',
-                    url: /recipe/,
+                    url: `${API_ENDPOINTS.Recipe}*`,
                     query: {
                         [SEARCH_PARAMS.ALLERGENS_QUERY]: /.*/,
                     },
                 },
                 {
-                    delay: DELAY.SM,
                     statusCode: 200,
+                    delay: DELAY.SM,
                     body: {
                         data: allRecipes.slice(0, 3),
                         meta: metaData,
                     },
                 },
-            ).as('getFilteredRecipes');
+            );
+
             cy.getByTestId(TEST_ID.Button.Search)
                 .should('be.visible')
                 .and('not.be.disabled')
                 .click();
-            cy.wait('@getFilteredRecipes');
+
             cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should('have.length', 3);
             cy.scrollTo('top');
-            cy.screenshot('allergens-1920', { capture: 'viewport' });
             cy.getByTestId(TEST_ID.Switch.AlergenSwitcher).click();
             cy.scrollTo('top');
             cy.getByTestId(TEST_ID.Button.AlergenMenu)
@@ -3114,10 +3220,9 @@ describe('Test cases for YeeDaa application', () => {
                 .contains('Выберите из списка');
         });
 
-        it('Seacrch after allergens filter', () => {
+        it('seacrch after allergens filter', () => {
             cy.viewport(1920, 750);
             setElementPosition();
-            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
             cy.getByTestId(TEST_ID.Link.Vegan).click();
             cy.wait(DELAY.LOAD);
             cy.getByTestId(TEST_ID.Switch.AlergenSwitcher).click();
@@ -3128,122 +3233,102 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId(TEST_ID.Button.AddOtherAlergen).type('Гриб{enter}');
             cy.getByTestId(TEST_ID.Button.AlergenMenu).click();
             cy.getByTestId(TEST_ID.Input.Search).type('Капус');
-            cy.intercept(
+
+            interceptApi(
                 {
-                    method: 'GET',
-                    url: /recipe/,
+                    url: `${API_ENDPOINTS.Recipe}*`,
                     query: {
                         [SEARCH_PARAMS.ALLERGENS_QUERY]: /.*/,
                         [SEARCH_PARAMS.SEARCH_QUERY]: /.*/,
                     },
                 },
                 {
-                    delay: DELAY.SM,
                     statusCode: 200,
+                    delay: DELAY.SM,
                     body: {
                         data: allRecipes.slice(0, 1),
                         meta: metaData,
                     },
                 },
-            ).as('getFilteredRecipes');
+            );
+
             cy.getByTestId(TEST_ID.Button.Search).should('be.visible').click();
-            cy.wait('@getFilteredRecipes');
+
             cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should('have.length', 1);
         });
     });
 
-    describe('Navigation and Tabs Functionality', () => {
-        beforeEach(() => {
-            signIn();
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-        });
-
-        it('Check navigation and tabs', () => {
+    describe('navigation and Tabs Functionality', () => {
+        it('check navigation and tabs', () => {
             cy.viewport(1920, 1080);
-            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
             interceptRecipesBySubCategory(DELAY.SM, {
                 data: veganSnacks,
                 meta: { page: 1, totalPages: 1, limit: 8 },
-            }).as('getVegans');
+            });
             cy.getByTestId(TEST_ID.Link.Vegan).click();
-            cy.wait('@getVegans');
+
             cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'true');
             cy.url().should('include', '/vegan/snacks');
             cy.getByTestId(`${TEST_ID.Card.Food}-0`).contains(veganSnacks[0].title);
             interceptRecipesBySubCategory(DELAY.SM, {
                 data: veganGarnish,
                 meta: { page: 1, totalPages: 1, limit: 8 },
-            }).as('getVegansGarnish');
-            cy.getByTestId('tab-second-dish-2').click();
-            cy.wait('@getVegansGarnish');
+            });
+            cy.getByTestId('tab-side-dishes-1').click();
             cy.getByTestId(`${TEST_ID.Card.Food}-0`).contains(veganGarnish[0].title);
-            cy.getByTestId('second-dish-active').should('exist');
+            cy.getByTestId('side-dishes-active').should('exist');
             cy.getByTestId('snacks-active').should('not.exist');
         });
 
-        it('When click on tab request occures and loader exist. Screen 768px', () => {
+        it('when click on tab request occures and loader exist. Screen 768px', () => {
             cy.viewport(768, 1080);
-            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
             interceptRecipesBySubCategory(DELAY.SM, {
                 data: veganSnacks,
                 meta: { page: 1, totalPages: 1, limit: 8 },
-            }).as('getVegans');
+            });
 
             cy.getByTestId(TEST_ID.Button.BurgerOpen).should('exist').click();
             cy.getByTestId(TEST_ID.Nav).should('be.visible');
             cy.getByTestId(TEST_ID.Link.Vegan).click();
-            cy.wait('@getVegans');
+
             cy.getByTestId(TEST_ID.Button.BurgerClose).should('exist').click();
 
             cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'true');
 
-            interceptRecipesBySubCategory(DELAY.SM, {
+            interceptRecipesBySubCategory(2000, {
                 data: veganGarnish,
                 meta: { page: 1, totalPages: 1, limit: 8 },
-            }).as('getVegansGarnish');
-            cy.getByTestId('tab-first-dish-1').click();
+            });
+            cy.getByTestId('tab-side-dishes-1').click();
             cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
-            cy.wait('@getVegansGarnish');
-            cy.getByTestId('tab-first-dish-1').should('have.attr', 'aria-selected', 'true');
+            cy.getByTestId('tab-side-dishes-1').should('have.attr', 'aria-selected', 'true');
             cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'false');
             cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
 
-            interceptRecipesBySubCategory(DELAY.SM, {
+            interceptRecipesBySubCategory(2000, {
                 data: veganDesserts,
                 meta: { page: 1, totalPages: 1, limit: 8 },
-            }).as('getVegansDesserts');
-            cy.getByTestId('tab-desserts-4').click();
+            });
+            cy.getByTestId('tab-desserts-2').click();
             cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
-            cy.wait('@getVegansDesserts');
-            cy.getByTestId('tab-desserts-4').should('have.attr', 'aria-selected', 'true');
-            cy.getByTestId('tab-first-dish-1').should('have.attr', 'aria-selected', 'false');
+
+            cy.getByTestId('tab-desserts-2').should('have.attr', 'aria-selected', 'true');
+            cy.getByTestId('tab-side-dishes-1').should('have.attr', 'aria-selected', 'false');
             cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'false');
             cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
         });
     });
 
-    describe('Breadcrumbs Functionality', () => {
-        beforeEach(() => {
-            signIn();
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-        });
-
-        it('Transfer on breadcrumbs', () => {
+    describe('breadcrumbs Functionality', () => {
+        it('transfer on breadcrumbs', () => {
             cy.viewport(768, 1080);
-            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
-            cy.intercept(
-                { method: 'GET', url: /recipe\/*/ },
-                {
-                    delay: DELAY.SM,
-                    body: meatSnacks[1],
-                },
-            ).as('getRecipe');
+            interceptApi(
+                { url: `${API_ENDPOINTS.Recipe}/*` },
+                { statusCode: 200, delay: DELAY.SM, body: meatSnacks[1] },
+            );
+
             cy.getByTestId(`${TEST_ID.Card.Carousel}-3`).click();
-            cy.wait('@getRecipe');
+
             cy.url().should('include', `snacks/meat-snacks/${meatSnacks[1]._id}`);
             cy.getByTestId(TEST_ID.Button.BurgerOpen).click();
             cy.getByTestId(TEST_ID.Breadcrumbs).contains(meatSnacks[1].title);
@@ -3258,130 +3343,15 @@ describe('Test cases for YeeDaa application', () => {
         });
     });
 
-    describe('Error page functionality', () => {
-        beforeEach(() => {
-            signIn();
-            interceptCategories().as('getCategories');
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-        });
-
-        it('Render error page via redirect if category and subcategory is not exist. Screen 1920px width.', () => {
+    describe('juiciest page', () => {
+        it('go to juiciest page. Render elements. Screen 1920px', () => {
             cy.viewport(1920, 750);
-            cy.visit('some-path/not-exist');
-            cy.url().should('contain', 'not-found');
-            cy.getByTestId(TEST_ID.Link.ErrorHomePage).should('exist');
-            cy.get('h1').contains('Такой страницы нет').should('exist').and('be.visible');
-            cy.contains('Можете поискать другой').should('exist');
-        });
-
-        it('Go back to home page. Screen 360px.', () => {
-            cy.viewport(360, 800);
-            cy.visit('some-path/not-exist');
-            cy.url().should('contain', 'not-found');
-            cy.screenshot('error-page-360', { capture: 'fullPage' });
-            cy.getByTestId(TEST_ID.Link.ErrorHomePage).should('exist').click();
-            cy.url().should('not.contain', 'not-found');
-            cy.url().should('contain', '/');
-        });
-    });
-
-    describe('Check apploader and error notification', () => {
-        beforeEach(() => {
-            signIn();
-            interceptCategories().as('getCategories');
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-        });
-
-        context('apploader flow', () => {
-            beforeEach(() => interceptRelevantRecipes().as('getRelevant'));
-            it('Apploader should exist when app is loading screnn 1920px', () => {
-                cy.viewport(1920, 750);
-                cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
-                cy.screenshot('app-loader-1920', { capture: 'fullPage' });
-                cy.wait([
-                    '@getCategories',
-                    '@getNewestRecipes',
-                    '@getJuiciestRecipes',
-                    '@getRelevant',
-                ]);
-                cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
-            });
-
-            it('Apploader should exist when app is loading screnn 360px', () => {
-                interceptRelevantRecipes().as('getRelevant');
-                cy.viewport(360, 800);
-                cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
-                cy.screenshot('app-loader-360', { capture: 'fullPage' });
-                cy.wait([
-                    '@getCategories',
-                    '@getNewestRecipes',
-                    '@getJuiciestRecipes',
-                    '@getRelevant',
-                ]);
-                cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
-            });
-        });
-
-        context('Error notification', () => {
-            beforeEach(() => {
-                cy.intercept(
-                    {
-                        method: 'GET',
-                        url: /recipe\/category\/.*/,
-                        query: { [SEARCH_PARAMS.LIMIT_QUERY]: RELEVANT_KITCHEN_LIMIT },
-                    },
-                    { body: {}, delay: DELAY.SM, statusCode: 404 },
-                ).as('getRelevant');
-            });
-
-            it('Error notification should be visible when the request error occured screen 768px', () => {
-                cy.viewport(768, 1080);
-                cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
-                cy.screenshot('error-notification-768', { capture: 'fullPage' });
-                cy.getByTestId(TEST_ID.Notification.Error).should('exist').and('be.visible');
-                cy.contains('Ошибка сервера').should('exist').and('be.visible');
-                cy.contains('Попробуйте поискать снова попозже').and('be.visible');
-                cy.getByTestId(TEST_ID.Button.CloseAlert).should('exist').and('not.be.disabled');
-            });
-
-            it('Error notification should be visible when the request error occured and screen 360px. Close alert', () => {
-                cy.viewport(360, 800);
-                cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
-                cy.screenshot('error-notification-360', { capture: 'fullPage' });
-                cy.getByTestId(TEST_ID.Notification.Error).should('exist').and('be.visible');
-                cy.getByTestId(TEST_ID.Button.CloseAlert)
-                    .should('exist')
-                    .and('not.be.disabled')
-                    .click();
-                cy.screenshot('error-notification-360-not-visible', { capture: 'fullPage' });
-                cy.getByTestId(TEST_ID.Notification.Error).should('not.exist');
-            });
-        });
-    });
-
-    describe('Juiciest page', () => {
-        beforeEach(() => {
-            signIn();
-            interceptCategories().as('getCategories');
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-        });
-
-        it('Go to juiciest page. Render elements. Screen 1920px', () => {
-            cy.viewport(1920, 750);
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
             cy.contains('Приятного аппетита').as('homeHeding').should('exist');
             cy.contains('Самое сочное').should('exist').and('be.visible');
-            interceptJuiciestPage().as('juiciestPageRecipes');
+            interceptJuiciestPage();
             cy.getByTestId(TEST_ID.Link.Jusiest).should('exist').click();
             cy.getByTestId(TEST_ID.AppLoader).should('exist');
-            cy.wait('@juiciestPageRecipes');
             cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
-            cy.screenshot('juiciest-page-1920', { capture: 'fullPage' });
             cy.get('@homeHeding').should('not.exist');
             cy.contains('Самое сочное').should('exist').and('be.visible');
             cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
@@ -3394,42 +3364,126 @@ describe('Test cases for YeeDaa application', () => {
                 .and('not.be.disabled');
         });
 
-        it('Check load more button functionality. Screen 768px and 360px.', () => {
+        it('check load more button functionality. Screen 768px and 360px.', () => {
             cy.viewport(768, 1024);
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
             cy.contains('Самое сочное').should('exist').and('be.visible');
-            interceptJuiciestPage().as('juiciestRecipesPage1');
+
+            interceptJuiciestPage();
             cy.getByTestId(TEST_ID.Link.Jusiest).should('exist').click();
-            cy.wait('@juiciestRecipesPage1');
+
             cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
                 'have.length',
                 DEFAULT_RECIPE_LIMIT,
             );
-            cy.screenshot('juiciest-page-768', { capture: 'fullPage' });
-            interceptJuiciestPage(2).as('juiciestRecipesPage2');
+
+            interceptJuiciestPage(2, 2000);
             cy.getByTestId(TEST_ID.Button.LoadMore)
                 .scrollIntoView()
                 .should('not.be.disabled')
                 .click();
             cy.getByTestId(TEST_ID.Button.LoadMore).should('include.text', 'Загрузка');
-            cy.screenshot('juiciest-page-768-loading', { capture: 'fullPage' });
-            cy.wait('@juiciestRecipesPage2');
+
             cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
                 'have.length',
                 DEFAULT_RECIPE_LIMIT * 2,
             );
             cy.viewport(360, 600);
-            interceptJuiciestPage(3).as('juiciestRecipesPage3');
+
+            interceptJuiciestPage(3);
             cy.getByTestId(TEST_ID.Button.LoadMore)
                 .scrollIntoView()
                 .should('not.be.disabled')
                 .click();
-            cy.wait('@juiciestRecipesPage3');
+
             cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
                 'have.length',
                 DEFAULT_RECIPE_LIMIT * 3,
             );
             cy.getByTestId(TEST_ID.Button.LoadMore).should('not.exist');
+        });
+    });
+
+    describe('error page functionality', () => {
+        it('render error page via redirect if category and subcategory is not exist. Screen 1920px width.', () => {
+            cy.viewport(1920, 750);
+            cy.visit('some-path/not-exist');
+            cy.url().should('contain', 'not-found');
+            cy.getByTestId(TEST_ID.Link.ErrorHomePage).should('exist');
+            cy.get('h1').contains('Такой страницы нет').should('exist').and('be.visible');
+            cy.contains('Можете поискать другой').should('exist');
+        });
+
+        it('go back to home page. Screen 360px.', () => {
+            cy.viewport(360, 800);
+            cy.visit('some-path/not-exist');
+            cy.url().should('contain', 'not-found');
+            cy.getByTestId(TEST_ID.Link.ErrorHomePage).should('exist').click();
+            cy.url().should('not.contain', 'not-found');
+            cy.url().should('contain', '/');
+        });
+    });
+});
+
+describe('app loader and error notification', () => {
+    beforeEach(() => {
+        cy.clearLocalStorage();
+        cy.clearAllSessionStorage();
+        interceptApi(
+            { url: '/**', alias: 'uncaptured' },
+            {
+                statusCode: 200,
+                delay: 0,
+            },
+        );
+        interceptCategories(2000);
+        interceptNewestRecipes();
+        interceptJuiciestRecipes();
+        interceptRelevantRecipes();
+        signIn();
+    });
+
+    context('apploader flow', () => {
+        it('apploader should exist when app is loading screnn 1920px', () => {
+            cy.viewport(1920, 750);
+            cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
+            cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
+        });
+
+        it('apploader should exist when app is loading screen 360px', () => {
+            cy.viewport(360, 800);
+            cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
+            cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
+            cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
+        });
+    });
+
+    context('error notification', () => {
+        beforeEach(() => {
+            interceptApi(
+                {
+                    url: `${API_ENDPOINTS.RecipeByCategory}/*`,
+                    query: { [SEARCH_PARAMS.LIMIT_QUERY]: RELEVANT_KITCHEN_LIMIT },
+                },
+                { statusCode: 404, body: {}, delay: DELAY.SM },
+            );
+        });
+
+        it('error notification should be visible when the request error occured screen 768px', () => {
+            cy.viewport(768, 1080);
+            cy.getByTestId(TEST_ID.Notification.Error).should('exist').and('be.visible');
+            cy.contains('Ошибка сервера').should('exist').and('be.visible');
+            cy.contains('Попробуйте поискать снова попозже').and('be.visible');
+            cy.getByTestId(TEST_ID.Button.CloseAlert).should('exist').and('not.be.disabled');
+        });
+
+        it('error notification should be visible when the request error occured and screen 360px. Close alert', () => {
+            cy.viewport(360, 800);
+            cy.getByTestId(TEST_ID.Notification.Error).should('exist').and('be.visible');
+            cy.getByTestId(TEST_ID.Button.CloseAlert)
+                .should('exist')
+                .and('not.be.disabled')
+                .click();
+            cy.getByTestId(TEST_ID.Notification.Error).should('not.exist');
         });
     });
 });
