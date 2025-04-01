@@ -37,6 +37,7 @@ export const ErrorPage = () => (
         >
             Можете поискать другой рецепт&nbsp;
             <Link
+                data-test-id='error-page-go-home'
                 as={NavLink}
                 to={Paths.R_SWITCHER}
                 textUnderlineOffset='4px'
