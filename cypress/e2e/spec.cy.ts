@@ -1,7 +1,5 @@
 /// <reference types="cypress" />
 
-import * as ReactRouter from 'react-router';
-
 const JUICIEST_LINK = 'juiciest-link';
 const JUICIEST_LINK_MOB = 'juiciest-link-mobile';
 const VEGAN = 'vegan-cuisine';
@@ -117,6 +115,24 @@ const CATEGORIES_RESPONSE = [
         ],
     },
     {
+        _id: '67c46eb2f51967aa8390beec',
+        title: 'Мясные закуски',
+        category: 'meat-snacks',
+        rootCategoryId: '67c46e93f51967aa8390beeb',
+    },
+    {
+        _id: '67c46ec4f51967aa8390beed',
+        title: 'Рыбные закуски',
+        category: 'fish-snacks',
+        rootCategoryId: '67c46e93f51967aa8390beeb',
+    },
+    {
+        _id: '67c46ed2f51967aa8390beee',
+        title: 'Овощные закуски',
+        category: 'vegetables-snacks',
+        rootCategoryId: '67c46e93f51967aa8390beeb',
+    },
+    {
         _id: '67c46dc5f51967aa8390bee6',
         title: 'Салаты',
         description:
@@ -143,6 +159,24 @@ const CATEGORIES_RESPONSE = [
                 rootCategoryId: '67c46dc5f51967aa8390bee6',
             },
         ],
+    },
+    {
+        _id: '67c46df5f51967aa8390bee7',
+        title: 'Мясные салаты',
+        category: 'meat-salads',
+        rootCategoryId: '67c46dc5f51967aa8390bee6',
+    },
+    {
+        _id: '67c46e19f51967aa8390bee8',
+        title: 'Рыбные салаты',
+        category: 'fish-salads',
+        rootCategoryId: '67c46dc5f51967aa8390bee6',
+    },
+    {
+        _id: '67c46e2bf51967aa8390bee9',
+        title: 'Овощные салаты',
+        category: 'vegetables-salads',
+        rootCategoryId: '67c46dc5f51967aa8390bee6',
     },
     {
         _id: '67c48d99d02fb83fc3d8100f',
@@ -172,6 +206,25 @@ const CATEGORIES_RESPONSE = [
                 rootCategoryId: '67c48d99d02fb83fc3d8100f',
             },
         ],
+    },
+    {
+        _id: '67c48e627b493acd8a41030c',
+        title: 'Закуски',
+        category: 'snacks',
+        rootCategoryId: '67c48d99d02fb83fc3d8100f',
+    },
+
+    {
+        _id: '67c48f60ed67ca980917d64e',
+        title: 'Гарниры',
+        category: 'side-dishes',
+        rootCategoryId: '67c48d99d02fb83fc3d8100f',
+    },
+    {
+        _id: '67c48f6ded67ca980917d64f',
+        title: 'Десерты',
+        category: 'desserts',
+        rootCategoryId: '67c48d99d02fb83fc3d8100f',
     },
 ];
 
@@ -1451,17 +1504,13 @@ const interceptRecipesBySubCategory = (delay: number = SMALL_DELAY_MS, mockBody:
 
 describe('Test cases for YeeDaa application', () => {
     describe('рендер App компоненты', () => {
-        const routerParams = {
-            categoryName: 'vegan',
-            subCategoryName: 'snacks',
-        };
         beforeEach(() => {
-            cy.stub(ReactRouter, 'useParams').callsFake(() => routerParams);
-            cy.visit('http://localhost:3000');
+            interceptCategories();
             interceptNewestRecipes();
             interceptJuiciestRecipes();
             interceptRelevantRecipes();
             interceptRecipesBySubCategory().as('getRecipeByCategory');
+            cy.visit('http://localhost:3000');
         });
         it('Take a screenshot of the app components', () => {
             cy.viewport(1920, 750);
@@ -1530,12 +1579,12 @@ describe('Test cases for YeeDaa application', () => {
 
     describe('Burger Menu Functionality', () => {
         beforeEach(() => {
+            interceptCategories().as('getCategories');
             interceptNewestRecipes().as('getNewestRecipes');
             interceptJuiciestRecipes().as('getJuiciestRecipes');
             interceptRelevantRecipes().as('getRelevant');
         });
         it('Burger does not exist on 1440px', () => {
-            interceptCategories().as('getCategories');
             cy.viewport(1440, 1024);
             cy.visit('/');
             cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
@@ -1546,7 +1595,7 @@ describe('Test cases for YeeDaa application', () => {
         it('Burger menu on screen 768px', () => {
             cy.viewport(768, 1024);
             cy.visit('/');
-            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
+            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant', '@getCategories']);
             interceptJuiciestPage().as('juiciestPageRecipes');
 
             cy.getByTestId(JUICIEST_LINK).should('exist').click();
@@ -1559,6 +1608,7 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId(HUMB_ICON).should('not.exist');
             cy.getByTestId(CLOSE_ICON).should('exist');
             cy.getByTestId(NAV).should('be.visible');
+            interceptRecipesBySubCategory().as('getRecipe');
             cy.getByTestId(VEGAN).click();
             cy.getByTestId(CLOSE_ICON).scrollIntoView();
             cy.getByTestId(BREADCRUMBS).should('contain.text', 'Закуски');
@@ -1567,7 +1617,6 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId(NAV).should('not.exist');
         });
         it('Burger menu on screen 360px', () => {
-            interceptCategories().as('getCategories');
             cy.viewport(360, 800);
             cy.visit('/');
             cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
@@ -1592,12 +1641,8 @@ describe('Test cases for YeeDaa application', () => {
         });
     });
     describe('Search Functionality', () => {
-        const routerParams = {
-            categoryName: 'vegan',
-            subCategoryName: 'snacks',
-        };
         beforeEach(() => {
-            cy.stub(ReactRouter, 'useParams').callsFake(() => routerParams);
+            interceptCategories();
             interceptNewestRecipes();
             interceptJuiciestRecipes();
             interceptRelevantRecipes();
@@ -1674,7 +1719,7 @@ describe('Test cases for YeeDaa application', () => {
     });
     describe('Recipe Functionality', () => {
         beforeEach(() => {
-            cy.intercept('GET');
+            interceptCategories();
             interceptNewestRecipes();
             interceptJuiciestRecipes();
             interceptRelevantRecipes();
@@ -1758,6 +1803,7 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId(FILTER_DRAWER).should('not.exist');
             cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
             cy.getByTestId(FILTER_DRAWER).should('exist').contains('Фильтр');
+            interceptRecipesByCategory();
             cy.getByTestId(FILTER_CATEGORY).click();
             cy.getByTestId(VEGAN_CHECKBOX).click();
             cy.getByTestId(FILTER_CATEGORY).click();
@@ -1803,6 +1849,7 @@ describe('Test cases for YeeDaa application', () => {
             cy.viewport(360, 800);
             cy.visit('/');
             setElementPosition();
+            interceptRecipesByCategory();
             cy.getByTestId(FILTER_DRAWER).should('not.exist');
             cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
             cy.getByTestId(FILTER_DRAWER).should('exist');
@@ -1840,6 +1887,7 @@ describe('Test cases for YeeDaa application', () => {
     });
     describe('Allergens Functionality', () => {
         beforeEach(() => {
+            interceptCategories();
             interceptNewestRecipes().as('getNewestRecipes');
             interceptJuiciestRecipes().as('getJuiciestRecipes');
             interceptRelevantRecipes().as('getRelevant');
@@ -1911,6 +1959,7 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId(ADD_OTHER_ALLERGEN).type('Гриб{enter}');
             cy.getByTestId(ALLERGEN_BUTTON).click();
             cy.getByTestId(SEARCH_INPUT).type('Капус');
+            interceptRecipesByCategory();
             cy.intercept(
                 {
                     method: 'GET',
@@ -1936,6 +1985,7 @@ describe('Test cases for YeeDaa application', () => {
     });
     describe('Navigation and Tabs Functionality', () => {
         beforeEach(() => {
+            interceptCategories().as('getCategories');
             interceptNewestRecipes().as('getNewestRecipes');
             interceptJuiciestRecipes().as('getJuiciestRecipes');
             interceptRelevantRecipes().as('getRelevant');
@@ -1943,7 +1993,7 @@ describe('Test cases for YeeDaa application', () => {
         it('Check navigation and tabs', () => {
             cy.viewport(1920, 1080);
             cy.visit('/');
-            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
+            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
             interceptRecipesBySubCategory(SMALL_DELAY_MS, {
                 data: veganSnacks,
                 meta: { page: 1, totalPages: 1, limit: 8 },
@@ -1957,10 +2007,10 @@ describe('Test cases for YeeDaa application', () => {
                 data: veganGarnish,
                 meta: { page: 1, totalPages: 1, limit: 8 },
             }).as('getVegansGarnish');
-            cy.getByTestId('tab-second-dish-2').click();
+            cy.getByTestId('tab-side-dishes-1').click();
             cy.wait('@getVegansGarnish');
             cy.getByTestId(`${FOOD_CARD}-0`).contains(veganGarnish[0].title);
-            cy.getByTestId('second-dish-active').should('exist');
+            cy.getByTestId('side-dishes-active').should('exist');
             cy.getByTestId('snacks-active').should('not.exist');
         });
 
@@ -1985,10 +2035,10 @@ describe('Test cases for YeeDaa application', () => {
                 data: veganGarnish,
                 meta: { page: 1, totalPages: 1, limit: 8 },
             }).as('getVegansGarnish');
-            cy.getByTestId('tab-first-dish-1').click();
+            cy.getByTestId('tab-side-dishes-1').click();
             cy.getByTestId(APP_LOADER).should('exist').and('be.visible');
             cy.wait('@getVegansGarnish');
-            cy.getByTestId('tab-first-dish-1').should('have.attr', 'aria-selected', 'true');
+            cy.getByTestId('tab-side-dishes-1').should('have.attr', 'aria-selected', 'true');
             cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'false');
             cy.getByTestId(APP_LOADER).should('not.exist');
 
@@ -1996,17 +2046,18 @@ describe('Test cases for YeeDaa application', () => {
                 data: veganDesserts,
                 meta: { page: 1, totalPages: 1, limit: 8 },
             }).as('getVegansDesserts');
-            cy.getByTestId('tab-desserts-4').click();
+            cy.getByTestId('tab-desserts-2').click();
             cy.getByTestId(APP_LOADER).should('exist').and('be.visible');
             cy.wait('@getVegansDesserts');
-            cy.getByTestId('tab-desserts-4').should('have.attr', 'aria-selected', 'true');
-            cy.getByTestId('tab-first-dish-1').should('have.attr', 'aria-selected', 'false');
+            cy.getByTestId('tab-desserts-2').should('have.attr', 'aria-selected', 'true');
+            cy.getByTestId('tab-side-dishes-1').should('have.attr', 'aria-selected', 'false');
             cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'false');
             cy.getByTestId(APP_LOADER).should('not.exist');
         });
     });
     describe('Breadcrumbs Functionality', () => {
         beforeEach(() => {
+            interceptCategories().as('getCategories');
             interceptNewestRecipes().as('getNewestRecipes');
             interceptJuiciestRecipes().as('getJuiciestRecipes');
             interceptRelevantRecipes().as('getRelevant');
@@ -2014,7 +2065,7 @@ describe('Test cases for YeeDaa application', () => {
         it('Transfer on breadcrumbs', () => {
             cy.viewport(768, 1080);
             cy.visit('/');
-            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
+            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
             cy.intercept(
                 { method: 'GET', url: /recipe\/*/ },
                 {
@@ -2085,7 +2136,6 @@ describe('Test cases for YeeDaa application', () => {
                 cy.getByTestId(APP_LOADER).should('not.exist');
             });
             it('Apploader should exist when app is loading screnn 360px', () => {
-                interceptRelevantRecipes().as('getRelevant');
                 cy.viewport(360, 800);
                 cy.visit('/');
                 cy.getByTestId(APP_LOADER).should('exist').and('be.visible');
