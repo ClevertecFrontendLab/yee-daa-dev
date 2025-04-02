@@ -3,7 +3,7 @@
 import { RouteMatcherOptions, StaticResponseWithOptions } from 'cypress/types/net-stubbing';
 
 const RESOLUTION = {
-    desktop: [1200, 880],
+    desktop: [1887, 1120],
     tablet: [768, 1024],
     mobile: [360, 800],
 } as const;
