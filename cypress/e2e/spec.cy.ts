@@ -3,7 +3,7 @@
 import { RouteMatcherOptions, StaticResponseWithOptions } from 'cypress/types/net-stubbing';
 
 const RESOLUTION = {
-    desktop: [1887, 1120],
+    desktop: [1000, 900],
     tablet: [768, 1024],
     mobile: [360, 800],
 } as const;
@@ -18,6 +18,8 @@ function takeScreenshot(screenshotName: string, device: keyof typeof RESOLUTION 
         cy.wait(1000);
         cy.screenshot(`${screenshotName}_${width}x${height}`, {
             capture: 'fullPage',
+            overwrite: true,
+            scale: false,
         });
         cy.get('body').then(($body) => {
             $body[0].style.setProperty('margin-right', 'auto');
