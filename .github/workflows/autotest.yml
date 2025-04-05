@@ -4,6 +4,7 @@ on:
     pull_request:
         branches:
             - main
+            - feat/sprint3
 
 permissions:
     checks: write
@@ -33,7 +34,6 @@ jobs:
                   install: yarn install
                   start: yarn start
                   wait-on: 'http://localhost:3000'
-                  browser: chrome
             - name: Check tests
               if: always()
               uses: ClevertecFrontendLab/check-test@main

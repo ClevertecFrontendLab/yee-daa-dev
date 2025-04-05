@@ -1,11 +1,30 @@
 import { Button, Image } from '@chakra-ui/icons';
 import { Heading, HStack } from '@chakra-ui/react';
 import { FC } from 'react';
+import { NavLink, useLocation } from 'react-router';
 
-import { categoriesMap } from '../../constants/categories.ts';
-import { Recipe } from '../../types/recipe.ts';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { useGetRecipePath } from '~/hooks/use-get-recipe-path';
+import { Recipe } from '~/redux/api/types/recipes';
+import { selectCategoriesMenu, selectSubCategories } from '~/redux/features/categories-slice.ts';
+import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path';
 
-export const ShortFoodCard: FC<Recipe> = ({ category, title }) => {
+export const ShortFoodCard: FC<Recipe> = (recipe) => {
+    const { title, categoriesIds } = recipe;
+    // для ссылки будем брать первый элемент
+    const { pathname: currPath } = useLocation();
+    const pathToRecipe = useGetRecipePath(recipe);
+    const { pathname } = useLocation();
+
+    const categories = useAppSelector(selectCategoriesMenu);
+    const subCategories = useAppSelector(selectSubCategories);
+
+    const recipeSubCategoryId = categoriesIds?.at(0) ?? '';
+    const foundSubCategory = subCategories.find((elem) => elem.id === recipeSubCategoryId);
+    const foundCategory = categories.find(
+        (category) => category.id === foundSubCategory?.rootCategoryId,
+    );
+
     return (
         <HStack
             border='1px solid rgba(0, 0, 0, 0.08)'
@@ -14,7 +33,7 @@ export const ShortFoodCard: FC<Recipe> = ({ category, title }) => {
             alignItems='center'
             spacing={2}
         >
-            <Image src={categoriesMap[category]} alt={category} />
+            <Image src={getAbsoluteImagePath(foundCategory?.icon)} alt={categoriesIds[0]} />
             <Heading
                 fontSize={{ base: 'md', md: 'xl' }}
                 noOfLines={1}
@@ -30,7 +49,9 @@ export const ShortFoodCard: FC<Recipe> = ({ category, title }) => {
                 size='sm'
                 flexShrink={0}
             >
-                Готовить
+                <NavLink to={pathToRecipe ?? currPath} state={{ fromPage: pathname }}>
+                    Готовить
+                </NavLink>
             </Button>
         </HStack>
     );

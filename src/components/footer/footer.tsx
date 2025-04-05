@@ -1,8 +1,9 @@
 import { Avatar } from '@chakra-ui/icons';
 import { Grid, GridItem } from '@chakra-ui/react';
 
-import userImg from '../../assets/images/user.webp';
-import { UserProps } from '../../types/user.ts';
+import userImg from '~/assets/images/user.webp';
+import { UserProps } from '~/types/user.ts';
+
 import { HomeSvg } from '../icons/home-svg.tsx';
 import { SearchSvg } from '../icons/search-svg.tsx';
 import { WriteSvg } from '../icons/write-svg.tsx';
@@ -19,7 +20,7 @@ const user: UserProps = {
 };
 
 export const Footer = () => {
-    // TODO: заменить на селектор
+    // TODO: заменить на селектор когда будет коллекция пользователей
     const { firstName, lastName, imageUrl } = user;
 
     return (

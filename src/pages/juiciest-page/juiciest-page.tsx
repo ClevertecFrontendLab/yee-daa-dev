@@ -1,38 +1,28 @@
-import { Button, SimpleGrid } from '@chakra-ui/icons';
-import { Center } from '@chakra-ui/react';
+import { Suspense } from 'react';
+import { Await, Navigate, useLoaderData, useLocation } from 'react-router';
 
-import { FoodCard } from '../../components/food-card';
-import { RelevantKitchen } from '../../components/relevant-kitchen';
-import { SectionBox } from '../../components/section-box/section-box.tsx';
-import { SectionHeader } from '../../components/section-header';
-import { favouritesRecipes } from '../../mocks/favourites-recipes.ts';
-import { relevantVegan } from '../../mocks/relevant-vegan.ts';
+import { AppLoader } from '~/components/app-loader/app-loader.tsx';
+import { Paths } from '~/constants/path.ts';
+import { Recipe } from '~/redux/api/types/recipes.ts';
+import { Nullable } from '~/types/common.ts';
+import { PageType } from '~/types/page.ts';
 
-const desc =
-    'Интересны не только убеждённым вегетарианцам, но и тем, кто хочет попробовать вегетарианскую диету и готовить вкусные вегетарианские блюда.';
-
-const title = 'Веганская кухня';
+import { KitchenPage } from '../kitchen-page/kitchen-page.tsx';
 
 export const JuiciestPage = () => {
+    // при переходе на страницу в стейте надо передать предыдущую локацию
+    const { state } = useLocation();
+
+    const { recipes } = useLoaderData<{ recipes: Nullable<Recipe[]> }>();
+
     return (
-        <>
-            <SectionHeader />
-            <SectionBox>
-                <SimpleGrid
-                    columns={2}
-                    gap={{ base: 3, md: 4 }}
-                    maxWidth='100%'
-                    minChildWidth={{ base: '300px', md: '450px' }}
-                >
-                    {favouritesRecipes.map((el) => (
-                        <FoodCard {...el} key={el.id} />
-                    ))}
-                </SimpleGrid>
-                <Center mt={4}>
-                    <Button bg={'lime.400'}>Загрузить ещё</Button>
-                </Center>
-            </SectionBox>
-            <RelevantKitchen title={title} description={desc} recipes={relevantVegan} />
-        </>
+        <Suspense fallback={<AppLoader isOpen={true} />}>
+            <Await
+                resolve={recipes}
+                errorElement={<Navigate to={state?.fromPage ?? Paths.R_SWITCHER} />}
+            >
+                <KitchenPage pageType={PageType.Juiciest} />
+            </Await>
+        </Suspense>
     );
 };

@@ -1,36 +1,118 @@
-.fix {
-    position: fixed;
+.wrapper {
+    max-width: 1920px;
+    min-width: 360px;
+    width: 100%;
+    min-height: 100vh;
+    margin: 0 auto;
+    background: var(--chakra-colors-chakra-body-bg);
+    position: relative;
+}
+
+.header {
+    position: sticky;
+    top: 0;
     height: var(--header-height);
     width: 100%;
     z-index: 9;
 }
 
-.fixAside,
-.fixNav {
-    position: fixed;
-    width: clamp(160px, 13vw, 256px);
-    height: calc(100% - var(--header-height));
+.aside,
+.nav {
+    height: calc(100dvh - var(--header-height));
     top: var(--header-height);
 }
 
-.fixAside {
-    right: 0;
+.aside {
+    position: sticky;
 }
 
-.fixNav {
-    min-height: calc(100vh - var(--header-height) - 24px);
-    box-shadow:
-        0 2px 1px -1px rgba(0, 0, 0, 0.2),
-        0 1px 1px 0 rgba(0, 0, 0, 0.14),
-        0 1px 3px 0 rgba(0, 0, 0, 0.12);
+.nav {
+    box-shadow: 0 0 1px -1px rgba(0, 0, 0, 0.2), 0 0 1px 0 rgba(0, 0, 0, 0.14),
+        0 0 3px 0 rgba(0, 0, 0, 0.12);
     background: #fff;
-    width: clamp(170px, 13vw, 266px);
-    padding-right: 4px;
 }
 
-.fixFooter {
-    position: fixed;
+.main {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 16px;
+    padding-left: 24px;
+    padding-right: 24px;
+    transition: filter 0.3s ease, box-shadow 0.3s ease;
+}
+
+.footer {
+    position: sticky;
     height: 84px;
     bottom: 0;
-    width: 100%;
+    left: 0;
+    right: 0;
+    z-index: 9;
+}
+
+.blur {
+    filter: blur(1px);
+}
+
+.blur:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.16);
+    z-index: 5;
+}
+
+@media (max-width: 1120px) {
+    .nav {
+        max-width: 344px;
+        max-height: 740px;
+        box-shadow: none;
+        overflow-y: scroll;
+        top: var(--header-height);
+        right: 0;
+        z-index: 10;
+        border-radius: var(--chakra-radii-xl);
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        height: auto;
+        padding: 0 var(--chakra-space-4) var(--chakra-space-4) var(--chakra-space-4);
+        transition: top 0.3s ease, opacity 0.3s ease;
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .nav.open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .main {
+        padding-bottom: 100px;
+    }
+}
+
+@media (max-width: 767px) {
+    .blur:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: calc(100vh);
+    }
+    .main {
+        padding-bottom: 16px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .nav {
+        width: 100%;
+        right: 8px;
+    }
 }

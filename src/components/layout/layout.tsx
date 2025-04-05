@@ -1,59 +1,105 @@
 import { Grid, GridItem } from '@chakra-ui/react';
+import { Fragment, useEffect } from 'react';
 import { Outlet } from 'react-router';
 
+import { useIsTablet } from '~/hooks/media-query';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { useIsErrorPage } from '~/hooks/use-is-error-page';
+import { selectMenu } from '~/redux/features/burger-slice';
+
 import { Aside } from '../aside';
+import { FilterDrawer } from '../drawer';
 import { Footer } from '../footer';
 import { Header } from '../header';
 import { SideNav } from '../side-nav';
 import styles from './layout.module.css';
 
-export const Layout = () => {
+const Layout = () => {
+    const isOpen = useAppSelector(selectMenu);
+    const isTablet = useIsTablet();
+    const isErrorPage = useIsErrorPage();
+
+    useEffect(() => {
+        if (isOpen) {
+            document.body.classList.add('no-scroll');
+        } else {
+            document.body.classList.remove('no-scroll');
+        }
+
+        return () => {
+            document.body.classList.remove('no-scroll');
+        };
+    }, [isOpen]);
+
+    const showNavigation = (isTablet && isOpen) || !isTablet;
+
     return (
-        <Grid
-            templateAreas={{
-                md: `"header header header"
+        <div className={styles.wrapper}>
+            <Grid
+                templateAreas={{
+                    xl: `"header header header"
                   "nav main aside"`,
-                base: `"header"
+                    base: `"header"
                   "main"
                   "footer"`,
-            }}
-            gridTemplateRows={{ md: '80px 1fr', base: '64px 1fr 84px' }}
-            gridTemplateColumns={{
-                md: 'clamp(170px, 13vw, 266px) 1fr clamp(160px, 13vw, 256px)',
-                base: '1fr',
-            }}
-        >
-            <GridItem bg='lime.50' area='header' className={styles.fix} data-test-id='header'>
-                <Header />
-            </GridItem>
-            <GridItem area='nav' className={styles.fixNav} display={{ base: 'none', md: 'block' }}>
-                <SideNav />
-            </GridItem>
-            <GridItem
-                area='main'
-                p={{ base: 4, md: 6 }}
-                pt={{ base: 4, md: 8 }}
-                pl={{ base: '6px', md: '14px' }}
-                overflow='hidden'
+                }}
+                gridTemplateRows={{ md: '80px 1fr', base: '64px 1fr 84px' }}
+                gridTemplateColumns={{
+                    xl: '256px 1fr 280px',
+                    base: '1fr',
+                }}
+                minHeight='100vh'
             >
-                <Outlet />
-            </GridItem>
-            <GridItem
-                area='aside'
-                className={styles.fixAside}
-                display={{ base: 'none', md: 'block' }}
-            >
-                <Aside />
-            </GridItem>
-            <GridItem
-                bg='lime.50'
-                area='footer'
-                display={{ md: 'none', base: 'block' }}
-                className={styles.fixFooter}
-                data-test-id='footer'
-            >
-                <Footer />
-            </GridItem>
-        </Grid>
+                <GridItem
+                    bg={isTablet && isOpen ? 'white' : 'lime.50'}
+                    area='header'
+                    className={styles.header}
+                    data-test-id='header'
+                >
+                    <Header />
+                </GridItem>
+                {showNavigation && (
+                    <GridItem
+                        area='nav'
+                        position={{ base: 'absolute', xl: 'sticky' }}
+                        className={`${styles.nav} ${isOpen ? styles.open : ''}`}
+                    >
+                        <SideNav />
+                    </GridItem>
+                )}
+                <GridItem
+                    area='main'
+                    pt={{ base: 4, md: 8 }}
+                    overflow='hidden'
+                    className={`${styles.main} ${isOpen ? styles.blur : ''}`}
+                >
+                    <Outlet />
+                </GridItem>
+                {!isErrorPage && (
+                    <Fragment>
+                        <GridItem
+                            area='aside'
+                            className={styles.aside}
+                            display={{ base: 'none', xl: 'block' }}
+                        >
+                            <Aside />
+                            <FilterDrawer />
+                        </GridItem>
+
+                        <GridItem
+                            bg='lime.50'
+                            area='footer'
+                            display={{ base: 'block', xl: 'none' }}
+                            className={`${styles.footer} ${isOpen ? styles.blur : ''}`}
+                            data-test-id='footer'
+                        >
+                            <Footer />
+                        </GridItem>
+                    </Fragment>
+                )}
+            </Grid>
+        </div>
     );
 };
+
+export default Layout;
