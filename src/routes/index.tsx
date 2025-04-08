@@ -6,6 +6,7 @@ import { Paths } from '~/constants/path.js';
 import { CategoryExistProtected } from '~/hoc/category-exist-protected';
 import { SubcategoryRedirect } from '~/hoc/subcategory-redirect';
 import { AppLayout } from '~/layout/app-layout';
+import { BlogsPage } from '~/pages/blogs-page/blogs-page.tsx';
 import { CategoryPage } from '~/pages/category-page';
 import { ErrorPage } from '~/pages/error-page/error-page';
 import { JuiciestPage } from '~/pages/juiciest-page';
@@ -64,6 +65,12 @@ export const appRouter = createBrowserRouter(
                                 <CategoryPage />
                             </CategoryExistProtected>
                         }
+                        loader={clearFilterStateLoader}
+                    />
+                    <Route
+                        path={Paths.BLOGS}
+                        element={<BlogsPage />}
+                        // TODO: look into
                         loader={clearFilterStateLoader}
                     />
                     <Route

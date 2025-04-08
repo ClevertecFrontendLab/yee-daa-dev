@@ -15,6 +15,7 @@ export const Paths = {
     CATEGORY: `:${routeParams.categoryName}/:${routeParams.subCategoryName}`,
     RECIPE: `:${routeParams.categoryName}/:${routeParams.subCategoryName}/:${routeParams.recipeId}`,
     JUICIEST: '/the-juiciest',
+    BLOGS: '/blogs',
     ERROR: '/not-found',
     OTHERS: '*',
 } as const;

@@ -1,6 +1,8 @@
 import { ArrowForwardIcon, Button, SimpleGrid } from '@chakra-ui/icons';
 import { Box, Center, Heading, HStack } from '@chakra-ui/react';
+import { Link } from 'react-router';
 
+import { Paths } from '~/constants/path.ts';
 import { posts } from '~/mocks/posts.ts';
 
 import { BlogCard } from '../blog-card/blog-card.tsx';
@@ -18,6 +20,8 @@ export const BlogSection = () => (
                 display={{ base: 'none', md: 'flex' }}
                 alignItems='center'
                 variant='ghost'
+                as={Link}
+                to={Paths.BLOGS}
             >
                 Всe авторы
             </Button>

@@ -1,15 +1,18 @@
 import { HStack, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
+import { FollowersIcon } from '~/components/icons/followers-icon.tsx';
+
 import { BookmarkIcon } from '../icons/bookmark-icon.tsx';
 import { FavoritesIcon } from '../icons/favorites-icon.tsx';
 
 type Props = Partial<{
     bookmarks: number;
-    likes: number;
+    likes?: number;
+    followers?: number;
 }>;
 
-export const CardStat: FC<Props> = ({ bookmarks, likes }) => (
+export const CardStat: FC<Props> = ({ bookmarks, likes, followers }) => (
     <HStack
         spacing={2}
         flexWrap='wrap'
@@ -29,6 +32,14 @@ export const CardStat: FC<Props> = ({ bookmarks, likes }) => (
                 <FavoritesIcon w={3} h={3} />
                 <Text fontSize='xs' lineHeight={4} color='lime.600'>
                     {likes}
+                </Text>
+            </HStack>
+        )}
+        {followers && (
+            <HStack spacing={2} p={1} alignItems='center'>
+                <FollowersIcon w={3} h={3} />
+                <Text fontSize='xs' lineHeight={4} color='lime.600'>
+                    {followers}
                 </Text>
             </HStack>
         )}

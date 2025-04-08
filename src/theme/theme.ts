@@ -24,6 +24,9 @@ export const theme = extendTheme({
             700: '#207E00',
             800: '#134B00',
         },
+        blackAlpha: {
+            50: '#0000000A',
+        },
     },
     fonts: {
         body: `Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"`,
