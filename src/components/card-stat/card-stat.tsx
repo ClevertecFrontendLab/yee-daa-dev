@@ -15,7 +15,7 @@ type Props = Partial<{
 export const CardStat: FC<Props> = ({ bookmarks, likes, followers }) => (
     <HStack
         spacing={2}
-        flexWrap='wrap'
+        flexWrap='nowrap'
         justifyContent='flex-end'
         minW={{ base: 'auto', md: '110px' }}
     >

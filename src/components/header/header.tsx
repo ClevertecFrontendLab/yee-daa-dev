@@ -33,7 +33,7 @@ export const Header = () => {
                     {!isLg && <Breadcrumbs />}
                     <Spacer />
                     {isTablet && !isOpen && <StatsBlock {...users[2]} />}
-                    <UserInfo withGutter {...user} />
+                    {!isTablet && <UserInfo withGutter {...user} />}
                     <BurgerMenu />
                 </>
             )}

@@ -119,21 +119,22 @@ const MOCK_ALL_BLOGS = [
 ];
 
 export const BlogsPage = () => (
-    <Stack spacing={6} mb={8} mt={{ base: -7, xl: 0 }}>
+    <Stack spacing={6} mb={8} mt={{ base: 1, sm: 0, md: -7, xmd: 0 }}>
         <Heading fontSize={{ base: '2xl', xl: '5xl' }} lineHeight='none' textAlign='center'>
             Кулинарные блоги
         </Heading>
         <Box
             mb={{ base: 1, md: 1 }}
+            mt={{ base: 1, sm: 0 }}
             bg='lime.400'
             borderRadius={{ base: 16, xl: 24 }}
-            padding={{ base: 2, xl: 6 }}
+            padding={{ base: '8px 12px 12px', sm: 2, xl: 6 }}
         >
             <Heading fontSize={{ base: '2xl', xl: '4xl' }} lineHeight={10} fontWeight={400}>
                 Избранные блоги
             </Heading>
             <SimpleGrid
-                pt={4}
+                pt={{ base: 2, sm: 4 }}
                 columns={{ base: 1, md: 2, xmd: 1, '2xl': 2 }}
                 gap={{ base: 3, md: 4 }}
                 gridTemplateColumns={{

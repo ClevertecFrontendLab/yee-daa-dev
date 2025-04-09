@@ -22,10 +22,10 @@ export const UserInfo: FC<Props> = ({
         alignItems='center'
         display={{ base: 'none', xs: 'flex' }}
     >
-        <Avatar size={{ base: 'sm', md: 'md' }} src={imageUrl} name={`${firstName} ${lastName}`} />
-        <Box ml={{ base: 2, md: 3 }} flexGrow={1}>
+        <Avatar size='md' src={imageUrl} name={`${firstName} ${lastName}`} />
+        <Box ml={3} flexGrow={1}>
             <Text
-                fontSize={{ base: 'sm', md: 'lg' }}
+                fontSize='lg'
                 fontWeight={500}
                 lineHeight={{ base: 6, md: 7 }}
                 noOfLines={1}
@@ -34,7 +34,7 @@ export const UserInfo: FC<Props> = ({
                 {firstName} {lastName}
             </Text>
             <Text
-                fontSize={{ base: 'xs', md: 'sm' }}
+                fontSize='sm'
                 lineHeight={5}
                 color='blackAlpha.700'
                 noOfLines={1}
