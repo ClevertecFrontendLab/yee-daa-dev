@@ -33,10 +33,18 @@ const CardTypeProps = {
         CardHeader: {
             p: 6,
             pb: 4,
+            pl: {
+                base: 4,
+                xl: 6,
+            },
         },
         CardBody: {
             p: 6,
-            pt: 3,
+            pt: { base: 0, xl: 3 },
+            pl: {
+                base: 4,
+                xl: 6,
+            },
             pb: {
                 base: 1,
                 '2xl': 6,
@@ -49,13 +57,17 @@ const CardTypeProps = {
     },
     AVAILABLE: {
         CardHeader: {
-            p: 6,
+            p: { base: 4, xl: 6 },
             pb: 4,
         },
         CardBody: {
-            p: 6,
-            pt: 3,
+            p: { base: 4, xl: 6 },
+            pt: { base: 0, xl: 3 },
             pb: 0,
+            flex: {
+                base: '0 1 0%',
+                '2xl': '1 1 0%',
+            },
         },
     },
 };
@@ -84,7 +96,7 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
     const cardData = cardType ? CardTypeProps[cardType] : CardTypeProps.DEFAULT;
 
     return (
-        <Card minHeight={224}>
+        <Card minHeight={{ base: cardType === 'FAVORITE' ? 208 : 200, xl: 224 }}>
             <CardHeader {...cardData.CardHeader}>
                 <UserInfo
                     firstName={firstName}
@@ -93,7 +105,7 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                     imageUrl={imageUrl}
                 />
                 {newRecipes && (
-                    <Float top='7px' right='6px'>
+                    <Float top={{ base: 1, xl: 2 }} right={{ base: 1, xl: 2 }}>
                         <Badge
                             fontWeight='400'
                             color='black'
@@ -119,7 +131,13 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                 </Text>
             </CardBody>
             {cardType !== 'DEFAULT' && (
-                <CardFooter justifyContent='space-between' pl={7} pr={6} pt={4} pb={4}>
+                <CardFooter
+                    justifyContent='space-between'
+                    pl={{ base: 4, xl: 7 }}
+                    pr={{ base: 4, xl: 6 }}
+                    pt={4}
+                    pb={4}
+                >
                     <HStack>
                         {cardType === 'AVAILABLE' ? (
                             <Button

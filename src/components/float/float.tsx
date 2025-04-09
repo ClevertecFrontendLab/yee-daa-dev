@@ -1,10 +1,11 @@
+import { chakra, ResponsiveValue } from '@chakra-ui/react';
 import { FC, PropsWithChildren } from 'react';
 
 type FloatProps = {
-    top?: string;
-    left?: string;
-    right?: string;
-    bottom?: string;
+    top?: ResponsiveValue<number>;
+    left?: ResponsiveValue<number>;
+    right?: ResponsiveValue<number>;
+    bottom?: ResponsiveValue<number>;
 };
 
 export const Float: FC<PropsWithChildren & FloatProps> = ({
@@ -14,15 +15,7 @@ export const Float: FC<PropsWithChildren & FloatProps> = ({
     right,
     bottom,
 }) => (
-    <div
-        style={{
-            position: 'absolute',
-            top,
-            right,
-            left,
-            bottom,
-        }}
-    >
+    <chakra.div position='absolute' top={top} right={right} bottom={bottom} left={left}>
         {children}
-    </div>
+    </chakra.div>
 );

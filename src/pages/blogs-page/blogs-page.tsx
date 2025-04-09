@@ -119,11 +119,16 @@ const MOCK_ALL_BLOGS = [
 ];
 
 export const BlogsPage = () => (
-    <Stack spacing={6} mb={8}>
+    <Stack spacing={6} mb={8} mt={{ base: -7, xl: 0 }}>
         <Heading fontSize={{ base: '2xl', xl: '5xl' }} lineHeight='none' textAlign='center'>
             Кулинарные блоги
         </Heading>
-        <Box mb={{ base: 1, md: 1 }} bg='lime.400' borderRadius={24} padding={6}>
+        <Box
+            mb={{ base: 1, md: 1 }}
+            bg='lime.400'
+            borderRadius={{ base: 16, xl: 24 }}
+            padding={{ base: 2, xl: 6 }}
+        >
             <Heading fontSize={{ base: '2xl', xl: '4xl' }} lineHeight={10} fontWeight={400}>
                 Избранные блоги
             </Heading>
@@ -134,7 +139,8 @@ export const BlogsPage = () => (
                 gridTemplateColumns={{
                     base: '1fr',
                     md: 'repeat(2, 1fr)',
-                    lg: 'repeat(2, 1fr)',
+                    xl: '1fr',
+                    xxxl: 'repeat(2, 1fr)',
                 }}
             >
                 {MOCK_FAV_BLOGS.map((el) => (
@@ -151,22 +157,23 @@ export const BlogsPage = () => (
             </SimpleGrid>
         </Box>
         <Box
-            mt={3}
+            mt={{ base: 1, xl: 3 }}
             mb={{ base: 1, md: 1 }}
             bg='blackAlpha.50'
             borderRadius={6}
-            padding={6}
+            padding={{ base: 4, xl: 6 }}
             alignItems='center'
         >
             <Stack align='center'>
                 <SimpleGrid
                     columns={{ base: 1, md: 2, xmd: 1, '2xl': 2 }}
-                    columnGap={{ base: 1, md: 4 }}
-                    rowGap={{ base: 2, md: 6 }}
+                    columnGap={{ base: 4, xl: 4 }}
+                    rowGap={{ base: 4, xl: 6 }}
                     gridTemplateColumns={{
                         base: '1fr',
-                        md: 'repeat(3, 1fr)',
-                        lg: 'repeat(2, 1fr)',
+                        md: 'repeat(2, 1fr)',
+                        xl: '1fr',
+                        xxxl: 'repeat(2, 1fr)',
                     }}
                 >
                     {MOCK_ALL_BLOGS.map((el) => (
@@ -182,8 +189,8 @@ export const BlogsPage = () => (
                 </SimpleGrid>
                 <Button
                     width='fit-content'
-                    mt={4}
-                    size={{ base: 'md', lg: 'lg' }}
+                    mt={{ base: 2, xl: 4 }}
+                    size={{ base: 'lg', lg: 'lg' }}
                     rightIcon={<ArrowForwardIcon />}
                     display={{ base: 'none', md: 'flex' }}
                     alignItems='center'
