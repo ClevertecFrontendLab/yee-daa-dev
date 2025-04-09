@@ -6,27 +6,27 @@ import { Carousel } from '~/components/carousel';
 
 const MOCK_FAV_BLOGS = [
     {
-        name: 'Мин',
+        name: 'Елена',
         lastName: 'Мин',
         login: '@cookermin',
         descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
         imgSrc: 'imgSrc',
         newRecipes: 1,
         social: {
-            bookmarks: 12,
-            followers: 1,
+            bookmarks: 87,
+            followers: 12,
         },
     },
     {
-        name: 'Name',
-        lastName: 'Мин',
-        login: 'login',
-        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
+        name: 'Мирием',
+        lastName: 'Чонишвили',
+        login: '@chonimiriem',
+        descr: 'Приготовим ароматное ризотто с грибами и белым вином. Давайте вместе сделаем этот ужин незабываемым!',
         imgSrc: 'imgSrc',
-        newRecipes: 1,
+        newRecipes: 8,
         social: {
-            bookmarks: 12,
-            followers: 1,
+            bookmarks: 240,
+            followers: 87,
         },
     },
 ];
@@ -119,23 +119,22 @@ const MOCK_ALL_BLOGS = [
 ];
 
 export const BlogsPage = () => (
-    <Stack spacing={4} mb={8}>
+    <Stack spacing={6} mb={8}>
         <Heading fontSize={{ base: '2xl', xl: '5xl' }} lineHeight='none' textAlign='center'>
             Кулинарные блоги
         </Heading>
-        <Box mb={{ base: 1, md: 1 }} bg='lime.400' borderRadius={6} padding={6}>
+        <Box mb={{ base: 1, md: 1 }} bg='lime.400' borderRadius={24} padding={6}>
             <Heading fontSize={{ base: '2xl', xl: '4xl' }} lineHeight={10} fontWeight={400}>
                 Избранные блоги
             </Heading>
             <SimpleGrid
-                pt={6}
+                pt={4}
                 columns={{ base: 1, md: 2, xmd: 1, '2xl': 2 }}
                 gap={{ base: 3, md: 4 }}
                 gridTemplateColumns={{
                     base: '1fr',
                     md: 'repeat(2, 1fr)',
-                    lg: '1fr',
-                    '2xl': 'repeat(2, 1fr)',
+                    lg: 'repeat(2, 1fr)',
                 }}
             >
                 {MOCK_FAV_BLOGS.map((el) => (
@@ -152,6 +151,7 @@ export const BlogsPage = () => (
             </SimpleGrid>
         </Box>
         <Box
+            mt={3}
             mb={{ base: 1, md: 1 }}
             bg='blackAlpha.50'
             borderRadius={6}
@@ -166,9 +166,7 @@ export const BlogsPage = () => (
                     gridTemplateColumns={{
                         base: '1fr',
                         md: 'repeat(3, 1fr)',
-                        lg: '1fr',
-                        '2xl': 'repeat(2, 1fr)',
-                        '3xl': 'repeat(3, 1fr)',
+                        lg: 'repeat(2, 1fr)',
                     }}
                 >
                     {MOCK_ALL_BLOGS.map((el) => (
@@ -184,8 +182,8 @@ export const BlogsPage = () => (
                 </SimpleGrid>
                 <Button
                     width='fit-content'
-                    mt={6}
-                    size={{ base: 'md', '2xl': 'lg' }}
+                    mt={4}
+                    size={{ base: 'md', lg: 'lg' }}
                     rightIcon={<ArrowForwardIcon />}
                     display={{ base: 'none', md: 'flex' }}
                     alignItems='center'
@@ -197,6 +195,6 @@ export const BlogsPage = () => (
                 </Button>
             </Stack>
         </Box>
-        <Carousel />
+        <Carousel mt={2} />
     </Stack>
 );

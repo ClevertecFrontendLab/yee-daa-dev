@@ -45,7 +45,7 @@ const Layout = () => {
                 }}
                 gridTemplateRows={{ md: '80px 1fr', base: '64px 1fr 84px' }}
                 gridTemplateColumns={{
-                    xl: '256px 1fr 280px',
+                    xl: '256px 1fr 255px',
                     base: '1fr',
                 }}
                 minHeight='100vh'

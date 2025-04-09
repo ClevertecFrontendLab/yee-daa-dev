@@ -20,7 +20,7 @@ export const UserInfo: FC<Props> = ({
         ml={withGutter ? 13 : 0}
         maxWidth='355px'
         alignItems='center'
-        display={{ base: 'none', xl: 'flex' }}
+        display={{ base: 'none', xs: 'flex' }}
     >
         <Avatar size={{ base: 'sm', md: 'md' }} src={imageUrl} name={`${firstName} ${lastName}`} />
         <Box ml={{ base: 2, md: 3 }} flexGrow={1}>
