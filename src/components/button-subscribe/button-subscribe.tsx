@@ -20,13 +20,16 @@ export const ButtonSubscribe: FC<ButtonSubscribeProps> = () => {
             bgColor='blackAlpha.900'
         >
             <Button
+                type='button'
                 size='xs'
                 color='blackAlpha.800'
                 fontSize='xs'
                 variant='outline'
                 borderColor='blackAlpha.600'
                 leftIcon={<SubscribeCompleteIcon />}
-                onClick={() => setIsSubscribed(!isSubscribed)}
+                onClick={() => {
+                    setIsSubscribed(!isSubscribed);
+                }}
             >
                 Вы подписаны
             </Button>

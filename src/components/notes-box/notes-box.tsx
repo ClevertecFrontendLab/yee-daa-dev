@@ -13,7 +13,7 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
 
     const length = items.length;
     return (
-        <Stack bgColor='blackAlpha.50' w='100%' p={6} align='center' pb={3} {...rest}>
+        <Stack id='notes' bgColor='blackAlpha.50' w='100%' p={6} align='center' pb={3} {...rest}>
             <HStack alignItems='center' mb={3} w='100%'>
                 <Heading fontSize={36} lineHeight='none' fontWeight={400}>
                     Заметки

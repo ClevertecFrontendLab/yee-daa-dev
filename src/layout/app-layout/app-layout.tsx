@@ -1,6 +1,7 @@
 import { Fragment, lazy, Suspense } from 'react';
 
 import { AppLoader } from '~/components/app-loader';
+import { ScrollToHashElement } from '~/components/scroll-to-hash-element';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { useGetAllCategoriesQuery } from '~/redux/api/category-api';
 import { JUICIEST_PARAMS, NEWEST_PARAMS } from '~/redux/api/constants';
@@ -22,6 +23,7 @@ export const AppLayout = () => {
     return (
         <Fragment>
             <></>
+            <ScrollToHashElement />
             <Suspense fallback={<AppLoader isOpen={true} overlayColor='white' />}>
                 <Layout />
             </Suspense>

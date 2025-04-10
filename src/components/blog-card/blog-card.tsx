@@ -46,7 +46,7 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
     const cardData = cardType ? CardTypeProps[cardType] : CardTypeProps.DEFAULT;
 
     return (
-        <Card minHeight={cardData.minHeight} as={link ? Link : undefined} to={link}>
+        <Card minHeight={cardData.minHeight}>
             <CardHeader {...cardData.CardHeader}>
                 <UserInfo
                     firstName={firstName}
@@ -102,6 +102,8 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                             color='lime.600'
                             fontSize='xs'
                             variant='outline'
+                            as={Link}
+                            to={`${link}#notes`}
                         >
                             Читать
                         </Button>

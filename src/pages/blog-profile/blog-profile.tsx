@@ -76,7 +76,7 @@ export const BlogProfile = () => {
                     pt={1}
                 />
             )}
-            <NotesBox items={NOTE_LIST} mt={4} />
+            <NotesBox items={NOTE_LIST} mt={4} id='notes' />
             <HStack justify='space-between' w='100%' mt={7}>
                 <Heading fontWeight={500} fontSize={48}>
                     Другие блоги
