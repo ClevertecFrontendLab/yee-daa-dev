@@ -1,10 +1,10 @@
-import { Button, Card, CardBody, CardHeader, Heading, HStack, Image, Text } from '@chakra-ui/react';
+import { Card, CardBody, CardHeader, Heading, HStack, Image, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
+import { ButtonSubscribe } from '~/components/button-subscribe';
 import { UserProps } from '~/types/user';
 
 import { FollowersIcon } from '../icons/followers-icon';
-import { SubscribeIcon } from '../icons/subcribe-icon';
 
 export const AuthorCard: FC<{ author: UserProps }> = ({ author }) => (
     <Card bg='var(--chakra-colors-lime-300)' p={{ base: 3, sm: 6 }} flexDirection='row' gap={4}>
@@ -28,15 +28,7 @@ export const AuthorCard: FC<{ author: UserProps }> = ({ author }) => (
                 @{author.login}
             </Text>
             <HStack flexWrap='wrap' justifyContent='space-between'>
-                <Button
-                    size='xs'
-                    color='white'
-                    bg='blackAlpha.900'
-                    fontSize='xs'
-                    leftIcon={<SubscribeIcon />}
-                >
-                    Подписаться
-                </Button>
+                <ButtonSubscribe userLogin={author.login} />
 
                 <HStack>
                     <HStack>

@@ -28,7 +28,7 @@ export const BlogSection = () => (
         </HStack>
         <SimpleGrid columns={3} gap={{ base: 3, md: 4 }} minChildWidth='210px'>
             {posts.map((post) => (
-                <BlogCard {...post} key={post.login} />
+                <BlogCard {...post} key={post.login} cardType='DEFAULT' />
             ))}
         </SimpleGrid>
         <Center display={{ base: 'flex', md: 'none' }} mt={3}>

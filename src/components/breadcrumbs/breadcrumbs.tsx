@@ -17,6 +17,8 @@ export const Breadcrumbs = () => {
     const { data: recipe } = useGetRecipeByIdQuery(recipeId as string, { skip: !recipeId });
 
     const isJuiciestPath = pathname.includes(Paths.JUICIEST);
+    const isBlogs = pathname.includes(Paths.BLOGS);
+    const isRecipes = !isJuiciestPath && !isBlogs;
 
     const pathsArrNames = [
         selectedCategory?.title,
@@ -58,7 +60,14 @@ export const Breadcrumbs = () => {
                         </BreadcrumbLink>
                     </BreadcrumbItem>
                 )}
-                {!isJuiciestPath &&
+                {isBlogs && (
+                    <BreadcrumbItem>
+                        <BreadcrumbLink as={Link} to={Paths.BLOGS}>
+                            Блоги
+                        </BreadcrumbLink>
+                    </BreadcrumbItem>
+                )}
+                {isRecipes &&
                     isArrayWithItems(pathsArrNames) &&
                     pathsArrNames.map((title, index) =>
                         title ? (

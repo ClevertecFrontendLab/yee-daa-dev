@@ -9,70 +9,18 @@ import {
     Text,
 } from '@chakra-ui/react';
 import { FC } from 'react';
+import { Link } from 'react-router';
 
+import { CardTypeProps } from '~/components/blog-card/consts';
+import { ButtonSubscribe } from '~/components/button-subscribe';
 import { CardStat } from '~/components/card-stat/card-stat';
 import { Float } from '~/components/float';
-import { SubscribeIcon } from '~/components/icons/subcribe-icon';
 import { Post } from '~/types/post.ts';
 import { makeNewRecipeBadge } from '~/utils/make-new-recipe-badge';
 
 import { UserInfo } from '../user-info';
 
-const CardTypeProps = {
-    DEFAULT: {
-        CardHeader: {
-            p: 4,
-            pb: 2,
-        },
-        CardBody: {
-            p: 4,
-            pt: 2,
-        },
-    },
-    FAVORITE: {
-        CardHeader: {
-            p: 6,
-            pb: 4,
-            pl: {
-                base: 4,
-                xl: 6,
-            },
-        },
-        CardBody: {
-            p: 6,
-            pt: { base: 0, xl: 3 },
-            pl: {
-                base: 4,
-                xl: 6,
-            },
-            pb: {
-                base: 1,
-                '2xl': 6,
-            },
-            flex: {
-                base: '0 1 0%',
-                '2xl': '1 1 0%',
-            },
-        },
-    },
-    AVAILABLE: {
-        CardHeader: {
-            p: { base: 4, xl: 6 },
-            pb: 4,
-        },
-        CardBody: {
-            p: { base: 4, xl: 6 },
-            pt: { base: 0, xl: 3 },
-            pb: 0,
-            flex: {
-                base: '0 1 0%',
-                '2xl': '1 1 0%',
-            },
-        },
-    },
-};
-
-type CardType = 'FAVORITE' | 'DEFAULT' | 'AVAILABLE';
+type CardType = 'FAVORITE' | 'DEFAULT' | 'AVAILABLE' | 'PROFILE';
 
 type BlogCardProps = {
     cardType?: CardType;
@@ -81,6 +29,7 @@ type BlogCardProps = {
         followers: number;
     };
     newRecipes?: number;
+    link?: string;
 };
 
 export const BlogCard: FC<Post & BlogCardProps> = ({
@@ -92,11 +41,12 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
     cardType,
     social,
     newRecipes,
+    link,
 }) => {
     const cardData = cardType ? CardTypeProps[cardType] : CardTypeProps.DEFAULT;
 
     return (
-        <Card minHeight={{ base: cardType === 'FAVORITE' ? 208 : 200, xl: 224 }}>
+        <Card minHeight={cardData.minHeight} as={link ? Link : undefined} to={link}>
             <CardHeader {...cardData.CardHeader}>
                 <UserInfo
                     firstName={firstName}
@@ -139,16 +89,8 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                     pb={4}
                 >
                     <HStack>
-                        {cardType === 'AVAILABLE' ? (
-                            <Button
-                                size='xs'
-                                color='white'
-                                bg='blackAlpha.900'
-                                fontSize='xs'
-                                leftIcon={<SubscribeIcon />}
-                            >
-                                Подписаться
-                            </Button>
+                        {cardType === 'AVAILABLE' || cardType === 'PROFILE' ? (
+                            <ButtonSubscribe userLogin={login} />
                         ) : (
                             <Button size='xs' bg='lime.400' fontSize='xs'>
                                 Рецепты

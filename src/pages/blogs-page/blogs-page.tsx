@@ -1,122 +1,11 @@
 import { ArrowForwardIcon } from '@chakra-ui/icons';
-import { Box, Button, Heading, Link, SimpleGrid, Stack } from '@chakra-ui/react';
+import { Box, Button, Heading, SimpleGrid, Stack } from '@chakra-ui/react';
+import { Link } from 'react-router';
 
 import { BlogCard } from '~/components/blog-card/blog-card';
 import { Carousel } from '~/components/carousel';
-
-const MOCK_FAV_BLOGS = [
-    {
-        name: 'Елена',
-        lastName: 'Мин',
-        login: '@cookermin',
-        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
-        imgSrc: 'imgSrc',
-        newRecipes: 1,
-        social: {
-            bookmarks: 87,
-            followers: 12,
-        },
-    },
-    {
-        name: 'Мирием',
-        lastName: 'Чонишвили',
-        login: '@chonimiriem',
-        descr: 'Приготовим ароматное ризотто с грибами и белым вином. Давайте вместе сделаем этот ужин незабываемым!',
-        imgSrc: 'imgSrc',
-        newRecipes: 8,
-        social: {
-            bookmarks: 240,
-            followers: 87,
-        },
-    },
-];
-
-const MOCK_ALL_BLOGS = [
-    {
-        name: 'Мин',
-        lastName: 'Мин',
-        login: '@cookermin',
-        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
-        imgSrc: 'imgSrc',
-        newRecipes: 1,
-        social: {
-            bookmarks: 12,
-            followers: 1,
-        },
-    },
-    {
-        name: 'Name',
-        lastName: 'Мин',
-        login: 'login',
-        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
-        imgSrc: 'imgSrc',
-        newRecipes: 1,
-        social: {
-            bookmarks: 12,
-            followers: 1,
-        },
-    },
-    {
-        name: 'Name',
-        lastName: 'Мин',
-        login: 'login',
-        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
-        imgSrc: 'imgSrc',
-        newRecipes: 1,
-        social: {
-            bookmarks: 12,
-            followers: 1,
-        },
-    },
-    {
-        name: 'Name',
-        lastName: 'Мин',
-        login: 'login',
-        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
-        imgSrc: 'imgSrc',
-        newRecipes: 1,
-        social: {
-            bookmarks: 12,
-            followers: 1,
-        },
-    },
-    {
-        name: 'Name',
-        lastName: 'Мин',
-        login: 'login',
-        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
-        imgSrc: 'imgSrc',
-        newRecipes: 1,
-        social: {
-            bookmarks: 12,
-            followers: 1,
-        },
-    },
-    {
-        name: 'Name',
-        lastName: 'Мин',
-        login: 'login',
-        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
-        imgSrc: 'imgSrc',
-        newRecipes: 1,
-        social: {
-            bookmarks: 12,
-            followers: 1,
-        },
-    },
-    {
-        name: 'Name',
-        lastName: 'Мин',
-        login: 'login',
-        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
-        imgSrc: 'imgSrc',
-        newRecipes: 1,
-        social: {
-            bookmarks: 12,
-            followers: 1,
-        },
-    },
-];
+import { Paths } from '~/constants/path';
+import { MOCK_ALL_BLOGS, MOCK_FAV_BLOGS } from '~/pages/blogs-page/consts';
 
 export const BlogsPage = () => (
     <Stack spacing={6} mb={8} mt={{ base: 1, sm: 0, md: -7, xmd: 0 }}>
@@ -153,6 +42,7 @@ export const BlogsPage = () => (
                         cardType='FAVORITE'
                         social={el.social}
                         newRecipes={el.newRecipes}
+                        link={`${Paths.BLOGS}/${el.login}`}
                     />
                 ))}
             </SimpleGrid>
@@ -185,6 +75,7 @@ export const BlogsPage = () => (
                             text={el.descr}
                             cardType='AVAILABLE'
                             social={el.social}
+                            link={`${Paths.BLOGS}/${el.login}`}
                         />
                     ))}
                 </SimpleGrid>

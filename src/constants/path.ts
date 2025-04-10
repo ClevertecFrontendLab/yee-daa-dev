@@ -2,6 +2,7 @@ export const routeParams = {
     categoryName: 'categoryName',
     subCategoryName: 'subCategoryName',
     recipeId: 'recipeId',
+    blogId: 'blogId',
 } as const;
 
 export const Paths = {
@@ -16,6 +17,7 @@ export const Paths = {
     RECIPE: `:${routeParams.categoryName}/:${routeParams.subCategoryName}/:${routeParams.recipeId}`,
     JUICIEST: '/the-juiciest',
     BLOGS: '/blogs',
+    BLOGS_ITEM: `/blogs/:${routeParams.blogId}`,
     ERROR: '/not-found',
     OTHERS: '*',
 } as const;

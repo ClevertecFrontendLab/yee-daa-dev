@@ -3,9 +3,11 @@ import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from '
 
 import { AuthGuard } from '~/components/authorization/auth-guard/auth-guard.tsx';
 import { Paths } from '~/constants/path.js';
+import { BlogExistProtected } from '~/hoc/blog-exist-protected.tsx';
 import { CategoryExistProtected } from '~/hoc/category-exist-protected';
 import { SubcategoryRedirect } from '~/hoc/subcategory-redirect';
 import { AppLayout } from '~/layout/app-layout';
+import { BlogProfile } from '~/pages/blog-profile/blog-profile.tsx';
 import { BlogsPage } from '~/pages/blogs-page/blogs-page.tsx';
 import { CategoryPage } from '~/pages/category-page';
 import { ErrorPage } from '~/pages/error-page/error-page';
@@ -70,6 +72,16 @@ export const appRouter = createBrowserRouter(
                     <Route
                         path={Paths.BLOGS}
                         element={<BlogsPage />}
+                        // TODO: look into
+                        loader={clearFilterStateLoader}
+                    />
+                    <Route
+                        path={Paths.BLOGS_ITEM}
+                        element={
+                            <BlogExistProtected>
+                                <BlogProfile />
+                            </BlogExistProtected>
+                        }
                         // TODO: look into
                         loader={clearFilterStateLoader}
                     />

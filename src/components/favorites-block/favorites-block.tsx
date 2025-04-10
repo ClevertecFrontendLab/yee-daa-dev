@@ -48,7 +48,9 @@ export const FavoritesBlock: FC = () => {
                         Вся подборка
                     </Button>
                 </HStack>
-                {isArrayWithItems(favoritesRecipes) && <CardList recipeList={favoritesRecipes} />}
+                {isArrayWithItems(favoritesRecipes) && (
+                    <CardList recipeList={favoritesRecipes} pb={10} />
+                )}
                 <Center display={{ base: 'flex', md: 'none' }} mt={3}>
                     <Button
                         bg='lime.400'

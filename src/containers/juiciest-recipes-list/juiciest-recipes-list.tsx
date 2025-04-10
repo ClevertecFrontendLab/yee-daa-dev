@@ -32,6 +32,7 @@ export const JuiciestRecipesList = memo(() => {
                     isLoading={isFetching}
                     totalPages={recipesTotalPage}
                     loadMoreCallback={loadMoreRecipes}
+                    mb={10}
                 />
             </SectionBox>
         )
