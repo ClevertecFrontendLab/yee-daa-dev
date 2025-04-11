@@ -1,19 +1,21 @@
-class RequestQueue {
-    private subscribers: (() => void)[] = [];
+type QueueCallback = (abort?: boolean) => Promise<unknown>;
+
+export class RequestQueue {
+    private _subscribers: QueueCallback[] = [];
 
     private _shouldSubscribe = false;
 
-    subscribe(callback: () => void) {
-        this.subscribers.push(callback);
+    subscribe(callback: QueueCallback) {
+        this._subscribers.push(callback);
     }
 
     reset() {
-        this.subscribers = [];
+        this._subscribers = [];
         this._shouldSubscribe = false;
     }
 
-    notify() {
-        this.subscribers.forEach((callback) => callback());
+    notify(...args: Parameters<QueueCallback>) {
+        this._subscribers.forEach((callback) => callback(...args));
         this.reset();
     }
 
