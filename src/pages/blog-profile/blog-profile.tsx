@@ -65,7 +65,7 @@ export const BlogProfile = () => {
                 login={userInfo.login}
                 social={userInfo.social}
                 mt={-4}
-                minWidth={480}
+                minWidth={{ base: 422, '2xl': 480 }}
             />
             {isArrayWithItems(RESIPE_RESPONSE) && (
                 <RecipeCardList

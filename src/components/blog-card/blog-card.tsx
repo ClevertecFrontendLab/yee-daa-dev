@@ -87,8 +87,9 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                     pr={{ base: 4, xl: 6 }}
                     pt={4}
                     pb={4}
+                    {...cardData.CardFooter}
                 >
-                    <HStack>
+                    <HStack {...cardData.HStack}>
                         {cardType === 'AVAILABLE' || cardType === 'PROFILE' ? (
                             <ButtonSubscribe userLogin={login} />
                         ) : (

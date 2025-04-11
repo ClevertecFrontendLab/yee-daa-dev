@@ -1,4 +1,14 @@
-import { Button, Collapse, Flex, Heading, HStack, Stack, StackProps, Text } from '@chakra-ui/react';
+import {
+    Button,
+    Collapse,
+    Flex,
+    Heading,
+    HStack,
+    Stack,
+    StackProps,
+    Text,
+    useBreakpointValue,
+} from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
 import { NoteCard } from '~/components/notes-box/components/note-card';
@@ -10,11 +20,15 @@ export type NotesBoxData = {
 
 export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
     const [notesFolded, setNotesFolded] = useState(true);
+    const variant = useBreakpointValue({
+        base: 150,
+        '2xl': 169,
+    });
 
     const length = items.length;
     return (
         <Stack id='notes' bgColor='blackAlpha.50' w='100%' p={6} align='center' pb={3} {...rest}>
-            <HStack alignItems='center' mb={3} w='100%'>
+            <HStack alignItems='center' mb={{ base: 4, '2xl': 3 }} w='100%'>
                 <Heading fontSize={36} lineHeight='none' fontWeight={400}>
                     Заметки
                 </Heading>
@@ -25,7 +39,7 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
                     fontWeight={400}
                 >{`(${length})`}</Text>
             </HStack>
-            <Collapse in={!notesFolded} startingHeight={169} animateOpacity>
+            <Collapse in={!notesFolded} startingHeight={variant} animateOpacity>
                 <Flex flexWrap='wrap' gap={4}>
                     {items.map((item) => (
                         <NoteCard

@@ -17,7 +17,7 @@ export const NoteCard: FC<NoteCardProps> = ({ time, text, ...rest }) => (
             <Text color='lime.600'>{formatTime(time)}</Text>
         </CardHeader>
         <CardBody p={6} pt={0} pb={5}>
-            <Text lineHeight={5} noOfLines={4} letterSpacing='-0.8px'>
+            <Text lineHeight={5} noOfLines={{ base: 3, '2xl': 4 }} letterSpacing='-0.8px'>
                 {text}
             </Text>
         </CardBody>

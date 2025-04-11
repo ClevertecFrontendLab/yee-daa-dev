@@ -9,6 +9,10 @@ export const CardTypeProps = {
             p: 4,
             pt: 2,
         },
+        CardFooter: {},
+        HStack: {
+            justifyContent: 'auto',
+        },
     },
     PROFILE: {
         minHeight: 'none',
@@ -21,6 +25,13 @@ export const CardTypeProps = {
             p: 6,
             pt: 5,
             pb: 0,
+        },
+        CardFooter: {
+            flexDirection: { base: 'column-reverse' as const, '2xl': 'row' as const },
+            gap: { base: 5, '2xl': 0 },
+        },
+        HStack: {
+            justifyContent: { base: 'flex-end', '2xl': 'auto' },
         },
     },
     FAVORITE: {
@@ -49,6 +60,10 @@ export const CardTypeProps = {
                 '2xl': '1 1 0%',
             },
         },
+        CardFooter: {},
+        HStack: {
+            justifyContent: 'auto',
+        },
     },
     AVAILABLE: {
         minHeight: { base: 200, xl: 224 },
@@ -64,6 +79,10 @@ export const CardTypeProps = {
                 base: '0 1 0%',
                 '2xl': '1 1 0%',
             },
+        },
+        CardFooter: {},
+        HStack: {
+            justifyContent: 'auto',
         },
     },
 };
