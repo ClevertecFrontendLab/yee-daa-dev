@@ -1380,24 +1380,6 @@ const CATEGORIES_RESPONSE = [
         rootCategoryId: '67c46e93f51967aa8390beeb',
     },
     {
-        _id: '67c46eb2f51967aa8390beec',
-        title: 'Мясные закуски',
-        category: 'meat-snacks',
-        rootCategoryId: '67c46e93f51967aa8390beeb',
-    },
-    {
-        _id: '67c46ec4f51967aa8390beed',
-        title: 'Рыбные закуски',
-        category: 'fish-snacks',
-        rootCategoryId: '67c46e93f51967aa8390beeb',
-    },
-    {
-        _id: '67c46ed2f51967aa8390beee',
-        title: 'Овощные закуски',
-        category: 'vegetables-snacks',
-        rootCategoryId: '67c46e93f51967aa8390beeb',
-    },
-    {
         _id: '67c46dc5f51967aa8390bee6',
         title: 'Салаты',
         description:
@@ -1424,24 +1406,6 @@ const CATEGORIES_RESPONSE = [
                 rootCategoryId: '67c46dc5f51967aa8390bee6',
             },
         ],
-    },
-    {
-        _id: '67c46df5f51967aa8390bee7',
-        title: 'Мясные салаты',
-        category: 'meat-salads',
-        rootCategoryId: '67c46dc5f51967aa8390bee6',
-    },
-    {
-        _id: '67c46e19f51967aa8390bee8',
-        title: 'Рыбные салаты',
-        category: 'fish-salads',
-        rootCategoryId: '67c46dc5f51967aa8390bee6',
-    },
-    {
-        _id: '67c46e2bf51967aa8390bee9',
-        title: 'Овощные салаты',
-        category: 'vegetables-salads',
-        rootCategoryId: '67c46dc5f51967aa8390bee6',
     },
     {
         _id: '67c46df5f51967aa8390bee7',
@@ -1489,25 +1453,6 @@ const CATEGORIES_RESPONSE = [
                 rootCategoryId: '67c48d99d02fb83fc3d8100f',
             },
         ],
-    },
-    {
-        _id: '67c48e627b493acd8a41030c',
-        title: 'Закуски',
-        category: 'snacks',
-        rootCategoryId: '67c48d99d02fb83fc3d8100f',
-    },
-
-    {
-        _id: '67c48f60ed67ca980917d64e',
-        title: 'Гарниры',
-        category: 'side-dishes',
-        rootCategoryId: '67c48d99d02fb83fc3d8100f',
-    },
-    {
-        _id: '67c48f6ded67ca980917d64f',
-        title: 'Десерты',
-        category: 'desserts',
-        rootCategoryId: '67c48d99d02fb83fc3d8100f',
     },
     {
         _id: '67c48e627b493acd8a41030c',
