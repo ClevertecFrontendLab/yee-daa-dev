@@ -57,7 +57,7 @@ export const BlogProfile = () => {
         setRecipePages(2);
     };
     return (
-        <Stack spacing={6} align='center'>
+        <Stack spacing={{ base: 3, xmd: 6 }} align='center'>
             <UserInfoBig
                 imgSrc={userInfo.imgSrc}
                 firstName={userInfo.firstName}
