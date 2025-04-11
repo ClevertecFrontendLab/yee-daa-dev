@@ -29,7 +29,7 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
 
     return (
         <Card direction='row' variant='outline' gap={6} data-test-id={`food-card-${index}`}>
-            <Box position='relative' w={{ base: '158px', md: '50%' }} maxW='346px' flex='1'>
+            <Box position='relative' w={{ base: '158px', xmd: '50%' }} maxW='346px' flex='1'>
                 <Box
                     position='absolute'
                     top={2}

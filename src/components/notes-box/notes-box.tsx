@@ -44,7 +44,11 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
                     {items.map((item) => (
                         <NoteCard
                             {...item}
-                            minWidth='calc(100% / 4)'
+                            minWidth={{
+                                md: 'calc(100% / 4)',
+                                xl: 'calc(100% / 3)',
+                                xxxl: 'calc(100% / 4)',
+                            }}
                             maxWidth='calc(100% / 2)'
                             flex={1}
                         />

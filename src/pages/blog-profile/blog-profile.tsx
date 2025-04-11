@@ -64,8 +64,8 @@ export const BlogProfile = () => {
                 lastName={userInfo.lastName}
                 login={userInfo.login}
                 social={userInfo.social}
-                mt={-4}
-                minWidth={{ base: 422, '2xl': 480 }}
+                mt={{ base: -8, xmd: -4 }}
+                minWidth={{ base: 356, xmd: 422, '2xl': 480 }}
             />
             {isArrayWithItems(RESIPE_RESPONSE) && (
                 <RecipeCardList
@@ -101,7 +101,7 @@ export const BlogProfile = () => {
                 rowGap={{ base: 4, xl: 6 }}
                 gridTemplateColumns={{
                     base: '1fr',
-                    md: 'repeat(2, 1fr)',
+                    md: 'repeat(3, 1fr)',
                     xl: '1fr',
                     xxxl: 'repeat(3, 1fr)',
                 }}

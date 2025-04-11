@@ -24,11 +24,11 @@ export const UserInfoBig: FC<UserInfoBigProps> = ({
     ...rest
 }) => (
     <Flex alignItems='center' gap={6} {...rest}>
-        <Avatar size='2xl' src={imgSrc} name={`${firstName} ${lastName}`} />
+        <Avatar size={{ base: 'xl', xmd: '2xl' }} src={imgSrc} name={`${firstName} ${lastName}`} />
         <Stack gap={3}>
             <Text
-                lineHeight='48px'
-                fontSize='5xl'
+                lineHeight={{ base: '32px', xmd: '48px' }}
+                fontSize={{ base: '2xl', xmd: '5xl' }}
                 fontWeight={700}
             >{`${firstName} ${lastName}`}</Text>
             <Text fontSize='sm' lineHeight={5} color='blackAlpha.700'>
