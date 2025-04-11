@@ -17,18 +17,21 @@ export const CardTypeProps = {
     PROFILE: {
         minHeight: 'none',
         CardHeader: {
-            p: 5,
+            p: { base: 2, xmd: 5 },
             pb: 2,
-            pl: 6,
+            pl: { base: 2, xmd: 6 },
         },
         CardBody: {
-            p: 6,
-            pt: 5,
+            p: { base: 2, xmd: 6 },
+            pt: { base: 2, xmd: 5 },
             pb: 0,
         },
         CardFooter: {
             flexDirection: { base: 'column-reverse' as const, '2xl': 'row' as const },
             gap: { base: 5, '2xl': 0 },
+            pl: { base: 2, xmd: 7 },
+            pr: { base: 2, xmd: 6 },
+            pb: { base: 2, xmd: 4 },
         },
         HStack: {
             justifyContent: { base: 'flex-end', '2xl': 'auto' },

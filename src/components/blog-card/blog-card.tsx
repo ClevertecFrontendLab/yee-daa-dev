@@ -53,6 +53,7 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                     lastName={lastName}
                     login={login}
                     imageUrl={imageUrl}
+                    shrinks
                 />
                 {newRecipes && (
                     <Float top={{ base: 1, xl: 2 }} right={{ base: 1, xl: 2 }}>

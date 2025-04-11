@@ -27,15 +27,25 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
 
     const length = items.length;
     return (
-        <Stack id='notes' bgColor='blackAlpha.50' w='100%' p={6} align='center' pb={3} {...rest}>
+        <Stack
+            id='notes'
+            bgColor='blackAlpha.50'
+            w='100%'
+            p={{ base: 4, lg: 6 }}
+            align='center'
+            pb={3}
+            pt={{ base: 5, lg: 6 }}
+            gap={{ base: '10px', lg: 4 }}
+            {...rest}
+        >
             <HStack alignItems='center' mb={{ base: 4, '2xl': 3 }} w='100%'>
-                <Heading fontSize={36} lineHeight='none' fontWeight={400}>
+                <Heading fontSize={{ base: 20, lg: 36 }} lineHeight='none' fontWeight={400}>
                     Заметки
                 </Heading>
                 <Text
                     lineHeight='none'
                     color='blackAlpha.600'
-                    fontSize={30}
+                    fontSize={{ base: 20, lg: 30 }}
                     fontWeight={400}
                 >{`(${length})`}</Text>
             </HStack>
@@ -58,7 +68,8 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
             {length > 3 && (
                 <Button
                     w='fit-content'
-                    fontSize={14}
+                    // fontSize={14}
+                    size={{ base: 'xs', lg: 'sm' }}
                     variant='ghost'
                     onClick={() => setNotesFolded(!notesFolded)}
                 >

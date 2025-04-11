@@ -77,14 +77,14 @@ export const BlogProfile = () => {
                 />
             )}
             <NotesBox items={NOTE_LIST} mt={4} id='notes' />
-            <HStack justify='space-between' w='100%' mt={7}>
-                <Heading fontWeight={500} fontSize={48}>
+            <HStack justify='space-between' w='100%' mt={{ base: 6, xmd: 7 }}>
+                <Heading fontWeight={500} fontSize={{ base: 24, xl: 48 }}>
                     Другие блоги
                 </Heading>
                 <Button
                     width='fit-content'
                     mt={{ base: 2, xl: 4 }}
-                    size={{ base: 'lg', lg: 'lg' }}
+                    size={{ base: 'xs', lg: 'lg' }}
                     rightIcon={<ArrowForwardIcon />}
                     display={{ base: 'none', md: 'flex' }}
                     alignItems='center'
