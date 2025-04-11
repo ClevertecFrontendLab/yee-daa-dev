@@ -16,7 +16,7 @@ export const authSlice = createSlice({
             state.accessToken = action.payload;
         },
 
-        resetAuth: () => ({ ...initialState }),
+        resetAuth: () => initialState,
     },
     selectors: {
         selectAccessToken: (state) => state.accessToken,

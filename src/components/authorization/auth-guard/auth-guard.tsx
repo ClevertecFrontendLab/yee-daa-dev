@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Navigate } from 'react-router';
 import { Outlet } from 'react-router';
 
@@ -15,7 +15,7 @@ export const AuthGuard = () => {
 
     const [updateTokens, { error, isLoading }] = useRefreshTokenMutation();
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (isFirstRender.current) {
             if (!accessToken) {
                 updateTokens();

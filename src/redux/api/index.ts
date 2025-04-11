@@ -6,6 +6,7 @@ import {
     FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
 
+import { HttpStatus } from '~/constants/http-status';
 import { AppState } from '~/types/store';
 
 import { resetAuth, setAccessToken } from '../features/auth-slice';
@@ -34,7 +35,7 @@ const reauthQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>
 ) => {
     let result = await baseAuthQuery(args, api, extraOptions);
 
-    if (result.error && result.error.status === 401) {
+    if (result.error && result.error.status === HttpStatus.UNAUTHORIZED) {
         if (requestQueue.shouldSubscribe) {
             return new Promise((res, rej) => {
                 requestQueue.subscribe(async (abort = false) => {

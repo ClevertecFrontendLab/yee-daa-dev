@@ -14,7 +14,7 @@ import { isFetchBaseQueryError } from '~/utils/type-guard';
 import { ResultModal } from '../../result-modal/result-modal';
 import { ModalLabel } from './label';
 
-const Pin = [1, 2, 3, 4, 5, 6];
+const PIN = [1, 2, 3, 4, 5, 6];
 const { ServerErrorToast } = TOAST_MESSAGE;
 
 type VerificationCodeModalProps = RestoreModalProps & {
@@ -96,7 +96,7 @@ export const VerificationCodeModal: FC<VerificationCodeModalProps> = ({
                             autoFocus
                             otp
                         >
-                            {Pin.map((key) => (
+                            {PIN.map((key) => (
                                 <PinInputField
                                     data-test-id={`${CyTestId.Input.VerificationCode}-${key}`}
                                     _placeholder={{ color: 'lime.800' }}
