@@ -24,7 +24,7 @@ export const RecipeCardList: FC<RecipeCardListProps> = ({
     <Box>
         <CardList recipeList={recipeList} {...rest} />
         {currentPage < totalPages && (
-            <Center mt={4}>
+            <Center mt={{ base: 3, sm: 4 }}>
                 <Button
                     data-test-id='load-more-button'
                     bg='lime.400'

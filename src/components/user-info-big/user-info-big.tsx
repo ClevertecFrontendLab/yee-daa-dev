@@ -23,15 +23,27 @@ export const UserInfoBig: FC<UserInfoBigProps> = ({
     social,
     ...rest
 }) => (
-    <Flex alignItems='center' gap={6} {...rest}>
+    <Flex
+        alignItems='center'
+        flexDirection={{ base: 'column', sm: 'row' }}
+        gap={6}
+        w={{ base: '100%', sm: 'auto' }}
+        {...rest}
+    >
         <Avatar size={{ base: 'xl', xmd: '2xl' }} src={imgSrc} name={`${firstName} ${lastName}`} />
-        <Stack gap={3}>
+        <Stack gap={3} w={{ base: '100%', sm: 'auto' }}>
             <Text
                 lineHeight={{ base: '32px', xmd: '48px' }}
                 fontSize={{ base: '2xl', xmd: '5xl' }}
                 fontWeight={700}
+                textAlign={{ base: 'center', sm: 'left' }}
             >{`${firstName} ${lastName}`}</Text>
-            <Text fontSize='sm' lineHeight={5} color='blackAlpha.700'>
+            <Text
+                fontSize='sm'
+                lineHeight={5}
+                color='blackAlpha.700'
+                textAlign={{ base: 'center', sm: 'left' }}
+            >
                 {login}
             </Text>
             <HStack justify='space-between'>

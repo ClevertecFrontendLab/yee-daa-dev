@@ -92,7 +92,7 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
                     <Heading
                         fontSize={{ base: 'md', xmd: 'xl' }}
                         noOfLines={{ base: 2, xmd: 1 }}
-                        mb={{ base: 7, xmd: 2 }}
+                        mb={{ base: 6, sm: 7, xmd: 2 }}
                         fontWeight={500}
                     >
                         <HighlightText query={inputValue ?? ''} text={title} />

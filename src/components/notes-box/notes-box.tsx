@@ -21,7 +21,8 @@ export type NotesBoxData = {
 export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
     const [notesFolded, setNotesFolded] = useState(true);
     const variant = useBreakpointValue({
-        base: 150,
+        base: 300,
+        sm: 150,
         '2xl': 169,
     });
 
@@ -34,8 +35,8 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
             p={{ base: 4, lg: 6 }}
             align='center'
             pb={3}
-            pt={{ base: 5, lg: 6 }}
-            gap={{ base: '10px', lg: 4 }}
+            pt={{ base: 6, sm: 5, lg: 6 }}
+            gap={{ base: 2, sm: '10px', lg: 4 }}
             {...rest}
         >
             <HStack alignItems='center' mb={{ base: 4, '2xl': 3 }} w='100%'>
@@ -55,11 +56,12 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
                         <NoteCard
                             {...item}
                             minWidth={{
-                                md: 'calc(100% / 4)',
+                                base: 'calc(100% / 2)',
+                                sm: 'calc(100% / 4)',
                                 xl: 'calc(100% / 3)',
                                 xxxl: 'calc(100% / 4)',
                             }}
-                            maxWidth='calc(100% / 2)'
+                            maxWidth={{ base: '100%', md: 'calc(100% / 2)' }}
                             flex={1}
                         />
                     ))}
@@ -68,9 +70,9 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
             {length > 3 && (
                 <Button
                     w='fit-content'
-                    // fontSize={14}
                     size={{ base: 'xs', lg: 'sm' }}
                     variant='ghost'
+                    mt={{ base: 3, sm: 0 }}
                     onClick={() => setNotesFolded(!notesFolded)}
                 >
                     {notesFolded ? 'Показать больше' : 'Свернуть'}

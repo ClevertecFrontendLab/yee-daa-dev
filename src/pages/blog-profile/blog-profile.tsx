@@ -64,8 +64,8 @@ export const BlogProfile = () => {
                 lastName={userInfo.lastName}
                 login={userInfo.login}
                 social={userInfo.social}
-                mt={{ base: -8, xmd: -4 }}
-                minWidth={{ base: 356, xmd: 422, '2xl': 480 }}
+                mt={{ base: 0, md: -8, xmd: -4 }}
+                minWidth={{ base: 0, sm: 356, xmd: 422, '2xl': 480 }}
             />
             {isArrayWithItems(RESIPE_RESPONSE) && (
                 <RecipeCardList
@@ -73,7 +73,7 @@ export const BlogProfile = () => {
                     currentPage={recipePages}
                     totalPages={2}
                     loadMoreCallback={onLoadMoreRecipes}
-                    pt={1}
+                    pt={{ base: 3, sm: 1 }}
                 />
             )}
             <NotesBox items={NOTE_LIST} mt={4} id='notes' />
@@ -86,7 +86,7 @@ export const BlogProfile = () => {
                     mt={{ base: 2, xl: 4 }}
                     size={{ base: 'xs', lg: 'lg' }}
                     rightIcon={<ArrowForwardIcon />}
-                    display={{ base: 'none', md: 'flex' }}
+                    display='flex'
                     alignItems='center'
                     variant='ghost'
                     as={Link}
@@ -98,7 +98,7 @@ export const BlogProfile = () => {
             <SimpleGrid
                 columns={{ base: 1, md: 2, xmd: 1, '2xl': 3 }}
                 columnGap={{ base: 4, xl: 4 }}
-                rowGap={{ base: 4, xl: 6 }}
+                rowGap={{ base: 3, sm: 4, xl: 6 }}
                 gridTemplateColumns={{
                     base: '1fr',
                     md: 'repeat(3, 1fr)',
