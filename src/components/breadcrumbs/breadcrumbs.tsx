@@ -3,59 +3,94 @@ import { Box, Breadcrumb, BreadcrumbItem } from '@chakra-ui/react';
 import { Link, useLocation } from 'react-router';
 
 import { Paths } from '../../constants/path.ts';
-import { pathsMap } from '../../constants/path-map.ts';
-
-const pathsObj: Record<string, string> = {
-    vegan: Paths.VEGAN,
-};
-
-// TODO: сделать нормальный маппинг, а то поедет крыша мапить ручками на 3 уровень вложенности путей
+import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { closeMenu } from '../../redux/features/burger-slice.ts';
+import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
+import {
+    clearChoosenCategory,
+    setChoosenCategory,
+} from '../../redux/features/choosen-category-slice.ts';
+import { selectRecipes } from '../../redux/features/recipies-slice.ts';
 
 export const Breadcrumbs = () => {
     const { pathname } = useLocation();
-    const pathsArr = pathname.split('/');
-    const paths = pathname.length > 1 ? pathsArr : pathsArr.splice(0, pathsArr.length - 1);
+    const dispatch = useAppDispatch();
+    const navMenu = useAppSelector(selectCategoriesMenu);
+    const recipes = useAppSelector(selectRecipes);
+
+    const pathsArr = pathname.split('/').filter(Boolean);
+    const categoryItem = navMenu.find((item) => item.category === pathsArr[0]);
+    const subcategory = categoryItem?.subItems?.find((subItem) => subItem.category === pathsArr[1]);
+    const recipePath = recipes.find((recipe) => recipe.id === pathsArr[2])?.title || '';
+
+    const isRathsJuiciest = pathname.includes(Paths.JUICIEST);
+
+    const pathsRussianArr = [categoryItem?.title, subcategory?.title, recipePath];
+
+    const handleCategoryClick = () => {
+        const choosenCategory = {
+            category: categoryItem?.category ?? '',
+            title: categoryItem?.title ?? '',
+            description: categoryItem?.description ?? '',
+            choosenSubCategory: subcategory ?? null,
+        };
+
+        dispatch(closeMenu());
+        dispatch(setChoosenCategory(choosenCategory));
+    };
 
     return (
-        <>
-            <Box width={32} display={{ base: 'none', md: 'block' }} />
+        <Box ml={{ base: 0, lg: 32 }} pb={{ base: 8, lg: 0 }}>
             <Breadcrumb
                 spacing='8px'
                 separator={<ChevronRightIcon color='gray.800' />}
-                display={{ base: 'none', md: 'block' }}
+                sx={{
+                    ol: {
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                    },
+                }}
+                data-test-id='breadcrumbs'
             >
-                {paths.map((el, i) => {
-                    if (!i)
-                        return (
-                            <BreadcrumbItem
-                                key={i}
-                                isCurrentPage={paths.length === 1}
-                                color={paths.length === 1 ? 'black' : 'blackAlpha.700'}
-                            >
-                                <BreadcrumbLink as={Link} to={Paths.R_SWITCHER}>
-                                    {pathsMap[Paths.R_SWITCHER]}
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                        );
-
-                    if (i === pathsArr.length - 1 && pathsArr.length > 1)
-                        return (
-                            <BreadcrumbItem isCurrentPage color='black' key={i}>
-                                <BreadcrumbLink as={Link} to={pathsObj[el]}>
-                                    {pathsMap[el]}
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                        );
-
-                    return (
-                        <BreadcrumbItem color='blackAlpha.700' key={i}>
-                            <BreadcrumbLink as={Link} to={pathsObj[el]}>
-                                {pathsMap[el]}
-                            </BreadcrumbLink>
-                        </BreadcrumbItem>
-                    );
-                })}
+                <BreadcrumbItem>
+                    <BreadcrumbLink
+                        as={Link}
+                        to={Paths.R_SWITCHER}
+                        onClick={() => dispatch(clearChoosenCategory())}
+                    >
+                        Главная
+                    </BreadcrumbLink>
+                </BreadcrumbItem>
+                {isRathsJuiciest ? (
+                    <BreadcrumbItem>
+                        <BreadcrumbLink as={Link} to={Paths.JUICIEST}>
+                            Самое сочное
+                        </BreadcrumbLink>
+                    </BreadcrumbItem>
+                ) : (
+                    pathsRussianArr.map(
+                        (title, index) =>
+                            title && (
+                                <BreadcrumbItem
+                                    key={index}
+                                    isCurrentPage={index === pathsRussianArr.length - 1}
+                                >
+                                    <BreadcrumbLink
+                                        as={Link}
+                                        to={
+                                            index === 0
+                                                ? '#'
+                                                : `/${pathsArr.slice(0, index + 1).join('/')}`
+                                        }
+                                        onClick={handleCategoryClick}
+                                    >
+                                        {title}
+                                    </BreadcrumbLink>
+                                </BreadcrumbItem>
+                            ),
+                    )
+                )}
             </Breadcrumb>
-        </>
+        </Box>
     );
 };

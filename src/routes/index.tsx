@@ -1,33 +1,46 @@
-import { ReactNode } from 'react';
+import { Fragment, lazy, ReactNode, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
-import { Layout } from '../components/layout';
-import { MenuItem, navMenu } from '../constants/nav-menu.ts';
 import { Paths } from '../constants/path.ts';
+import { useAppSelector } from '../hooks/typed-react-redux-hooks.ts';
+import { CategoryPage } from '../pages/category-page';
+import { ErrorPage } from '../pages/error-page/error-page.tsx';
 import { JuiciestPage } from '../pages/juiciest-page';
 import { MainPage } from '../pages/main-page';
-import { VeganPage } from '../pages/vegan-page';
+import { RecipePage } from '../pages/recipe-page/recipe-page.tsx';
+import { selectCategoriesMenu } from '../redux/features/categories-slice.ts';
+import { MenuItem } from '../types/category.ts';
 
-const renderRoutes = (routes: MenuItem[]) => {
-    return routes.map(({ path, subItems }): ReactNode => {
-        if (subItems)
-            return (
-                <>
-                    <Route key={path} path={path} element={<VeganPage />} />
-                    {renderRoutes(subItems)}
-                </>
-            );
+const Layout = lazy(() => import('../components/layout/layout.tsx'));
 
-        return <Route key={path} path={path} element={<VeganPage />} />;
+const renderRoutes = (routes: MenuItem[], basePath: string = ''): ReactNode => {
+    return routes.map((item): ReactNode => {
+        const currentPath = `${basePath}/${item.category}`;
+
+        return (
+            <Fragment key={currentPath}>
+                <Route path={currentPath} element={<CategoryPage />} />
+                <Route path={`${currentPath}/:id`} element={<RecipePage />} />
+                {item.subItems && renderRoutes(item.subItems, currentPath)}
+            </Fragment>
+        );
     });
 };
 
-export const routes = (
-    <Routes>
-        <Route path={Paths.R_SWITCHER} element={<Layout />}>
-            <Route index element={<MainPage />} />
-            <Route path={Paths.JUICIEST} element={<JuiciestPage />} />
-            {renderRoutes(navMenu)}
-        </Route>
-    </Routes>
-);
+export const AppRoutes = () => {
+    const navMenu = useAppSelector(selectCategoriesMenu);
+
+    return (
+        <Suspense fallback={<div>Загрузка...</div>}>
+            <Routes>
+                <Route path={Paths.R_SWITCHER} element={<Layout />}>
+                    <Route index element={<MainPage />} />
+                    <Route path={Paths.JUICIEST} element={<JuiciestPage />} />
+                    <Route path={Paths.ERROR} element={<ErrorPage />} />
+
+                    {renderRoutes(navMenu)}
+                </Route>
+            </Routes>
+        </Suspense>
+    );
+};

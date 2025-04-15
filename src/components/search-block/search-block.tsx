@@ -1,60 +1,140 @@
+import { IconButton, InputGroup, InputRightElement, SearchIcon, Stack } from '@chakra-ui/icons';
+import { Input } from '@chakra-ui/react';
+import { FC, useState } from 'react';
+
+import { useIsTablet } from '../../hooks/media-query.ts';
+import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
 import {
-    IconButton,
-    InputGroup,
-    InputRightElement,
-    SearchIcon,
-    Stack,
-    Switch,
-} from '@chakra-ui/icons';
-import { Input, Select, Text } from '@chakra-ui/react';
-
+    clearFilteredByAllergens,
+    clearSelectedAllergens,
+} from '../../redux/features/allergens-slice.ts';
+import { clearSelectedAuthors } from '../../redux/features/authors-slice.ts';
+import { clearSelectedCategories } from '../../redux/features/categories-slice.ts';
+import { openDrawer } from '../../redux/features/drawer.ts';
+import { clearSelectedMeats } from '../../redux/features/meats-slice.ts';
+import { clearFilteredRecipes } from '../../redux/features/recipies-slice.ts';
+import {
+    selectInputValue,
+    selectMatchedRecipes,
+    setInputValue,
+} from '../../redux/features/search-slice.ts';
+import { clearSelectedSides } from '../../redux/features/sides-slice.ts';
 import { FilterIcon } from '../icons/filter-icon.tsx';
+import { AllergenSelect } from './allergen-select/allergen-select.tsx';
+import { getBorderColor } from './allergen-select/helpers/get-border-color.ts';
 
-export const SearchBlock = () => {
+type SearchBlockProps = {
+    onInputFocus: () => void;
+    onInputBlur: () => void;
+    onSearch: (inputValue: string) => void;
+    startSearch?: boolean;
+};
+
+const maxSearchLength = 3;
+
+export const SearchBlock: FC<SearchBlockProps> = ({
+    onInputFocus,
+    onInputBlur,
+    onSearch,
+    startSearch,
+}) => {
+    const dispatch = useAppDispatch();
+    const inputValue = useAppSelector(selectInputValue);
+    const matchedRecipes = useAppSelector(selectMatchedRecipes);
+
+    const isTablet = useIsTablet();
+    const [isFocused, setIsFocused] = useState(false);
+
+    const isButtonDisabled = inputValue.length < maxSearchLength;
+
+    const handleSearchClick = () => {
+        onSearch(inputValue);
+        setIsFocused(false);
+    };
+
+    const handleFocus = () => {
+        onInputFocus();
+        setIsFocused(true);
+    };
+
+    const handleBlur = () => {
+        setIsFocused(false);
+        onInputBlur();
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && !isButtonDisabled) {
+            handleSearchClick();
+        }
+    };
+
+    const handleDrawerClick = () => {
+        dispatch(setInputValue(''));
+        dispatch(clearSelectedAllergens());
+        dispatch(clearFilteredRecipes());
+        dispatch(clearFilteredByAllergens());
+        dispatch(clearSelectedAuthors());
+        dispatch(clearSelectedCategories());
+        dispatch(clearSelectedMeats());
+        dispatch(clearSelectedSides());
+
+        dispatch(openDrawer());
+    };
+
+    const isSearchEmpty = startSearch && !matchedRecipes.length;
+
     return (
-        <Stack spacing={4} maxWidth='520px' ml='auto' mr='auto' pb={8}>
+        <Stack spacing={4} maxWidth={{ base: '100%', sm: '520px' }} ml='auto' mr='auto' pb={8}>
             <Stack direction='row' spacing={3}>
                 <IconButton
+                    data-test-id='filter-button'
                     aria-label={'filter'}
                     icon={<FilterIcon />}
                     size={{ base: 'sm', md: 'lg' }}
                     width={{ base: '32px', md: '48px' }}
                     variant='outline'
                     borderColor='blackAlpha.600'
+                    onClick={handleDrawerClick}
                 />
                 <InputGroup>
                     <Input
                         type='search'
                         size={{ base: 'sm', md: 'lg' }}
-                        placeholder='Название или ингредиент...'
+                        placeholder={!isFocused ? 'Название или ингредиент...' : ''}
+                        borderColor={getBorderColor(inputValue, isSearchEmpty)}
                         _placeholder={{ color: 'lime.800' }}
-                        borderColor='blackAlpha.600'
+                        _focus={{
+                            borderColor: 'blackAlpha.600',
+                            boxShadow: 'none',
+                        }}
+                        color={'var(--chakra-colors-lime-800)'}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        onChange={(e) => dispatch(setInputValue(e.target.value))}
+                        onKeyDown={handleKeyDown}
+                        value={inputValue}
+                        data-test-id='search-input'
                     />
                     <InputRightElement
                         height={{ base: '32px', md: '48px' }}
                         width={{ base: '32px', md: '48px' }}
+                        sx={{
+                            pointerEvents: isButtonDisabled ? 'none' : 'auto',
+                            cursor: isButtonDisabled ? 'not-allowed' : 'pointer',
+                            opacity: isButtonDisabled ? 0.4 : 1,
+                        }}
+                        data-test-id='search-button'
                     >
                         <SearchIcon
                             width={{ base: '14px', md: '18px' }}
                             height={{ base: '14px', md: '18px' }}
+                            cursor={'pointer'}
+                            onClick={handleSearchClick}
                         />
                     </InputRightElement>
                 </InputGroup>
             </Stack>
-            <Stack
-                spacing={8}
-                direction='row'
-                justifyContent='flex-end'
-                display={{ base: 'none', md: 'flex' }}
-            >
-                <Stack maxWidth='268px' direction='row' alignItems='center' spacing={3}>
-                    <Text>Исключить мои аллергены</Text>
-                    <Switch />
-                </Stack>
-                <Select placeholder='Выберите из списка...' maxWidth='228px' color='lime.800'>
-                    <option value='option1'>Какой-то опшен</option>
-                </Select>
-            </Stack>
+            {!isTablet && <AllergenSelect isfromFilter={false} />}
         </Stack>
     );
 };

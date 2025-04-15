@@ -1,102 +1,136 @@
-import { Button, CardFooter, IconButton, Image, Stack } from '@chakra-ui/icons';
-import { Box, Card, CardBody, CardHeader, Heading, HStack, Text } from '@chakra-ui/react';
+import { Button, CardFooter, Image, Stack } from '@chakra-ui/icons';
+import { Box, Card, CardBody, CardHeader, Heading, Text } from '@chakra-ui/react';
 import { FC } from 'react';
+import { NavLink } from 'react-router';
 
+import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
+import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
+import { setSelectedRecipe } from '../../redux/features/choosen-recipe-slice.ts';
+import { selectRecipes } from '../../redux/features/recipies-slice.ts';
+import { selectInputValue } from '../../redux/features/search-slice.ts';
 import { Recipe } from '../../types/recipe.ts';
+import { getPath } from '../../utils/get-path.ts';
 import { CardStat } from '../card-stat/card-stat.tsx';
 import { CategoryTag } from '../category-tag';
+import { HighlightText } from '../highlight/highlight-text.tsx';
 import { BookmarkIcon } from '../icons/bookmark-icon.tsx';
 import { RecommendationTag } from '../recommendation-tag';
 
-export const FoodCard: FC<Recipe> = ({
-    title,
-    image,
-    description,
-    category,
-    likes,
-    bookmarks,
-    recommendation,
-}) => {
+export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index }) => {
+    const dispatch = useAppDispatch();
+    const inputValue = useAppSelector(selectInputValue);
+    const allcategories = useAppSelector(selectCategoriesMenu);
+    const selectedCategory = useAppSelector(selectChoosenCategory);
+    const allRecipes = useAppSelector(selectRecipes);
+
+    const { id, title, image, description, category, likes, bookmarks, recommendation } = recipe;
+
+    const categoryPath = getPath(allcategories, allRecipes, selectedCategory, id);
+    const handleClick = () => {
+        dispatch(setSelectedRecipe(recipe));
+    };
+
     return (
-        <Card direction='row' variant='outline' overflow='hidden'>
-            <Box position='absolute' top={2} left={2} display={{ base: 'block', md: 'none' }}>
-                <CategoryTag category={category} color={'lime.50'} />
-            </Box>
-            <Box
-                position='absolute'
-                bottom={2}
-                left={2}
-                display={{ base: 'none', md: 'block' }}
-                maxW={{ base: '158px', md: 'calc(50% - 16px)' }}
-            >
-                {recommendation && <RecommendationTag {...recommendation} />}
-            </Box>
-            <Image src={image} alt={title} maxW={{ base: '158px', md: '50%' }} objectFit='cover' />
-            <Stack flexGrow={1}>
-                <CardHeader
-                    pb={0}
-                    pl={{ base: 2, md: 6 }}
-                    pr={{ base: 2, md: 6 }}
-                    pt={{ base: 2, md: 5 }}
+        <Card direction='row' variant='outline' gap={6} data-test-id={`food-card-${index}`}>
+            <Box position='relative' w={{ base: '158px', md: '50%' }} maxW='346px' flex='1'>
+                <Box
+                    position='absolute'
+                    top={2}
+                    left={2}
+                    right={2}
+                    display={{ base: 'block', xmd: 'none' }}
+                    maxWidth='150px'
+                    zIndex={2}
                 >
-                    <HStack justifyContent='space-between'>
-                        <Box display={{ base: 'none', md: 'block' }}>
-                            <CategoryTag category={category} color='lime.50' />
-                        </Box>
-                        <CardStat bookmarks={bookmarks} likes={likes} />
-                    </HStack>
+                    <CategoryTag category={category} color={'lime.50'} />
+                </Box>
+                <Box
+                    position='absolute'
+                    zIndex={2}
+                    bottom={2}
+                    left={2}
+                    right={2}
+                    display={{ base: 'none', xxl: 'block' }}
+                >
+                    {recommendation && <RecommendationTag {...recommendation} />}
+                </Box>
+                <Image
+                    top={0}
+                    left={0}
+                    src={image}
+                    alt={title}
+                    width='100%'
+                    height='100%'
+                    objectFit='cover'
+                    position='absolute'
+                    borderRadius={'var(--chakra-radii-lg)'}
+                />
+            </Box>
+
+            <Stack
+                pt={{ base: 2, xl: 6 }}
+                pb={{ base: 2, xl: 6 }}
+                pr={{ base: 2, xl: 6 }}
+                gap={6}
+                flex='1'
+            >
+                <CardHeader
+                    p={0}
+                    display='flex'
+                    justifyContent='space-between'
+                    flexDirection='row'
+                    alignItems='flex-start'
+                >
+                    <Box display={{ base: 'none', xmd: 'block' }}>
+                        <CategoryTag category={category} color='lime.50' />
+                    </Box>
+                    <CardStat bookmarks={bookmarks} likes={likes} />
                 </CardHeader>
-                <CardBody p={{ base: 2, md: 6 }} pb={{ base: 5, md: 6 }} pt={{ base: 0, md: 6 }}>
+                <CardBody p={0}>
                     <Heading
-                        fontSize={{ base: 'md', md: 'xl' }}
+                        fontSize={{ base: 'md', xmd: 'xl' }}
                         noOfLines={{ base: 2, md: 1 }}
                         mb={2}
                         fontWeight={500}
                     >
-                        {title}
+                        <HighlightText query={inputValue ?? ''} text={title} />
                     </Heading>
                     <Text
                         noOfLines={3}
                         fontSize='sm'
                         lineHeight={5}
-                        display={{ base: 'none', md: '-webkit-box' }}
+                        display={{ base: 'none', xmd: '-webkit-box' }}
                     >
                         {description}
                     </Text>
                 </CardBody>
                 <CardFooter
-                    pl={{ base: 2, md: 6 }}
-                    pr={{ base: 2, md: 6 }}
-                    pt={0}
-                    pb={{ base: 1, md: 5 }}
+                    p={0}
+                    justifyContent='flex-end'
+                    display='flex'
+                    gap={{ base: 3, md: 2 }}
+                    flexWrap='wrap'
                 >
-                    <HStack
-                        justifyContent='flex-end'
-                        width='100%'
-                        spacing={{ base: 3, md: 2 }}
-                        flexWrap='wrap'
+                    <Button
+                        variant='outline'
+                        size={{ base: 'xs', md: 'sm' }}
+                        leftIcon={<BookmarkIcon />}
+                        color='blackAlpha.800'
                     >
-                        <IconButton
-                            size={{ base: 'xs', md: 'sm' }}
-                            aria-label={'save-recipe'}
-                            icon={<BookmarkIcon />}
-                            variant='outline'
-                            display={{ base: 'flex', md: 'none' }}
-                            w={6}
-                        />
-                        <Button
-                            variant='outline'
-                            size={{ base: 'xs', md: 'sm' }}
-                            leftIcon={<BookmarkIcon />}
-                            color='blackAlpha.800'
-                            display={{ base: 'none', md: 'flex' }}
-                        >
+                        <Box as='span' display={{ base: 'none', xmd: 'inline' }}>
                             Сохранить
-                        </Button>
+                        </Box>
+                    </Button>
+                    <NavLink
+                        to={categoryPath}
+                        onClick={handleClick}
+                        data-test-id={`card-link-${index}`}
+                    >
                         <Button bg='black' color='white' size={{ base: 'xs', md: 'sm' }}>
                             Готовить
                         </Button>
-                    </HStack>
+                    </NavLink>
                 </CardFooter>
             </Stack>
         </Card>

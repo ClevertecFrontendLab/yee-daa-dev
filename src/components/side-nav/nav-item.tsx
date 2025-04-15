@@ -1,24 +1,73 @@
 import { AccordionIcon, AccordionItem, AccordionPanel, Image } from '@chakra-ui/icons';
 import { AccordionButton, HStack, Text } from '@chakra-ui/react';
-import { FC, useState } from 'react';
-import { NavLink } from 'react-router';
+import { FC, useEffect, useState } from 'react';
+import { NavLink, useLocation } from 'react-router';
 
 import { categoriesMap } from '../../constants/categories.ts';
-import { MenuItem } from '../../constants/nav-menu.ts';
+import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
+import {
+    clearSelectedAllergens,
+    setFilteredByAllergens,
+} from '../../redux/features/allergens-slice.ts';
+import {
+    selectChoosenCategory,
+    setChoosenCategory,
+} from '../../redux/features/choosen-category-slice.ts';
+import { clearFilteredRecipes } from '../../redux/features/recipies-slice.ts';
+import { MenuItem } from '../../types/category.ts';
 import { SubNavItem } from './sub-nav-item.tsx';
 
-export const NavItem: FC<MenuItem> = ({ subItems, path, title, dataTestId }) => {
+export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }) => {
+    const location = useLocation();
+    const dispatch = useAppDispatch();
     const [isActive, setIsActive] = useState(false);
-    return (
-        <AccordionItem border='none'>
-            <NavLink
-                to={path}
-                className={({ isActive }) => {
-                    setIsActive(isActive);
+    const choosenCategory = useAppSelector(selectChoosenCategory);
 
-                    return undefined;
-                }}
-                data-test-id={dataTestId}
+    const categoryPath = subItems ? `/${category}/${subItems[0].category}` : `/${category}`;
+    const choosenItem = {
+        category,
+        title,
+        description,
+        choosenSubCategory: subItems ? subItems[0] : null,
+    };
+
+    const handleClick = () => {
+        dispatch(setChoosenCategory(choosenItem));
+        dispatch(clearFilteredRecipes());
+        dispatch(clearSelectedAllergens());
+        dispatch(setFilteredByAllergens([]));
+
+        setIsActive((prev) => !prev);
+    };
+
+    useEffect(() => {
+        setIsActive(location.pathname.split('/')[1] === categoryPath.split('/')[1]);
+    }, [location.pathname, categoryPath]);
+
+    useEffect(() => {
+        if (!choosenCategory.category) {
+            setIsActive(false);
+        }
+    }, [choosenCategory]);
+
+    return (
+        <AccordionItem
+            border='none'
+            className='accordion'
+            sx={{
+                '.chakra-collapse': {
+                    display: isActive ? 'block !important' : 'none !important',
+                    height: isActive ? 'auto !important' : '0px !important',
+                    opacity: isActive ? '1 !important' : '0 !important',
+                    transition: 'opacity 0.1s ease',
+                },
+            }}
+        >
+            <NavLink
+                to={categoryPath}
+                key={category}
+                onClick={handleClick}
+                data-test-id={`${category === 'vegan' ? 'vegan-cuisine' : category}`}
             >
                 <AccordionButton
                     padding='8px 12px'
@@ -27,7 +76,7 @@ export const NavItem: FC<MenuItem> = ({ subItems, path, title, dataTestId }) => 
                     }}
                 >
                     <HStack as='span' flex='1' textAlign='left' spacing={3}>
-                        <Image src={categoriesMap[title]} alt={title} w={6} h={6} />
+                        <Image src={categoriesMap[category]} alt={category} w={6} h={6} />
                         <Text
                             fontSize='md'
                             lineHeight={6}
@@ -41,7 +90,15 @@ export const NavItem: FC<MenuItem> = ({ subItems, path, title, dataTestId }) => 
                 </AccordionButton>
             </NavLink>
             <AccordionPanel padding='4px 8px 4px 40px'>
-                {subItems?.map((el) => <SubNavItem key={el.path} {...el} />)}
+                {subItems?.map((el) => (
+                    <SubNavItem
+                        key={el.category}
+                        {...el}
+                        parentCategory={category}
+                        parentTitle={title}
+                        parentDesc={description}
+                    />
+                ))}
             </AccordionPanel>
         </AccordionItem>
     );
