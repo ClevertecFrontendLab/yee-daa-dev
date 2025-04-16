@@ -76,6 +76,7 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                     fontSize='sm'
                     lineHeight={5}
                     noOfLines={3}
+                    minHeight='60px'
                     letterSpacing={{ base: '-0.5px', md: 'initial' }}
                 >
                     {text}
