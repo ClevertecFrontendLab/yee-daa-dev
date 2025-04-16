@@ -21,8 +21,9 @@ export type NotesBoxData = {
 export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
     const [notesFolded, setNotesFolded] = useState(true);
     const variant = useBreakpointValue({
-        base: 300,
-        sm: 150,
+        base: 204,
+        md: 247,
+        sm: 228,
         '2xl': 169,
     });
 
@@ -55,6 +56,7 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
                     {items.map((item) => (
                         <NoteCard
                             {...item}
+                            minHeight={variant}
                             minWidth={{
                                 base: 'calc(100% / 2)',
                                 sm: 'calc(100% / 4)',

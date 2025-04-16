@@ -22,7 +22,7 @@ export const NoteCard: FC<NoteCardProps> = ({ time, text, ...rest }) => (
             <Text
                 fontSize={{ base: 14, lg: 16 }}
                 lineHeight={5}
-                noOfLines={{ base: 3, '2xl': 4 }}
+                // noOfLines={{ base: 3, '2xl': 4 }}
                 letterSpacing='-0.8px'
             >
                 {text}
