@@ -362,7 +362,7 @@ const checkToastMessage = ({
     description?: string;
     callback?: () => void;
 }) => {
-    cy.get(`[id=toast-${id}]`, { timeout: 5000 })
+    cy.getByTestId(`toast-${id}`, { timeout: 5000 })
         .as('toastMessage')
         .should('have.length', 1)
         .should('exist')
@@ -373,7 +373,7 @@ const checkToastMessage = ({
     callback();
 
     cy.get('@toastMessage').within(() => {
-        cy.get('button').click();
+        cy.getByTestId(TEST_ID.Button.Close).click();
     });
 };
 
@@ -656,8 +656,6 @@ describe('authorization', () => {
                 cy.get('@passwordInput').type('{enter}');
             });
             cy.wait('@signInRequest401');
-            cy.get('@passwordInput').type('{enter}');
-            cy.wait('@signInRequest401');
 
             checkToastMessage({
                 ...TOAST_MESSAGE.SignInToast[401],
@@ -681,8 +679,6 @@ describe('authorization', () => {
                 fillSignInForm();
                 cy.get('@passwordInput').type('{enter}');
             });
-            cy.wait('@signInRequest403');
-            cy.get('@passwordInput').type('{enter}');
             cy.wait('@signInRequest403');
 
             checkToastMessage(TOAST_MESSAGE.SignInToast[403]);
@@ -909,8 +905,6 @@ describe('authorization', () => {
             );
 
             cy.getByTestId(TEST_ID.Button.Submit).click();
-            cy.wait('@signUpRequest500');
-            cy.getByTestId(TEST_ID.Input.Login).type('{enter}');
             cy.wait('@signUpRequest500');
 
             checkToastMessage({

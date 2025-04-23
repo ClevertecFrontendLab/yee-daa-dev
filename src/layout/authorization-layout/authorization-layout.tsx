@@ -13,7 +13,7 @@ import {
     Wrap,
     WrapItem,
 } from '@chakra-ui/react';
-import { FC, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { Navigate, Outlet, useMatch, useNavigate } from 'react-router';
 
 import { AppLoader } from '~/components/app-loader';
@@ -26,6 +26,7 @@ import { Label } from './label';
 const TabNavigation = [Paths.SIGN_IN, Paths.SIGN_UP] as const;
 
 const AuthorizationLayout: FC = () => {
+    const isMatchTriggered = useRef(false);
     const match = useMatch(Paths.SIGN_IN);
     const [tabIndex, setTabIndex] = useState<number>(match ? 0 : 1);
 
@@ -33,10 +34,25 @@ const AuthorizationLayout: FC = () => {
     const [isMd] = useMediaQuery(`(min-width: ${theme.breakpoints.md})`);
     const { isLoading, isSuccess } = useCheckAuthQuery();
 
-    const handleTabsChange = (index: number) => {
-        setTabIndex(index);
-        navigate(TabNavigation[index], { replace: true });
+    const handleTabsChange = (newIndex: number) => {
+        if (isMatchTriggered.current) {
+            isMatchTriggered.current = false;
+
+            return;
+        }
+
+        setTabIndex(newIndex);
+        navigate(TabNavigation[newIndex], { replace: true });
     };
+
+    useEffect(() => {
+        const newIndex = match ? 0 : 1;
+
+        if (newIndex !== tabIndex) {
+            isMatchTriggered.current = true;
+            setTabIndex(newIndex);
+        }
+    }, [match]);
 
     if (isLoading) {
         return <AppLoader isOpen={true} />;
