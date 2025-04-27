@@ -352,7 +352,6 @@ const interceptApi = (
 };
 
 const checkToastMessage = ({
-    id,
     title,
     description = '',
     callback = () => {},
@@ -362,7 +361,7 @@ const checkToastMessage = ({
     description?: string;
     callback?: () => void;
 }) => {
-    cy.getByTestId(`toast-${id}`, { timeout: 5000 })
+    cy.getByTestId(TEST_ID.Notification.Error, { timeout: 5000 })
         .as('toastMessage')
         .should('have.length', 1)
         .should('exist')
@@ -373,7 +372,7 @@ const checkToastMessage = ({
     callback();
 
     cy.get('@toastMessage').within(() => {
-        cy.getByTestId(TEST_ID.Button.Close).click();
+        cy.getByTestId(TEST_ID.Button.CloseAlert).click();
     });
 };
 

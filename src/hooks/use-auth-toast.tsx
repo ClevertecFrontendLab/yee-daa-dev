@@ -48,9 +48,9 @@ export const useAuthToast = () => {
                     paddingX: 4,
                     marginRight: { base: 0, lg: centered ? 0 : '50%' },
                 },
-                render: ({ id, title, status = 'error', description, onClose }) => (
+                render: ({ title, status = 'error', description, onClose }) => (
                     <Box
-                        data-test-id={`toast-${id}`}
+                        data-test-id={CyTestId.Notification.Error}
                         bg={getBgColor(status)}
                         color='white'
                         p={3}
@@ -68,7 +68,7 @@ export const useAuthToast = () => {
                             </Flex>
 
                             <CloseButton
-                                data-test-id={CyTestId.Button.Close}
+                                data-test-id={CyTestId.Button.CloseAlert}
                                 size='sm'
                                 onClick={onClose}
                             />
