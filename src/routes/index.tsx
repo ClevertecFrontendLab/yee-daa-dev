@@ -14,6 +14,7 @@ import { ErrorPage } from '~/pages/error-page/error-page';
 import { JuiciestPage } from '~/pages/juiciest-page';
 import { MainPage } from '~/pages/main-page';
 import { RecipePageWrapper } from '~/pages/recipe-page';
+import { blogsLoader } from '~/routes/loaders/blogs-loader.ts';
 
 import { ErrorBoundary } from './error-boundary/error-boundary';
 import { clearFilterStateLoader } from './loaders/clear-filter-state-loader';
@@ -69,12 +70,7 @@ export const appRouter = createBrowserRouter(
                         }
                         loader={clearFilterStateLoader}
                     />
-                    <Route
-                        path={Paths.BLOGS}
-                        element={<BlogsPage />}
-                        // TODO: look into
-                        loader={clearFilterStateLoader}
-                    />
+                    <Route path={Paths.BLOGS} element={<BlogsPage />} loader={blogsLoader} />
                     <Route
                         path={Paths.BLOGS_ITEM}
                         element={
@@ -82,8 +78,6 @@ export const appRouter = createBrowserRouter(
                                 <BlogProfile />
                             </BlogExistProtected>
                         }
-                        // TODO: look into
-                        loader={clearFilterStateLoader}
                     />
                     <Route
                         path={Paths.RECIPE}

@@ -8,75 +8,43 @@ import { NotesBox } from '~/components/notes-box';
 import { RecipeCardList } from '~/components/recipes-card-list';
 import { UserInfoBig } from '~/components/user-info-big';
 import { Paths } from '~/constants/path';
-import { MOCK_ALL_BLOGS } from '~/pages/blogs-page/consts';
-import { Recipe } from '~/redux/api/types/recipes';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { selectBloggersById, selectBloggersPreview } from '~/redux/features/bloggers-slice';
 import { isArrayWithItems } from '~/utils/is-array-with-items';
 
-const userInfo = {
-    firstName: 'Елена',
-    lastName: 'Мин',
-    login: '@cookermin',
-    imgSrc: 'imgSrc',
-    social: {
-        bookmarks: 87,
-        followers: 12,
-    },
-};
-
-const RESIPE_RESPONSE: Recipe[] = new Array(8).fill({
-    id: '67c9e4a035a1a9a36a3dd48a',
-    image: '/media/images/919c4f8a-664b-49a0-a513-ecf0d80a1a36.webp',
-    createdAt: '2025-03-06T18:08:32.823Z',
-    title: 'Крем-суп из шпината с креветками',
-    description:
-        'Крем-суп из шпината с креветками — это изысканное и нежное блюдо, которое сочетает в себе пользу свежего шпината и изысканный вкус креветок. Нежный кремовый текстура супа подчеркивается легкой сливочной основой, а аромат чеснока и специй добавляет пикантности. Креветки придают блюду морскую нотку и делают его более сытным.',
-    time: 30,
-    categoriesIds: ['67c4a05bed67ca980917d676'],
-    likes: 10,
-    views: 0,
-    nutritionValue: { calories: 1, protein: 1, fats: 1, carbohydrates: 1 },
-    ingredients: [{ title: 'Свежие листья шпината', count: '500', measureUnit: 'г' }],
-    steps: [
-        {
-            stepNumber: 1,
-            description:
-                'В большой кастрюле (3–5 литров) растапливаем масло. Жарим лук и чеснок до размягчения.',
-        },
-    ],
-    authorId: '1',
-});
-
-const NOTE_LIST = new Array(8).fill({
-    time: '2025-01-15T18:08:32.823Z',
-    text: 'Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ Щ ',
-});
-
 export const BlogProfile = () => {
+    const { info, data } = useAppSelector(selectBloggersById);
+    const bloggersPreview = useAppSelector(selectBloggersPreview);
+
     const [recipePages, setRecipePages] = useState(1);
     const onLoadMoreRecipes = () => {
         setRecipePages(2);
     };
+
     return (
         <Stack spacing={{ base: 3, xmd: 6 }} align='center'>
             <UserInfoBig
-                imgSrc={userInfo.imgSrc}
-                firstName={userInfo.firstName}
-                lastName={userInfo.lastName}
-                login={userInfo.login}
-                social={userInfo.social}
+                // imgSrc={info.imgSrc}
+                firstName={info.firstName}
+                lastName={info.lastName}
+                login={info.login}
+                subscribersCount={info.subscribersCount}
+                bookmarksCount={info.bookmarksCount}
+                isFavorite={info.isFavorite}
                 mt={{ base: 0, md: -8, xmd: -4 }}
                 minWidth={{ base: 0, sm: 356, xmd: 422, '2xl': 480 }}
+                _id={info._id}
             />
-            {isArrayWithItems(RESIPE_RESPONSE) && (
+            {isArrayWithItems(data.recipes) && (
                 <RecipeCardList
-                    recipeList={RESIPE_RESPONSE}
+                    recipeList={data.recipes}
                     currentPage={recipePages}
                     totalPages={2}
                     loadMoreCallback={onLoadMoreRecipes}
                     pt={{ base: 3, sm: 1 }}
                 />
             )}
-            <NotesBox items={NOTE_LIST} mt={4} id='notes' />
+            <NotesBox items={data.notes} mt={4} id='notes' />
             <HStack justify='space-between' w='100%' mt={{ base: 6, xmd: 7 }}>
                 <Heading fontWeight={500} fontSize={{ base: 24, xl: 48 }}>
                     Другие блоги
@@ -99,6 +67,7 @@ export const BlogProfile = () => {
                 columns={{ base: 1, md: 2, xmd: 1, '2xl': 3 }}
                 columnGap={{ base: 4, xl: 4 }}
                 rowGap={{ base: 3, sm: 4, xl: 6 }}
+                width='100%'
                 gridTemplateColumns={{
                     base: '1fr',
                     md: 'repeat(3, 1fr)',
@@ -106,15 +75,17 @@ export const BlogProfile = () => {
                     xxxl: 'repeat(3, 1fr)',
                 }}
             >
-                {MOCK_ALL_BLOGS.slice(0, 3).map((el) => (
+                {bloggersPreview.slice(0, 3).map((el) => (
                     <BlogCard
-                        firstName={el.name}
+                        _id={el._id}
+                        firstName={el.firstName}
                         lastName={el.lastName}
                         login={el.login}
-                        text={el.descr}
+                        // text={el.descr}
                         cardType='PROFILE'
-                        social={el.social}
-                        link={`${Paths.BLOGS}/${el.login}`}
+                        subscribersCount={el.subscribersCount}
+                        bookmarksCount={el.bookmarksCount}
+                        link={`${Paths.BLOGS}/${el._id}`}
                     />
                 ))}
             </SimpleGrid>

@@ -19,7 +19,7 @@ export const CardStat: FC<Props> = ({ bookmarks, likes, followers }) => (
         justifyContent='flex-end'
         minW={{ base: 'auto', md: '110px' }}
     >
-        {bookmarks && (
+        {(bookmarks || bookmarks === 0) && (
             <HStack spacing={2} p={1} alignItems='center'>
                 <BookmarkIcon w={3} h={3} />
                 <Text fontWeight={600} fontSize='xs' lineHeight={4} color='lime.600'>
@@ -27,7 +27,7 @@ export const CardStat: FC<Props> = ({ bookmarks, likes, followers }) => (
                 </Text>
             </HStack>
         )}
-        {likes && (
+        {(likes || likes === 0) && (
             <HStack spacing={2} p={1} alignItems='center'>
                 <FavoritesIcon w={3} h={3} />
                 <Text fontWeight={600} fontSize='xs' lineHeight={4} color='lime.600'>
@@ -35,7 +35,7 @@ export const CardStat: FC<Props> = ({ bookmarks, likes, followers }) => (
                 </Text>
             </HStack>
         )}
-        {followers && (
+        {(followers || followers === 0) && (
             <HStack spacing={2} p={1} alignItems='center'>
                 <FollowersIcon w={3} h={3} />
                 <Text fontWeight={600} fontSize='xs' lineHeight={4} color='lime.600'>

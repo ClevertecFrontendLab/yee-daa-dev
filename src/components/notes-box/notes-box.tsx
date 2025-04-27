@@ -51,7 +51,11 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
                     fontWeight={400}
                 >{`(${length})`}</Text>
             </HStack>
-            <Collapse in={!notesFolded} startingHeight={variant} animateOpacity>
+            <Collapse
+                in={!notesFolded}
+                startingHeight={items.length !== 0 ? variant : 0}
+                animateOpacity
+            >
                 <Flex flexWrap='wrap' gap={4}>
                     {items.map((item) => (
                         <NoteCard

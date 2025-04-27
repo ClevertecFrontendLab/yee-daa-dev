@@ -15,6 +15,9 @@ import { CardTypeProps } from '~/components/blog-card/consts';
 import { ButtonSubscribe } from '~/components/button-subscribe';
 import { CardStat } from '~/components/card-stat/card-stat';
 import { Float } from '~/components/float';
+import { MobileLoader } from '~/components/mobile-loader';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { selectBloggersToggleLoading, setBloggersInfoById } from '~/redux/features/bloggers-slice';
 import { Post } from '~/types/post.ts';
 import { makeNewRecipeBadge } from '~/utils/make-new-recipe-badge';
 
@@ -23,11 +26,11 @@ import { UserInfo } from '../user-info';
 type CardType = 'FAVORITE' | 'DEFAULT' | 'AVAILABLE' | 'PROFILE';
 
 type BlogCardProps = {
+    _id?: string;
     cardType?: CardType;
-    social?: {
-        bookmarks: number;
-        followers: number;
-    };
+    subscribersCount: number;
+    bookmarksCount: number;
+    isFavorite?: boolean;
     newRecipes?: number;
     link?: string;
 };
@@ -39,11 +42,30 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
     text,
     login,
     cardType,
-    social,
+    subscribersCount,
+    bookmarksCount,
     newRecipes,
+    isFavorite,
     link,
+    _id,
 }) => {
     const cardData = cardType ? CardTypeProps[cardType] : CardTypeProps.DEFAULT;
+    const bloggersLoadingId = useAppSelector(selectBloggersToggleLoading);
+    const dispatch = useAppDispatch();
+
+    const onReadClick = () => {
+        dispatch(
+            setBloggersInfoById({
+                _id,
+                firstName,
+                lastName,
+                login,
+                subscribersCount,
+                bookmarksCount,
+                isFavorite,
+            }),
+        );
+    };
 
     return (
         <Card minHeight={cardData.minHeight}>
@@ -54,6 +76,7 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                     login={login}
                     imageUrl={imageUrl}
                     shrinks
+                    _id={_id}
                 />
                 {newRecipes && (
                     <Float top={{ base: 1, xl: 2 }} right={{ base: 1, xl: 2 }}>
@@ -93,7 +116,7 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                 >
                     <HStack {...cardData.HStack}>
                         {cardType === 'AVAILABLE' || cardType === 'PROFILE' ? (
-                            <ButtonSubscribe userLogin={login} />
+                            <ButtonSubscribe userId={_id} />
                         ) : (
                             <Button size='xs' bg='lime.400' fontSize='xs'>
                                 Рецепты
@@ -107,15 +130,15 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                             variant='outline'
                             as={Link}
                             to={`${link}#notes`}
+                            onClick={onReadClick}
                         >
                             Читать
                         </Button>
                     </HStack>
-                    {social && (
-                        <CardStat bookmarks={social.bookmarks} followers={social.followers} />
-                    )}
+                    <CardStat bookmarks={bookmarksCount} followers={subscribersCount} />
                 </CardFooter>
             )}
+            <MobileLoader isOpen={bloggersLoadingId === _id} />
         </Card>
     );
 };

@@ -28,7 +28,7 @@ export const AuthorCard: FC<{ author: UserProps }> = ({ author }) => (
                 @{author.login}
             </Text>
             <HStack flexWrap='wrap' justifyContent='space-between'>
-                <ButtonSubscribe userLogin={author.login} />
+                <ButtonSubscribe userId={author._id} />
 
                 <HStack>
                     <HStack>

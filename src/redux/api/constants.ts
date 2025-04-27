@@ -22,6 +22,9 @@ export enum ApiEndpoints {
     CheckVerificationCode = '/auth/verify-otp',
     ResetCredentials = '/auth/reset-password',
     CheckAuth = '/auth/check-auth',
+    ToggleSubscription = '/users/toggle-subscription',
+    GetBloggerById = '/recipe/user',
+    GetBloggers = '/users/bloggers',
 
     Category = 'category',
     Recipe = 'recipe',
