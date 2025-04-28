@@ -55,6 +55,7 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
                 in={!notesFolded}
                 startingHeight={items.length !== 0 ? variant : 0}
                 animateOpacity
+                style={{ width: '100%' }}
             >
                 <Flex flexWrap='wrap' gap={4}>
                     {items.map((item) => (

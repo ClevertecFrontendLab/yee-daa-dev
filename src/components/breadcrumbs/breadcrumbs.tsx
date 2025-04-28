@@ -3,10 +3,11 @@ import { Box, Breadcrumb, BreadcrumbItem } from '@chakra-ui/react';
 import { Link, useLocation } from 'react-router';
 
 import { Paths } from '~/constants/path';
-import { useAppDispatch } from '~/hooks/typed-react-redux-hooks.ts';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { useDetectParams } from '~/hooks/use-detect-params';
 import { useGetRecipeByIdQuery } from '~/redux/api/recipes-api';
 import { resetAccordion } from '~/redux/features/accordion-slice';
+import { selectBloggersInfoById } from '~/redux/features/bloggers-slice';
 import { closeMenu } from '~/redux/features/burger-slice.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items';
 
@@ -14,21 +15,24 @@ export const Breadcrumbs = () => {
     const { pathname } = useLocation();
     const { selectedCategory, selectedSubCategory, recipeId } = useDetectParams();
     const dispatch = useAppDispatch();
-    const { data: recipe } = useGetRecipeByIdQuery(recipeId as string, { skip: !recipeId });
+    const bloggerInfo = useAppSelector(selectBloggersInfoById);
+
+    const { data: recipeData } = useGetRecipeByIdQuery(recipeId as string, { skip: !recipeId });
 
     const isJuiciestPath = pathname.includes(Paths.JUICIEST);
     const isBlogs = pathname.includes(Paths.BLOGS);
+    const isBlogCurrent = bloggerInfo.login;
     const isRecipes = !isJuiciestPath && !isBlogs;
 
     const pathsArrNames = [
         selectedCategory?.title,
         selectedSubCategory?.title,
-        recipeId ? recipe?.title : undefined,
+        recipeId ? recipeData?.existRecipe?.title : undefined,
     ].filter(Boolean);
     const pathsArr = [
         selectedCategory?.category,
         selectedSubCategory?.category,
-        recipeId ? recipe?.id : undefined,
+        recipeId ? recipeData?.existRecipe?.id : undefined,
     ].filter(Boolean);
 
     const handleCategoryClick = () => dispatch(closeMenu());
@@ -64,6 +68,13 @@ export const Breadcrumbs = () => {
                     <BreadcrumbItem>
                         <BreadcrumbLink as={Link} to={Paths.BLOGS}>
                             Блоги
+                        </BreadcrumbLink>
+                    </BreadcrumbItem>
+                )}
+                {isBlogs && isBlogCurrent && (
+                    <BreadcrumbItem>
+                        <BreadcrumbLink as={Link} to={`${Paths.BLOGS}/${bloggerInfo._id}`}>
+                            @{bloggerInfo.login}
                         </BreadcrumbLink>
                     </BreadcrumbItem>
                 )}

@@ -5,17 +5,17 @@ import dayjs from 'dayjs';
 import { FC } from 'react';
 
 export type NoteCardProps = {
-    time: string;
+    date: string;
     text: string;
 } & CardProps;
 
 const formatTime = (time: string) => dayjs(time).locale('ru').format('DD MMMM HH:MM');
 
-export const NoteCard: FC<NoteCardProps> = ({ time, text, ...rest }) => (
+export const NoteCard: FC<NoteCardProps> = ({ date, text, ...rest }) => (
     <Card {...rest}>
         <CardHeader p={6} pb={4}>
             <Text fontSize={{ base: 14, lg: 16 }} color='lime.600'>
-                {formatTime(time)}
+                {formatTime(date)}
             </Text>
         </CardHeader>
         <CardBody p={6} pt={0} pb={5}>

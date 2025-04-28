@@ -1,20 +1,18 @@
-import { Card, CardBody, CardHeader, Heading, HStack, Image, Text } from '@chakra-ui/react';
+import { Avatar, Card, CardBody, CardHeader, Heading, HStack, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
 import { ButtonSubscribe } from '~/components/button-subscribe';
-import { UserProps } from '~/types/user';
+import { AuthorDataType } from '~/redux/api/types/recipes';
 
 import { FollowersIcon } from '../icons/followers-icon';
 
-export const AuthorCard: FC<{ author: UserProps }> = ({ author }) => (
+export const AuthorCard: FC<{ author: AuthorDataType }> = ({ author }) => (
     <Card bg='var(--chakra-colors-lime-300)' p={{ base: 3, sm: 6 }} flexDirection='row' gap={4}>
         <CardHeader p={0}>
-            <Image
-                src={author.imageUrl}
-                alt={`${author.login}'s avatar`}
-                w='96px'
-                h='96px'
-                objectFit='cover'
+            <Avatar
+                // src={author.imageUrl}
+                name={`${author.firstName} ${author.lastName}`}
+                size='lg'
             />
         </CardHeader>
         <CardBody p={0}>
@@ -28,13 +26,14 @@ export const AuthorCard: FC<{ author: UserProps }> = ({ author }) => (
                 @{author.login}
             </Text>
             <HStack flexWrap='wrap' justifyContent='space-between'>
+                {/* TODO: add author id from request */}
                 <ButtonSubscribe userId={author._id} />
 
                 <HStack>
                     <HStack>
                         <FollowersIcon />
                         <Text fontSize='xs' lineHeight={6} color='lime.600'>
-                            {author?.followers ?? 0 ?? 0}
+                            {author?.subscribers?.length ?? 0 ?? 0}
                         </Text>
                     </HStack>
                 </HStack>

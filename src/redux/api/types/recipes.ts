@@ -23,6 +23,19 @@ export type Recipe = {
     recommendedByUserId?: string;
 };
 
+export type AuthorDataType = {
+    firstName: string;
+    lastName: string;
+    login: string;
+    subscribers: string[];
+};
+
+export type RecipeResponse = {
+    authorData: AuthorDataType;
+    existRecipe: Recipe;
+    id?: string;
+};
+
 export type EnergyValue = {
     calories: number;
     protein: number;
@@ -35,6 +48,12 @@ type Ingredient = { title: string; count: number; measureUnit: string };
 type Step = { stepNumber: number; description: string; image?: string };
 
 export type RawRecipesResponse = { data: RawRecipe[]; meta: MetaData };
+
+export type RawRecipeResponse = {
+    existRecipe: RawRecipe;
+    id?: string;
+    authorData: AuthorDataType;
+};
 
 export type MetaData = {
     total: number;

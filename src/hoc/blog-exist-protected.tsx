@@ -16,10 +16,9 @@ export const BlogExistProtected: FC<PropsWithChildren> = ({ children }) => {
 
     useEffect(() => {
         dispatch(setBloggerByIdLoading(isLoading));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoading]);
 
-    // TODO: when endpoints are done change to get from store
-    // eslint-disable-next-line no-constant-condition
     if (isLoading) return <AppLoader isOpen={true} />;
     if (data) return children;
 

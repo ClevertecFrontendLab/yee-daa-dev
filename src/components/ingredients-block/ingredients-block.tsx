@@ -90,7 +90,9 @@ export const IngredientsBlock: FC<{
                 {adjustedIngredients?.map(({ count, title, measureUnit }, index) => {
                     let renderCount: string = '';
                     if (count && count % 1 === 0) renderCount = count.toString();
-                    else if (count) renderCount = count.toFixed(1);
+                    else if (count) {
+                        renderCount = Number(count).toFixed(1);
+                    }
                     return (
                         <Tr
                             key={title}

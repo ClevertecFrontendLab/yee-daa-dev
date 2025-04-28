@@ -1,6 +1,7 @@
 import { authorizedApi } from '~/redux/api';
 import { ApiEndpoints } from '~/redux/api/constants';
-import { Recipe } from '~/redux/api/types/recipes';
+import { RawRecipe, Recipe } from '~/redux/api/types/recipes';
+import { replaceUnderscoreId } from '~/redux/api/utils/replace-underscore-id';
 import {
     BloggerCard,
     BloggersMainType,
@@ -21,8 +22,17 @@ type ToggleSubscriptionRequestType = {
 };
 
 type NoteType = {
-    time: string;
+    date: string;
     text: string;
+};
+
+export type RawBloggerById = {
+    recipes: RawRecipe[];
+    likes: number;
+    bookmarks: number;
+    notes: NoteType[];
+    totalBookmarks: number;
+    totalSubscribers: number;
 };
 
 export type BloggerById = {
@@ -57,6 +67,7 @@ export const usersApi = authorizedApi
                 async onQueryStarted({ limit }, { dispatch, queryFulfilled }) {
                     try {
                         const { data } = await queryFulfilled;
+
                         if (!limit) {
                             dispatch(setBloggersPreview(data as BloggerCard[]));
                         } else {
@@ -81,6 +92,10 @@ export const usersApi = authorizedApi
                         console.error('Error in get Blogger by id', err);
                     }
                 },
+                transformResponse: (response: RawBloggerById): BloggerById => ({
+                    ...response,
+                    recipes: response.recipes.map((resp) => replaceUnderscoreId(resp)),
+                }),
             }),
         }),
     });

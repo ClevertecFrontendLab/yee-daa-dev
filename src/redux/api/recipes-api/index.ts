@@ -3,9 +3,9 @@ import {
     AllRecipeParams,
     MetaData,
     MetaRequest,
-    RawRecipe,
+    RawRecipeResponse,
     RawRecipesResponse,
-    Recipe,
+    RecipeResponse,
     RecipesByCategoryIdArgs,
     RecipesInfiniteResponse,
     RecipesResponse,
@@ -39,7 +39,7 @@ export const recipeApi = authorizedApi.injectEndpoints({
         >({
             infiniteQueryOptions: {
                 initialPageParam: { page: 1 },
-                getNextPageParam(firstPage, allPages, firstPageParam) {
+                getNextPageParam(_b, _a, firstPageParam) {
                     const currPage = firstPageParam?.page ?? 1;
 
                     return { page: currPage + 1 };
@@ -77,7 +77,7 @@ export const recipeApi = authorizedApi.injectEndpoints({
                         dispatch(setFilteredRecipes(data.data));
                         dispatch(setShowedEmptyText(!data.data.length));
                     }
-                } catch (error) {
+                } catch {
                     dispatch(setIsFilterError(true));
                 }
             },
@@ -133,7 +133,7 @@ export const recipeApi = authorizedApi.injectEndpoints({
         >({
             infiniteQueryOptions: {
                 initialPageParam: { page: 1 },
-                getNextPageParam(firstPage, allPages, firstPageParam) {
+                getNextPageParam(_firstPage, _allPages, firstPageParam) {
                     const currPage = firstPageParam?.page ?? 1;
 
                     return { page: currPage + 1 };
@@ -153,9 +153,15 @@ export const recipeApi = authorizedApi.injectEndpoints({
                 return { data: preparedData, meta: response.meta };
             },
         }),
-        getRecipeById: build.query<Recipe, string>({
+        getRecipeById: build.query<RecipeResponse, string>({
             query: (id) => ({ url: `${ApiEndpoints.Recipe}/${id}` }),
-            transformResponse: (response: RawRecipe): Recipe => replaceUnderscoreId(response),
+            transformResponse: (response: RawRecipeResponse): RecipeResponse => {
+                const recipe = replaceUnderscoreId(response.existRecipe);
+                return {
+                    ...response,
+                    existRecipe: recipe,
+                };
+            },
             transformErrorResponse: transformBaseErrorResponse,
         }),
     }),

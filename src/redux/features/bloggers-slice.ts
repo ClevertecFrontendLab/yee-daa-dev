@@ -88,6 +88,9 @@ export const bloggersSlice = createSlice({
         setBloggerByIdLoading(state, { payload }: PayloadAction<boolean>) {
             state.bloggerByIdLoading = payload;
         },
+        resetBlogger(state) {
+            state.bloggerCurrent = initialState.bloggerCurrent;
+        },
         resetToInit() {
             return initialState;
         },
@@ -103,6 +106,7 @@ export const bloggersSlice = createSlice({
         selectBloggersById: (state) => state.bloggerCurrent,
         selectBloggerByIdLoading: (state) => state.bloggerByIdLoading,
         selectForceUpdateBlogsList: (state) => state.forceUpdateBlogsList,
+        selectBloggersInfoById: (state) => state.bloggerCurrent.info,
     },
 });
 
@@ -117,6 +121,7 @@ export const {
     setBloggersDataById,
     setBloggersInfoById,
     setBloggerByIdLoading,
+    resetBlogger,
     resetToInit,
 } = bloggersSlice.actions;
 export const {
@@ -130,4 +135,5 @@ export const {
     selectBloggersById,
     selectBloggerByIdLoading,
     selectForceUpdateBlogsList,
+    selectBloggersInfoById,
 } = bloggersSlice.selectors;

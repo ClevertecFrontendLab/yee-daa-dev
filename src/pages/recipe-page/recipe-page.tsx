@@ -7,26 +7,23 @@ import { IngredientsBlock } from '~/components/ingredients-block/ingredients-blo
 import { RecipeCard } from '~/components/recipe-card/recipe-card.tsx';
 import { StepsBlock } from '~/components/stpeps-block/steps-block.js';
 import { useDetectParams } from '~/hooks/use-detect-params';
-import { mockAuthors } from '~/mocks/authors';
 import { useGetRecipeByIdQuery } from '~/redux/api/recipes-api';
 
 export const RecipePage = () => {
     const { recipeId } = useDetectParams();
 
-    const { data: recipe } = useGetRecipeByIdQuery(recipeId as string);
-    //TODO добавить логику поиска автора по ид из рецепта когда будет готова коллекция авторов
-    const foundAuthor = mockAuthors[0] || null;
+    const { data: recipeData } = useGetRecipeByIdQuery(recipeId as string);
 
     return (
         <VStack spacing={10}>
-            <RecipeCard recipe={recipe} />
+            <RecipeCard recipe={recipeData?.existRecipe} />
             <Stack spacing={10} maxW={{ base: '100%', xl: '758px' }} margin='0 auto' w='100%'>
-                <CalorieCard {...recipe} />
-                <IngredientsBlock {...recipe} />
+                <CalorieCard {...recipeData?.existRecipe} />
+                <IngredientsBlock {...recipeData?.existRecipe} />
                 <Stack gap={5}>
-                    <StepsBlock {...recipe} />
+                    <StepsBlock {...recipeData?.existRecipe} />
                 </Stack>
-                {foundAuthor && <AuthorCard author={foundAuthor} />}
+                {recipeData?.authorData && <AuthorCard author={recipeData?.authorData} />}
             </Stack>
             <Box width='100%'>
                 <Carousel />
