@@ -1,24 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { allergens } from '../../mocks/allergens';
-import { Allergen } from '../../types/allergens';
-import { Recipe } from '../../types/recipe';
-import { AppState } from '../../types/store';
+import { allergens } from '~/mocks/allergens';
+import { Allergen } from '~/types/allergens';
 
 type AllergensState = {
     allergens: Allergen[];
     selectedAllergens: string[];
-    filteredByAllergens: Recipe[];
-    isfromFilter: boolean;
-    isLoading: boolean;
+    switcherState: boolean;
+    fromFilter: boolean;
 };
 
 const initialState: AllergensState = {
     allergens: allergens,
     selectedAllergens: [],
-    filteredByAllergens: [],
-    isfromFilter: false,
-    isLoading: false,
+    switcherState: false,
+    fromFilter: false,
 };
 
 export const allergenSlice = createSlice({
@@ -27,7 +23,6 @@ export const allergenSlice = createSlice({
     reducers: {
         setAllergens(state, action: PayloadAction<Allergen[]>) {
             state.allergens = action.payload;
-            state.isLoading = false;
         },
         addAllergen(state, action: PayloadAction<string>) {
             const newAllergen = {
@@ -50,26 +45,21 @@ export const allergenSlice = createSlice({
         clearSelectedAllergens(state) {
             state.selectedAllergens = [];
         },
-        setFilteredByAllergens(state, action: PayloadAction<Recipe[]>) {
-            state.filteredByAllergens = action.payload;
+        setFromFilter(state, action: PayloadAction<boolean>) {
+            state.fromFilter = action.payload;
         },
-        clearFilteredByAllergens(state) {
-            state.filteredByAllergens = [];
+        toggleSwitcher: (state) => {
+            state.switcherState = !state.switcherState;
         },
-        setisfromFilter(state, action: PayloadAction<boolean>) {
-            state.isfromFilter = action.payload;
-        },
-        setLoading(state, action: PayloadAction<boolean>) {
-            state.isLoading = action.payload;
-        },
+        resetAllergenSlice: () => initialState,
+    },
+    selectors: {
+        selectAllergens: (state) => state.allergens,
+        selectSelectedAllergens: (state) => state.selectedAllergens,
+        selectFromFilter: (state) => state.fromFilter,
+        selectSwitcherState: (state) => state.switcherState,
     },
 });
-
-export const selectAllergens = (state: AppState) => state.allergens.allergens;
-export const selectSelectedAllergens = (state: AppState) => state.allergens.selectedAllergens;
-export const selectFilteredByAllergens = (state: AppState) => state.allergens.filteredByAllergens;
-export const selectisfromFilter = (state: AppState) => state.allergens.isfromFilter;
-export const selectIsLoading = (state: AppState) => state.allergens.isLoading;
 
 export const {
     setAllergens,
@@ -77,9 +67,12 @@ export const {
     selectAllergen,
     deselectAllergen,
     clearSelectedAllergens,
-    setLoading,
-    setFilteredByAllergens,
-    clearFilteredByAllergens,
-    setisfromFilter,
+    setFromFilter,
+    toggleSwitcher,
+    resetAllergenSlice,
 } = allergenSlice.actions;
+
+export const { selectAllergens, selectSelectedAllergens, selectFromFilter, selectSwitcherState } =
+    allergenSlice.selectors;
+
 export const allergenReducer = allergenSlice.reducer;

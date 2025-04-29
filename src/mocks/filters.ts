@@ -1,5 +1,5 @@
-import { FoodItem } from '../types/food-item';
-import { UserProps } from '../types/user';
+import { FoodItem } from '~/types/food-item';
+import { UserProps } from '~/types/user';
 
 export const meats: FoodItem[] = [
     { id: '1', value: 'Chicken', label: 'Курица' },

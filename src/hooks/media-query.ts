@@ -11,3 +11,9 @@ export const useIsLg = () => {
 
     return isTablet;
 };
+
+export const useIsMobile = () => {
+    const [isMobile] = useMediaQuery('(max-width: 425px)');
+
+    return isMobile;
+};

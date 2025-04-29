@@ -8,15 +8,9 @@ const spin = keyframes`
     100% { transform: rotate(360deg); }
 `;
 
-export const SearchLoader: FC = () => {
-    return (
-        <Box className={styles.wrapper} data-test-id='search-loader'>
-            <Box className={styles.gradientBackground} />
-            <Box
-                className={styles.searchLoader}
-                as='div'
-                animation={`${spin} 1s linear infinite`}
-            />
-        </Box>
-    );
-};
+export const SearchLoader: FC = () => (
+    <Box className={styles.wrapper} data-test-id='search-loader'>
+        <Box className={styles.gradientBackground} />
+        <Box className={styles.searchLoader} as='div' animation={`${spin} 1s linear infinite`} />
+    </Box>
+);

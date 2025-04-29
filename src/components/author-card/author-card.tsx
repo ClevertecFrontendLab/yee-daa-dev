@@ -1,24 +1,31 @@
 import { Button, Card, CardBody, CardHeader, Heading, HStack, Image, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { Recipe } from '../../types/recipe';
+import { UserProps } from '~/types/user';
+
 import { FollowersIcon } from '../icons/followers-icon';
 import { SubscribeIcon } from '../icons/subcribe-icon';
 
-export const AuthorCard: FC<{ author?: Recipe['author'] }> = ({ author }) => (
-    <Card bg={'var(--chakra-colors-lime-300)'} p={{ base: 3, sm: 6 }} flexDirection='row' gap={4}>
+export const AuthorCard: FC<{ author: UserProps }> = ({ author }) => (
+    <Card bg='var(--chakra-colors-lime-300)' p={{ base: 3, sm: 6 }} flexDirection='row' gap={4}>
         <CardHeader p={0}>
-            <Image src={author?.imageUrl} alt={author?.login} w='96px' h='96px' objectFit='cover' />
+            <Image
+                src={author.imageUrl}
+                alt={`${author.login}'s avatar`}
+                w='96px'
+                h='96px'
+                objectFit='cover'
+            />
         </CardHeader>
         <CardBody p={0}>
             <HStack flexWrap='wrap' justifyContent='space-between'>
                 <Heading fontSize={{ base: 'xl', sm: '2xl' }}>
-                    {author?.firstName} {author?.lastName}
+                    {author.firstName} {author.lastName}
                 </Heading>
                 <Text>Автор рецепта</Text>
             </HStack>
             <Text mb={5} mt={2}>
-                @{author?.login}
+                @{author.login}
             </Text>
             <HStack flexWrap='wrap' justifyContent='space-between'>
                 <Button
@@ -30,11 +37,12 @@ export const AuthorCard: FC<{ author?: Recipe['author'] }> = ({ author }) => (
                 >
                     Подписаться
                 </Button>
+
                 <HStack>
                     <HStack>
                         <FollowersIcon />
                         <Text fontSize='xs' lineHeight={6} color='lime.600'>
-                            {author?.followers ?? 0}
+                            {author?.followers ?? 0 ?? 0}
                         </Text>
                     </HStack>
                 </HStack>

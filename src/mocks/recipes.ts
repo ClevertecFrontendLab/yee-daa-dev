@@ -1,29 +1,55 @@
-import cakeImg from '../assets/images/chocolate-cake.webp';
-import grechaImg from '../assets/images/grechka-s-ovoshchami.jpg';
-import hamImg from '../assets/images/ham.png';
-import kotletaImg from '../assets/images/kapustnie-kotletki.png';
-import kneliImg from '../assets/images/kneli.png';
-import lazaniaImg from '../assets/images/lazania-vegan.jpg';
-import manImg from '../assets/images/man.png';
-import man from '../assets/images/man.png';
-import noodleImg from '../assets/images/noodle.png';
-import oladushkiImg from '../assets/images/oladushki.png';
-import pastaImg from '../assets/images/pasta.jpg';
-import potatoGarlicImg from '../assets/images/potato-garlic.jpg';
-import rollsImg from '../assets/images/potato-mini-rolls.jpg';
-import potatTushImg from '../assets/images/potato-tushenaya.jpg';
-import soupImg from '../assets/images/pumpkin-soup.webp';
-import puriImg from '../assets/images/puri.jpg';
-import chikenSaladImg from '../assets/images/salat-kurica-s-ananasami.jpg';
-import saladImg from '../assets/images/salat-zdorovie.png';
-import soliankaImg from '../assets/images/solianka.png';
-import tefteliImg from '../assets/images/tefteli-vegan.jpg';
-import tomImg from '../assets/images/tom.png';
-import womanImg from '../assets/images/woman.png';
-import woman from '../assets/images/woman.png';
-import { Recipe } from '../types/recipe.ts';
+import cakeImg from '~/assets/images/chocolate-cake.webp';
+import grechaImg from '~/assets/images/grechka-s-ovoshchami.jpg';
+import hamImg from '~/assets/images/ham.png';
+import kotletaImg from '~/assets/images/kapustnie-kotletki.png';
+import kneliImg from '~/assets/images/kneli.png';
+import lazaniaImg from '~/assets/images/lazania-vegan.jpg';
+import manImg from '~/assets/images/man.png';
+import man from '~/assets/images/man.png';
+import noodleImg from '~/assets/images/noodle.png';
+import oladushkiImg from '~/assets/images/oladushki.png';
+import pastaImg from '~/assets/images/pasta.jpg';
+import potatoGarlicImg from '~/assets/images/potato-garlic.jpg';
+import rollsImg from '~/assets/images/potato-mini-rolls.jpg';
+import potatTushImg from '~/assets/images/potato-tushenaya.jpg';
+import soupImg from '~/assets/images/pumpkin-soup.webp';
+import puriImg from '~/assets/images/puri.jpg';
+import chikenSaladImg from '~/assets/images/salat-kurica-s-ananasami.jpg';
+import saladImg from '~/assets/images/salat-zdorovie.png';
+import soliankaImg from '~/assets/images/solianka.png';
+import tefteliImg from '~/assets/images/tefteli-vegan.jpg';
+import tomImg from '~/assets/images/tom.png';
+import womanImg from '~/assets/images/woman.png';
+import woman from '~/assets/images/woman.png';
+import { UserProps } from '~/types/user';
 
-export const recipes: Recipe[] = [
+type OldRecipe = {
+    id: string;
+    category: string[];
+    subcategory: string[];
+    title: string;
+    date: string;
+    description: string;
+    time: string;
+    value: EnergyValue;
+    ingredients: ingredient[];
+    steps: Step[];
+    author: UserProps;
+    meat?: string;
+    side?: string;
+    portions?: number;
+    image?: string;
+    likes?: number;
+    views?: number;
+    bookmarks?: number;
+    recommendation?: Omit<UserProps, 'login'>;
+};
+
+type EnergyValue = { calorie: number; proteins: number; fats: number; carbohydrates: number };
+type ingredient = { name: string; title: string; quantity: number; unit: string };
+type Step = { number: number; description: string; image?: string };
+
+export const recipes: OldRecipe[] = [
     {
         id: '0',
         title: 'Картошка, тушенная с болгарским перцем и фасолью в томатном соусе',

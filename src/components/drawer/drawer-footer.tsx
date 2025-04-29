@@ -1,33 +1,37 @@
 import { Button, DrawerFooter } from '@chakra-ui/react';
 
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { useClearFiltersWithSearch } from '~/hooks/use-clear-filters-with-search';
+import { useDetectParams } from '~/hooks/use-detect-params';
+import { useLazyGetAllRecipesMergeQuery } from '~/redux/api/services/recipes-api';
+import { selectSelectedAllergens } from '~/redux/features/allergens-slice';
+import { selectSelectedAuthors } from '~/redux/features/authors-slice';
 import {
-    clearSelectedAllergens,
-    selectSelectedAllergens,
-} from '../../redux/features/allergens-slice';
-import { clearSelectedAuthors, selectSelectedAuthors } from '../../redux/features/authors-slice';
-import {
-    clearSelectedCategories,
     selectSelectedCategories,
-} from '../../redux/features/categories-slice';
-import { initialState, setChoosenCategory } from '../../redux/features/choosen-category-slice';
-import { closeDrawer } from '../../redux/features/drawer';
-import { clearSelectedMeats, selectSelectedMeats } from '../../redux/features/meats-slice';
-import { selectRecipes, setFilteredRecipes } from '../../redux/features/recipies-slice';
-import { clearSelectedSides, selectSelectedSides } from '../../redux/features/sides-slice';
+    selectSelectedSubCategoriesIds,
+} from '~/redux/features/categories-slice';
+import { closeDrawer, setIsFiltering } from '~/redux/features/filter-drawer-slice';
+import { selectSelectedMeats } from '~/redux/features/meats-slice';
+import { selectInputValue, setSelectedPage } from '~/redux/features/search-slice';
+import { selectSelectedSides } from '~/redux/features/sides-slice';
+
 import styles from './drawer.module.css';
-import { filterRecipes } from './helpers/filter-recipes';
+import { getRequestParams } from './helpers/get-request-params';
 import { isButtonDisabled } from './helpers/is-button-disabled';
 
 export const FilterDrawerFooter = () => {
     const dispatch = useAppDispatch();
+    const { clearDrawerFilters } = useClearFiltersWithSearch();
+    const [fetchRecipes, { isFetching }] = useLazyGetAllRecipesMergeQuery();
+    const { selectedSubCategory } = useDetectParams();
 
-    const allRecipes = useAppSelector(selectRecipes);
     const selectedCategories = useAppSelector(selectSelectedCategories);
     const selectedAuthors = useAppSelector(selectSelectedAuthors);
     const selectedMeats = useAppSelector(selectSelectedMeats);
     const selectedSides = useAppSelector(selectSelectedSides);
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
+    const selectedSubCategories = useAppSelector(selectSelectedSubCategoriesIds);
+    const searchInput = useAppSelector(selectInputValue);
 
     const disabled = isButtonDisabled(
         selectedCategories,
@@ -37,25 +41,26 @@ export const FilterDrawerFooter = () => {
         selectedAllergens,
     );
 
-    const clearFilters = () => {
-        dispatch(clearSelectedAuthors());
-        dispatch(clearSelectedCategories());
-        dispatch(clearSelectedMeats());
-        dispatch(clearSelectedSides());
-        dispatch(clearSelectedAllergens());
-    };
+    const clearFilters = () => clearDrawerFilters();
 
     const findRecipes = () => {
-        const filteredRecipes = filterRecipes(allRecipes, {
-            selectedCategories,
-            selectedAuthors,
-            selectedMeats,
-            selectedSides,
-            selectedAllergens,
+        const requestParams = getRequestParams({
+            allergens: selectedAllergens,
+            meats: selectedMeats,
+            sides: selectedSides,
+            searchInput,
+            subCategories: selectedSubCategory?.id
+                ? [selectedSubCategory.id]
+                : selectedSubCategories,
         });
+
+        // если выбрана подкатегория то не нужен запрос в рамках выбранной подкатегории
+        // если категории нет - то это главная страница и все выбранные подкакатегории
+        dispatch(setIsFiltering(true));
+        dispatch(setSelectedPage(1));
+        fetchRecipes(requestParams);
+
         dispatch(closeDrawer());
-        dispatch(setFilteredRecipes(filteredRecipes));
-        dispatch(setChoosenCategory(initialState));
     };
 
     return (
@@ -74,7 +79,9 @@ export const FilterDrawerFooter = () => {
                 bg='black'
                 color='white'
                 onClick={findRecipes}
-                size={'lg'}
+                isLoading={isFetching}
+                loadingText='Ищем рецепты...'
+                size='lg'
                 sx={{
                     pointerEvents: disabled ? 'none' : 'auto',
                     bg: disabled ? 'gray.500' : 'black',

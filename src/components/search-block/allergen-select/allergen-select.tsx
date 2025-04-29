@@ -1,40 +1,39 @@
 import { FormControl, Menu, Stack } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '../../../hooks/typed-react-redux-hooks';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import {
     clearSelectedAllergens,
     selectSelectedAllergens,
-    setisfromFilter,
-} from '../../../redux/features/allergens-slice';
-import { setInputValue } from '../../../redux/features/search-slice';
+    selectSwitcherState,
+    setFromFilter,
+} from '~/redux/features/allergens-slice';
+
 import { SelectMenuButton } from './menu-button';
 import { SelectMenuList } from './menu-list';
 import { Switcher } from './switcher';
 
-export const AllergenSelect: FC<{ isfromFilter: boolean }> = ({ isfromFilter }) => {
+export const AllergenSelect: FC<{ fromFilter: boolean }> = ({ fromFilter }) => {
     const dispatch = useAppDispatch();
     const selectedAllergens = useAppSelector(selectSelectedAllergens);
+    const isSwitchOn = useAppSelector(selectSwitcherState);
 
     const [isOpen, setIsOpen] = useState(false);
-    const [newAllergen, setNewAllergen] = useState<string>('');
+    const [newAllergen, setNewAllergen] = useState('');
     const [isAdding, setIsAdding] = useState(false);
-    const [isSwitchOn, setIsSwitchOn] = useState(false);
 
     const menuRef = useRef<HTMLDivElement>(null);
 
     const handleMenuToggle = () => {
-        dispatch(setisfromFilter(isfromFilter));
+        dispatch(setFromFilter(fromFilter));
 
         if (isSwitchOn) {
             setIsOpen((prev) => !prev);
         }
     };
 
-    const handleSwitchChange = () => {
-        setIsSwitchOn((prev) => !prev);
+    const handleSwitchChangeCb = () => {
         dispatch(clearSelectedAllergens());
-        dispatch(setInputValue(''));
 
         if (!isSwitchOn) {
             setIsOpen(false);
@@ -63,24 +62,19 @@ export const AllergenSelect: FC<{ isfromFilter: boolean }> = ({ isfromFilter }) 
         <Stack
             spacing={4}
             direction={{ md: 'column', xl: 'row' }}
-            alignItems={isfromFilter ? 'flex-start' : 'center'}
+            alignItems={fromFilter ? 'flex-start' : 'center'}
             display={{ base: 'none', md: 'flex', xl: 'flex' }}
             flexWrap='wrap'
         >
-            <Switcher
-                isSwitchOn={isSwitchOn}
-                handleSwitchChange={handleSwitchChange}
-                isfromFilter={isfromFilter}
-            />
+            <Switcher handleSwitchChangeCb={handleSwitchChangeCb} fromFilter={fromFilter} />
             <FormControl ref={menuRef} width='fit-content'>
                 <Menu isLazy={true} matchWidth={true} closeOnSelect={false}>
                     <SelectMenuButton
-                        isSwitchOn={isSwitchOn}
                         selectedAllergens={selectedAllergens}
                         handleMenuToggle={handleMenuToggle}
                         setIsOpen={setIsOpen}
                         isOpen={isOpen}
-                        isfromFilter={isfromFilter}
+                        fromFilter={fromFilter}
                     />
 
                     {isOpen && (

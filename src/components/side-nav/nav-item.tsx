@@ -1,54 +1,62 @@
 import { AccordionIcon, AccordionItem, AccordionPanel, Image } from '@chakra-ui/icons';
 import { AccordionButton, HStack, Text } from '@chakra-ui/react';
-import { FC, useEffect, useState } from 'react';
+import { FC, MouseEventHandler, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 
-import { categoriesMap } from '../../constants/categories.ts';
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import {
-    clearSelectedAllergens,
-    setFilteredByAllergens,
-} from '../../redux/features/allergens-slice.ts';
-import {
-    selectChoosenCategory,
-    setChoosenCategory,
-} from '../../redux/features/choosen-category-slice.ts';
-import { clearFilteredRecipes } from '../../redux/features/recipies-slice.ts';
-import { MenuItem } from '../../types/category.ts';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { useDetectParams } from '~/hooks/use-detect-params.ts';
+import { Category } from '~/redux/api/types/categories.ts';
+import { selectActiveIndex, setActiveIndex } from '~/redux/features/accordion-slice.ts';
+import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
+import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
+
 import { SubNavItem } from './sub-nav-item.tsx';
 
-export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }) => {
-    const location = useLocation();
+export const NavItem: FC<Category & { index: number }> = ({
+    category,
+    subCategories,
+    title,
+    icon,
+    index,
+}) => {
     const dispatch = useAppDispatch();
+    const { pathname } = useLocation();
     const [isActive, setIsActive] = useState(false);
-    const choosenCategory = useAppSelector(selectChoosenCategory);
+    const { selectedCategory } = useDetectParams();
+    const activeIndex = useAppSelector(selectActiveIndex);
 
-    const categoryPath = subItems ? `/${category}/${subItems[0].category}` : `/${category}`;
-    const choosenItem = {
-        category,
-        title,
-        description,
-        choosenSubCategory: subItems ? subItems[0] : null,
-    };
+    const defaultCategoryPath = isArrayWithItems(subCategories)
+        ? `/${category}/${subCategories[0].category}`
+        : `/${category}`;
 
-    const handleClick = () => {
-        dispatch(setChoosenCategory(choosenItem));
-        dispatch(clearFilteredRecipes());
-        dispatch(clearSelectedAllergens());
-        dispatch(setFilteredByAllergens([]));
+    const isSameCategory = category === selectedCategory?.category;
+    const isRootPath = pathname === '/';
 
+    const handleClick: MouseEventHandler<HTMLAnchorElement> = (e) => {
         setIsActive((prev) => !prev);
+        dispatch(setActiveIndex(index));
+        // чтобы по клику на ту же самую категорию не происходило перерендера и перенавигации
+        if (isSameCategory) {
+            e.preventDefault();
+        }
     };
 
     useEffect(() => {
-        setIsActive(location.pathname.split('/')[1] === categoryPath.split('/')[1]);
-    }, [location.pathname, categoryPath]);
+        if (!selectedCategory?.category || isRootPath) {
+            setIsActive(false);
+            return;
+        }
+
+        setIsActive(selectedCategory.category === category);
+    }, [selectedCategory?.category, category, isRootPath]);
 
     useEffect(() => {
-        if (!choosenCategory.category) {
-            setIsActive(false);
+        //при перезагрузке страницы с тем же путем чтобы активной становилось сразу выбранная категория
+        if (selectedCategory?.category === category && activeIndex === -1) {
+            dispatch(setActiveIndex(index));
         }
-    }, [choosenCategory]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedCategory?.category]);
 
     return (
         <AccordionItem
@@ -62,9 +70,10 @@ export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }
                     transition: 'opacity 0.1s ease',
                 },
             }}
+            id={selectedCategory?.category}
         >
             <NavLink
-                to={categoryPath}
+                to={defaultCategoryPath}
                 key={category}
                 onClick={handleClick}
                 data-test-id={`${category === 'vegan' ? 'vegan-cuisine' : category}`}
@@ -76,7 +85,7 @@ export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }
                     }}
                 >
                     <HStack as='span' flex='1' textAlign='left' spacing={3}>
-                        <Image src={categoriesMap[category]} alt={category} w={6} h={6} />
+                        <Image src={getAbsoluteImagePath(icon)} alt={category} w={6} h={6} />
                         <Text
                             fontSize='md'
                             lineHeight={6}
@@ -90,14 +99,8 @@ export const NavItem: FC<MenuItem> = ({ category, subItems, title, description }
                 </AccordionButton>
             </NavLink>
             <AccordionPanel padding='4px 8px 4px 40px'>
-                {subItems?.map((el) => (
-                    <SubNavItem
-                        key={el.category}
-                        {...el}
-                        parentCategory={category}
-                        parentTitle={title}
-                        parentDesc={description}
-                    />
+                {subCategories?.map((el) => (
+                    <SubNavItem key={el.category} {...el} parentCategory={category} />
                 ))}
             </AccordionPanel>
         </AccordionItem>

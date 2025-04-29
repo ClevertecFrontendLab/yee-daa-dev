@@ -1,44 +1,36 @@
-import { Stack } from '@chakra-ui/react';
-import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { Box, Stack, VStack } from '@chakra-ui/react';
 
-import { AuthorCard } from '../../components/author-card/author-card.tsx';
-import { CalorieCard } from '../../components/calorie/calorie.tsx';
-import { Carousel } from '../../components/carousel/carousel.tsx';
-import { IngredientsBlock } from '../../components/ingredients-block/ingredients-block.tsx';
-import { RecipeCard } from '../../components/recipe-card/recipe-card.tsx';
-import { StepsBlock } from '../../components/stpeps-block/steps-block.js';
-import { Paths } from '../../constants/path.ts';
-import { useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { selectRecipes } from '../../redux/features/recipies-slice.ts';
+import { AuthorCard } from '~/components/author-card/author-card.tsx';
+import { CalorieCard } from '~/components/calorie/calorie.tsx';
+import { Carousel } from '~/components/carousel/carousel.tsx';
+import { IngredientsBlock } from '~/components/ingredients-block/ingredients-block.tsx';
+import { RecipeCard } from '~/components/recipe-card/recipe-card.tsx';
+import { StepsBlock } from '~/components/stpeps-block/steps-block.js';
+import { useDetectParams } from '~/hooks/use-detect-params';
+import { mockAuthors } from '~/mocks/authors';
+import { useGetRecipeByIdQuery } from '~/redux/api/services/recipes-api';
 
 export const RecipePage = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const recipes = useAppSelector(selectRecipes);
+    const { recipeId } = useDetectParams();
 
-    const recipe = recipes.find((recipe) => recipe.id === id);
-
-    const isRedirect = !recipe;
-
-    useEffect(() => {
-        if (isRedirect) {
-            navigate(Paths.ERROR);
-        }
-    }, [isRedirect, navigate]);
+    const { data: recipe } = useGetRecipeByIdQuery(recipeId as string);
+    //TODO добавить логику поиска автора по ид из рецепта когда будет готова коллекция авторов
+    const foundAuthor = mockAuthors[0] || null;
 
     return (
-        <Stack spacing={10}>
+        <VStack spacing={10}>
             <RecipeCard recipe={recipe} />
-            <Stack spacing={10} maxW={{ base: '100%', xl: '758px' }} margin='0 auto'>
+            <Stack spacing={10} maxW={{ base: '100%', xl: '758px' }} margin='0 auto' w='100%'>
                 <CalorieCard {...recipe} />
                 <IngredientsBlock {...recipe} />
                 <Stack gap={5}>
                     <StepsBlock {...recipe} />
                 </Stack>
-                <AuthorCard {...recipe} />
+                {foundAuthor && <AuthorCard author={foundAuthor} />}
             </Stack>
-            <Carousel />
-        </Stack>
+            <Box width='100%'>
+                <Carousel />
+            </Box>
+        </VStack>
     );
 };

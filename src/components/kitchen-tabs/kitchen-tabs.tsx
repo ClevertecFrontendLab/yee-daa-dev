@@ -1,110 +1,118 @@
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
+import { shallowEqual } from 'react-redux';
 import { useNavigate } from 'react-router';
 
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks';
-import { selectCategoriesMenu } from '../../redux/features/categories-slice';
-import {
-    selectChoosenCategory,
-    setChoosenCategory,
-} from '../../redux/features/choosen-category-slice';
-import { Recipe } from '../../types/recipe';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { useDetectParams } from '~/hooks/use-detect-params';
+import { useGetRecipeByCategoryIdInfiniteInfiniteQuery } from '~/redux/api/services/recipes-api';
+import { selectCategoriesMenu } from '~/redux/features/categories-slice';
+
+import { AppLoader } from '../app-loader';
 import { RecipeCardList } from '../recipes-card-list/recipes-card-list';
 
-export const KitchenTabs: FC<{ recipeList: Recipe[] }> = ({ recipeList }) => {
+const KITCHEN_TABS_RECIPE_LIMIT = 8;
+
+export const KitchenTabs: FC = () => {
     const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const selectedCategory = useAppSelector(selectChoosenCategory);
-    const categories = useAppSelector(selectCategoriesMenu);
+    const { selectedCategory, selectedSubCategory } = useDetectParams();
+
+    const {
+        data: recipesData,
+        fetchNextPage,
+        isFetching,
+    } = useGetRecipeByCategoryIdInfiniteInfiniteQuery(
+        { id: selectedSubCategory?.id as string, limit: KITCHEN_TABS_RECIPE_LIMIT },
+        { skip: !selectedSubCategory?.id },
+    );
+
+    const loadMore = () => fetchNextPage();
+
+    const totalPages = recipesData?.pages[0]?.meta?.totalPages ?? 1;
+    const currentPage = recipesData?.pages.at(-1)?.meta?.page ?? 1;
+    const recipesForRender = recipesData?.pages?.flatMap((elem) => elem.data) ?? [];
+
+    const categories = useAppSelector(selectCategoriesMenu, shallowEqual);
+    const currSubCategories = useMemo(
+        () => categories?.find((elem) => elem.id === selectedCategory?.id)?.subCategories ?? [],
+        [categories, selectedCategory?.id],
+    );
 
     const [selectedTabIndex, setSelectedTabIndex] = useState(0);
-    const subcategories = categories
-        .filter((cat) => cat.category === selectedCategory.category)
-        .flatMap((category) => category.subItems);
 
     const handleTabChange = (index: number) => {
         setSelectedTabIndex(index);
-        const chosenSubCategory = subcategories[index];
+        const chosenSubCategory = currSubCategories[index];
 
-        if (chosenSubCategory) {
-            dispatch(
-                setChoosenCategory({
-                    ...selectedCategory,
-                    choosenSubCategory: chosenSubCategory,
-                }),
-            );
-
+        if (chosenSubCategory && selectedCategory) {
             const subCategoryPath = `/${selectedCategory.category}/${chosenSubCategory.category}`;
             navigate(subCategoryPath);
         }
     };
 
-    const currentSubcategory = subcategories[selectedTabIndex]?.category ?? '';
-
-    const filteredRecipes = recipeList.filter((recipe) =>
-        recipe.subcategory.includes(currentSubcategory),
-    );
-
     useEffect(() => {
-        const initialIndex = subcategories.findIndex(
-            (subcat) => subcat?.category === selectedCategory.choosenSubCategory?.category,
-        );
-        setSelectedTabIndex(initialIndex >= 0 ? initialIndex : 0);
-    }, [selectedCategory, subcategories]);
+        if (!selectedSubCategory) return;
 
-    useEffect(() => {
-        const initialIndex = subcategories.findIndex(
-            (subcat) => subcat?.category === selectedCategory.choosenSubCategory?.category,
+        const foundActiveIndex = currSubCategories.findIndex(
+            (subCat) => subCat.id === selectedSubCategory.id,
         );
-        if (initialIndex !== -1) {
-            setSelectedTabIndex(initialIndex);
-        }
-    }, [selectedCategory.choosenSubCategory, subcategories]);
+        if (foundActiveIndex === -1) return;
+
+        setSelectedTabIndex(foundActiveIndex);
+    }, [currSubCategories, selectedSubCategory]);
 
     return (
-        <Tabs mb={{ base: 8, md: 10 }} index={selectedTabIndex} onChange={handleTabChange}>
-            <Box
-                ml='auto'
-                mr='auto'
-                overflow='auto'
-                sx={{
-                    scrollbarWidth: 'none',
-                    '::-webkit-scrollbar': {
-                        display: 'none',
-                    },
-                    WebkitOverflowScrolling: 'touch',
-                }}
-                display='flex'
-                justifyContent='center'
-            >
-                <TabList
-                    w='max-content'
+        <>
+            {isFetching && <AppLoader isOpen={true} overlayColor='transparent' />}
+            <Tabs mb={{ base: 8, md: 10 }} index={selectedTabIndex} onChange={handleTabChange}>
+                <Box
+                    ml='auto'
+                    mr='auto'
+                    overflow='auto'
+                    sx={{
+                        scrollbarWidth: 'none',
+                        '::-webkit-scrollbar': {
+                            display: 'none',
+                        },
+                        WebkitOverflowScrolling: 'touch',
+                    }}
+                    display='flex'
                     justifyContent='center'
-                    flexWrap={{ base: 'nowrap', md: 'wrap' }}
                 >
-                    {subcategories.map((subcategory, index) => (
-                        <Tab
-                            data-test-id={`tab-${subcategory?.category}-${index}`}
-                            key={subcategory?.category}
-                            flexShrink={0}
-                            color='lime.800'
-                            _selected={{
-                                color: 'lime.600',
-                                borderColor: 'lime.600',
-                            }}
-                        >
-                            {subcategory?.title}
-                        </Tab>
+                    <TabList
+                        w='max-content'
+                        justifyContent='center'
+                        flexWrap={{ base: 'nowrap', md: 'wrap' }}
+                    >
+                        {currSubCategories.map((subcategory, index) => (
+                            <Tab
+                                data-test-id={`tab-${subcategory?.category}-${index}`}
+                                key={subcategory?.category}
+                                flexShrink={0}
+                                color='lime.800'
+                                _selected={{
+                                    color: 'lime.600',
+                                    borderColor: 'lime.600',
+                                }}
+                            >
+                                {subcategory?.title}
+                            </Tab>
+                        ))}
+                    </TabList>
+                </Box>
+                <TabPanels>
+                    {currSubCategories.map((subcategory) => (
+                        <TabPanel p={0} key={subcategory?.category}>
+                            <RecipeCardList
+                                recipeList={recipesForRender}
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                loadMoreCallback={loadMore}
+                            />
+                        </TabPanel>
                     ))}
-                </TabList>
-            </Box>
-            <TabPanels>
-                {subcategories.map((subcategory) => (
-                    <TabPanel p={0} key={subcategory?.category}>
-                        <RecipeCardList recipeList={filteredRecipes} />
-                    </TabPanel>
-                ))}
-            </TabPanels>
-        </Tabs>
+                </TabPanels>
+            </Tabs>
+        </>
     );
 };

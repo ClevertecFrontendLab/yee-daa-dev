@@ -1,7 +1,8 @@
 export type MenuItem = {
+    id: string;
     category: string;
     title: string;
     description?: string;
-    subItems?: MenuItem[];
-    imgUrl?: string;
+    subCategories?: MenuItem[];
+    icon?: string;
 };

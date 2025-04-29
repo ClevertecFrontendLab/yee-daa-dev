@@ -1,66 +1,48 @@
 import './side-nav.module.css';
 
 import { Box, Text } from '@chakra-ui/react';
-import { FC, useEffect, useState } from 'react';
+import { FC, MouseEventHandler, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 
-import { useAppDispatch } from '../../hooks/typed-react-redux-hooks';
-import {
-    clearSelectedAllergens,
-    setFilteredByAllergens,
-} from '../../redux/features/allergens-slice';
-import { setChoosenCategory } from '../../redux/features/choosen-category-slice';
-import { clearFilteredRecipes } from '../../redux/features/recipies-slice';
-import { MenuItem } from '../../types/category';
+import { useDetectParams } from '~/hooks/use-detect-params';
+import { MenuItem } from '~/types/category';
 
 type SubNavItemProps = MenuItem & {
     parentCategory: string;
-    parentTitle: string;
-    parentDesc?: string;
 };
 
-export const SubNavItem: FC<SubNavItemProps> = ({
-    parentCategory,
-    parentTitle,
-    parentDesc,
-    category,
-    title,
-    description,
-}) => {
-    const dispatch = useAppDispatch();
+export const SubNavItem: FC<SubNavItemProps> = ({ parentCategory, category, title }) => {
+    const { pathname } = useLocation();
     const [isActive, setIsActive] = useState(false);
+    const isRootPath = pathname === '/';
 
-    const location = useLocation();
+    const { selectedSubCategory } = useDetectParams();
     const subCategoryPath = `/${parentCategory}/${category}`;
 
-    const choosenSubItem = {
-        title: parentTitle,
-        category: parentCategory,
-        description: parentDesc,
-        choosenSubCategory: { title, category, description },
-    };
-
-    const handleClick = () => {
-        dispatch(setChoosenCategory(choosenSubItem));
-        dispatch(clearFilteredRecipes());
-        dispatch(clearSelectedAllergens());
-        dispatch(setFilteredByAllergens([]));
+    const handleClick: MouseEventHandler<HTMLAnchorElement> = (e) => {
+        //предотвращает перерендер и перенавигацию при клике по тому же самому элементу
+        if (selectedSubCategory?.category === category) {
+            e.preventDefault();
+        }
     };
 
     useEffect(() => {
-        setIsActive(location.pathname.split('/')[2] === subCategoryPath.split('/')[2]);
-    }, [location.pathname, subCategoryPath]);
+        if (isRootPath) {
+            setIsActive(false);
+            return;
+        }
+        setIsActive(selectedSubCategory?.category === subCategoryPath.split('/')[2]);
+    }, [isRootPath, selectedSubCategory?.category, subCategoryPath]);
 
     return (
         <NavLink
             to={subCategoryPath}
-            key={category}
             onClick={handleClick}
             data-test-id={`${category}-${isActive ? 'active' : ''}`}
         >
             <Box
                 borderColor='lime.400'
-                borderLeftWidth={'1px'}
+                borderLeftWidth='1px'
                 pl={3}
                 mt={1}
                 mb={1}
