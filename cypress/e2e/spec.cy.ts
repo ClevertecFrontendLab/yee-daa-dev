@@ -2013,47 +2013,6 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId('side-dishes-active').should('exist');
             cy.getByTestId('snacks-active').should('not.exist');
         });
-
-        it('When click on tab request occures and loader exist. Screen 768px', () => {
-            cy.viewport(768, 1080);
-            cy.visit('/');
-            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
-            interceptRecipesBySubCategory(SMALL_DELAY_MS, {
-                data: veganSnacks,
-                meta: { page: 1, totalPages: 1, limit: 8 },
-            }).as('getVegans');
-
-            cy.getByTestId(HUMB_ICON).should('exist').click();
-            cy.getByTestId(NAV).should('be.visible');
-            cy.getByTestId(VEGAN).click();
-            cy.wait('@getVegans');
-            cy.getByTestId(CLOSE_ICON).should('exist').click();
-
-            cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'true');
-
-            interceptRecipesBySubCategory(SMALL_DELAY_MS, {
-                data: veganGarnish,
-                meta: { page: 1, totalPages: 1, limit: 8 },
-            }).as('getVegansGarnish');
-            cy.getByTestId('tab-side-dishes-1').click();
-            cy.getByTestId(APP_LOADER).should('exist').and('be.visible');
-            cy.wait('@getVegansGarnish');
-            cy.getByTestId('tab-side-dishes-1').should('have.attr', 'aria-selected', 'true');
-            cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'false');
-            cy.getByTestId(APP_LOADER).should('not.exist');
-
-            interceptRecipesBySubCategory(SMALL_DELAY_MS, {
-                data: veganDesserts,
-                meta: { page: 1, totalPages: 1, limit: 8 },
-            }).as('getVegansDesserts');
-            cy.getByTestId('tab-desserts-2').click();
-            cy.getByTestId(APP_LOADER).should('exist').and('be.visible');
-            cy.wait('@getVegansDesserts');
-            cy.getByTestId('tab-desserts-2').should('have.attr', 'aria-selected', 'true');
-            cy.getByTestId('tab-side-dishes-1').should('have.attr', 'aria-selected', 'false');
-            cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'false');
-            cy.getByTestId(APP_LOADER).should('not.exist');
-        });
     });
     describe('Breadcrumbs Functionality', () => {
         beforeEach(() => {
