@@ -74,7 +74,7 @@ export const Breadcrumbs = () => {
                 {isBlogs && isBlogCurrent && (
                     <BreadcrumbItem>
                         <BreadcrumbLink as={Link} to={`${Paths.BLOGS}/${bloggerInfo._id}`}>
-                            @{bloggerInfo.login}
+                            {`${bloggerInfo.firstName} ${bloggerInfo.lastName} (@${bloggerInfo.login})`}
                         </BreadcrumbLink>
                     </BreadcrumbItem>
                 )}

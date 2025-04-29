@@ -118,7 +118,14 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                         {cardType === 'AVAILABLE' || cardType === 'PROFILE' ? (
                             <ButtonSubscribe userId={_id} />
                         ) : (
-                            <Button size='xs' bg='lime.400' fontSize='xs'>
+                            <Button
+                                size='xs'
+                                bg='lime.400'
+                                fontSize='xs'
+                                as={Link}
+                                to={link}
+                                onClick={onReadClick}
+                            >
                                 Рецепты
                             </Button>
                         )}

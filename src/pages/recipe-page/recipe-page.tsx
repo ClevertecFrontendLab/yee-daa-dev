@@ -13,6 +13,7 @@ export const RecipePage = () => {
     const { recipeId } = useDetectParams();
 
     const { data: recipeData } = useGetRecipeByIdQuery(recipeId as string);
+    console.log('recipeData', recipeData);
 
     return (
         <VStack spacing={10}>
@@ -23,7 +24,12 @@ export const RecipePage = () => {
                 <Stack gap={5}>
                     <StepsBlock {...recipeData?.existRecipe} />
                 </Stack>
-                {recipeData?.authorData && <AuthorCard author={recipeData?.authorData} />}
+                {recipeData?.authorData && (
+                    <AuthorCard
+                        author={recipeData?.authorData}
+                        authorId={recipeData.existRecipe.authorId}
+                    />
+                )}
             </Stack>
             <Box width='100%'>
                 <Carousel />

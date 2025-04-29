@@ -6,7 +6,10 @@ import { AuthorDataType } from '~/redux/api/types/recipes';
 
 import { FollowersIcon } from '../icons/followers-icon';
 
-export const AuthorCard: FC<{ author: AuthorDataType }> = ({ author }) => (
+export const AuthorCard: FC<{ author: AuthorDataType; authorId: string }> = ({
+    author,
+    authorId,
+}) => (
     <Card bg='var(--chakra-colors-lime-300)' p={{ base: 3, sm: 6 }} flexDirection='row' gap={4}>
         <CardHeader p={0}>
             <Avatar
@@ -27,7 +30,7 @@ export const AuthorCard: FC<{ author: AuthorDataType }> = ({ author }) => (
             </Text>
             <HStack flexWrap='wrap' justifyContent='space-between'>
                 {/* TODO: add author id from request */}
-                <ButtonSubscribe userId={author._id} />
+                <ButtonSubscribe userId={authorId} />
 
                 <HStack>
                     <HStack>

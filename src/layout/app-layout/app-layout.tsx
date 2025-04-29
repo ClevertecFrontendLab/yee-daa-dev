@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks'
 import { useGetAllCategoriesQuery } from '~/redux/api/category-api';
 import { JUICIEST_PARAMS, NEWEST_PARAMS } from '~/redux/api/constants';
 import { useGetAllRecipesWithParamsQuery } from '~/redux/api/recipes-api';
-import { useGetBloggersQuery } from '~/redux/api/users-api';
+import { useGetBloggersQuery, useGetMeQuery } from '~/redux/api/users-api';
 import { appLoadingSelector } from '~/redux/features/app-slice';
 import { selectBloggersLimit, setBloggersUnfoldLoading } from '~/redux/features/bloggers-slice';
 
@@ -17,6 +17,7 @@ export const AppLayout = () => {
     const bloggersLimit = useAppSelector(selectBloggersLimit);
     const dispatch = useAppDispatch();
 
+    const { isLoading: loadingMe } = useGetMeQuery();
     const { isLoading: loadingBloggers } = useGetBloggersQuery(
         {
             id: '67e41d2a0f68c23754bc1e07',
@@ -30,7 +31,8 @@ export const AppLayout = () => {
     const { isLoading: loadingNewest } = useGetAllRecipesWithParamsQuery(NEWEST_PARAMS);
     const { isLoading: loadingJuiciest } = useGetAllRecipesWithParamsQuery(JUICIEST_PARAMS);
 
-    const isAppLoading = loadingCategory || loadingNewest || loadingJuiciest || loadingBloggers;
+    const isAppLoading =
+        loadingCategory || loadingNewest || loadingJuiciest || loadingBloggers || loadingMe;
 
     useEffect(() => {
         dispatch(setBloggersUnfoldLoading(loadingBloggers));

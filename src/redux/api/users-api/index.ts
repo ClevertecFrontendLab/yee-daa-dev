@@ -9,6 +9,7 @@ import {
     setBloggersDataById,
     setBloggersMain,
     setBloggersPreview,
+    setUserId,
 } from '~/redux/features/bloggers-slice';
 
 type BloggersRequestType = {
@@ -42,6 +43,16 @@ export type BloggerById = {
     notes: NoteType[];
     totalBookmarks: number;
     totalSubscribers: number;
+};
+
+export type CurrentUserType = {
+    _id: string;
+    email: string;
+    login: string;
+    firstName: string;
+    lastName: string;
+    recipesIds: string[];
+    subscriptions: string[];
 };
 
 export const usersApi = authorizedApi
@@ -97,8 +108,24 @@ export const usersApi = authorizedApi
                     recipes: response.recipes.map((resp) => replaceUnderscoreId(resp)),
                 }),
             }),
+            getMe: build.query<CurrentUserType, void>({
+                query: () => ({ url: ApiEndpoints.GetMe }),
+                async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                    try {
+                        const { data } = await queryFulfilled;
+                        dispatch(setUserId(data._id));
+                    } catch (err: unknown) {
+                        dispatch(resetToInit());
+                        console.error('Error in get Blogger by id', err);
+                    }
+                },
+            }),
         }),
     });
 
-export const { useToggleSubscriptionMutation, useGetBloggersQuery, useGetBloggerbyIdQuery } =
-    usersApi;
+export const {
+    useToggleSubscriptionMutation,
+    useGetBloggersQuery,
+    useGetBloggerbyIdQuery,
+    useGetMeQuery,
+} = usersApi;

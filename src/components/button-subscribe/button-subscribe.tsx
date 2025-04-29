@@ -3,9 +3,9 @@ import { FC, useEffect, useState } from 'react';
 
 import { SubscribeIcon } from '~/components/icons/subcribe-icon';
 import { SubscribeCompleteIcon } from '~/components/icons/subscribe-complete-icon';
-import { useAppDispatch } from '~/hooks/typed-react-redux-hooks';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { useToggleSubscriptionMutation } from '~/redux/api/users-api';
-import { setBloggersToggleLoader } from '~/redux/features/bloggers-slice';
+import { selectUserId, setBloggersToggleLoader } from '~/redux/features/bloggers-slice';
 
 type ButtonSubscribeProps = {
     userId: string;
@@ -15,6 +15,8 @@ type ButtonSubscribeProps = {
 export const ButtonSubscribe: FC<ButtonSubscribeProps> = ({ userId, isSubscribedFromReq }) => {
     const [toggleSubscription, { isLoading, data }] = useToggleSubscriptionMutation();
     const dispatch = useAppDispatch();
+    const currUserId = useAppSelector(selectUserId);
+
     const [isSubscribed, setIsSubscribed] = useState(false);
 
     useEffect(() => {
@@ -33,7 +35,7 @@ export const ButtonSubscribe: FC<ButtonSubscribeProps> = ({ userId, isSubscribed
     const handleButtonClick = () => {
         toggleSubscription({
             toUserId: userId,
-            fromUserId: '67e41d2a0f68c23754bc1e07',
+            fromUserId: currUserId,
         });
     };
 

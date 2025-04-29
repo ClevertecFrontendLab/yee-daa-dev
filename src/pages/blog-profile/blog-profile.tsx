@@ -17,6 +17,7 @@ export const BlogProfile = () => {
     const bloggersPreview = useAppSelector(selectBloggersPreview);
 
     const [recipePages, setRecipePages] = useState(1);
+
     const onLoadMoreRecipes = () => {
         setRecipePages(2);
     };
@@ -37,7 +38,7 @@ export const BlogProfile = () => {
             />
             {isArrayWithItems(data.recipes) && (
                 <RecipeCardList
-                    recipeList={data.recipes}
+                    recipeList={recipePages === 1 ? data.recipes.slice(0, 8) : data.recipes}
                     currentPage={recipePages}
                     totalPages={2}
                     loadMoreCallback={onLoadMoreRecipes}
