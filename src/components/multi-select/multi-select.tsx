@@ -67,7 +67,10 @@ export const MultiSelect = <T extends FieldValues = FieldValues>({
         field.onChange(newSelected);
     };
 
-    const selectedValues = Array.isArray(field.value) ? (field.value as string[]) : [];
+    const selectedValues = useMemo(
+        () => (Array.isArray(field.value) ? (field.value as string[]) : []),
+        [field.value],
+    );
     const selectedOptions = useMemo(
         () => options.filter((option) => selectedValues.includes(option.value)),
         [options, selectedValues],
