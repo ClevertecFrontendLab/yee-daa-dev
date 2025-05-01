@@ -7,9 +7,11 @@ import { CategoryExistProtected } from '~/hoc/category-exist-protected';
 import { SubcategoryRedirect } from '~/hoc/subcategory-redirect';
 import { AppLayout } from '~/layout/app-layout';
 import { CategoryPage } from '~/pages/category-page';
+import { EditRecipePage } from '~/pages/edit-recipe-page';
 import { ErrorPage } from '~/pages/error-page/error-page';
 import { JuiciestPage } from '~/pages/juiciest-page';
 import { MainPage } from '~/pages/main-page';
+import { NewRecipePage } from '~/pages/new-recipe-page';
 import { RecipePageWrapper } from '~/pages/recipe-page';
 
 import { ErrorBoundary } from './error-boundary/error-boundary';
@@ -75,6 +77,8 @@ export const appRouter = createBrowserRouter(
                         }
                         loader={recipeLoader}
                     />
+                    <Route path={Paths.NEW_RECIPE} element={<NewRecipePage />} />
+                    <Route path={Paths.EDIT_RECIPE} element={<EditRecipePage />} />
                     <Route
                         path={Paths.JUICIEST}
                         element={<JuiciestPage />}
