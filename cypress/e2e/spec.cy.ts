@@ -1376,7 +1376,7 @@ const metaData = {
 };
 
 const MOCK_RECIPES_BY_CATEGORY = {
-    data: [allRecipes.slice(5, 10)],
+    data: allRecipes.slice(5, 10),
     meta: { total: 5, limit: RELEVANT_KITCHEN_LIMIT, page: 1, totalPages: 1 },
 };
 
@@ -1598,7 +1598,8 @@ describe('Test cases for YeeDaa application', () => {
             cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant', '@getCategories']);
             interceptJuiciestPage().as('juiciestPageRecipes');
 
-            cy.getByTestId(JUICIEST_LINK).should('exist').click();
+            cy.getByTestId(JUICIEST_LINK).should('not.be.visible');
+            cy.getByTestId(JUICIEST_LINK_MOB).should('exist').and('be.visible').click();
             cy.wait('@juiciestPageRecipes');
 
             setElementPosition();
@@ -2175,7 +2176,7 @@ describe('Test cases for YeeDaa application', () => {
             cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
             cy.contains('Самое сочное').should('exist').and('be.visible');
             interceptJuiciestPage().as('juiciestRecipesPage1');
-            cy.getByTestId(JUICIEST_LINK).should('exist').click();
+            cy.getByTestId(JUICIEST_LINK_MOB).should('exist').click();
             cy.wait('@juiciestRecipesPage1');
             cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', DEFAULT_RECIPE_LIMIT);
             cy.screenshot('juiciest-page-768', { capture: 'fullPage' });
