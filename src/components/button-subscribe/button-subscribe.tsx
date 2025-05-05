@@ -5,7 +5,7 @@ import { SubscribeIcon } from '~/components/icons/subcribe-icon';
 import { SubscribeCompleteIcon } from '~/components/icons/subscribe-complete-icon';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { useToggleSubscriptionMutation } from '~/redux/api/users-api';
-import { selectUserId, setBloggersToggleLoader } from '~/redux/features/bloggers-slice';
+import { selectCurrUserId, setBloggersToggleLoader } from '~/redux/features/bloggers-slice';
 
 type ButtonSubscribeProps = {
     userId: string;
@@ -15,7 +15,7 @@ type ButtonSubscribeProps = {
 export const ButtonSubscribe: FC<ButtonSubscribeProps> = ({ userId, isSubscribedFromReq }) => {
     const [toggleSubscription, { isLoading, data }] = useToggleSubscriptionMutation();
     const dispatch = useAppDispatch();
-    const currUserId = useAppSelector(selectUserId);
+    const currUserId = useAppSelector(selectCurrUserId);
 
     const [isSubscribed, setIsSubscribed] = useState(false);
 

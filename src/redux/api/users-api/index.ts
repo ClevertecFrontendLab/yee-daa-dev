@@ -3,13 +3,13 @@ import { ApiEndpoints } from '~/redux/api/constants';
 import { RawRecipe, Recipe } from '~/redux/api/types/recipes';
 import { replaceUnderscoreId } from '~/redux/api/utils/replace-underscore-id';
 import {
-    BloggerCard,
+    BloggerInfo,
     BloggersMainType,
     resetToInit,
     setBloggersDataById,
+    setBloggersInfoById,
     setBloggersMain,
     setBloggersPreview,
-    setUserId,
 } from '~/redux/features/bloggers-slice';
 
 type BloggersRequestType = {
@@ -69,7 +69,7 @@ export const usersApi = authorizedApi
                 transformResponse: (response: { message: string }): boolean =>
                     response.message.includes('Подписка'),
             }),
-            getBloggers: build.query<BloggerCard[] | BloggersMainType, BloggersRequestType>({
+            getBloggers: build.query<BloggersMainType, BloggersRequestType>({
                 providesTags: ['Bloggers'],
                 query: ({ id, limit }) => ({
                     url: ApiEndpoints.GetBloggers,
@@ -80,9 +80,9 @@ export const usersApi = authorizedApi
                         const { data } = await queryFulfilled;
 
                         if (!limit) {
-                            dispatch(setBloggersPreview(data as BloggerCard[]));
+                            dispatch(setBloggersPreview(data.others));
                         } else {
-                            dispatch(setBloggersMain(data as BloggersMainType));
+                            dispatch(setBloggersMain(data));
                         }
                     } catch (err: unknown) {
                         dispatch(resetToInit());
@@ -90,7 +90,7 @@ export const usersApi = authorizedApi
                     }
                 },
             }),
-            getBloggerbyId: build.query<BloggerById, string>({
+            getBloggerRecipesById: build.query<BloggerById, string>({
                 query: (id) => ({
                     url: `${ApiEndpoints.GetBloggerById}/${id}`,
                 }),
@@ -108,15 +108,22 @@ export const usersApi = authorizedApi
                     recipes: response.recipes.map((resp) => replaceUnderscoreId(resp)),
                 }),
             }),
-            getMe: build.query<CurrentUserType, void>({
-                query: () => ({ url: ApiEndpoints.GetMe }),
+            getBloggerDataById: build.query({
+                query: (id) => ({
+                    url: `${ApiEndpoints.GetBloggerInfoById}/${id}`,
+                }),
+            }),
+            getUserById: build.query<BloggerInfo, string>({
+                query: (id) => ({
+                    url: `${ApiEndpoints.GetUserById}/${id}`,
+                }),
                 async onQueryStarted(_, { dispatch, queryFulfilled }) {
                     try {
                         const { data } = await queryFulfilled;
-                        dispatch(setUserId(data._id));
+                        dispatch(setBloggersInfoById(data));
                     } catch (err: unknown) {
                         dispatch(resetToInit());
-                        console.error('Error in get Blogger by id', err);
+                        console.error('Error in get Blogger Info by id', err);
                     }
                 },
             }),
@@ -126,6 +133,6 @@ export const usersApi = authorizedApi
 export const {
     useToggleSubscriptionMutation,
     useGetBloggersQuery,
-    useGetBloggerbyIdQuery,
-    useGetMeQuery,
+    useGetBloggerRecipesByIdQuery,
+    useGetUserByIdQuery,
 } = usersApi;

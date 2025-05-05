@@ -24,8 +24,10 @@ export enum ApiEndpoints {
     CheckAuth = '/auth/check-auth',
     ToggleSubscription = '/users/toggle-subscription',
     GetBloggerById = '/recipe/user',
+    GetBloggerInfoById = '/user',
+    GetUserById = '/users',
     GetMe = '/users/me',
-    GetBloggers = '/users/bloggers',
+    GetBloggers = '/bloggers',
 
     Category = 'category',
     Recipe = 'recipe',

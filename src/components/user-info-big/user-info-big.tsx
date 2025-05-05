@@ -30,6 +30,7 @@ export const UserInfoBig: FC<UserInfoBigProps> = ({
     ...rest
 }) => {
     const isLoading = useAppSelector(selectBloggersToggleLoading);
+
     return (
         <Box w={{ base: '100%', sm: 'auto' }} position='relative'>
             <Flex

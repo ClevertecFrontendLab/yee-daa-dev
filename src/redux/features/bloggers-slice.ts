@@ -12,6 +12,15 @@ export type BloggerCard = {
     isFavorite?: boolean;
 };
 
+export type BloggerInfo = {
+    email: string;
+    firstName: string;
+    lastName: string;
+    login: string;
+    recipesIds: string[];
+    subscribers: string[];
+};
+
 export type BloggersMainType = {
     favorites: BloggerCard[];
     others: BloggerCard[];
@@ -22,10 +31,13 @@ type BloggersState = {
     bloggersMain: BloggersMainType;
     bloggersLoadingId: string;
     bloggersUnfoldLoading: boolean;
-    bloggerCurrent: { data: BloggerById; info: BloggerCard };
+    bloggerCurrent: {
+        data: BloggerById;
+        info: BloggerInfo;
+    };
     bloggerByIdLoading: boolean;
     forceUpdateBlogsList: boolean;
-    userId: string;
+    currUserId: string;
     bloggersLimit?: string;
 };
 
@@ -35,7 +47,6 @@ const initialState: BloggersState = {
         favorites: [],
         others: [],
     },
-    userId: '',
     bloggerCurrent: {
         data: {
             recipes: [],
@@ -46,13 +57,12 @@ const initialState: BloggersState = {
             totalSubscribers: 0,
         },
         info: {
-            _id: '',
+            email: '',
             firstName: '',
             lastName: '',
             login: '',
-            subscribersCount: 0,
-            bookmarksCount: 0,
-            isFavorite: false,
+            recipesIds: [],
+            subscribers: [],
         },
     },
     forceUpdateBlogsList: false,
@@ -60,6 +70,7 @@ const initialState: BloggersState = {
     bloggersUnfoldLoading: true,
     bloggersLimit: undefined,
     bloggerByIdLoading: false,
+    currUserId: '',
 };
 
 export const bloggersSlice = createSlice({
@@ -84,14 +95,14 @@ export const bloggersSlice = createSlice({
         setBloggersDataById(state, { payload }: PayloadAction<BloggerById>) {
             state.bloggerCurrent.data = payload;
         },
-        setBloggersInfoById(state, { payload }: PayloadAction<BloggerCard>) {
+        setBloggersInfoById(state, { payload }: PayloadAction<BloggerInfo>) {
             state.bloggerCurrent.info = payload;
         },
         setBloggerByIdLoading(state, { payload }: PayloadAction<boolean>) {
             state.bloggerByIdLoading = payload;
         },
-        setUserId(state, { payload }: PayloadAction<string>) {
-            state.userId = payload;
+        setCurrUserId(state, { payload }: PayloadAction<string>) {
+            state.currUserId = payload;
         },
         resetBlogger(state) {
             state.bloggerCurrent = initialState.bloggerCurrent;
@@ -112,7 +123,7 @@ export const bloggersSlice = createSlice({
         selectBloggerByIdLoading: (state) => state.bloggerByIdLoading,
         selectForceUpdateBlogsList: (state) => state.forceUpdateBlogsList,
         selectBloggersInfoById: (state) => state.bloggerCurrent.info,
-        selectUserId: (state) => state.userId,
+        selectCurrUserId: (state) => state.currUserId,
     },
 });
 
@@ -127,7 +138,7 @@ export const {
     setBloggersDataById,
     setBloggersInfoById,
     setBloggerByIdLoading,
-    setUserId,
+    setCurrUserId,
     resetBlogger,
     resetToInit,
 } = bloggersSlice.actions;
@@ -143,5 +154,5 @@ export const {
     selectBloggerByIdLoading,
     selectForceUpdateBlogsList,
     selectBloggersInfoById,
-    selectUserId,
+    selectCurrUserId,
 } = bloggersSlice.selectors;

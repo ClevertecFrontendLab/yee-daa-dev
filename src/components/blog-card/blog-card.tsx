@@ -16,8 +16,8 @@ import { ButtonSubscribe } from '~/components/button-subscribe';
 import { CardStat } from '~/components/card-stat/card-stat';
 import { Float } from '~/components/float';
 import { MobileLoader } from '~/components/mobile-loader';
-import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
-import { selectBloggersToggleLoading, setBloggersInfoById } from '~/redux/features/bloggers-slice';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { selectBloggersToggleLoading } from '~/redux/features/bloggers-slice';
 import { Post } from '~/types/post.ts';
 import { makeNewRecipeBadge } from '~/utils/make-new-recipe-badge';
 
@@ -51,21 +51,6 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
 }) => {
     const cardData = cardType ? CardTypeProps[cardType] : CardTypeProps.DEFAULT;
     const bloggersLoadingId = useAppSelector(selectBloggersToggleLoading);
-    const dispatch = useAppDispatch();
-
-    const onReadClick = () => {
-        dispatch(
-            setBloggersInfoById({
-                _id,
-                firstName,
-                lastName,
-                login,
-                subscribersCount,
-                bookmarksCount,
-                isFavorite,
-            }),
-        );
-    };
 
     return (
         <Card minHeight={cardData.minHeight}>
@@ -116,16 +101,9 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                 >
                     <HStack {...cardData.HStack}>
                         {cardType === 'AVAILABLE' || cardType === 'PROFILE' ? (
-                            <ButtonSubscribe userId={_id} />
+                            <ButtonSubscribe userId={_id} isSubscribedFromReq={isFavorite} />
                         ) : (
-                            <Button
-                                size='xs'
-                                bg='lime.400'
-                                fontSize='xs'
-                                as={Link}
-                                to={link}
-                                onClick={onReadClick}
-                            >
+                            <Button size='xs' bg='lime.400' fontSize='xs' as={Link} to={link}>
                                 Рецепты
                             </Button>
                         )}
@@ -137,7 +115,6 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                             variant='outline'
                             as={Link}
                             to={`${link}#notes`}
-                            onClick={onReadClick}
                         >
                             Читать
                         </Button>

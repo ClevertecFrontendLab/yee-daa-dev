@@ -22,6 +22,8 @@ export const BlogProfile = () => {
         setRecipePages(2);
     };
 
+    console.log('info', info);
+
     return (
         <Stack spacing={{ base: 3, xmd: 6 }} align='center'>
             <UserInfoBig
@@ -83,6 +85,7 @@ export const BlogProfile = () => {
                         lastName={el.lastName}
                         login={el.login}
                         // text={el.descr}
+                        isFavorite={el.isFavorite}
                         cardType='PROFILE'
                         subscribersCount={el.subscribersCount}
                         bookmarksCount={el.bookmarksCount}

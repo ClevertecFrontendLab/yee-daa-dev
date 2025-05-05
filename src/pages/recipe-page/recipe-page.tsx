@@ -13,7 +13,6 @@ export const RecipePage = () => {
     const { recipeId } = useDetectParams();
 
     const { data: recipeData } = useGetRecipeByIdQuery(recipeId as string);
-    console.log('recipeData', recipeData);
 
     return (
         <VStack spacing={10}>

@@ -1,4 +1,6 @@
 import { resetAuth, setAccessToken } from '~/redux/features/auth-slice';
+import { setCurrUserId } from '~/redux/features/bloggers-slice';
+import { getUserIdFromToken } from '~/utils/get-user-id-from-token';
 
 import { unauthorizedApi } from '..';
 import { ACCESS_TOKEN_HEADER, ApiEndpoints } from '../constants';
@@ -24,6 +26,10 @@ export const authApi = unauthorizedApi.injectEndpoints({
                 try {
                     const { meta } = await queryFulfilled;
                     const accessToken = meta?.response?.headers.get(ACCESS_TOKEN_HEADER);
+                    if (accessToken) {
+                        const userID = getUserIdFromToken(accessToken);
+                        dispatch(setCurrUserId(userID));
+                    }
 
                     if (!accessToken) {
                         throw new Error(
@@ -51,6 +57,10 @@ export const authApi = unauthorizedApi.injectEndpoints({
                     const { meta } = await queryFulfilled;
 
                     const accessToken = meta?.response?.headers.get(ACCESS_TOKEN_HEADER);
+                    if (accessToken) {
+                        const userID = getUserIdFromToken(accessToken);
+                        dispatch(setCurrUserId(userID));
+                    }
 
                     if (!accessToken) {
                         throw new Error(
