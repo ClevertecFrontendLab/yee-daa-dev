@@ -1,9 +1,8 @@
 import { LoaderFunction } from 'react-router';
 
 import { store } from '~/redux/configure-store';
-import { resetBlogger, setBloggersLimit } from '~/redux/features/bloggers-slice';
+import { setBloggersLimit } from '~/redux/features/bloggers-slice';
 
 export const blogsLoader: LoaderFunction = async () => {
-    store.dispatch(resetBlogger());
     store.dispatch(setBloggersLimit('9'));
 };

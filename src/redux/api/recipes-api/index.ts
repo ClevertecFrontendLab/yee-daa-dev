@@ -3,9 +3,9 @@ import {
     AllRecipeParams,
     MetaData,
     MetaRequest,
-    RawRecipeResponse,
+    RawRecipe,
     RawRecipesResponse,
-    RecipeResponse,
+    Recipe,
     RecipesByCategoryIdArgs,
     RecipesInfiniteResponse,
     RecipesResponse,
@@ -153,15 +153,9 @@ export const recipeApi = authorizedApi.injectEndpoints({
                 return { data: preparedData, meta: response.meta };
             },
         }),
-        getRecipeById: build.query<RecipeResponse, string>({
+        getRecipeById: build.query<Recipe, string>({
             query: (id) => ({ url: `${ApiEndpoints.Recipe}/${id}` }),
-            transformResponse: (response: RawRecipeResponse): RecipeResponse => {
-                const recipe = replaceUnderscoreId(response.existRecipe);
-                return {
-                    ...response,
-                    existRecipe: recipe,
-                };
-            },
+            transformResponse: (response: RawRecipe): Recipe => replaceUnderscoreId(response),
             transformErrorResponse: transformBaseErrorResponse,
         }),
     }),

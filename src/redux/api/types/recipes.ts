@@ -36,6 +36,8 @@ export type RecipeResponse = {
     id?: string;
 };
 
+export type RawRecipesResponse = { data: RawRecipe[]; meta: MetaData };
+
 export type EnergyValue = {
     calories: number;
     protein: number;
@@ -46,8 +48,6 @@ export type EnergyValue = {
 type Ingredient = { title: string; count: number; measureUnit: string };
 
 type Step = { stepNumber: number; description: string; image?: string };
-
-export type RawRecipesResponse = { data: RawRecipe[]; meta: MetaData };
 
 export type RawRecipeResponse = {
     existRecipe: RawRecipe;

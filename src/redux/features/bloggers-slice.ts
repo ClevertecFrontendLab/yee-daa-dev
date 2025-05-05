@@ -13,6 +13,7 @@ export type BloggerCard = {
 };
 
 export type BloggerInfo = {
+    _id: string;
     email: string;
     firstName: string;
     lastName: string;
@@ -55,8 +56,10 @@ const initialState: BloggersState = {
             notes: [],
             totalBookmarks: 0,
             totalSubscribers: 0,
+            userId: '',
         },
         info: {
+            _id: '',
             email: '',
             firstName: '',
             lastName: '',

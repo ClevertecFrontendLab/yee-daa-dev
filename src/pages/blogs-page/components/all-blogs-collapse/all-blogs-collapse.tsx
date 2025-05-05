@@ -62,6 +62,7 @@ export const AllBlogsCollapse = () => {
                         >
                             {bloggersOthers.map((el) => (
                                 <BlogCard
+                                    key={el._id}
                                     _id={el._id}
                                     firstName={el.firstName}
                                     lastName={el.lastName}

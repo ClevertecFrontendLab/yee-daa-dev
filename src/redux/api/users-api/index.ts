@@ -6,8 +6,6 @@ import {
     BloggerInfo,
     BloggersMainType,
     resetToInit,
-    setBloggersDataById,
-    setBloggersInfoById,
     setBloggersMain,
     setBloggersPreview,
 } from '~/redux/features/bloggers-slice';
@@ -28,6 +26,7 @@ type NoteType = {
 };
 
 export type RawBloggerById = {
+    userId: string;
     recipes: RawRecipe[];
     likes: number;
     bookmarks: number;
@@ -37,6 +36,7 @@ export type RawBloggerById = {
 };
 
 export type BloggerById = {
+    userId: string;
     recipes: Recipe[];
     likes: number;
     bookmarks: number;
@@ -94,15 +94,6 @@ export const usersApi = authorizedApi
                 query: (id) => ({
                     url: `${ApiEndpoints.GetBloggerById}/${id}`,
                 }),
-                async onQueryStarted(_, { dispatch, queryFulfilled }) {
-                    try {
-                        const { data } = await queryFulfilled;
-                        dispatch(setBloggersDataById(data));
-                    } catch (err: unknown) {
-                        dispatch(resetToInit());
-                        console.error('Error in get Blogger by id', err);
-                    }
-                },
                 transformResponse: (response: RawBloggerById): BloggerById => ({
                     ...response,
                     recipes: response.recipes.map((resp) => replaceUnderscoreId(resp)),
@@ -117,15 +108,6 @@ export const usersApi = authorizedApi
                 query: (id) => ({
                     url: `${ApiEndpoints.GetUserById}/${id}`,
                 }),
-                async onQueryStarted(_, { dispatch, queryFulfilled }) {
-                    try {
-                        const { data } = await queryFulfilled;
-                        dispatch(setBloggersInfoById(data));
-                    } catch (err: unknown) {
-                        dispatch(resetToInit());
-                        console.error('Error in get Blogger Info by id', err);
-                    }
-                },
             }),
         }),
     });
@@ -135,4 +117,5 @@ export const {
     useGetBloggersQuery,
     useGetBloggerRecipesByIdQuery,
     useGetUserByIdQuery,
+    useLazyGetUserByIdQuery,
 } = usersApi;

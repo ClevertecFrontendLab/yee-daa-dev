@@ -3,6 +3,7 @@ import { Button, Heading, HStack, SimpleGrid, Stack } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 
+import { AppLoader } from '~/components/app-loader';
 import { BlogCard } from '~/components/blog-card/blog-card';
 import { NotesBox } from '~/components/notes-box';
 import { RecipeCardList } from '~/components/recipes-card-list';
@@ -22,9 +23,9 @@ export const BlogProfile = () => {
         setRecipePages(2);
     };
 
-    console.log('info', info);
+    const isBlogExists = data.userId && info._id;
 
-    return (
+    return isBlogExists ? (
         <Stack spacing={{ base: 3, xmd: 6 }} align='center'>
             <UserInfoBig
                 // imgSrc={info.imgSrc}
@@ -80,6 +81,7 @@ export const BlogProfile = () => {
             >
                 {bloggersPreview.slice(0, 3).map((el) => (
                     <BlogCard
+                        key={el._id}
                         _id={el._id}
                         firstName={el.firstName}
                         lastName={el.lastName}
@@ -94,5 +96,7 @@ export const BlogProfile = () => {
                 ))}
             </SimpleGrid>
         </Stack>
+    ) : (
+        <AppLoader isOpen={!isBlogExists} />
     );
 };
