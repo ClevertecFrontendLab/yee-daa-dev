@@ -3,7 +3,7 @@ import { RouteMatcherOptions, StaticResponseWithOptions } from 'cypress/types/ne
 
 const RESOLUTION = {
     desktop: [1887, 1120],
-    tablet: [768, 1024],
+    tablet: [769, 1024],
     mobile: [360, 800],
 } as const;
 
@@ -2616,7 +2616,7 @@ const metaData = {
 };
 
 const MOCK_RECIPES_BY_CATEGORY = {
-    data: [allRecipes.slice(5, 10)],
+    data: allRecipes.slice(5, 10),
     meta: { total: 5, limit: RELEVANT_KITCHEN_LIMIT, page: 1, totalPages: 1 },
 };
 
@@ -2889,7 +2889,8 @@ describe('application', () => {
             cy.viewport(768, 1024);
             interceptJuiciestPage();
 
-            cy.getByTestId(TEST_ID.Link.Jusiest).should('exist').click();
+            cy.getByTestId(TEST_ID.Link.Jusiest).should('not.be.visible');
+            cy.getByTestId(TEST_ID.Link.JusiestMob).should('exist').and('be.visible').click();
 
             setElementPosition();
             cy.getByTestId(TEST_ID.Nav).should('not.exist');
@@ -3363,7 +3364,7 @@ describe('application', () => {
             cy.contains('Самое сочное').should('exist').and('be.visible');
 
             interceptJuiciestPage();
-            cy.getByTestId(TEST_ID.Link.Jusiest).should('exist').click();
+            cy.getByTestId(TEST_ID.Link.JusiestMob).should('exist').click();
 
             cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
                 'have.length',
