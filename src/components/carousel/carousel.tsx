@@ -19,10 +19,7 @@ export const Carousel = () => {
     const carouselItems = data?.data ?? [];
     const swiperRef = useRef<Nullable<SwiperRef>>(null);
 
-    const carouselRecipes = carouselItems
-        ?.slice()
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-        .slice(0, SLIDER_RECIPES_LIMIT);
+    const carouselRecipes = carouselItems.slice(0, SLIDER_RECIPES_LIMIT);
 
     return (
         <Box maxWidth='1360px' mb={{ base: 8, xmd: 10 }} position='relative'>
