@@ -1,89 +1,1329 @@
 /// <reference types="cypress" />
+import { RouteMatcherOptions, StaticResponseWithOptions } from 'cypress/types/net-stubbing';
 
-const JUICIEST_LINK = 'juiciest-link';
-const JUICIEST_LINK_MOB = 'juiciest-link-mobile';
-const VEGAN = 'vegan-cuisine';
-const HEADER = 'header';
-const FOOTER = 'footer';
-const NAV = 'nav';
-const BREADCRUMBS = 'breadcrumbs';
-const HUMB_ICON = 'hamburger-icon';
-const CLOSE_ICON = 'close-icon';
-const SEARCH_INPUT = 'search-input';
-const SEARCH_BUTTON = 'search-button';
-const FOOD_CARD = 'food-card';
-const CAROUSEL_CARD = 'carousel-card';
-const ALLERGEN_SWITCHER = 'allergens-switcher';
-const ALLERGEN_BUTTON = 'allergens-menu-button';
-const FILTER_DRAWER = 'filter-drawer';
-const FILTER_BUTTON = 'filter-button';
-const FIND_RECIPE_BUTTON = 'find-recipe-button';
-const FILTER_CATEGORY = 'filter-menu-button-категория';
-const VEGAN_CHECKBOX = 'checkbox-веганская кухня';
-const ALLERGEN_SWITCHER_FILTER = 'allergens-switcher-filter';
-const ALLERGEN_BUTTON_FILTER = 'allergens-menu-button-filter';
-const ADD_OTHER_ALLERGEN = 'add-other-allergen';
-const ADD_ALLERGEN_BUTTON = 'add-allergen-button';
-const FILTER_TAG = 'filter-tag';
-const ERROR_PAGE_GO_HOME = 'error-page-go-home';
-const APP_LOADER = 'app-loader';
-const LOADER_SEARCH_BLOCK = 'loader-search-block';
-const ERROR_NOTIFICATION = 'error-notification';
-const CLOSE_ALERT_BUTTON = 'close-alert-button';
-const LOAD_MORE_BUTTON = 'load-more-button';
-const SLIDER_SIZE = '10';
-const JUICIEST_LIMIT = '4';
-const RELEVANT_KITCHEN_LIMIT = '5';
-const CREATED_AT_SORT_PARAM = 'createdAt';
-const LIKES_SORT_PARAM = 'likes';
-const SORT_QUERY_PARAM = 'sortBy';
-const SEARCH_QUERY_PARAM = 'searchString';
-const SUBCATEGORIES_QUERY_PARAM = 'subcategoriesIds';
-const GARNISH_QUERY_PARAM = 'garnish';
-const ALLERGENS_QUERY_PARAM = 'allergens';
-const LIMIT_QUERY_PARAM = 'limit';
-const DEFAULT_RECIPE_LIMIT = 8;
+const RESOLUTION = {
+    desktop: [1887, 1120],
+    tablet: [769, 1024],
+    mobile: [360, 800],
+} as const;
 
-const SMALL_DELAY_MS = 300;
-const LONG_DELAY_MS = 1000;
-const LOAD_DELAY_MS = 700;
+function takeScreenshot(screenshotName: string, device: keyof typeof RESOLUTION = 'desktop') {
+    const [width, height] = RESOLUTION[device];
 
-const resolutionFull = [
-    { width: 360, height: 1080 },
-    { width: 768, height: 1080 },
-    { width: 1920, height: 750 },
-];
+    cy.viewport(width, height).then(() => {
+        cy.get('body').then(($body) => {
+            $body[0].style.setProperty('margin-right', '0', 'important');
+        });
+        cy.wait(1000);
+        cy.screenshot(`${screenshotName}_${width}x${height}`, {
+            capture: 'fullPage',
+            overwrite: true,
+            scale: false,
+        });
+        cy.get('body').then(($body) => {
+            $body[0].style.setProperty('margin-right', 'auto');
+        });
+    });
+}
 
-const setElementPosition = () => {
-    cy.getByTestId(HEADER).invoke('css', 'position', 'absolute');
-    cy.getByTestId(FOOTER).invoke('css', 'position', 'absolute');
+const takeAllScreenshots = (key: string) => {
+    (['desktop', 'tablet', 'mobile'] as const).forEach((device) => takeScreenshot(key, device));
 };
 
-function takeScreenshots(screenshotName: string, resolution = resolutionFull) {
-    for (let i = 0; i < resolution.length; i++) {
-        const capture = resolution[i].width < 1920 ? 'fullPage' : 'viewport';
-        cy.viewport(resolution[i].width, resolution[i].height);
-        cy.wait(LOAD_DELAY_MS);
-        if (resolution[i].width === 1920) {
-            cy.screenshot(`${screenshotName}_${resolution[i].width}x${resolution[i].height}`, {
-                capture,
-            });
-            cy.scrollTo('bottom');
-            cy.screenshot(`${screenshotName}_${resolution[i].width}x${resolution[i].height}`, {
-                capture,
-            });
-            cy.scrollTo('top');
-        } else {
-            setElementPosition();
-            cy.wait(LOAD_DELAY_MS);
-            cy.screenshot(`${screenshotName}_${resolution[i].width}x${resolution[i].height}`, {
-                capture,
-            });
-            cy.getByTestId(HEADER).invoke('css', 'position', 'fixed');
-            cy.getByTestId(FOOTER).invoke('css', 'position', 'fixed');
-        }
+const API_BASE_URL = 'https://marathon-api.clevertec.ru';
+const VERIFICATION_CODE_PIN_ID = [1, 2, 3, 4, 5, 6];
+const INPUT_OVER_50 = 'А'.repeat(51);
+const VERIFICATION_ROUTE = '/verification';
+const ACCESS_TOKEN_HEADER = ['Authentication-Access', 'access_token'];
+const SIGN_UP_LOGIN_CONFLICT_MESSAGE = 'Пользователь с таким login уже существует.';
+const SIGN_UP_EMAIL_CONFLICT_MESSAGE = 'Пользователь с таким email уже существует.';
+
+const TEST_ID = {
+    Header: 'header',
+    Footer: 'footer',
+    Nav: 'nav',
+    AppLoader: 'app-loader',
+    SearchBlockLoader: 'loader-search-block',
+    Breadcrumbs: 'breadcrumbs',
+
+    Progress: {
+        SignUp: 'sign-up-progress',
+    },
+    Form: {
+        SignIn: 'sign-in-form',
+        SignUp: 'sign-up-form',
+    },
+    Input: {
+        Login: 'login-input',
+        Password: 'password-input',
+        PasswordConfirm: 'confirm-password-input',
+        Email: 'email-input',
+        FirstName: 'first-name-input',
+        LastName: 'last-name-input',
+        VerificationCode: 'verification-code-input',
+        Search: 'search-input',
+    },
+    Modal: {
+        SignInError: 'sign-in-error-modal',
+        SignUpSuccess: 'sign-up-success-modal',
+        EmailVerificationFailed: 'email-verification-failed-modal',
+        SendEmailModal: 'send-email-modal',
+        VerificationCodeModal: 'verification-code-modal',
+        ResetCredentialsModal: 'reset-credentials-modal',
+    },
+    Button: {
+        Submit: 'submit-button',
+        Repeat: 'repeat-button',
+        Close: 'close-button',
+        Search: 'search-button',
+        Filter: 'filter-button',
+
+        BurgerOpen: 'hamburger-icon',
+        BurgerClose: 'close-icon',
+
+        ForgotPassword: 'forgot-password',
+        PasswordVisibility: 'password-visibility-button',
+
+        AlergenMenu: 'allergens-menu-button',
+        FilterCategory: 'filter-menu-button-категория',
+        FindRecipe: 'find-recipe-button',
+        AddAlergen: 'add-allergen-button',
+        AddOtherAlergen: 'add-other-allergen',
+        FilterAlergen: 'allergens-menu-button-filter',
+        CloseAlert: 'close-alert-button',
+        LoadMore: 'load-more-button',
+    },
+    Link: {
+        Jusiest: 'juiciest-link',
+        JusiestMob: 'juiciest-link-mobile',
+        Vegan: 'vegan-cuisine',
+        ErrorHomePage: 'error-page-go-home',
+    },
+    Drawer: {
+        Filter: 'filter-drawer',
+    },
+    Card: {
+        Food: 'food-card',
+        Carousel: 'carousel-card',
+    },
+    Switch: {
+        AlergenSwitcher: 'allergens-switcher',
+        AlergenSwitchFilter: 'allergens-switcher-filter',
+    },
+    Checkbox: {
+        Vegan: 'checkbox-веганская кухня',
+    },
+    Tag: {
+        Filter: 'filter-tag',
+    },
+    Notification: {
+        Error: 'error-notification',
+    },
+} as const;
+
+export const API_ENDPOINTS = {
+    SignIn: '/auth/login',
+    SignUp: '/auth/signup',
+    RefreshToken: '/auth/refresh',
+    SendVerificationCode: '/auth/forgot-password',
+    CheckVerificationCode: '/auth/verify-otp',
+    ResetCredentials: '/auth/reset-password',
+    CheckAuth: '/auth/check-auth',
+
+    Category: '/category',
+    Recipe: '/recipe',
+    RecipeByCategory: '/recipe/category',
+} as const;
+
+export const TOAST_MESSAGE = {
+    SignUpToast: {
+        [400]: {
+            id: 'sign-up-error-conflict',
+        },
+    },
+    SignInToast: {
+        [401]: {
+            id: 'sign-in-error-credentials',
+            title: 'Неверный логин или пароль',
+            description: 'Попробуйте снова',
+        },
+        [403]: {
+            id: 'sign-in-error-not-verified',
+            title: 'E-mail не верифицирован',
+            description: 'Проверьте почту и перейдите по ссылке',
+        },
+    },
+    EmailVerificationToast: {
+        [200]: {
+            id: 'sign-up-verified-ok',
+            title: 'Верификация прошла успешно',
+        },
+    },
+    SendVerificationCodeToast: {
+        [403]: {
+            id: 'send-verification-code-not-exist',
+            title: 'Такого e-mail нет',
+            description: 'Попробуйте другой e-mail или проверьте правильность его написания',
+        },
+    },
+    RestoreCredentials: {
+        [200]: {
+            id: 'restore-credentials-ok',
+            title: 'Восстановление данных успешно',
+        },
+    },
+    ServerErrorToast: {
+        id: 'server-error',
+        title: 'Ошибка сервера',
+        description: 'Попробуйте немного позже',
+    },
+} as const;
+
+const VALIDATION_MESSAGE = {
+    Login: {
+        Required: 'Введите логин',
+        Pattern: 'Не соответствует формату',
+    },
+    Password: {
+        Required: 'Введите пароль',
+        Pattern: 'Не соответствует формату',
+    },
+    ConfirmPassword: {
+        Required: 'Повторите пароль',
+        Equal: 'Пароли должны совпадать',
+    },
+    Email: {
+        Required: 'Введите e-mail',
+        Pattern: 'Введите корректный e-mail',
+    },
+    FirstName: {
+        Required: 'Введите имя',
+    },
+    LastName: {
+        Required: 'Введите фамилию',
+    },
+    MaxLength: 'Максимальная длина 50 символов',
+    RussianOnly: 'Только кириллица А-Я, и "-"',
+    FirstRussianLetter: 'Должно начинаться с кириллицы А-Я',
+} as const;
+
+const VALIDATION_PASS_VALUE = {
+    FirstName: 'Иван',
+    LastName: 'Петров',
+    Login: 'Vano!@#$&_+-.',
+    Email: 'vano666@mail.com',
+    Password: 'SecretPass123!@#$&_+-.',
+    VerificationCode: '123456',
+} as const;
+
+const VALIDATION_FAIL_VALUE = {
+    FirstName: 'Ivan',
+    LastName: 'Petrov',
+    Login: 'Vano<>',
+    Email: 'vano666@mail',
+    Password: 'Пароль',
+    ConfirmPassword: 'Пароль123',
+    VerificationCode: '12',
+} as const;
+
+const VALIDATION_TO_TRIM_VALUE = {
+    FirstName: '   Иван   ',
+    LastName: '   Петров   ',
+    Login: '   Vano!@#$&_+-.   ',
+    Email: '   vano666@mail.com   ',
+    Password: '   SecretPass123!@#$&_+-.   ',
+    ConfirmPassword: '   SecretPass123!@#$&_+-.   ',
+} as const;
+
+const FIRST_NAME_VALIDATION = [
+    ['{enter}', VALIDATION_MESSAGE.FirstName.Required],
+    ['firstName', VALIDATION_MESSAGE.FirstRussianLetter],
+    ['-Василий', VALIDATION_MESSAGE.FirstRussianLetter],
+    ['Василий   -Ибн- Петр', VALIDATION_MESSAGE.RussianOnly],
+    ['ВасилийEnglish', VALIDATION_MESSAGE.RussianOnly],
+    [INPUT_OVER_50, VALIDATION_MESSAGE.MaxLength],
+];
+
+const LAST_NAME_VALIDATION = [
+    ['{enter}', VALIDATION_MESSAGE.LastName.Required],
+    ['lastName', VALIDATION_MESSAGE.FirstRussianLetter],
+    ['-Петров', VALIDATION_MESSAGE.FirstRussianLetter],
+    ['    Комаров   -Петров   ', VALIDATION_MESSAGE.RussianOnly],
+    ['ВасилийEnglish', VALIDATION_MESSAGE.RussianOnly],
+    [INPUT_OVER_50, VALIDATION_MESSAGE.MaxLength],
+];
+
+const EMAIL_VALIDATION = [
+    ['{enter}', VALIDATION_MESSAGE.Email.Required],
+    ['email', VALIDATION_MESSAGE.Email.Pattern],
+    ['email@', VALIDATION_MESSAGE.Email.Pattern],
+    ['email@mail', VALIDATION_MESSAGE.Email.Pattern],
+    ['пример@mail.com', VALIDATION_MESSAGE.Email.Pattern],
+    ['example@имейл.com', VALIDATION_MESSAGE.Email.Pattern],
+    ['email@имейл.ру', VALIDATION_MESSAGE.Email.Pattern],
+    ['email @имейл.ru', VALIDATION_MESSAGE.Email.Pattern],
+    [INPUT_OVER_50, VALIDATION_MESSAGE.MaxLength],
+] as const;
+
+const LOGIN_VALIDATION = [
+    ['{enter}', VALIDATION_MESSAGE.Login.Required],
+    ['logi', VALIDATION_MESSAGE.Login.Pattern],
+    ['логин', VALIDATION_MESSAGE.Login.Pattern],
+    ['log in', VALIDATION_MESSAGE.Login.Pattern],
+    ['login<', VALIDATION_MESSAGE.Login.Pattern],
+    [INPUT_OVER_50, VALIDATION_MESSAGE.MaxLength],
+];
+
+const PASSWORD_VALIDATION = [
+    ['{enter}', VALIDATION_MESSAGE.Password.Required],
+    ['PerovVa', VALIDATION_MESSAGE.Password.Pattern],
+    ['perovvasia123', VALIDATION_MESSAGE.Password.Pattern],
+    ['PetrovVasia', VALIDATION_MESSAGE.Password.Pattern],
+    ['12345678', VALIDATION_MESSAGE.Password.Pattern],
+    ['ПетровВася123', VALIDATION_MESSAGE.Password.Pattern],
+    ['Perov Vasia123', VALIDATION_MESSAGE.Password.Pattern],
+    ['PetrovVasia123<', VALIDATION_MESSAGE.Password.Pattern],
+    [INPUT_OVER_50, VALIDATION_MESSAGE.MaxLength],
+];
+
+const CONFIRM_PASSWORD_VALIDATION = [
+    ['{enter}', VALIDATION_MESSAGE.ConfirmPassword.Required],
+    ['PerovVa', VALIDATION_MESSAGE.ConfirmPassword.Equal],
+];
+
+const interceptApi = (
+    {
+        method = 'GET',
+        url,
+        alias = 'nameless',
+        ...restMatcher
+    }: RouteMatcherOptions & { alias?: string },
+    {
+        statusCode,
+        body = {},
+        expectedBody,
+        withLoader = false,
+        delay = withLoader ? 5000 : 1000,
+        ...restResponse
+    }: StaticResponseWithOptions & { withLoader?: boolean; expectedBody?: object },
+) => {
+    cy.intercept(
+        {
+            url: `${API_BASE_URL}${url}`,
+            method,
+            ...restMatcher,
+        },
+        {
+            statusCode,
+            body,
+            delay,
+            ...restResponse,
+        },
+    ).as(alias);
+
+    if (expectedBody) {
+        return () => {
+            const wait = () =>
+                cy.wait(`@${alias}`).then((interception) => {
+                    expect(interception.request.body).to.deep.equal(expectedBody);
+                });
+
+            if (withLoader) {
+                cy.getByTestId(TEST_ID.AppLoader, { timeout: 5000 }).should('be.visible');
+                wait();
+                cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
+            } else {
+                wait();
+            }
+        };
     }
-}
+
+    return () => {
+        const wait = () => cy.wait(`@${alias}`);
+
+        if (withLoader) {
+            cy.getByTestId(TEST_ID.AppLoader, { timeout: 5000 }).should('be.visible');
+            wait();
+            cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
+        } else {
+            wait();
+        }
+    };
+};
+
+const checkToastMessage = ({
+    title,
+    description = '',
+    callback = () => {},
+}: {
+    id: string;
+    title: string;
+    description?: string;
+    callback?: () => void;
+}) => {
+    cy.getByTestId(TEST_ID.Notification.Error, { timeout: 5000 })
+        .as('toastMessage')
+        .should('have.length', 1)
+        .should('exist')
+        .should('be.visible')
+        .should('contain', title)
+        .should('contain', description);
+
+    callback();
+
+    cy.get('@toastMessage').within(() => {
+        cy.getByTestId(TEST_ID.Button.CloseAlert).click();
+    });
+};
+
+const validateField = (
+    inputAlias: string,
+    value: string,
+    expectedError: string,
+    submitAlias = '@submitButton',
+) => {
+    cy.get(inputAlias).clear().type(value);
+    cy.get(submitAlias).click();
+    cy.contains(expectedError).should('be.visible');
+};
+
+const validateFirstNameField = () => {
+    cy.getByTestId(TEST_ID.Input.FirstName).as('firstNameInput');
+    cy.getByTestId(TEST_ID.Input.LastName).as('lastNameInput').type(VALIDATION_PASS_VALUE.LastName);
+
+    FIRST_NAME_VALIDATION.forEach(([value, message]) =>
+        validateField('@firstNameInput', value, message),
+    );
+
+    cy.get('@firstNameInput').clear().type(VALIDATION_TO_TRIM_VALUE.FirstName).blur();
+    cy.get('@firstNameInput').should('have.value', VALIDATION_PASS_VALUE.FirstName);
+
+    cy.get('@submitButton').click();
+    cy.contains(VALIDATION_MESSAGE.RussianOnly).should('not.exist');
+    cy.contains(VALIDATION_MESSAGE.FirstRussianLetter).should('not.exist');
+    cy.contains(VALIDATION_MESSAGE.MaxLength).should('not.exist');
+    cy.get('@firstNameInput').clear();
+    cy.get('@lastNameInput').clear();
+};
+
+const validateLastNameField = () => {
+    cy.getByTestId(TEST_ID.Input.LastName).as('lastNameInput');
+    cy.getByTestId(TEST_ID.Input.FirstName)
+        .as('firstNameInput')
+        .type(VALIDATION_PASS_VALUE.FirstName);
+
+    LAST_NAME_VALIDATION.forEach(([value, message]) =>
+        validateField('@lastNameInput', value, message),
+    );
+
+    cy.get('@lastNameInput').clear().type(VALIDATION_TO_TRIM_VALUE.LastName).blur();
+    cy.get('@lastNameInput').should('have.value', VALIDATION_PASS_VALUE.LastName);
+
+    cy.get('@submitButton').click();
+    cy.contains(VALIDATION_MESSAGE.RussianOnly).should('not.exist');
+    cy.contains(VALIDATION_MESSAGE.FirstRussianLetter).should('not.exist');
+    cy.contains(VALIDATION_MESSAGE.MaxLength).should('not.exist');
+    cy.get('@firstNameInput').clear();
+    cy.get('@lastNameInput').clear();
+};
+
+const validateEmailField = () => {
+    cy.getByTestId(TEST_ID.Input.Email).as('emailInput');
+
+    EMAIL_VALIDATION.forEach(([value, message]) => validateField('@emailInput', value, message));
+
+    cy.get('@emailInput').clear().type(VALIDATION_TO_TRIM_VALUE.Email).blur();
+    cy.get('@emailInput').should('have.value', VALIDATION_PASS_VALUE.Email);
+
+    cy.get('@submitButton').click();
+    cy.contains(VALIDATION_MESSAGE.Email.Pattern).should('not.exist');
+    cy.contains(VALIDATION_MESSAGE.MaxLength).should('not.exist');
+};
+
+const validateLoginField = () => {
+    cy.getByTestId(TEST_ID.Input.Login).as('loginInput');
+    cy.getByTestId(TEST_ID.Input.Password).as('passwordInput').type(VALIDATION_PASS_VALUE.Password);
+
+    LOGIN_VALIDATION.forEach(([value, message]) => validateField('@loginInput', value, message));
+
+    cy.get('@loginInput').clear().type(VALIDATION_PASS_VALUE.Login).blur();
+    cy.get('@loginInput').should('have.value', VALIDATION_PASS_VALUE.Login);
+
+    cy.get('@submitButton').click();
+    cy.contains(VALIDATION_MESSAGE.Login.Pattern).should('not.exist');
+    cy.contains(VALIDATION_MESSAGE.MaxLength).should('not.exist');
+    cy.get('@loginInput').clear();
+    cy.get('@passwordInput').clear();
+};
+
+const validatePasswordField = () => {
+    cy.getByTestId(TEST_ID.Input.Password).as('passwordInput');
+    cy.getByTestId(TEST_ID.Input.Login).type(VALIDATION_PASS_VALUE.Login);
+
+    PASSWORD_VALIDATION.forEach(([value, message]) =>
+        validateField('@passwordInput', value, message),
+    );
+
+    cy.get('@passwordInput').clear().type(VALIDATION_PASS_VALUE.Password);
+    cy.get('@submitButton').click();
+    cy.contains(VALIDATION_MESSAGE.Password.Pattern).should('not.exist');
+    cy.contains(VALIDATION_MESSAGE.MaxLength).should('not.exist');
+    cy.get('@loginInput').clear();
+    cy.get('@passwordInput').clear();
+};
+
+const validateConfirmPasswordField = () => {
+    cy.getByTestId(TEST_ID.Input.PasswordConfirm).as('passwordConfirmInput');
+    cy.getByTestId(TEST_ID.Input.Password).type(VALIDATION_PASS_VALUE.Password);
+
+    CONFIRM_PASSWORD_VALIDATION.forEach(([value, message]) =>
+        validateField('@passwordConfirmInput', value, message),
+    );
+
+    cy.get('@passwordConfirmInput').clear().type(VALIDATION_PASS_VALUE.Password);
+    cy.get('@submitButton').click();
+    cy.contains(VALIDATION_MESSAGE.ConfirmPassword.Equal).should('not.exist');
+    cy.get('@loginInput').clear();
+    cy.get('@passwordInput').clear();
+    cy.get('@passwordConfirmInput').clear();
+};
+
+const fillSignInForm = (
+    login: string = VALIDATION_TO_TRIM_VALUE.Login,
+    password = VALIDATION_PASS_VALUE.Password,
+) => {
+    cy.getByTestId(TEST_ID.Input.Login).type(login);
+    cy.getByTestId(TEST_ID.Input.Password).type(password);
+};
+
+const fillPersonalInfoForm = (
+    firstName = VALIDATION_TO_TRIM_VALUE.FirstName,
+    lastName = VALIDATION_TO_TRIM_VALUE.LastName,
+    email = VALIDATION_TO_TRIM_VALUE.Email,
+) => {
+    cy.getByTestId(TEST_ID.Input.FirstName).type(firstName);
+    cy.getByTestId(TEST_ID.Input.LastName).type(lastName);
+    cy.getByTestId(TEST_ID.Input.Email).type(email);
+};
+
+const fillCredentialsForm = (
+    login = VALIDATION_TO_TRIM_VALUE.Login,
+    password = VALIDATION_PASS_VALUE.Password,
+    confirmPassword = password,
+) => {
+    cy.getByTestId(TEST_ID.Input.Login).type(login);
+    cy.getByTestId(TEST_ID.Input.Password).type(password);
+    cy.getByTestId(TEST_ID.Input.PasswordConfirm).type(confirmPassword);
+};
+
+const fillSignUpForm = () => {
+    fillPersonalInfoForm();
+    cy.getByTestId(TEST_ID.Button.Submit).click();
+    fillCredentialsForm();
+};
+
+const fillVerificationCode = () => {
+    VERIFICATION_CODE_PIN_ID.forEach((id) =>
+        cy
+            .getByTestId(`${TEST_ID.Input.VerificationCode}-${id}`)
+            .as(`verificationCodeFirst_${id}`)
+            .type(String(id)),
+    );
+};
+
+const withModal = (modalKey: keyof typeof TEST_ID.Modal, callback = () => {}) => {
+    cy.wait(2000);
+    return cy
+        .getByTestId(TEST_ID.Modal[modalKey], { timeout: 5000 })
+        .as(`${modalKey}`)
+        .within(callback);
+};
+
+const goToCheckVerificationCode = () => {
+    const wait = interceptApi(
+        {
+            url: API_ENDPOINTS.SendVerificationCode,
+            method: 'POST',
+            alias: 'sendVerificationCode200',
+        },
+        { statusCode: 200 },
+    );
+
+    withModal('SendEmailModal', () => {
+        cy.getByTestId(TEST_ID.Input.Email).type(`${VALIDATION_PASS_VALUE.Email}{enter}`);
+    });
+
+    wait();
+};
+
+const goToRestoreCredentialsForm = () => {
+    goToCheckVerificationCode();
+
+    const wait = interceptApi(
+        {
+            url: API_ENDPOINTS.CheckVerificationCode,
+            method: 'POST',
+            alias: 'checkVerificationCode200',
+        },
+        {
+            statusCode: 200,
+        },
+    );
+
+    withModal('VerificationCodeModal', () => {
+        fillVerificationCode();
+    });
+
+    wait();
+};
+
+describe('authorization', () => {
+    beforeEach(() => {
+        cy.clearLocalStorage();
+        cy.clearAllSessionStorage();
+        interceptApi({ url: '/**', alias: 'uncaptured' }, { statusCode: 200, delay: 0 });
+
+        interceptApi(
+            { url: API_ENDPOINTS.RefreshToken, alias: 'refreshToken500' },
+            { statusCode: 500, delay: 0 },
+        );
+
+        interceptApi(
+            { url: API_ENDPOINTS.CheckAuth, alias: 'checkAuth403' },
+            { statusCode: 403, delay: 0 },
+        );
+
+        cy.visit('/');
+    });
+
+    describe('sign in flow', () => {
+        beforeEach(() => {
+            cy.getByTestId(TEST_ID.Form.SignIn).as('signInForm');
+            cy.getByTestId(TEST_ID.Input.Login).as('loginInput');
+            cy.getByTestId(TEST_ID.Input.Password).as('passwordInput');
+            cy.getByTestId(TEST_ID.Button.Submit).as('submitButton');
+        });
+
+        it('should validate sign in form fields', () => {
+            cy.get('@signInForm').within(() => {
+                cy.get('@submitButton').click();
+                cy.contains(VALIDATION_MESSAGE.Login.Required).should('be.visible');
+                cy.contains(VALIDATION_MESSAGE.Password.Required).should('be.visible');
+
+                validateField('@loginInput', INPUT_OVER_50, VALIDATION_MESSAGE.MaxLength);
+                cy.get('@loginInput').clear().type('login');
+                validateField('@passwordInput', INPUT_OVER_50, VALIDATION_MESSAGE.MaxLength);
+
+                cy.get('@loginInput').clear().type(VALIDATION_TO_TRIM_VALUE.Login).blur();
+                cy.get('@loginInput').should('have.value', VALIDATION_PASS_VALUE.Login);
+            });
+        });
+
+        it('should show password only while mouse is holding on visibility button', () => {
+            cy.viewport(...RESOLUTION.tablet);
+
+            cy.get('@signInForm').within(() => {
+                fillSignInForm();
+
+                cy.get('@passwordInput').should('have.attr', 'type', 'password');
+
+                cy.getByTestId(TEST_ID.Button.PasswordVisibility).then(($toggle) => {
+                    cy.wrap($toggle).trigger('mousedown');
+                    cy.get('@passwordInput').should('have.attr', 'type', 'text');
+                    cy.wrap($toggle).trigger('mouseup');
+                    cy.get('@passwordInput').should('have.attr', 'type', 'password');
+                });
+            });
+        });
+
+        it('should display error message for 401 invalid credentials', () => {
+            cy.viewport(...RESOLUTION.mobile);
+
+            interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest401',
+                },
+                {
+                    statusCode: 401,
+                },
+            );
+
+            cy.get('@signInForm').within(() => {
+                fillSignInForm();
+                cy.get('@passwordInput').type('{enter}');
+            });
+            cy.wait('@signInRequest401');
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.SignInToast[401],
+                callback: () => takeAllScreenshots('sign-in-invalid-credentials'),
+            });
+        });
+
+        it('should display error message for 403 email is not verified', () => {
+            interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest403',
+                },
+                {
+                    statusCode: 403,
+                },
+            );
+
+            cy.get('@signInForm').within(() => {
+                fillSignInForm();
+                cy.get('@passwordInput').type('{enter}');
+            });
+            cy.wait('@signInRequest403');
+
+            checkToastMessage(TOAST_MESSAGE.SignInToast[403]);
+        });
+
+        it('should display error modal for 500 server error', () => {
+            const wait500 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest500',
+                },
+                {
+                    statusCode: 500,
+                },
+            );
+
+            cy.get('@signInForm').within(() => {
+                fillSignInForm();
+                cy.get('@passwordInput').type('{enter}');
+            });
+            wait500();
+
+            withModal('SignInError', () => {
+                cy.contains('Вход не выполнен').should('be.visible');
+                cy.contains('Что-то пошло не так.').should('be.visible');
+                cy.contains('Попробуйте еще раз').should('be.visible');
+            });
+            takeAllScreenshots('sign-in-server-error');
+            withModal('SignInError', () => {
+                cy.getByTestId(TEST_ID.Button.Close).click();
+            });
+
+            cy.getByTestId(TEST_ID.Modal.SignInError).should('not.exist');
+        });
+
+        it('should send new request on server error retry button', () => {
+            cy.viewport(...RESOLUTION.mobile);
+
+            const wait500 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest500',
+                },
+                {
+                    statusCode: 500,
+                    delay: 0,
+                },
+            );
+
+            cy.get('@signInForm').within(() => {
+                fillSignInForm();
+                cy.get('@passwordInput').type('{enter}');
+            });
+            wait500();
+
+            const wait200 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest200',
+                },
+                {
+                    statusCode: 200,
+                    headers: {
+                        'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
+                        [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
+                    },
+                },
+            );
+
+            withModal('SignInError', () => {
+                cy.getByTestId(TEST_ID.Button.Repeat).click();
+            });
+            wait200();
+
+            cy.wait('@uncaptured');
+            cy.contains('Приятного аппетита!').should('be.visible');
+        });
+
+        it('should navigate to main page on sign in success', () => {
+            const wait200 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest200',
+                },
+                {
+                    statusCode: 200,
+                    withLoader: true,
+                    headers: {
+                        'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
+                        [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
+                    },
+                    expectedBody: {
+                        login: VALIDATION_PASS_VALUE.Login,
+                        password: VALIDATION_PASS_VALUE.Password,
+                    },
+                },
+            );
+
+            cy.get('@signInForm').within(() => {
+                fillSignInForm();
+                cy.get('@passwordInput').type('{enter}');
+            });
+            cy.wait(500);
+            takeScreenshot('sign-in-loader');
+            wait200();
+            cy.wait('@uncaptured');
+            cy.contains('Приятного аппетита!').should('be.visible');
+        });
+    });
+
+    describe('sign up flow', () => {
+        beforeEach(() => {
+            cy.contains('Регистрация').click();
+            cy.reload();
+
+            cy.getByTestId(TEST_ID.Form.SignUp).as('signUpForm');
+            cy.getByTestId(TEST_ID.Button.Submit).as('submitButton');
+        });
+
+        it('should validate sign up form fields step 1', () => {
+            cy.viewport(...RESOLUTION.tablet);
+            cy.get('@signUpForm').within(() => {
+                validateFirstNameField();
+                validateLastNameField();
+                validateEmailField();
+            });
+        });
+
+        it('should validate sign up form fields step 2', () => {
+            cy.viewport(...RESOLUTION.mobile);
+            cy.get('@signUpForm').within(() => {
+                fillPersonalInfoForm();
+                cy.get('@submitButton').click();
+            });
+
+            cy.get('@signUpForm').within(() => {
+                validateLoginField();
+                validatePasswordField();
+                validateConfirmPasswordField();
+            });
+        });
+
+        it('progress bar shows validation progress', () => {
+            cy.getByTestId(TEST_ID.Progress.SignUp).as('signUpProgress');
+            cy.getByTestId(TEST_ID.Input.FirstName).as('firstNameInput');
+            cy.getByTestId(TEST_ID.Input.LastName).as('lastNameInput');
+            cy.getByTestId(TEST_ID.Input.Email).as('emailInput');
+
+            const checkProgressBar = (min: number, max: number) => {
+                cy.get('@signUpProgress')
+                    .find('[role=progressbar]')
+                    .then(($el) => {
+                        const numericValue = parseFloat($el.attr('aria-valuenow'));
+                        const roundedValue = Math.round(numericValue);
+                        expect(roundedValue).to.be.within(min, max);
+                    });
+            };
+
+            checkProgressBar(0, 0);
+
+            cy.get('@firstNameInput').type(VALIDATION_FAIL_VALUE.FirstName);
+            checkProgressBar(0, 0);
+            cy.get('@firstNameInput').clear().type(VALIDATION_PASS_VALUE.FirstName);
+            checkProgressBar(14, 18);
+
+            takeScreenshot('sign-up-progress-bar');
+
+            cy.get('@firstNameInput').clear();
+            checkProgressBar(0, 0);
+
+            cy.get('@firstNameInput').clear().type(VALIDATION_PASS_VALUE.FirstName);
+            cy.get('@lastNameInput').type(VALIDATION_FAIL_VALUE.LastName);
+            checkProgressBar(14, 18);
+            cy.get('@lastNameInput').clear().type(VALIDATION_PASS_VALUE.LastName);
+            checkProgressBar(31, 35);
+
+            takeScreenshot('sign-up-progress-bar', 'tablet');
+
+            cy.get('@emailInput').type(VALIDATION_FAIL_VALUE.Email);
+            checkProgressBar(31, 35);
+            cy.get('@emailInput').clear().type(VALIDATION_PASS_VALUE.Email);
+            checkProgressBar(48, 52);
+
+            cy.get('@submitButton').click();
+
+            cy.getByTestId(TEST_ID.Input.Login).as('loginInput');
+            cy.getByTestId(TEST_ID.Input.Password).as('passwordInput');
+            cy.getByTestId(TEST_ID.Input.PasswordConfirm).as('passwordConfirmInput');
+
+            cy.get('@loginInput').type(VALIDATION_FAIL_VALUE.Login);
+            checkProgressBar(48, 52);
+            cy.get('@loginInput').clear().type(VALIDATION_PASS_VALUE.Login);
+            checkProgressBar(65, 69);
+
+            takeScreenshot('sign-up-progress-bar', 'mobile');
+
+            cy.get('@passwordInput').type(VALIDATION_FAIL_VALUE.Password);
+            checkProgressBar(65, 69);
+            cy.get('@passwordInput').clear().type(VALIDATION_PASS_VALUE.Password);
+            checkProgressBar(81, 85);
+
+            cy.get('@passwordConfirmInput').type(VALIDATION_FAIL_VALUE.ConfirmPassword);
+            checkProgressBar(81, 85);
+            cy.get('@passwordConfirmInput').clear().type(VALIDATION_PASS_VALUE.Password);
+            checkProgressBar(98, 100);
+        });
+
+        it('should display error message on sign up 500 server error', () => {
+            fillSignUpForm();
+
+            interceptApi(
+                {
+                    url: API_ENDPOINTS.SignUp,
+                    method: 'POST',
+                    alias: 'signUpRequest500',
+                },
+                {
+                    statusCode: 500,
+                },
+            );
+
+            cy.getByTestId(TEST_ID.Button.Submit).click();
+            cy.wait('@signUpRequest500');
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.ServerErrorToast,
+                callback: () => takeAllScreenshots('sign-up-server-error'),
+            });
+        });
+
+        it('should display errors messages on email and login conflicts', () => {
+            fillSignUpForm();
+
+            const waitLogin400 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignUp,
+                    method: 'POST',
+                    alias: 'signUpRequest400',
+                },
+                {
+                    statusCode: 400,
+                    body: {
+                        message: SIGN_UP_LOGIN_CONFLICT_MESSAGE,
+                        statusCode: 400,
+                    },
+                    delay: 0,
+                },
+            );
+
+            cy.getByTestId(TEST_ID.Button.Submit).click();
+            waitLogin400();
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.SignUpToast[400],
+                title: SIGN_UP_LOGIN_CONFLICT_MESSAGE,
+                callback: () => takeScreenshot('sign-up-login-conflict', 'tablet'),
+            });
+
+            const waitEmail400 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignUp,
+                    method: 'POST',
+                    alias: 'signUpRequest400',
+                },
+                {
+                    statusCode: 400,
+                    body: {
+                        message: SIGN_UP_EMAIL_CONFLICT_MESSAGE,
+                        statusCode: 400,
+                    },
+                    delay: 0,
+                },
+            );
+
+            cy.getByTestId(TEST_ID.Button.Submit).click();
+            waitEmail400();
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.SignUpToast[400],
+                title: SIGN_UP_EMAIL_CONFLICT_MESSAGE,
+                callback: () => takeScreenshot('sign-up-email-conflict', 'mobile'),
+            });
+        });
+
+        it('should display success modal on sign up success 200', () => {
+            cy.viewport(...RESOLUTION.mobile);
+            fillSignUpForm();
+
+            interceptApi(
+                {
+                    url: API_ENDPOINTS.SignUp,
+                    method: 'POST',
+                    alias: 'signUpRequest200',
+                },
+                {
+                    statusCode: 200,
+                    withLoader: true,
+                    expectedBody: {
+                        login: VALIDATION_PASS_VALUE.Login,
+                        password: VALIDATION_PASS_VALUE.Password,
+                        confirmPassword: VALIDATION_PASS_VALUE.Password,
+                        firstName: VALIDATION_PASS_VALUE.FirstName,
+                        lastName: VALIDATION_PASS_VALUE.LastName,
+                        email: VALIDATION_PASS_VALUE.Email,
+                    },
+                },
+            );
+
+            cy.getByTestId(TEST_ID.Button.Submit).click();
+            cy.wait('@signUpRequest200');
+
+            withModal('SignUpSuccess', () => {
+                cy.contains('Остался последний шаг.').should('be.visible');
+                cy.contains('Нужно верифицировать ваш e-mail').should('be.visible');
+                cy.contains('Мы отправили вам на почту').should('be.visible');
+                cy.contains(VALIDATION_PASS_VALUE.Email).should('be.visible');
+                cy.contains('ссылку для верификации.').should('be.visible');
+            });
+            takeAllScreenshots('sign-up-success');
+            withModal('SignUpSuccess', () => {
+                cy.getByTestId(TEST_ID.Button.Close).click();
+            });
+
+            cy.getByTestId(TEST_ID.Modal.SignUpSuccess).should('not.exist');
+            cy.getByTestId(TEST_ID.Form.SignIn).should('be.visible');
+        });
+    });
+
+    describe('email verification flow', () => {
+        it('should show success message on email verification success', () => {
+            cy.visit(`${VERIFICATION_ROUTE}?emailVerified=true`);
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.EmailVerificationToast[200],
+                callback: () => takeAllScreenshots('verificate-email-success'),
+            });
+            cy.getByTestId(TEST_ID.Form.SignIn).should('be.visible');
+        });
+
+        it('should show error modal on email verification failure', () => {
+            cy.visit(`${VERIFICATION_ROUTE}?emailVerified=false`);
+
+            withModal('EmailVerificationFailed', () => {
+                cy.contains('Упс! Что-то пошло не так').should('be.visible');
+                cy.contains('Ваша ссылка для верификации недействительна.').should('be.visible');
+                cy.contains('Попробуйте зарегистрироваться снова.').should('be.visible');
+            });
+            takeAllScreenshots('verificate-email-failure');
+            withModal('EmailVerificationFailed', () => {
+                cy.getByTestId(TEST_ID.Button.Close).click();
+            });
+
+            cy.getByTestId(TEST_ID.Modal.EmailVerificationFailed).should('not.exist');
+            cy.getByTestId(TEST_ID.Form.SignUp).should('be.visible');
+        });
+    });
+
+    describe('restore credentials flow', () => {
+        beforeEach(() => {
+            cy.getByTestId(TEST_ID.Button.ForgotPassword).as('forgotPasswordButton').click();
+        });
+
+        it('should open send verification email modal', () => {
+            withModal('SendEmailModal', () => {
+                cy.contains(
+                    'Для восстановления входа введите ваш e-mail, куда можно отправить уникальный код',
+                ).should('be.visible');
+                cy.contains('Получить код').should('be.visible');
+                cy.getByTestId(TEST_ID.Input.Email).type(VALIDATION_PASS_VALUE.Email);
+                cy.getByTestId(TEST_ID.Button.Close).click();
+            });
+
+            cy.get('@SendEmailModal').should('not.exist');
+            cy.get('@forgotPasswordButton').click();
+            cy.get('@SendEmailModal', { timeout: 5000 }).should('be.visible');
+
+            withModal('SendEmailModal', () => {
+                cy.getByTestId(TEST_ID.Input.Email).should('have.value', '');
+            });
+        });
+
+        it('should validate send verification form email field', () => {
+            const wait = interceptApi(
+                {
+                    url: API_ENDPOINTS.SendVerificationCode,
+                    method: 'POST',
+                    alias: 'sendVerificationCode200',
+                },
+                {
+                    statusCode: 200,
+                },
+            );
+
+            withModal('SendEmailModal', () => {
+                cy.getByTestId(TEST_ID.Button.Submit).as('submitButton');
+                validateEmailField();
+            });
+            wait();
+        });
+
+        it('should show error message on email 403 existance fail', () => {
+            const wait = interceptApi(
+                {
+                    url: API_ENDPOINTS.SendVerificationCode,
+                    method: 'POST',
+                    alias: 'sendVerificationCode403',
+                },
+                {
+                    statusCode: 403,
+                },
+            );
+
+            withModal('SendEmailModal', () => {
+                cy.getByTestId(TEST_ID.Input.Email).type(`${VALIDATION_PASS_VALUE.Email}{enter}`);
+            });
+            wait();
+
+            cy.getByTestId(TEST_ID.Input.Email).should('have.value', '');
+            checkToastMessage({
+                ...TOAST_MESSAGE.SendVerificationCodeToast[403],
+                callback: () => takeAllScreenshots('send-email-modal-not-exist'),
+            });
+        });
+
+        it('should show error message on send code 500 server error', () => {
+            const wait = interceptApi(
+                {
+                    url: API_ENDPOINTS.SendVerificationCode,
+                    method: 'POST',
+                    alias: 'sendVerificationCode500',
+                },
+                {
+                    statusCode: 500,
+                },
+            );
+
+            withModal('SendEmailModal', () => {
+                cy.getByTestId(TEST_ID.Input.Email).type(`${VALIDATION_PASS_VALUE.Email}{enter}`);
+            });
+            wait();
+            cy.getByTestId(TEST_ID.Input.Email).type(`${VALIDATION_PASS_VALUE.Email}{enter}`);
+            wait();
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.ServerErrorToast,
+                callback: () => takeAllScreenshots('send-email-modal-server-error'),
+            });
+        });
+
+        it('should open validate verification code modal', () => {
+            goToCheckVerificationCode();
+
+            withModal('VerificationCodeModal', () => {
+                cy.contains('Мы отправили вам на e-mail').should('be.visible');
+                cy.contains(VALIDATION_PASS_VALUE.Email).should('be.visible');
+                cy.contains('шестизначный код.').should('be.visible');
+                cy.contains('Введите его ниже.').should('be.visible');
+            });
+            takeScreenshot('verification-code-modal');
+            withModal('VerificationCodeModal', () => {
+                cy.getByTestId(TEST_ID.Button.Close).click();
+            });
+
+            cy.get('@VerificationCodeModal').should('not.exist');
+            cy.get('@forgotPasswordButton').click();
+
+            withModal('SendEmailModal', () => {
+                cy.getByTestId(TEST_ID.Input.Email).should('have.value', '');
+            });
+        });
+
+        it('should handle verification code validation', () => {
+            goToCheckVerificationCode();
+
+            const wait403 = interceptApi(
+                {
+                    url: API_ENDPOINTS.CheckVerificationCode,
+                    method: 'POST',
+                    alias: 'checkVerificationCode403',
+                },
+                { statusCode: 403 },
+            );
+
+            withModal('VerificationCodeModal', () => {
+                fillVerificationCode();
+            });
+
+            takeScreenshot('verification-code-modal', 'tablet');
+            wait403();
+            takeScreenshot('verification-code-modal', 'mobile');
+
+            const wait500 = interceptApi(
+                {
+                    url: API_ENDPOINTS.CheckVerificationCode,
+                    method: 'POST',
+                    alias: 'checkVerificationCode500',
+                },
+                { statusCode: 500 },
+            );
+
+            const checkPinReset = () => {
+                VERIFICATION_CODE_PIN_ID.forEach((id) => {
+                    cy.getByTestId(`${TEST_ID.Input.VerificationCode}-${id}`).should(
+                        'have.value',
+                        '',
+                    );
+                });
+            };
+
+            withModal('VerificationCodeModal', () => {
+                cy.contains('Неверный код').should('be.visible');
+                checkPinReset();
+                fillVerificationCode();
+            });
+            wait500();
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.ServerErrorToast,
+                callback: () => takeAllScreenshots('verification-code-modal-server-error'),
+            });
+
+            const wait200 = interceptApi(
+                {
+                    url: API_ENDPOINTS.CheckVerificationCode,
+                    method: 'POST',
+                    alias: 'checkVerificationCode200',
+                },
+                {
+                    statusCode: 200,
+                    withLoader: true,
+                },
+            );
+
+            withModal('VerificationCodeModal', () => {
+                cy.contains('Неверный код').should('not.exist');
+                checkPinReset();
+                fillVerificationCode();
+            });
+            wait200();
+            withModal('ResetCredentialsModal').should('be.visible');
+        });
+
+        it('should validate restore credentials form', () => {
+            goToRestoreCredentialsForm();
+
+            withModal('ResetCredentialsModal', () => {
+                cy.getByTestId(TEST_ID.Button.Submit).as('submitButton');
+                validateLoginField();
+                validatePasswordField();
+                validateConfirmPasswordField();
+                cy.getByTestId(TEST_ID.Button.Close).click();
+            });
+
+            cy.get('@ResetCredentialsModal').should('not.exist');
+        });
+
+        it('should show success message on reset success 200', () => {
+            goToRestoreCredentialsForm();
+
+            const wait200 = interceptApi(
+                {
+                    url: API_ENDPOINTS.ResetCredentials,
+                    method: 'POST',
+                    alias: 'resetCredentials200',
+                },
+                {
+                    statusCode: 200,
+                    withLoader: true,
+                    expectedBody: {
+                        email: VALIDATION_PASS_VALUE.Email,
+                        login: VALIDATION_PASS_VALUE.Login,
+                        password: VALIDATION_PASS_VALUE.Password,
+                        passwordConfirm: VALIDATION_PASS_VALUE.Password,
+                    },
+                },
+            );
+
+            withModal('ResetCredentialsModal', () => {
+                fillCredentialsForm();
+                cy.getByTestId(TEST_ID.Input.PasswordConfirm).type('{enter}');
+            });
+            wait200();
+            cy.get('@ResetCredentialsModal').should('not.exist');
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.RestoreCredentials[200],
+                callback: () => takeAllScreenshots('reset-credentials-modal-success'),
+            });
+        });
+
+        it('should show error message on reset credentials 500 server error', () => {
+            goToRestoreCredentialsForm();
+
+            const wait500 = interceptApi(
+                {
+                    url: API_ENDPOINTS.ResetCredentials,
+                    method: 'POST',
+                    alias: 'resetCredentials500',
+                },
+                { statusCode: 500 },
+            );
+
+            withModal('ResetCredentialsModal', () => {
+                fillCredentialsForm();
+                cy.getByTestId(TEST_ID.Button.Submit).click();
+            });
+            wait500();
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.ServerErrorToast,
+                callback: () => takeAllScreenshots('reset-credentials-modal-server-error'),
+            });
+        });
+    });
+});
+
+const SEARCH_PARAMS = {
+    CREATED_AT_SORT: 'createdAt',
+    LIKES_SORT: 'likes',
+    SORT_QUERY: 'sortBy',
+    SEARCH_QUERY: 'searchString',
+    SUBCATEGORIES_QUERY: 'subcategoriesIds',
+    GARNISH_QUERY: 'garnish',
+    ALLERGENS_QUERY: 'allergens',
+    LIMIT_QUERY: 'limit',
+};
+
+const DELAY = {
+    SM: 300,
+    LG: 1000,
+    LOAD: 700,
+};
+
+const SLIDER_SIZE = '10';
+const DEFAULT_RECIPE_LIMIT = 8;
+const JUICIEST_LIMIT = '4';
+const RELEVANT_KITCHEN_LIMIT = '5';
+
+const setElementPosition = () => {
+    cy.getByTestId(TEST_ID.Header).invoke('css', 'position', 'absolute');
+    cy.getByTestId(TEST_ID.Footer).invoke('css', 'position', 'absolute');
+};
 
 const CATEGORIES_RESPONSE = [
     {
@@ -1390,19 +2630,19 @@ const MOCK_RECIPES_BY_CATEGORY = {
 const juiciestData = {
     data: [...allRecipes].sort((a, b) => a.likes - b.likes).slice(0, DEFAULT_RECIPE_LIMIT),
 };
-const interceptJuiciestPage = (page: number = 1, mockData = juiciestData) =>
-    cy.intercept(
+const interceptJuiciestPage = (page: number = 1, delay = DELAY.SM, mockData = juiciestData) =>
+    interceptApi(
         {
-            method: 'GET',
-            url: /recipe\?.*/,
+            url: `${API_ENDPOINTS.Recipe}*`,
             query: {
-                [SORT_QUERY_PARAM]: LIKES_SORT_PARAM,
-                [LIMIT_QUERY_PARAM]: String(DEFAULT_RECIPE_LIMIT),
+                [SEARCH_PARAMS.SORT_QUERY]: SEARCH_PARAMS.LIKES_SORT,
+                [SEARCH_PARAMS.LIMIT_QUERY]: String(DEFAULT_RECIPE_LIMIT),
                 page: String(page),
             },
+            alias: 'juiciestPageRecipes',
         },
         {
-            delay: SMALL_DELAY_MS,
+            delay,
             statusCode: 200,
             body: {
                 ...mockData,
@@ -1416,56 +2656,55 @@ const interceptJuiciestPage = (page: number = 1, mockData = juiciestData) =>
         },
     );
 
-const interceptNewestRecipes = (delay: number = SMALL_DELAY_MS, mockBody: unknown = null) =>
-    cy.intercept(
+const interceptNewestRecipes = (delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
         {
-            method: 'GET',
-            url: /recipe\?.*/,
+            url: `${API_ENDPOINTS.Recipe}*`,
             query: {
-                [SORT_QUERY_PARAM]: CREATED_AT_SORT_PARAM,
+                [SEARCH_PARAMS.SORT_QUERY]: SEARCH_PARAMS.CREATED_AT_SORT,
             },
+            alias: 'getNewestRecipes',
         },
-        ({ reply }) => {
-            reply({
-                statusCode: 200,
-                delay,
-                body: mockBody ?? {
-                    data: allRecipes
-                        .slice(0, Number(SLIDER_SIZE))
-                        .sort(
-                            (a, b) =>
-                                new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-                        ),
-                    meta: { ...metaData, limit: Number(SLIDER_SIZE) },
-                },
-            });
+        {
+            statusCode: 200,
+            delay,
+            body: mockBody ?? {
+                data: allRecipes
+                    .slice(0, Number(SLIDER_SIZE))
+                    .sort(
+                        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+                    ),
+                meta: { ...metaData, limit: Number(SLIDER_SIZE) },
+            },
         },
     );
 
-const interceptJuiciestRecipes = (delay: number = SMALL_DELAY_MS, mockBody: unknown = null) =>
-    cy.intercept(
+const interceptJuiciestRecipes = (delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
         {
-            method: 'GET',
-            url: /recipe\?.*/,
+            url: `${API_ENDPOINTS.Recipe}*`,
             query: {
-                [SORT_QUERY_PARAM]: LIKES_SORT_PARAM,
+                [SEARCH_PARAMS.SORT_QUERY]: SEARCH_PARAMS.LIKES_SORT,
             },
+            alias: 'getJuiciestRecipes',
         },
-        ({ reply }) => {
-            reply({
-                statusCode: 200,
-                delay,
-                body: mockBody ?? {
-                    data: allRecipes.slice(0, Number(JUICIEST_LIMIT)),
-                    meta: { ...metaData, limit: Number(JUICIEST_LIMIT) },
-                },
-            });
+        {
+            statusCode: 200,
+            delay,
+            body: mockBody ?? {
+                data: allRecipes.slice(0, Number(JUICIEST_LIMIT)),
+                meta: { ...metaData, limit: Number(JUICIEST_LIMIT) },
+            },
         },
     );
 
-const interceptRecipeWithSearch = (delay: number = SMALL_DELAY_MS, mockBody: unknown = null) =>
-    cy.intercept(
-        { method: 'GET', url: /recipe\?.*/, query: { [SEARCH_QUERY_PARAM]: /.*/ } },
+const interceptRecipeWithSearch = (delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
+        {
+            url: `${API_ENDPOINTS.Recipe}*`,
+            query: { [SEARCH_PARAMS.SEARCH_QUERY]: /.*/ },
+            alias: 'getRecipeWithSearchEmpty',
+        },
         {
             delay,
             body: mockBody ?? {
@@ -1475,106 +2714,169 @@ const interceptRecipeWithSearch = (delay: number = SMALL_DELAY_MS, mockBody: unk
         },
     );
 
-const interceptRecipesByCategory = (delay: number = SMALL_DELAY_MS, mockBody: unknown = null) =>
-    cy.intercept(
-        { method: 'GET', url: /recipe\?.*/, query: { [SUBCATEGORIES_QUERY_PARAM]: /.*/ } },
+const interceptRecipesByCategory = (delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
+        { url: `${API_ENDPOINTS.Recipe}*`, query: { [SEARCH_PARAMS.SUBCATEGORIES_QUERY]: /.*/ } },
         {
             delay,
             body: mockBody ?? { data: allRecipes.slice(0, DEFAULT_RECIPE_LIMIT), meta: metaData },
         },
     );
 
-const interceptCategories = () => cy.intercept('GET', /category$/, { body: CATEGORIES_RESPONSE });
+const interceptCategories = (delay = 0) =>
+    interceptApi(
+        { url: API_ENDPOINTS.Category, alias: 'getCategories' },
+        { body: CATEGORIES_RESPONSE, delay },
+    );
 
-const interceptRelevantRecipes = (delay: number = SMALL_DELAY_MS, mockBody: unknown = null) =>
-    cy.intercept(
+const interceptRelevantRecipes = (delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
         {
-            method: 'GET',
-            url: /recipe\/category\/*/,
-            query: { [LIMIT_QUERY_PARAM]: RELEVANT_KITCHEN_LIMIT },
+            url: `${API_ENDPOINTS.RecipeByCategory}/*`,
+            query: { [SEARCH_PARAMS.LIMIT_QUERY]: RELEVANT_KITCHEN_LIMIT },
+            alias: 'getRelevant',
         },
-        ({ reply }) => {
-            reply({
-                delay,
-                body: mockBody ?? {
-                    data: allRecipes.slice(0, Number(RELEVANT_KITCHEN_LIMIT)),
-                    meta: { ...metaData, limit: Number(RELEVANT_KITCHEN_LIMIT) },
-                },
-                statusCode: 200,
-            });
+        {
+            statusCode: 200,
+            delay,
+            body: mockBody ?? {
+                data: allRecipes.slice(0, Number(RELEVANT_KITCHEN_LIMIT)),
+                meta: { ...metaData, limit: Number(RELEVANT_KITCHEN_LIMIT) },
+            },
         },
     );
 
-const interceptRecipesBySubCategory = (delay: number = SMALL_DELAY_MS, mockBody: unknown = null) =>
-    cy.intercept('GET', /recipe\/category\/*/, ({ reply }) => {
-        reply({
+const interceptRecipesBySubCategory = (delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
+        { url: `${API_ENDPOINTS.RecipeByCategory}/*`, alias: 'getVegansGarnish' },
+        {
+            statusCode: 200,
             delay,
             body: mockBody ?? MOCK_RECIPES_BY_CATEGORY,
+        },
+    );
+
+const signIn = () => {
+    interceptApi(
+        {
+            url: API_ENDPOINTS.RefreshToken,
+            alias: 'refreshToken500',
+        },
+        {
+            statusCode: 500,
+            delay: 0,
+        },
+    );
+
+    interceptApi(
+        {
+            url: API_ENDPOINTS.CheckAuth,
+            alias: 'checkAuth403',
+        },
+        {
+            statusCode: 403,
+            delay: 0,
+        },
+    );
+
+    cy.visit('/');
+
+    const waitSignIn200 = interceptApi(
+        {
+            url: API_ENDPOINTS.SignIn,
+            method: 'POST',
+            alias: 'signInRequest200',
+        },
+        {
             statusCode: 200,
-        });
+            delay: 0,
+            headers: {
+                'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
+                [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
+            },
+        },
+    );
+
+    cy.getByTestId(TEST_ID.Form.SignIn).within(() => {
+        fillSignInForm(VALIDATION_PASS_VALUE.Login);
+        cy.getByTestId(TEST_ID.Button.Submit).click();
     });
 
-describe('Test cases for YeeDaa application', () => {
-    describe('рендер App компоненты', () => {
-        beforeEach(() => {
-            interceptCategories();
-            interceptNewestRecipes();
-            interceptJuiciestRecipes();
-            interceptRelevantRecipes();
-            interceptRecipesBySubCategory().as('getRecipeByCategory');
-            cy.visit('http://localhost:3000');
-        });
-        it('Take a screenshot of the app components', () => {
-            cy.viewport(1920, 750);
-            cy.getByTestId(JUICIEST_LINK_MOB).should('not.be.visible');
-            cy.getByTestId(JUICIEST_LINK).click();
-            cy.getByTestId(HEADER).should('contain', 'Самое сочное');
-            cy.scrollTo('top');
-            cy.getByTestId(VEGAN).click();
-            cy.wait('@getRecipeByCategory');
-            cy.getByTestId(HEADER).should('contain', 'Веганская кухня');
-        });
+    waitSignIn200();
+
+    interceptApi(
+        {
+            url: API_ENDPOINTS.RefreshToken,
+            alias: 'refreshToken200',
+        },
+        {
+            statusCode: 200,
+            delay: 0,
+            headers: {
+                'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
+                [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
+            },
+        },
+    );
+};
+
+describe('application', () => {
+    beforeEach(() => {
+        cy.clearLocalStorage();
+        cy.clearAllSessionStorage();
+        interceptApi(
+            { url: '/**', alias: 'uncaptured' },
+            {
+                statusCode: 200,
+                delay: 0,
+            },
+        );
+
+        interceptCategories();
+        interceptNewestRecipes();
+        interceptJuiciestRecipes();
+        interceptRelevantRecipes();
+        signIn();
     });
-    describe('Carousel functionality', () => {
-        beforeEach(() => {
-            interceptCategories().as('getCategories');
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-        });
-        it('Carousel on screen 1920px', () => {
+
+    describe('carousel functionality', () => {
+        it('carousel on screen 1920px', () => {
             cy.viewport(1920, 750);
-            cy.visit('/');
             setElementPosition();
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
-            cy.get(`[data-test-id^=${CAROUSEL_CARD}]`).should('have.length', Number(SLIDER_SIZE));
+
+            cy.get(`[data-test-id^=${TEST_ID.Card.Carousel}]`).should(
+                'have.length',
+                Number(SLIDER_SIZE),
+            );
             for (let i = 0; i < 4; i++) {
-                cy.getByTestId(`${CAROUSEL_CARD}-${i}`).should('be.visible');
+                cy.getByTestId(`${TEST_ID.Card.Carousel}-${i}`).should('be.visible');
             }
             cy.getByTestId('carousel-forward').click();
-            cy.wait(LOAD_DELAY_MS);
-            cy.getByTestId(`${CAROUSEL_CARD}-4`).should('be.visible');
+            cy.wait(DELAY.LOAD);
+            cy.getByTestId(`${TEST_ID.Card.Carousel}-4`).should('be.visible');
             for (let i = 1; i <= 4; i++) {
-                cy.getByTestId(`${CAROUSEL_CARD}-${i}`).scrollIntoView().should('be.visible');
+                cy.getByTestId(`${TEST_ID.Card.Carousel}-${i}`)
+                    .scrollIntoView()
+                    .should('be.visible');
             }
             cy.getByTestId('carousel-back').click();
-            cy.wait(LOAD_DELAY_MS);
-            cy.getByTestId(`${CAROUSEL_CARD}-0`).should('be.visible');
+            cy.wait(DELAY.LOAD);
+            cy.getByTestId(`${TEST_ID.Card.Carousel}-0`).should('be.visible');
             cy.getByTestId('carousel-back').click();
-            cy.wait(LOAD_DELAY_MS);
-            cy.getByTestId(`${CAROUSEL_CARD}-9`).should('be.visible');
-            cy.wait(LOAD_DELAY_MS);
+            cy.wait(DELAY.LOAD);
+            cy.getByTestId(`${TEST_ID.Card.Carousel}-9`).should('be.visible');
+            cy.wait(DELAY.LOAD);
             [1, 2].forEach((index) => {
-                cy.getByTestId(`${CAROUSEL_CARD}-${index}`).should('be.visible');
+                cy.getByTestId(`${TEST_ID.Card.Carousel}-${index}`).should('be.visible');
             });
-            cy.scrollTo('top');
-            cy.screenshot('carousel-1920', { capture: 'viewport' });
         });
-        it('Carousel on screen 360px', () => {
+
+        it('carousel on screen 360px', () => {
             cy.viewport(360, 600);
-            cy.visit('/');
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
-            cy.get(`[data-test-id^=${CAROUSEL_CARD}]`).should('have.length', Number(SLIDER_SIZE));
+            cy.get(`[data-test-id^=${TEST_ID.Card.Carousel}]`).should(
+                'have.length',
+                Number(SLIDER_SIZE),
+            );
             cy.getByTestId('carousel-forward').should('not.be.visible');
             cy.getByTestId('carousel-back').should('not.be.visible');
             cy.getByTestId('carousel')
@@ -1584,175 +2886,150 @@ describe('Test cases for YeeDaa application', () => {
                 .trigger('pointerdown', { which: 1 })
                 .trigger('pointermove', 'left')
                 .trigger('pointerup', { force: true });
-            cy.scrollTo('top');
-            cy.screenshot('carousel-360', { capture: 'viewport' });
         });
     });
 
-    describe('Burger Menu Functionality', () => {
-        beforeEach(() => {
-            interceptCategories().as('getCategories');
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-        });
-        it('Burger does not exist on 1440px', () => {
+    describe('burger Menu Functionality', () => {
+        it('burger does not exist on 1440px', () => {
             cy.viewport(1440, 1024);
-            cy.visit('/');
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
-
-            cy.getByTestId(HUMB_ICON).should('not.be.visible');
-            cy.getByTestId(NAV).should('exist');
+            cy.getByTestId(TEST_ID.Button.BurgerOpen).should('not.be.visible');
+            cy.getByTestId(TEST_ID.Nav).should('exist');
         });
-        it('Burger menu on screen 768px', () => {
+
+        it('burger menu on screen 768px', () => {
             cy.viewport(768, 1024);
-            cy.visit('/');
-            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant', '@getCategories']);
-            interceptJuiciestPage().as('juiciestPageRecipes');
+            interceptJuiciestPage();
 
-            cy.getByTestId(JUICIEST_LINK).should('not.be.visible');
-            cy.getByTestId(JUICIEST_LINK_MOB).should('exist').and('be.visible').click();
-            cy.wait('@juiciestPageRecipes');
+            cy.getByTestId(TEST_ID.Link.Jusiest).should('not.be.visible');
+            cy.getByTestId(TEST_ID.Link.JusiestMob).should('exist').and('be.visible').click();
 
             setElementPosition();
-            cy.getByTestId(NAV).should('not.exist');
-            cy.getByTestId(CLOSE_ICON).should('not.exist');
-            cy.getByTestId(HUMB_ICON).should('exist').click();
-            cy.getByTestId(HUMB_ICON).should('not.exist');
-            cy.getByTestId(CLOSE_ICON).should('exist');
-            cy.getByTestId(NAV).should('be.visible');
-            interceptRecipesBySubCategory().as('getRecipe');
-            cy.getByTestId(VEGAN).click();
-            cy.getByTestId(CLOSE_ICON).scrollIntoView();
-            cy.getByTestId(BREADCRUMBS).should('contain.text', 'Закуски');
-            cy.screenshot('open-hamburger-768', { capture: 'fullPage' });
+            cy.getByTestId(TEST_ID.Nav).should('not.exist');
+            cy.getByTestId(TEST_ID.Button.BurgerClose).should('not.exist');
+            cy.getByTestId(TEST_ID.Button.BurgerOpen).should('exist').click();
+            cy.getByTestId(TEST_ID.Button.BurgerOpen).should('not.exist');
+            cy.getByTestId(TEST_ID.Button.BurgerClose).should('exist');
+            cy.getByTestId(TEST_ID.Nav).should('be.visible');
+            cy.getByTestId(TEST_ID.Link.Vegan).click();
+
+            cy.getByTestId(TEST_ID.Button.BurgerClose).scrollIntoView();
+            cy.getByTestId(TEST_ID.Breadcrumbs).should('contain.text', 'Закуски');
             cy.get('body').click(100, 200);
-            cy.getByTestId(NAV).should('not.exist');
+            cy.getByTestId(TEST_ID.Nav).should('not.exist');
         });
-        it('Burger menu on screen 360px', () => {
+
+        it('burger menu on screen 360px', () => {
             cy.viewport(360, 800);
-            cy.visit('/');
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
+            interceptJuiciestPage();
 
-            interceptJuiciestPage().as('juiciestPageRecipes');
-
-            cy.getByTestId(JUICIEST_LINK_MOB).should('exist').click();
-            cy.wait('@juiciestPageRecipes');
+            cy.getByTestId(TEST_ID.Link.JusiestMob).should('exist').click();
 
             setElementPosition();
-            cy.getByTestId(NAV).should('not.exist');
-            cy.getByTestId(CLOSE_ICON).should('not.exist');
-            cy.getByTestId(HUMB_ICON).should('exist').click();
-            cy.getByTestId(HUMB_ICON).should('not.exist');
-            cy.getByTestId(CLOSE_ICON).should('exist');
-            cy.getByTestId(NAV).should('be.visible');
-            cy.getByTestId(CLOSE_ICON).scrollIntoView();
-            cy.getByTestId(BREADCRUMBS).should('contain.text', 'Самое сочное');
-            cy.screenshot('open-hamburger-360', { capture: 'fullPage' });
-            cy.getByTestId(CLOSE_ICON).click();
-            cy.getByTestId(NAV).should('not.exist');
+            cy.getByTestId(TEST_ID.Nav).should('not.exist');
+            cy.getByTestId(TEST_ID.Button.BurgerClose).should('not.exist');
+            cy.getByTestId(TEST_ID.Button.BurgerOpen).should('exist').click();
+            cy.getByTestId(TEST_ID.Button.BurgerOpen).should('not.exist');
+            cy.getByTestId(TEST_ID.Button.BurgerClose).should('exist');
+            cy.getByTestId(TEST_ID.Nav).should('be.visible');
+            cy.getByTestId(TEST_ID.Button.BurgerClose).scrollIntoView();
+            cy.getByTestId(TEST_ID.Breadcrumbs).should('contain.text', 'Самое сочное');
+            cy.getByTestId(TEST_ID.Button.BurgerClose).click();
+            cy.getByTestId(TEST_ID.Nav).should('not.exist');
         });
     });
-    describe('Search Functionality', () => {
-        beforeEach(() => {
-            interceptCategories();
-            interceptNewestRecipes();
-            interceptJuiciestRecipes();
-            interceptRelevantRecipes();
-        });
-        it('Home page search', () => {
+
+    describe('search Functionality', () => {
+        it('home page search', () => {
             const searchWord = 'Кар';
             const recipesBySearch = allRecipes.filter((item) => item.title.includes(searchWord));
             cy.viewport(1920, 750);
-            cy.visit('/');
             setElementPosition();
-            interceptRecipeWithSearch(SMALL_DELAY_MS, { data: recipesBySearch, meta: metaData }).as(
-                'getRecipeWithSearch',
+
+            interceptRecipeWithSearch(DELAY.SM, {
+                data: recipesBySearch,
+                meta: metaData,
+            });
+            cy.getByTestId(TEST_ID.Input.Search).type('Ка');
+            cy.getByTestId(TEST_ID.Button.Search).should('have.css', 'pointer-events', 'none');
+            cy.getByTestId(TEST_ID.Input.Search).clear().type(searchWord);
+            cy.getByTestId(TEST_ID.Button.Search).should('be.visible').click();
+
+            cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
+                'have.length',
+                recipesBySearch.length,
             );
-            cy.getByTestId(SEARCH_INPUT).type('Ка');
-            cy.getByTestId(SEARCH_BUTTON).should('have.css', 'pointer-events', 'none');
-            cy.getByTestId(SEARCH_INPUT).clear().type(searchWord);
-            cy.getByTestId(SEARCH_BUTTON).should('be.visible').click();
-            cy.wait('@getRecipeWithSearch');
-            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', recipesBySearch.length);
         });
-        it('Search flow on category page', () => {
+
+        it('search flow on category page', () => {
             const searchWord = 'Карт';
             const recipesBySearch = allRecipes.filter((item) => item.title.includes(searchWord));
             cy.viewport(768, 1024);
-            cy.visit('/');
             setElementPosition();
-            cy.getByTestId(HUMB_ICON).should('be.visible').click();
-            cy.getByTestId(VEGAN).click();
-            cy.wait(LOAD_DELAY_MS);
-            cy.getByTestId(CLOSE_ICON).should('be.visible').click();
-            cy.getByTestId(SEARCH_INPUT).type(searchWord);
-            interceptRecipesByCategory(SMALL_DELAY_MS, {
+            cy.getByTestId(TEST_ID.Button.BurgerOpen).should('be.visible').click();
+            cy.getByTestId(TEST_ID.Link.Vegan).click();
+            cy.wait(DELAY.LOAD);
+            cy.getByTestId(TEST_ID.Button.BurgerClose).should('be.visible').click();
+            cy.getByTestId(TEST_ID.Input.Search).type(searchWord);
+
+            interceptRecipesByCategory(DELAY.SM, {
                 data: recipesBySearch,
                 meta: metaData,
-            }).as('getRecipeWithSearch');
-            cy.getByTestId(SEARCH_BUTTON).should('be.visible').click();
-            cy.wait('@getRecipeWithSearch');
-            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 2);
-            cy.screenshot(`search-category-768`, { capture: 'fullPage' });
+            });
+            cy.getByTestId(TEST_ID.Button.Search).should('be.visible').click();
+
+            cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should('have.length', 2);
         });
-        it('Not found recipes', () => {
+
+        it('not found recipes', () => {
             cy.viewport(360, 800);
-            cy.visit('/');
             setElementPosition();
-            cy.getByTestId(SEARCH_INPUT).type('ооо');
-            interceptRecipeWithSearch(SMALL_DELAY_MS, {
+            cy.getByTestId(TEST_ID.Input.Search).type('ооо');
+            interceptRecipeWithSearch(DELAY.SM, {
                 data: [],
                 meta: { ...metaData, totalPage: 1, page: 1 },
-            }).as('getRecipeWithSearchEmpty');
-            cy.getByTestId(SEARCH_BUTTON).should('be.visible').click();
-            cy.wait('@getRecipeWithSearchEmpty');
-            cy.screenshot(`search-not-found-360`, { capture: 'fullPage' });
+            });
+            cy.getByTestId(TEST_ID.Button.Search).should('be.visible').click();
         });
-        it('Check loader during search process. Screen 1440px', () => {
+
+        it('check loader during search process. Screen 1440px', () => {
             const searchWord = 'Сала';
             const recipesBySearch = allRecipes.filter((item) => item.title.includes(searchWord));
             cy.viewport(1440, 1024);
-            cy.visit('/');
             setElementPosition();
-            cy.getByTestId(SEARCH_INPUT).type(searchWord);
-            interceptRecipesByCategory(LONG_DELAY_MS, {
+            cy.getByTestId(TEST_ID.Input.Search).type(searchWord);
+
+            interceptRecipesByCategory(DELAY.LG, {
                 data: recipesBySearch,
                 meta: metaData,
-            }).as('getRecipeWithSearch');
+            });
             cy.contains('Приятного аппетита').as('titleSearch').should('exist');
-            cy.getByTestId(SEARCH_BUTTON).should('be.visible').click();
-            cy.getByTestId(LOADER_SEARCH_BLOCK).should('exist').and('be.visible');
+            cy.getByTestId(TEST_ID.Button.Search).should('be.visible').click();
+            cy.getByTestId(TEST_ID.SearchBlockLoader).should('exist').and('be.visible');
             cy.contains('Приятного аппетита').as('titleSearch').should('exist');
             cy.scrollTo(0, 0);
-            cy.screenshot(`search-loader-1440`, { capture: 'fullPage' });
-            cy.wait('@getRecipeWithSearch');
-            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', recipesBySearch.length);
+
+            cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
+                'have.length',
+                recipesBySearch.length,
+            );
         });
     });
-    describe('Recipe Functionality', () => {
-        beforeEach(() => {
-            interceptCategories();
-            interceptNewestRecipes();
-            interceptJuiciestRecipes();
-            interceptRelevantRecipes();
-        });
-        it('Recipe page render', () => {
+
+    describe('recipe Functionality', () => {
+        it('recipe page render', () => {
             const juiciestRecipes = allRecipes.slice(0, Number(JUICIEST_LIMIT));
             const { _id, title } = juiciestRecipes[0];
-            cy.intercept('GET', `recipe/${_id}`, {
-                delay: SMALL_DELAY_MS,
-                statusCode: 200,
-                body: juiciestRecipes[0],
-            }).as('getFirstRecipe');
+            interceptApi(
+                {
+                    url: `${API_ENDPOINTS.Recipe}/${_id}`,
+                },
+                { body: juiciestRecipes[0] },
+            );
 
-            cy.visit('/');
             cy.getByTestId('card-link-0').click();
-            cy.wait('@getFirstRecipe');
             cy.url().should('include', _id);
             cy.contains(title).should('exist');
             cy.scrollTo('top');
-            takeScreenshots('Страница рецепта');
             cy.getByTestId('ingredient-quantity-0').contains('4');
             cy.getByTestId('ingredient-quantity-1').contains('3');
             cy.getByTestId('increment-stepper').click();
@@ -1763,452 +3040,456 @@ describe('Test cases for YeeDaa application', () => {
             cy.getByTestId('ingredient-quantity-1').contains('3');
         });
     });
-    describe('Filters Functionality', () => {
-        beforeEach(() => {
-            interceptCategories().as('getCategories');
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-        });
-        it('Select 3 filters on screen 1920px', () => {
+
+    describe('filters Functionality', () => {
+        it('select 3 filters on screen 1920px', () => {
             cy.viewport(1920, 750);
-            cy.visit('/');
             setElementPosition();
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
-            cy.getByTestId(FILTER_DRAWER).should('not.exist');
-            cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
-            cy.getByTestId(FILTER_DRAWER).should('exist').contains('Фильтр');
-            cy.getByTestId(FIND_RECIPE_BUTTON).should('have.css', 'pointer-events', 'none');
-            cy.getByTestId(FILTER_CATEGORY).click();
-            cy.getByTestId(VEGAN_CHECKBOX).click();
+            cy.getByTestId(TEST_ID.Drawer.Filter).should('not.exist');
+            cy.getByTestId(TEST_ID.Button.Filter).should('be.visible').click();
+            cy.getByTestId(TEST_ID.Drawer.Filter).should('exist').contains('Фильтр');
+            cy.getByTestId(TEST_ID.Button.FindRecipe).should('have.css', 'pointer-events', 'none');
+            cy.getByTestId(TEST_ID.Button.FilterCategory).click();
+            cy.getByTestId(TEST_ID.Checkbox.Vegan).click();
             cy.scrollTo('top');
-            cy.screenshot('filter-open-1920', { capture: 'viewport' });
-            cy.getByTestId(FILTER_CATEGORY).click();
+            cy.getByTestId(TEST_ID.Button.FilterCategory).click();
             cy.getByTestId('checkbox-картошка').click();
-            cy.getByTestId(ALLERGEN_SWITCHER_FILTER).click();
-            cy.getByTestId(ALLERGEN_BUTTON_FILTER).click();
-            cy.getByTestId(ADD_OTHER_ALLERGEN).type('лук');
-            cy.getByTestId(ADD_ALLERGEN_BUTTON).click();
-            cy.getByTestId(ALLERGEN_BUTTON_FILTER).click();
-            cy.getByTestId(FILTER_TAG).should('have.length', 3);
-            cy.intercept(
+            cy.getByTestId(TEST_ID.Switch.AlergenSwitchFilter).click();
+            cy.getByTestId(TEST_ID.Button.FilterAlergen).click();
+            cy.getByTestId(TEST_ID.Button.AddOtherAlergen).type('лук');
+            cy.getByTestId(TEST_ID.Button.AddAlergen).click();
+            cy.getByTestId(TEST_ID.Button.FilterAlergen).click();
+            cy.getByTestId(TEST_ID.Tag.Filter).should('have.length', 3);
+            interceptApi(
                 {
-                    method: 'GET',
-                    url: /recipe/,
+                    url: `${API_ENDPOINTS.Recipe}*`,
                     query: {
-                        [SUBCATEGORIES_QUERY_PARAM]: /.*/,
-                        [GARNISH_QUERY_PARAM]: /.*/,
-                        [ALLERGENS_QUERY_PARAM]: /.*/,
+                        [SEARCH_PARAMS.SUBCATEGORIES_QUERY]: /.*/,
+                        [SEARCH_PARAMS.GARNISH_QUERY]: /.*/,
+                        [SEARCH_PARAMS.ALLERGENS_QUERY]: /.*/,
                     },
                 },
                 {
-                    delay: SMALL_DELAY_MS,
                     statusCode: 200,
+                    delay: DELAY.SM,
                     body: { data: allRecipes.slice(0, 2), meta: metaData },
                 },
-            ).as('getFilteredRecipes');
-            cy.getByTestId(FIND_RECIPE_BUTTON).click();
-            cy.wait('@getFilteredRecipes');
-            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 2);
+            );
+
+            cy.getByTestId(TEST_ID.Button.FindRecipe).click();
+
+            cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should('have.length', 2);
         });
-        it('Set and clear filters on screen 768px', () => {
+
+        it('set and clear filters on screen 768px', () => {
             cy.viewport(768, 1120);
-            cy.visit('/');
             setElementPosition();
-            cy.getByTestId(FILTER_DRAWER).should('not.exist');
-            cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
+            cy.getByTestId(TEST_ID.Drawer.Filter).should('not.exist');
+            cy.getByTestId(TEST_ID.Button.Filter).should('be.visible').click();
             cy.get('body').click(100, 200);
-            cy.getByTestId(FILTER_DRAWER).should('not.exist');
-            cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
-            cy.getByTestId(FILTER_DRAWER).should('exist').contains('Фильтр');
-            interceptRecipesByCategory();
-            cy.getByTestId(FILTER_CATEGORY).click();
-            cy.getByTestId(VEGAN_CHECKBOX).click();
-            cy.getByTestId(FILTER_CATEGORY).click();
-            cy.getByTestId(FILTER_TAG).should('have.length', 1);
-            cy.intercept(
+            cy.getByTestId(TEST_ID.Drawer.Filter).should('not.exist');
+            cy.getByTestId(TEST_ID.Button.Filter).should('be.visible').click();
+            cy.getByTestId(TEST_ID.Drawer.Filter).should('exist').contains('Фильтр');
+            cy.getByTestId(TEST_ID.Button.FilterCategory).click();
+            cy.getByTestId(TEST_ID.Checkbox.Vegan).click();
+            cy.getByTestId(TEST_ID.Button.FilterCategory).click();
+            cy.getByTestId(TEST_ID.Tag.Filter).should('have.length', 1);
+
+            interceptApi(
                 {
-                    method: 'GET',
-                    url: /recipe/,
+                    url: `${API_ENDPOINTS.Recipe}*`,
                     query: {
-                        [SUBCATEGORIES_QUERY_PARAM]: /.*/,
+                        [SEARCH_PARAMS.SUBCATEGORIES_QUERY]: /.*/,
                     },
                 },
                 {
-                    delay: SMALL_DELAY_MS,
+                    delay: DELAY.SM,
                     statusCode: 200,
                     body: {
                         data: [...veganSnacks, ...veganDesserts, ...veganGarnish],
                         meta: metaData,
                     },
                 },
-            ).as('getFilteredRecipes');
-            cy.getByTestId(FIND_RECIPE_BUTTON).click();
-            cy.get(`[data-test-id^=${FOOD_CARD}]`).should(
+            );
+
+            cy.getByTestId(TEST_ID.Button.FindRecipe).click();
+            cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
                 'have.length',
                 veganGarnish.length + veganDesserts.length + veganSnacks.length,
             );
-            cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
-            cy.getByTestId(FILTER_CATEGORY).click();
-            cy.getByTestId(VEGAN_CHECKBOX).click();
-            cy.getByTestId(FILTER_CATEGORY).click();
+            cy.getByTestId(TEST_ID.Button.Filter).should('be.visible').click();
+            cy.getByTestId(TEST_ID.Button.FilterCategory).click();
+            cy.getByTestId(TEST_ID.Checkbox.Vegan).click();
+            cy.getByTestId(TEST_ID.Button.FilterCategory).click();
             cy.getByTestId('checkbox-картошка').click();
-            cy.getByTestId(ALLERGEN_SWITCHER_FILTER).click();
-            cy.getByTestId(ALLERGEN_BUTTON_FILTER).click();
+            cy.getByTestId(TEST_ID.Switch.AlergenSwitchFilter).click();
+            cy.getByTestId(TEST_ID.Button.FilterAlergen).click();
             cy.getByTestId('allergen-5').click();
-            cy.getByTestId(ALLERGEN_BUTTON_FILTER).click();
-            cy.getByTestId(FILTER_TAG).should('have.length', 3);
-            cy.screenshot('filter-before-clear-768', { capture: 'viewport' });
+            cy.getByTestId(TEST_ID.Button.FilterAlergen).click();
+            cy.getByTestId(TEST_ID.Tag.Filter).should('have.length', 3);
             cy.getByTestId('clear-filter-button').should('be.visible').click();
-            cy.getByTestId(FILTER_TAG).should('have.length', 0);
-            cy.getByTestId(FIND_RECIPE_BUTTON).should('have.css', 'pointer-events', 'none');
+            cy.getByTestId(TEST_ID.Tag.Filter).should('have.length', 0);
+            cy.getByTestId(TEST_ID.Button.FindRecipe).should('have.css', 'pointer-events', 'none');
         });
-        it('Close filter and search filtered cards on screen 360px', () => {
+
+        it('close filter and search filtered cards on screen 360px', () => {
             cy.viewport(360, 800);
-            cy.visit('/');
             setElementPosition();
-            interceptRecipesByCategory();
-            cy.getByTestId(FILTER_DRAWER).should('not.exist');
-            cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
-            cy.getByTestId(FILTER_DRAWER).should('exist');
+            cy.getByTestId(TEST_ID.Drawer.Filter).should('not.exist');
+            cy.getByTestId(TEST_ID.Button.Filter).should('be.visible').click();
+            cy.getByTestId(TEST_ID.Drawer.Filter).should('exist');
             cy.getByTestId('close-filter-drawer').click();
-            cy.getByTestId(FILTER_DRAWER).should('not.exist');
-            cy.getByTestId(FILTER_BUTTON).should('be.visible').click();
-            cy.getByTestId(FILTER_DRAWER).should('be.visible');
-            cy.screenshot('open-drawer-360', { capture: 'viewport' });
-            cy.getByTestId(FILTER_CATEGORY).click();
-            cy.getByTestId(VEGAN_CHECKBOX).click();
-            cy.getByTestId(FILTER_CATEGORY).click();
-            cy.getByTestId(FIND_RECIPE_BUTTON).click();
-            cy.getByTestId(SEARCH_INPUT).type('овощ');
-            cy.intercept(
+            cy.getByTestId(TEST_ID.Drawer.Filter).should('not.exist');
+            cy.getByTestId(TEST_ID.Button.Filter).should('be.visible').click();
+            cy.getByTestId(TEST_ID.Drawer.Filter).should('be.visible');
+            cy.getByTestId(TEST_ID.Button.FilterCategory).click();
+            cy.getByTestId(TEST_ID.Checkbox.Vegan).click();
+            cy.getByTestId(TEST_ID.Button.FilterCategory).click();
+            cy.getByTestId(TEST_ID.Button.FindRecipe).click();
+            cy.getByTestId(TEST_ID.Input.Search).type('овощ');
+
+            interceptApi(
                 {
-                    method: 'GET',
-                    url: /recipe/,
+                    url: `${API_ENDPOINTS.Recipe}*`,
                     query: {
-                        [SEARCH_QUERY_PARAM]: /.*/,
+                        [SEARCH_PARAMS.SEARCH_QUERY]: /.*/,
                     },
                 },
                 {
-                    delay: SMALL_DELAY_MS,
                     statusCode: 200,
+                    delay: DELAY.SM,
                     body: {
                         data: [...veganGarnish, ...veganSnacks].slice(0, 2),
                         meta: metaData,
                     },
                 },
-            ).as('getFilteredRecipes');
-            cy.getByTestId(SEARCH_BUTTON).should('be.visible').click();
-            cy.wait('@getFilteredRecipes');
-            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 2);
+            );
+            cy.getByTestId(TEST_ID.Button.Search).should('be.visible').click();
+
+            cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should('have.length', 2);
         });
     });
-    describe('Allergens Functionality', () => {
-        beforeEach(() => {
-            interceptCategories();
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-        });
-        it('Without allergens on 768px', () => {
+
+    describe('allergens Functionality', () => {
+        it('without allergens on 768px', () => {
             cy.viewport(768, 1080);
-            cy.visit('/');
-            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
-            cy.getByTestId(ALLERGEN_SWITCHER).should('not.exist');
-            cy.getByTestId(ALLERGEN_BUTTON).should('not.exist');
+            cy.getByTestId(TEST_ID.Switch.AlergenSwitcher).should('not.exist');
+            cy.getByTestId(TEST_ID.Button.AlergenMenu).should('not.exist');
         });
-        it('Select allergens by category', () => {
+
+        it('select allergens by category', () => {
             cy.viewport(1920, 750);
-            cy.visit('/');
             setElementPosition();
-            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
-            cy.getByTestId(ALLERGEN_SWITCHER).should('not.have.attr', 'data-checked');
-            cy.getByTestId(ALLERGEN_BUTTON).should('be.disabled');
-            cy.getByTestId(VEGAN).click();
-            cy.wait(LOAD_DELAY_MS);
-            cy.getByTestId(ALLERGEN_SWITCHER).click();
-            cy.getByTestId(ALLERGEN_SWITCHER).should('have.attr', 'data-checked');
-            cy.getByTestId(ALLERGEN_BUTTON)
+            cy.getByTestId(TEST_ID.Switch.AlergenSwitcher).should('not.have.attr', 'data-checked');
+            cy.getByTestId(TEST_ID.Button.AlergenMenu).should('be.disabled');
+            cy.getByTestId(TEST_ID.Link.Vegan).click();
+            cy.wait(DELAY.LOAD);
+            cy.getByTestId(TEST_ID.Switch.AlergenSwitcher).click();
+            cy.getByTestId(TEST_ID.Switch.AlergenSwitcher).should('have.attr', 'data-checked');
+            cy.getByTestId(TEST_ID.Button.AlergenMenu)
                 .should('not.be.disabled')
                 .contains('Выберите из списка');
-            cy.getByTestId(ALLERGEN_BUTTON).click();
+            cy.getByTestId(TEST_ID.Button.AlergenMenu).click();
             cy.getByTestId('allergens-menu').should('be.visible');
             cy.getByTestId('allergen-1').click();
             cy.getByTestId('allergen-5').click();
-            cy.getByTestId(ADD_OTHER_ALLERGEN).type('Гриб{enter}');
-            cy.intercept(
+            cy.getByTestId(TEST_ID.Button.AddOtherAlergen).type('Гриб{enter}');
+
+            interceptApi(
                 {
-                    method: 'GET',
-                    url: /recipe/,
+                    url: `${API_ENDPOINTS.Recipe}*`,
                     query: {
-                        [ALLERGENS_QUERY_PARAM]: /.*/,
+                        [SEARCH_PARAMS.ALLERGENS_QUERY]: /.*/,
                     },
                 },
                 {
-                    delay: SMALL_DELAY_MS,
                     statusCode: 200,
+                    delay: DELAY.SM,
                     body: {
                         data: allRecipes.slice(0, 3),
                         meta: metaData,
                     },
                 },
-            ).as('getFilteredRecipes');
-            cy.getByTestId(SEARCH_BUTTON).should('be.visible').and('not.be.disabled').click();
-            cy.wait('@getFilteredRecipes');
-            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 3);
+            );
+
+            cy.getByTestId(TEST_ID.Button.Search)
+                .should('be.visible')
+                .and('not.be.disabled')
+                .click();
+
+            cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should('have.length', 3);
             cy.scrollTo('top');
-            cy.screenshot('allergens-1920', { capture: 'viewport' });
-            cy.getByTestId(ALLERGEN_SWITCHER).click();
+            cy.getByTestId(TEST_ID.Switch.AlergenSwitcher).click();
             cy.scrollTo('top');
-            cy.getByTestId(ALLERGEN_BUTTON).should('be.disabled').contains('Выберите из списка');
+            cy.getByTestId(TEST_ID.Button.AlergenMenu)
+                .should('be.disabled')
+                .contains('Выберите из списка');
         });
-        it('Seacrch after allergens filter', () => {
+
+        it('seacrch after allergens filter', () => {
             cy.viewport(1920, 750);
-            cy.visit('/');
             setElementPosition();
-            cy.wait(['@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
-            cy.getByTestId(VEGAN).click();
-            cy.wait(LOAD_DELAY_MS);
-            cy.getByTestId(ALLERGEN_SWITCHER).click();
-            cy.getByTestId(ALLERGEN_BUTTON).click();
+            cy.getByTestId(TEST_ID.Link.Vegan).click();
+            cy.wait(DELAY.LOAD);
+            cy.getByTestId(TEST_ID.Switch.AlergenSwitcher).click();
+            cy.getByTestId(TEST_ID.Button.AlergenMenu).click();
             cy.getByTestId('allergens-menu').should('be.visible');
             cy.getByTestId('allergen-1').click();
             cy.getByTestId('allergen-5').click();
-            cy.getByTestId(ADD_OTHER_ALLERGEN).type('Гриб{enter}');
-            cy.getByTestId(ALLERGEN_BUTTON).click();
-            cy.getByTestId(SEARCH_INPUT).type('Капус');
-            interceptRecipesByCategory();
-            cy.intercept(
+            cy.getByTestId(TEST_ID.Button.AddOtherAlergen).type('Гриб{enter}');
+            cy.getByTestId(TEST_ID.Button.AlergenMenu).click();
+            cy.getByTestId(TEST_ID.Input.Search).type('Капус');
+
+            interceptApi(
                 {
-                    method: 'GET',
-                    url: /recipe/,
+                    url: `${API_ENDPOINTS.Recipe}*`,
                     query: {
-                        [ALLERGENS_QUERY_PARAM]: /.*/,
-                        [SEARCH_QUERY_PARAM]: /.*/,
+                        [SEARCH_PARAMS.ALLERGENS_QUERY]: /.*/,
+                        [SEARCH_PARAMS.SEARCH_QUERY]: /.*/,
                     },
                 },
                 {
-                    delay: SMALL_DELAY_MS,
                     statusCode: 200,
+                    delay: DELAY.SM,
                     body: {
                         data: allRecipes.slice(0, 1),
                         meta: metaData,
                     },
                 },
-            ).as('getFilteredRecipes');
-            cy.getByTestId(SEARCH_BUTTON).should('be.visible').click();
-            cy.wait('@getFilteredRecipes');
-            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', 1);
+            );
+
+            cy.getByTestId(TEST_ID.Button.Search).should('be.visible').click();
+
+            cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should('have.length', 1);
         });
     });
-    describe('Navigation and Tabs Functionality', () => {
-        beforeEach(() => {
-            interceptCategories().as('getCategories');
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-        });
-        it('Check navigation and tabs', () => {
+
+    describe('navigation and Tabs Functionality', () => {
+        it('check navigation and tabs', () => {
             cy.viewport(1920, 1080);
-            cy.visit('/');
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
-            interceptRecipesBySubCategory(SMALL_DELAY_MS, {
+            interceptRecipesBySubCategory(DELAY.SM, {
                 data: veganSnacks,
                 meta: { page: 1, totalPages: 1, limit: 8 },
-            }).as('getVegans');
-            cy.getByTestId(VEGAN).click();
-            cy.wait('@getVegans');
+            });
+            cy.getByTestId(TEST_ID.Link.Vegan).click();
+
             cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'true');
             cy.url().should('include', '/vegan/snacks');
-            cy.getByTestId(`${FOOD_CARD}-0`).contains(veganSnacks[0].title);
-            interceptRecipesBySubCategory(SMALL_DELAY_MS, {
+            cy.getByTestId(`${TEST_ID.Card.Food}-0`).contains(veganSnacks[0].title);
+            interceptRecipesBySubCategory(DELAY.SM, {
                 data: veganGarnish,
                 meta: { page: 1, totalPages: 1, limit: 8 },
-            }).as('getVegansGarnish');
+            });
             cy.getByTestId('tab-side-dishes-1').click();
-            cy.wait('@getVegansGarnish');
-            cy.getByTestId(`${FOOD_CARD}-0`).contains(veganGarnish[0].title);
+            cy.getByTestId(`${TEST_ID.Card.Food}-0`).contains(veganGarnish[0].title);
             cy.getByTestId('side-dishes-active').should('exist');
             cy.getByTestId('snacks-active').should('not.exist');
         });
-    });
-    describe('Breadcrumbs Functionality', () => {
-        beforeEach(() => {
-            interceptCategories().as('getCategories');
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-        });
-        it('Transfer on breadcrumbs', () => {
+
+        it('when click on tab request occures and loader exist. Screen 768px', () => {
             cy.viewport(768, 1080);
-            cy.visit('/');
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes', '@getRelevant']);
-            cy.intercept(
-                { method: 'GET', url: /recipe\/*/ },
-                {
-                    delay: SMALL_DELAY_MS,
-                    body: meatSnacks[1],
-                },
-            ).as('getRecipe');
-            cy.getByTestId(`${CAROUSEL_CARD}-3`).click();
-            cy.wait('@getRecipe');
+            interceptRecipesBySubCategory(DELAY.SM, {
+                data: veganSnacks,
+                meta: { page: 1, totalPages: 1, limit: 8 },
+            });
+
+            cy.getByTestId(TEST_ID.Button.BurgerOpen).should('exist').click();
+            cy.getByTestId(TEST_ID.Nav).should('be.visible');
+            cy.getByTestId(TEST_ID.Link.Vegan).click();
+
+            cy.getByTestId(TEST_ID.Button.BurgerClose).should('exist').click();
+
+            cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'true');
+
+            interceptRecipesBySubCategory(2000, {
+                data: veganGarnish,
+                meta: { page: 1, totalPages: 1, limit: 8 },
+            });
+            cy.getByTestId('tab-side-dishes-1').click();
+            cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
+            cy.getByTestId('tab-side-dishes-1').should('have.attr', 'aria-selected', 'true');
+            cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'false');
+            cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
+
+            interceptRecipesBySubCategory(2000, {
+                data: veganDesserts,
+                meta: { page: 1, totalPages: 1, limit: 8 },
+            });
+            cy.getByTestId('tab-desserts-2').click();
+            cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
+
+            cy.getByTestId('tab-desserts-2').should('have.attr', 'aria-selected', 'true');
+            cy.getByTestId('tab-side-dishes-1').should('have.attr', 'aria-selected', 'false');
+            cy.getByTestId('tab-snacks-0').should('have.attr', 'aria-selected', 'false');
+            cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
+        });
+    });
+
+    describe('breadcrumbs Functionality', () => {
+        it('transfer on breadcrumbs', () => {
+            cy.viewport(768, 1080);
+            interceptApi(
+                { url: `${API_ENDPOINTS.Recipe}/*` },
+                { statusCode: 200, delay: DELAY.SM, body: meatSnacks[1] },
+            );
+
+            cy.getByTestId(`${TEST_ID.Card.Carousel}-3`).click();
+
             cy.url().should('include', `snacks/meat-snacks/${meatSnacks[1]._id}`);
-            cy.getByTestId(HUMB_ICON).click();
-            cy.getByTestId(BREADCRUMBS).contains(meatSnacks[1].title);
-            cy.getByTestId(BREADCRUMBS).contains('Закуски').click();
+            cy.getByTestId(TEST_ID.Button.BurgerOpen).click();
+            cy.getByTestId(TEST_ID.Breadcrumbs).contains(meatSnacks[1].title);
+            cy.getByTestId(TEST_ID.Breadcrumbs).contains('Закуски').click();
             cy.url().should('match', /\/meat-snacks$/);
             cy.getByTestId('tab-meat-snacks-0').should('have.attr', 'aria-selected', 'true');
-            cy.getByTestId(HUMB_ICON).click();
-            cy.getByTestId(BREADCRUMBS).should('not.contain', meatSnacks[1].title);
-            cy.getByTestId(BREADCRUMBS).contains('Главная').click();
+            cy.getByTestId(TEST_ID.Button.BurgerOpen).click();
+            cy.getByTestId(TEST_ID.Breadcrumbs).should('not.contain', meatSnacks[1].title);
+            cy.getByTestId(TEST_ID.Breadcrumbs).contains('Главная').click();
             cy.getByTestId('carousel').should('exist');
             cy.contains('Приятного аппетита!');
         });
     });
-    describe('Error page functionality', () => {
-        beforeEach(() => {
-            interceptCategories().as('getCategories');
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-        });
-        it('Render error page via redirect if category and subcategory is not exist. Screen 1920px width.', () => {
-            cy.viewport(1920, 750);
-            cy.visit('some-path/not-exist');
-            cy.url().should('contain', 'not-found');
-            cy.getByTestId(ERROR_PAGE_GO_HOME).should('exist');
-            cy.get('h1').contains('Такой страницы нет').should('exist').and('be.visible');
-            cy.contains('Можете поискать другой').should('exist');
-        });
-        it('Go back to home page. Screen 360px.', () => {
-            cy.viewport(360, 800);
-            cy.visit('some-path/not-exist');
-            cy.url().should('contain', 'not-found');
-            cy.screenshot('error-page-360', { capture: 'fullPage' });
-            cy.getByTestId(ERROR_PAGE_GO_HOME).should('exist').click();
-            cy.url().should('not.contain', 'not-found');
-            cy.url().should('contain', '/');
-        });
-    });
 
-    describe('Check apploader and error notification', () => {
-        beforeEach(() => {
-            interceptCategories().as('getCategories');
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-        });
-        context('apploader flow', () => {
-            beforeEach(() => interceptRelevantRecipes().as('getRelevant'));
-            it('Apploader should exist when app is loading screnn 1920px', () => {
-                cy.viewport(1920, 750);
-                cy.visit('/');
-                cy.getByTestId(APP_LOADER).should('exist').and('be.visible');
-                cy.screenshot('app-loader-1920', { capture: 'fullPage' });
-                cy.wait([
-                    '@getCategories',
-                    '@getNewestRecipes',
-                    '@getJuiciestRecipes',
-                    '@getRelevant',
-                ]);
-                cy.getByTestId(APP_LOADER).should('not.exist');
-            });
-            it('Apploader should exist when app is loading screnn 360px', () => {
-                cy.viewport(360, 800);
-                cy.visit('/');
-                cy.getByTestId(APP_LOADER).should('exist').and('be.visible');
-                cy.screenshot('app-loader-360', { capture: 'fullPage' });
-                cy.wait([
-                    '@getCategories',
-                    '@getNewestRecipes',
-                    '@getJuiciestRecipes',
-                    '@getRelevant',
-                ]);
-                cy.getByTestId(APP_LOADER).should('not.exist');
-            });
-        });
-        context('Error notification', () => {
-            beforeEach(() => {
-                cy.intercept(
-                    {
-                        method: 'GET',
-                        url: /recipe\/category\/.*/,
-                        query: { [LIMIT_QUERY_PARAM]: RELEVANT_KITCHEN_LIMIT },
-                    },
-                    { body: {}, delay: SMALL_DELAY_MS, statusCode: 404 },
-                ).as('getRelevant');
-            });
-            it('Error notification should be visible when the request error occured screen 768px', () => {
-                cy.viewport(768, 1080);
-                cy.visit('/');
-                cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
-                cy.screenshot('error-notification-768', { capture: 'fullPage' });
-                cy.getByTestId(ERROR_NOTIFICATION).should('exist').and('be.visible');
-                cy.contains('Ошибка сервера').should('exist').and('be.visible');
-                cy.contains('Попробуйте поискать снова попозже').and('be.visible');
-                cy.getByTestId(CLOSE_ALERT_BUTTON).should('exist').and('not.be.disabled');
-            });
-            it('Error notification should be visible when the request error occured and screen 360px. Close alert', () => {
-                cy.viewport(360, 800);
-                cy.visit('/');
-                cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
-                cy.screenshot('error-notification-360', { capture: 'fullPage' });
-                cy.getByTestId(ERROR_NOTIFICATION).should('exist').and('be.visible');
-                cy.getByTestId(CLOSE_ALERT_BUTTON).should('exist').and('not.be.disabled').click();
-                cy.screenshot('error-notification-360-not-visible', { capture: 'fullPage' });
-                cy.getByTestId(ERROR_NOTIFICATION).should('not.exist');
-            });
-        });
-    });
-
-    describe('Juiciest page', () => {
-        beforeEach(() => {
-            interceptCategories().as('getCategories');
-            interceptNewestRecipes().as('getNewestRecipes');
-            interceptJuiciestRecipes().as('getJuiciestRecipes');
-            interceptRelevantRecipes().as('getRelevant');
-        });
-        it('Go to juiciest page. Render elements. Screen 1920px', () => {
+    describe('juiciest page', () => {
+        it('go to juiciest page. Render elements. Screen 1920px', () => {
             cy.viewport(1920, 750);
-            cy.visit('/');
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
             cy.contains('Приятного аппетита').as('homeHeding').should('exist');
             cy.contains('Самое сочное').should('exist').and('be.visible');
-            interceptJuiciestPage().as('juiciestPageRecipes');
-            cy.getByTestId(JUICIEST_LINK).should('exist').click();
-            cy.getByTestId(APP_LOADER).should('exist');
-            cy.wait('@juiciestPageRecipes');
-            cy.getByTestId(APP_LOADER).should('not.exist');
-            cy.screenshot('juiciest-page-1920', { capture: 'fullPage' });
+            interceptJuiciestPage();
+            cy.getByTestId(TEST_ID.Link.Jusiest).should('exist').click();
+            cy.getByTestId(TEST_ID.AppLoader).should('exist');
+            cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
             cy.get('@homeHeding').should('not.exist');
             cy.contains('Самое сочное').should('exist').and('be.visible');
-            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', DEFAULT_RECIPE_LIMIT);
-            cy.getByTestId(LOAD_MORE_BUTTON)
+            cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
+                'have.length',
+                DEFAULT_RECIPE_LIMIT,
+            );
+            cy.getByTestId(TEST_ID.Button.LoadMore)
                 .scrollIntoView()
                 .should('exist')
                 .and('not.be.disabled');
         });
-        it('Check load more button functionality. Screen 768px and 360px.', () => {
+
+        it('check load more button functionality. Screen 768px and 360px.', () => {
             cy.viewport(768, 1024);
-            cy.visit('/');
-            cy.wait(['@getCategories', '@getNewestRecipes', '@getJuiciestRecipes']);
             cy.contains('Самое сочное').should('exist').and('be.visible');
-            interceptJuiciestPage().as('juiciestRecipesPage1');
-            cy.getByTestId(JUICIEST_LINK_MOB).should('exist').click();
-            cy.wait('@juiciestRecipesPage1');
-            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', DEFAULT_RECIPE_LIMIT);
-            cy.screenshot('juiciest-page-768', { capture: 'fullPage' });
-            interceptJuiciestPage(2).as('juiciestRecipesPage2');
-            cy.getByTestId(LOAD_MORE_BUTTON).scrollIntoView().should('not.be.disabled').click();
-            cy.getByTestId(LOAD_MORE_BUTTON).should('include.text', 'Загрузка');
-            cy.screenshot('juiciest-page-768-loading', { capture: 'fullPage' });
-            cy.wait('@juiciestRecipesPage2');
-            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', DEFAULT_RECIPE_LIMIT * 2);
+
+            interceptJuiciestPage();
+            cy.getByTestId(TEST_ID.Link.JusiestMob).should('exist').click();
+
+            cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
+                'have.length',
+                DEFAULT_RECIPE_LIMIT,
+            );
+
+            interceptJuiciestPage(2, 2000);
+            cy.getByTestId(TEST_ID.Button.LoadMore)
+                .scrollIntoView()
+                .should('not.be.disabled')
+                .click();
+            cy.getByTestId(TEST_ID.Button.LoadMore).should('include.text', 'Загрузка');
+
+            cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
+                'have.length',
+                DEFAULT_RECIPE_LIMIT * 2,
+            );
             cy.viewport(360, 600);
-            interceptJuiciestPage(3).as('juiciestRecipesPage3');
-            cy.getByTestId(LOAD_MORE_BUTTON).scrollIntoView().should('not.be.disabled').click();
-            cy.wait('@juiciestRecipesPage3');
-            cy.get(`[data-test-id^=${FOOD_CARD}]`).should('have.length', DEFAULT_RECIPE_LIMIT * 3);
-            cy.getByTestId(LOAD_MORE_BUTTON).should('not.exist');
+
+            interceptJuiciestPage(3);
+            cy.getByTestId(TEST_ID.Button.LoadMore)
+                .scrollIntoView()
+                .should('not.be.disabled')
+                .click();
+
+            cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
+                'have.length',
+                DEFAULT_RECIPE_LIMIT * 3,
+            );
+            cy.getByTestId(TEST_ID.Button.LoadMore).should('not.exist');
+        });
+    });
+
+    describe('error page functionality', () => {
+        it('render error page via redirect if category and subcategory is not exist. Screen 1920px width.', () => {
+            cy.viewport(1920, 750);
+            cy.visit('some-path/not-exist');
+            cy.url().should('contain', 'not-found');
+            cy.getByTestId(TEST_ID.Link.ErrorHomePage).should('exist');
+            cy.get('h1').contains('Такой страницы нет').should('exist').and('be.visible');
+            cy.contains('Можете поискать другой').should('exist');
+        });
+
+        it('go back to home page. Screen 360px.', () => {
+            cy.viewport(360, 800);
+            cy.visit('some-path/not-exist');
+            cy.url().should('contain', 'not-found');
+            cy.getByTestId(TEST_ID.Link.ErrorHomePage).should('exist').click();
+            cy.url().should('not.contain', 'not-found');
+            cy.url().should('contain', '/');
+        });
+    });
+});
+
+describe('app loader and error notification', () => {
+    beforeEach(() => {
+        cy.clearLocalStorage();
+        cy.clearAllSessionStorage();
+        interceptApi(
+            { url: '/**', alias: 'uncaptured' },
+            {
+                statusCode: 200,
+                delay: 0,
+            },
+        );
+        interceptCategories(2000);
+        interceptNewestRecipes();
+        interceptJuiciestRecipes();
+        interceptRelevantRecipes();
+        signIn();
+    });
+
+    context('apploader flow', () => {
+        it('apploader should exist when app is loading screnn 1920px', () => {
+            cy.viewport(1920, 750);
+            cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
+            cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
+        });
+
+        it('apploader should exist when app is loading screen 360px', () => {
+            cy.viewport(360, 800);
+            cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
+            cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
+            cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
+        });
+    });
+
+    context('error notification', () => {
+        beforeEach(() => {
+            interceptApi(
+                {
+                    url: `${API_ENDPOINTS.RecipeByCategory}/*`,
+                    query: { [SEARCH_PARAMS.LIMIT_QUERY]: RELEVANT_KITCHEN_LIMIT },
+                },
+                { statusCode: 404, body: {}, delay: DELAY.SM },
+            );
+        });
+
+        it('error notification should be visible when the request error occured screen 768px', () => {
+            cy.viewport(768, 1080);
+            cy.getByTestId(TEST_ID.Notification.Error).should('exist').and('be.visible');
+            cy.contains('Ошибка сервера').should('exist').and('be.visible');
+            cy.contains('Попробуйте поискать снова попозже').and('be.visible');
+            cy.getByTestId(TEST_ID.Button.CloseAlert).should('exist').and('not.be.disabled');
+        });
+
+        it('error notification should be visible when the request error occured and screen 360px. Close alert', () => {
+            cy.viewport(360, 800);
+            cy.getByTestId(TEST_ID.Notification.Error).should('exist').and('be.visible');
+            cy.getByTestId(TEST_ID.Button.CloseAlert)
+                .should('exist')
+                .and('not.be.disabled')
+                .click();
+            cy.getByTestId(TEST_ID.Notification.Error).should('not.exist');
         });
     });
 });

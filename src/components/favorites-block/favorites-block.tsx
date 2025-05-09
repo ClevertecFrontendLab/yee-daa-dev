@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router';
 
 import { Paths } from '~/constants/path.js';
 import { JUICIEST_PARAMS } from '~/redux/api/constants.ts';
-import { useGetAllRecipesWithParamsQuery } from '~/redux/api/services/recipes-api/index.ts';
+import { useGetAllRecipesWithParamsQuery } from '~/redux/api/recipes-api';
 import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
 import { CardList } from '../card-list';

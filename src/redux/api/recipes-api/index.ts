@@ -20,9 +20,9 @@ import {
 } from '~/redux/features/recipes-slice';
 import { AppState } from '~/types/store';
 
-import { baseApi } from '../base-api';
+import { authorizedApi } from '..';
 
-export const recipeApi = baseApi.injectEndpoints({
+export const recipeApi = authorizedApi.injectEndpoints({
     endpoints: (build) => ({
         getAllRecipesWithParams: build.query<RecipesResponseWithMeta, AllRecipeParams>({
             query: (params) => ({ url: ApiEndpoints.Recipe, params }),

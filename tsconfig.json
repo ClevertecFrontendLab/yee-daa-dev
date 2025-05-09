@@ -1,12 +1,12 @@
 {
     "compilerOptions": {
         "baseUrl": ".",
-        "traceResolution": true,
-        "types": ["node", "cypress"],
         "paths": {
             "~/*": ["./src/*"],
-            "@public/*": ["./public/*"]
+            "~public/*": ["./public/*"]
         },
+        "traceResolution": true,
+        "types": ["node", "cypress"],
         "plugins": [
             {
                 "name": "typescript-plugin-css-modules",
@@ -18,6 +18,6 @@
             }
         ]
     },
-    "include": ["src", "cypress/**/*.ts", "cypress.config.ts", "vite.config.ts"],
+    "include": ["cypress/**/*.ts", "cypress.config.ts", "vite.config.ts", "src"],
     "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }

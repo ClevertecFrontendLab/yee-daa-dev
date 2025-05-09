@@ -1,5 +1,7 @@
 import { Flex, Spacer } from '@chakra-ui/react';
+import { NavLink } from 'react-router';
 
+import { Paths } from '~/constants/path';
 import { useIsLg, useIsTablet } from '~/hooks/media-query.ts';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { useIsErrorPage } from '~/hooks/use-is-error-page';
@@ -22,7 +24,10 @@ export const Header = () => {
 
     return (
         <Flex pl={4} pr={4} pt={6} pb={6} h='100%' alignItems='center'>
-            <Logo />
+            <NavLink to={Paths.R_SWITCHER}>
+                <Logo />
+            </NavLink>
+
             {!isErrorPage && (
                 <>
                     {!isLg && <Breadcrumbs />}

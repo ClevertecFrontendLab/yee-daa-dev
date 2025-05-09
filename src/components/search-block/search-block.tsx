@@ -5,7 +5,7 @@ import { ChangeEventHandler, FC, useState } from 'react';
 import { useIsTablet } from '~/hooks/media-query.ts';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { useDetectParams } from '~/hooks/use-detect-params.ts';
-import { useLazyGetAllRecipesMergeQuery } from '~/redux/api/services/recipes-api/index.ts';
+import { useLazyGetAllRecipesMergeQuery } from '~/redux/api/recipes-api/index.js';
 import { selectSelectedAllergens } from '~/redux/features/allergens-slice.ts';
 import { selectSelectedSubCategoriesIds } from '~/redux/features/categories-slice.ts';
 import { openDrawer, setIsFiltering } from '~/redux/features/filter-drawer-slice.js';

@@ -1,6 +1,18 @@
 import { extendTheme } from '@chakra-ui/react';
 
+import { buttonTheme } from './components/button';
+import { inputTheme } from './components/input';
+import { modalTheme } from './components/modal';
+import { tabsTheme } from './components/tabs';
+
 export const theme = extendTheme({
+    styles: {
+        global: {
+            body: {
+                color: 'black',
+            },
+        },
+    },
     colors: {
         lime: {
             50: '#FFFFD3',
@@ -9,6 +21,7 @@ export const theme = extendTheme({
             300: '#C4FF61',
             400: '#B1FF2E',
             600: '#2DB100',
+            700: '#207E00',
             800: '#134B00',
         },
     },
@@ -18,6 +31,7 @@ export const theme = extendTheme({
         mono: `Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"`,
     },
     breakpoints: {
+        xs: '360px',
         sm: '560px',
         md: '769px',
         xmd: '896px',
@@ -26,6 +40,16 @@ export const theme = extendTheme({
         xxl: '1280px',
         '2xl': '1536px',
         '3xl': '1744px',
-        // в px жестко, чтобы не зависело от em - а то м.б. непредсказуемо у children блоков
+    },
+    components: {
+        Tabs: tabsTheme,
+        Input: inputTheme,
+        Button: buttonTheme,
+        Modal: modalTheme,
+        FormLabel: {
+            baseStyle: {
+                fontWeight: 'normal',
+            },
+        },
     },
 });

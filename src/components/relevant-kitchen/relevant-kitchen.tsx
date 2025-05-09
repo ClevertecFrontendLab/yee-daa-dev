@@ -5,7 +5,7 @@ import { shallowEqual } from 'react-redux';
 
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { useDetectParams } from '~/hooks/use-detect-params';
-import { useGetRecipeByCategoryIdQuery } from '~/redux/api/services/recipes-api';
+import { useGetRecipeByCategoryIdQuery } from '~/redux/api/recipes-api';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice';
 import { isArrayWithItems } from '~/utils/is-array-with-items';
 

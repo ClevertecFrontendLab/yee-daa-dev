@@ -15,7 +15,7 @@ import { FILTERED_RECIPES_LIMIT } from '~/constants/general';
 import { JuiciestRecipesList } from '~/containers/juiciest-recipes-list/juiciest-recipes-list.tsx';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { useDetectParams } from '~/hooks/use-detect-params.ts';
-import { useGetAllRecipesMergeQuery } from '~/redux/api/services/recipes-api';
+import { useGetAllRecipesMergeQuery } from '~/redux/api/recipes-api';
 import { selectSelectedAllergens } from '~/redux/features/allergens-slice';
 import { selectSelectedSubCategoriesIds } from '~/redux/features/categories-slice';
 import { selectIsFiltering } from '~/redux/features/filter-drawer-slice';
