@@ -1,3 +1,3 @@
-import { RootState } from '../redux/configure-store';
+import { store } from '~/redux/configure-store';
 
-export type AppState = ReturnType<typeof RootState>;
+export type AppState = ReturnType<typeof store.getState>;

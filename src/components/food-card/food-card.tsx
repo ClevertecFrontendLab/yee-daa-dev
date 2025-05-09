@@ -1,16 +1,15 @@
 import { Button, CardFooter, Image, Stack } from '@chakra-ui/icons';
 import { Box, Card, CardBody, CardHeader, Heading, Text } from '@chakra-ui/react';
 import { FC } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, useLocation } from 'react-router';
 
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
-import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
-import { setSelectedRecipe } from '../../redux/features/choosen-recipe-slice.ts';
-import { selectRecipes } from '../../redux/features/recipies-slice.ts';
-import { selectInputValue } from '../../redux/features/search-slice.ts';
-import { Recipe } from '../../types/recipe.ts';
-import { getPath } from '../../utils/get-path.ts';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { useGetRecipePath } from '~/hooks/use-get-recipe-path.ts';
+import { mockAuthors } from '~/mocks/authors.ts';
+import { Recipe } from '~/redux/api/types/recipes.ts';
+import { selectInputValue } from '~/redux/features/search-slice.ts';
+import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
+
 import { CardStat } from '../card-stat/card-stat.tsx';
 import { CategoryTag } from '../category-tag';
 import { HighlightText } from '../highlight/highlight-text.tsx';
@@ -18,18 +17,15 @@ import { BookmarkIcon } from '../icons/bookmark-icon.tsx';
 import { RecommendationTag } from '../recommendation-tag';
 
 export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index }) => {
-    const dispatch = useAppDispatch();
     const inputValue = useAppSelector(selectInputValue);
-    const allcategories = useAppSelector(selectCategoriesMenu);
-    const selectedCategory = useAppSelector(selectChoosenCategory);
-    const allRecipes = useAppSelector(selectRecipes);
+    const { pathname } = useLocation();
 
-    const { id, title, image, description, category, likes, bookmarks, recommendation } = recipe;
+    const { title, image, description, categoriesIds, likes, bookmarks } = recipe;
 
-    const categoryPath = getPath(allcategories, allRecipes, selectedCategory, id);
-    const handleClick = () => {
-        dispatch(setSelectedRecipe(recipe));
-    };
+    const recipePath = useGetRecipePath(recipe);
+
+    // TODO заменить на поиск автора по recommendedByUserId из рецепта
+    const { login, ...authorRecommendInfo } = mockAuthors[1];
 
     return (
         <Card direction='row' variant='outline' gap={6} data-test-id={`food-card-${index}`}>
@@ -43,7 +39,7 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
                     maxWidth='150px'
                     zIndex={2}
                 >
-                    <CategoryTag category={category} color={'lime.50'} />
+                    <CategoryTag categoriesIds={categoriesIds} color='lime.50' />
                 </Box>
                 <Box
                     position='absolute'
@@ -53,18 +49,18 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
                     right={2}
                     display={{ base: 'none', xxl: 'block' }}
                 >
-                    {recommendation && <RecommendationTag {...recommendation} />}
+                    {login && <RecommendationTag {...authorRecommendInfo} />}
                 </Box>
                 <Image
                     top={0}
                     left={0}
-                    src={image}
+                    src={getAbsoluteImagePath(image)}
                     alt={title}
                     width='100%'
                     height='100%'
                     objectFit='cover'
                     position='absolute'
-                    borderRadius={'var(--chakra-radii-lg)'}
+                    borderRadius='var(--chakra-radii-lg)'
                 />
             </Box>
 
@@ -83,7 +79,7 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
                     alignItems='flex-start'
                 >
                     <Box display={{ base: 'none', xmd: 'block' }}>
-                        <CategoryTag category={category} color='lime.50' />
+                        <CategoryTag categoriesIds={categoriesIds} color='lime.50' />
                     </Box>
                     <CardStat bookmarks={bookmarks} likes={likes} />
                 </CardHeader>
@@ -123,9 +119,9 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
                         </Box>
                     </Button>
                     <NavLink
-                        to={categoryPath}
-                        onClick={handleClick}
+                        to={recipePath}
                         data-test-id={`card-link-${index}`}
+                        state={{ fromPage: pathname }}
                     >
                         <Button bg='black' color='white' size={{ base: 'xs', md: 'sm' }}>
                             Готовить

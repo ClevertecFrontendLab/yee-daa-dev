@@ -1,28 +1,29 @@
-import { ChoosenCategory } from '../redux/features/choosen-category-slice';
-import { MenuItem } from '../types/category';
-import { Recipe } from '../types/recipe';
+import { Category } from '~/redux/api/types/categories';
+import { Recipe } from '~/redux/api/types/recipes';
+import { MenuItem } from '~/types/category';
+import { Nullable } from '~/types/common';
 
 export const getPath = (
     allcategories: MenuItem[],
     allRecipes: Recipe[],
-    selectedCategory: ChoosenCategory | null,
     recipeId: string,
+    selectedCategory?: Nullable<Category>,
 ) => {
     const currentRecipe = allRecipes.find((recipe) => recipe.id === recipeId);
 
-    const choosenCategory = currentRecipe?.category.find(
+    const chosenCategory = currentRecipe?.categoriesIds.find(
         (category) => category === selectedCategory?.category,
     );
 
-    if (choosenCategory) {
-        return `/${choosenCategory}/${selectedCategory?.choosenSubCategory?.category}/${recipeId}`;
+    if (chosenCategory) {
+        return `/${chosenCategory}/${selectedCategory?.category}/${recipeId}`;
     } else {
         const foundCategory = allcategories.find(
-            (category) => category.category === currentRecipe?.category[0],
+            (category) => category.category === currentRecipe?.categoriesIds[0],
         );
 
-        const foundSubCategory = foundCategory?.subItems?.find((subItem) =>
-            currentRecipe?.subcategory.includes(subItem.category),
+        const foundSubCategory = foundCategory?.subCategories?.find((subItem) =>
+            currentRecipe?.categoriesIds.includes(subItem.category),
         );
 
         return `/${foundCategory?.category}/${foundSubCategory?.category}/${recipeId}`;

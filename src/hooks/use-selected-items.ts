@@ -3,11 +3,12 @@ import { useMemo } from 'react';
 import {
     getSelectedItems,
     translateSelectedItems,
-} from '../components/drawer/helpers/get-selected-items';
-import { selectAuthors, selectSelectedAuthors } from '../redux/features/authors-slice';
-import { selectCategoriesMenu, selectSelectedCategories } from '../redux/features/categories-slice';
-import { selectMeats, selectSelectedMeats } from '../redux/features/meats-slice';
-import { selectSelectedSides, selectSides } from '../redux/features/sides-slice';
+} from '~/components/drawer/helpers/get-selected-items';
+import { selectAuthors, selectSelectedAuthors } from '~/redux/features/authors-slice';
+import { selectCategoriesMenu, selectSelectedCategories } from '~/redux/features/categories-slice';
+import { selectMeats, selectSelectedMeats } from '~/redux/features/meats-slice';
+import { selectSelectedSides, selectSides } from '~/redux/features/sides-slice';
+
 import { useAppSelector } from './typed-react-redux-hooks';
 
 export const useSelectedItems = (filterTitle: string) => {
@@ -41,13 +42,15 @@ export const useSelectedItems = (filterTitle: string) => {
         [allCategories, allAuthors, allMeats, allSides],
     );
 
-    const selectedItemsResult = useMemo(() => {
-        return getSelectedItems(filterTitle, selectedItems);
-    }, [filterTitle, selectedItems]);
+    const selectedItemsResult = useMemo(
+        () => getSelectedItems(filterTitle, selectedItems),
+        [filterTitle, selectedItems],
+    );
 
-    const selectedTranslatedItems = useMemo(() => {
-        return translateSelectedItems(filterTitle, selectedItems, allItems);
-    }, [filterTitle, selectedItems, allItems]);
+    const selectedTranslatedItems = useMemo(
+        () => translateSelectedItems(filterTitle, selectedItems, allItems),
+        [filterTitle, selectedItems, allItems],
+    );
 
     return { selectedItemsResult, selectedTranslatedItems };
 };

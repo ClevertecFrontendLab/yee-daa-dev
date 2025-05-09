@@ -1,22 +1,24 @@
 import './index.css';
 
 import { ChakraProvider } from '@chakra-ui/react';
-import { StrictMode } from 'react';
+import { ReactNode, StrictMode } from 'react';
+import { createPortal } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router';
 
+import { App } from './components/app';
+import { AppNotification } from './components/app-notification/app-notification.tsx';
 import { store } from './redux/configure-store.ts';
-import { AppRoutes } from './routes/index.tsx';
 import { theme } from './theme.ts';
 
-createRoot(document.getElementById('root')!).render(
+const rootElement = (document.getElementById('root') ?? document.body) as HTMLElement;
+
+createRoot(rootElement).render(
     <StrictMode>
         <Provider store={store}>
             <ChakraProvider theme={theme}>
-                <BrowserRouter>
-                    <AppRoutes />
-                </BrowserRouter>
+                <App />
+                {createPortal(<AppNotification />, document.body) as ReactNode}
             </ChakraProvider>
         </Provider>
     </StrictMode>,

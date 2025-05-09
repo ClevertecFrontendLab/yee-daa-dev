@@ -2,42 +2,36 @@ import { BreadcrumbLink, ChevronRightIcon } from '@chakra-ui/icons';
 import { Box, Breadcrumb, BreadcrumbItem } from '@chakra-ui/react';
 import { Link, useLocation } from 'react-router';
 
-import { Paths } from '../../constants/path.ts';
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import { closeMenu } from '../../redux/features/burger-slice.ts';
-import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
-import {
-    clearChoosenCategory,
-    setChoosenCategory,
-} from '../../redux/features/choosen-category-slice.ts';
-import { selectRecipes } from '../../redux/features/recipies-slice.ts';
+import { Paths } from '~/constants/path';
+import { useAppDispatch } from '~/hooks/typed-react-redux-hooks.ts';
+import { useDetectParams } from '~/hooks/use-detect-params';
+import { useGetRecipeByIdQuery } from '~/redux/api/services/recipes-api';
+import { resetAccordion } from '~/redux/features/accordion-slice';
+import { closeMenu } from '~/redux/features/burger-slice.ts';
+import { isArrayWithItems } from '~/utils/is-array-with-items';
 
 export const Breadcrumbs = () => {
     const { pathname } = useLocation();
+    const { selectedCategory, selectedSubCategory, recipeId } = useDetectParams();
     const dispatch = useAppDispatch();
-    const navMenu = useAppSelector(selectCategoriesMenu);
-    const recipes = useAppSelector(selectRecipes);
+    const { data: recipe } = useGetRecipeByIdQuery(recipeId as string, { skip: !recipeId });
 
-    const pathsArr = pathname.split('/').filter(Boolean);
-    const categoryItem = navMenu.find((item) => item.category === pathsArr[0]);
-    const subcategory = categoryItem?.subItems?.find((subItem) => subItem.category === pathsArr[1]);
-    const recipePath = recipes.find((recipe) => recipe.id === pathsArr[2])?.title || '';
+    const isJuiciestPath = pathname.includes(Paths.JUICIEST);
 
-    const isRathsJuiciest = pathname.includes(Paths.JUICIEST);
+    const pathsArrNames = [
+        selectedCategory?.title,
+        selectedSubCategory?.title,
+        recipeId ? recipe?.title : undefined,
+    ].filter(Boolean);
+    const pathsArr = [
+        selectedCategory?.category,
+        selectedSubCategory?.category,
+        recipeId ? recipe?.id : undefined,
+    ].filter(Boolean);
 
-    const pathsRussianArr = [categoryItem?.title, subcategory?.title, recipePath];
+    const handleCategoryClick = () => dispatch(closeMenu());
 
-    const handleCategoryClick = () => {
-        const choosenCategory = {
-            category: categoryItem?.category ?? '',
-            title: categoryItem?.title ?? '',
-            description: categoryItem?.description ?? '',
-            choosenSubCategory: subcategory ?? null,
-        };
-
-        dispatch(closeMenu());
-        dispatch(setChoosenCategory(choosenCategory));
-    };
+    const handleHomePageClick = () => dispatch(resetAccordion());
 
     return (
         <Box ml={{ base: 0, lg: 32 }} pb={{ base: 8, lg: 0 }}>
@@ -53,43 +47,35 @@ export const Breadcrumbs = () => {
                 data-test-id='breadcrumbs'
             >
                 <BreadcrumbItem>
-                    <BreadcrumbLink
-                        as={Link}
-                        to={Paths.R_SWITCHER}
-                        onClick={() => dispatch(clearChoosenCategory())}
-                    >
+                    <BreadcrumbLink as={Link} to={Paths.R_SWITCHER} onClick={handleHomePageClick}>
                         Главная
                     </BreadcrumbLink>
                 </BreadcrumbItem>
-                {isRathsJuiciest ? (
+                {isJuiciestPath && (
                     <BreadcrumbItem>
                         <BreadcrumbLink as={Link} to={Paths.JUICIEST}>
                             Самое сочное
                         </BreadcrumbLink>
                     </BreadcrumbItem>
-                ) : (
-                    pathsRussianArr.map(
-                        (title, index) =>
-                            title && (
-                                <BreadcrumbItem
-                                    key={index}
-                                    isCurrentPage={index === pathsRussianArr.length - 1}
-                                >
-                                    <BreadcrumbLink
-                                        as={Link}
-                                        to={
-                                            index === 0
-                                                ? '#'
-                                                : `/${pathsArr.slice(0, index + 1).join('/')}`
-                                        }
-                                        onClick={handleCategoryClick}
-                                    >
-                                        {title}
-                                    </BreadcrumbLink>
-                                </BreadcrumbItem>
-                            ),
-                    )
                 )}
+                {!isJuiciestPath &&
+                    isArrayWithItems(pathsArrNames) &&
+                    pathsArrNames.map((title, index) =>
+                        title ? (
+                            <BreadcrumbItem
+                                key={title}
+                                isCurrentPage={index === pathsArrNames?.length - 1}
+                            >
+                                <BreadcrumbLink
+                                    as={Link}
+                                    to={`/${pathsArr.slice(0, index + 1).join('/')}`}
+                                    onClick={handleCategoryClick}
+                                >
+                                    {title}
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                        ) : null,
+                    )}
             </Breadcrumb>
         </Box>
     );

@@ -1,10 +1,12 @@
 import { Grid, GridItem } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { Outlet } from 'react-router';
 
-import { useIsTablet } from '../../hooks/media-query';
-import { useAppSelector } from '../../hooks/typed-react-redux-hooks';
-import { selectMenu } from '../../redux/features/burger-slice';
+import { useIsTablet } from '~/hooks/media-query';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { useIsErrorPage } from '~/hooks/use-is-error-page';
+import { selectMenu } from '~/redux/features/burger-slice';
+
 import { Aside } from '../aside';
 import { FilterDrawer } from '../drawer';
 import { Footer } from '../footer';
@@ -15,6 +17,7 @@ import styles from './layout.module.css';
 const Layout = () => {
     const isOpen = useAppSelector(selectMenu);
     const isTablet = useIsTablet();
+    const isErrorPage = useIsErrorPage();
 
     useEffect(() => {
         if (isOpen) {
@@ -27,6 +30,8 @@ const Layout = () => {
             document.body.classList.remove('no-scroll');
         };
     }, [isOpen]);
+
+    const showNavigation = (isTablet && isOpen) || !isTablet;
 
     return (
         <div className={styles.wrapper}>
@@ -53,15 +58,15 @@ const Layout = () => {
                 >
                     <Header />
                 </GridItem>
-                {(isTablet && isOpen) || !isTablet ? (
+                {showNavigation && (
                     <GridItem
-                        area={'nav'}
+                        area='nav'
                         position={{ base: 'absolute', xl: 'sticky' }}
                         className={`${styles.nav} ${isOpen ? styles.open : ''}`}
                     >
                         <SideNav />
                     </GridItem>
-                ) : null}
+                )}
                 <GridItem
                     area='main'
                     pt={{ base: 4, md: 8 }}
@@ -70,23 +75,28 @@ const Layout = () => {
                 >
                     <Outlet />
                 </GridItem>
-                <GridItem
-                    area='aside'
-                    className={styles.aside}
-                    display={{ base: 'none', xl: 'block' }}
-                >
-                    <Aside />
-                    <FilterDrawer />
-                </GridItem>
-                <GridItem
-                    bg='lime.50'
-                    area='footer'
-                    display={{ xl: 'none', base: 'block' }}
-                    className={`${styles.footer} ${isOpen ? styles.blur : ''}`}
-                    data-test-id='footer'
-                >
-                    <Footer />
-                </GridItem>
+                {!isErrorPage && (
+                    <Fragment>
+                        <GridItem
+                            area='aside'
+                            className={styles.aside}
+                            display={{ base: 'none', xl: 'block' }}
+                        >
+                            <Aside />
+                            <FilterDrawer />
+                        </GridItem>
+
+                        <GridItem
+                            bg='lime.50'
+                            area='footer'
+                            display={{ base: 'block', xl: 'none' }}
+                            className={`${styles.footer} ${isOpen ? styles.blur : ''}`}
+                            data-test-id='footer'
+                        >
+                            <Footer />
+                        </GridItem>
+                    </Fragment>
+                )}
             </Grid>
         </div>
     );

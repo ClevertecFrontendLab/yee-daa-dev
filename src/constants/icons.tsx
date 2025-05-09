@@ -1,8 +1,8 @@
 import { JSX } from 'react';
 
-import { BookmarkIcon } from '../components/icons/bookmark-icon';
-import { FavoritesIcon } from '../components/icons/favorites-icon';
-import { PeopleIcon } from '../components/icons/people-icon';
+import { BookmarkIcon } from '~/components/icons/bookmark-icon';
+import { FavoritesIcon } from '~/components/icons/favorites-icon';
+import { PeopleIcon } from '~/components/icons/people-icon';
 
 export const icons: { [key: string]: JSX.Element } = {
     bookmarks: <BookmarkIcon w={4} h={4} />,

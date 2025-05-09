@@ -2,28 +2,29 @@ import { ChevronDownIcon, ChevronUpIcon, CloseIcon } from '@chakra-ui/icons';
 import { Button, MenuButton } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { useAppDispatch } from '../../../hooks/typed-react-redux-hooks';
-import { clearSelectedAllergens } from '../../../redux/features/allergens-slice';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
+import { clearSelectedAllergens, selectSwitcherState } from '~/redux/features/allergens-slice';
+
 import { SelectedItems } from './selected-allergens';
 
 type SelectMenuButtonProps = {
-    isSwitchOn: boolean;
     selectedAllergens: string[];
     handleMenuToggle: () => void;
     setIsOpen: (value: boolean) => void;
     isOpen: boolean;
-    isfromFilter: boolean;
+    fromFilter: boolean;
 };
 
 export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
-    isSwitchOn,
     selectedAllergens,
     handleMenuToggle,
     setIsOpen,
     isOpen,
-    isfromFilter,
+    fromFilter,
 }) => {
     const dispatch = useAppDispatch();
+    const isSwitchOn = useAppSelector(selectSwitcherState);
+
     const clearSelection = (event: React.MouseEvent) => {
         event.stopPropagation();
         dispatch(clearSelectedAllergens());
@@ -32,8 +33,8 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
 
     return (
         <MenuButton
-            data-test-id={isfromFilter ? 'allergens-menu-button-filter' : 'allergens-menu-button'}
-            w={isfromFilter ? '370px' : '270px'}
+            data-test-id={fromFilter ? 'allergens-menu-button-filter' : 'allergens-menu-button'}
+            w={fromFilter ? '370px' : '270px'}
             h='100%'
             minHeight='40px'
             p={2}
@@ -41,7 +42,7 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
             color='blackAlpha.700'
             fontWeight={400}
             outline='none'
-            background={'--chakra-ring-offset-color'}
+            background='--chakra-ring-offset-color'
             border='1px solid rgba(0, 0, 0, 0.64)'
             _active={{
                 background: '--chakra-ring-offset-color',
@@ -69,7 +70,7 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
                             onClick={clearSelection}
                             w={2}
                             h={2}
-                            cursor={'pointer'}
+                            cursor='pointer'
                             _hover={{ bg: 'none', color: 'var(--chakra-colors-lime-600)' }}
                         />
                     )}
@@ -81,7 +82,7 @@ export const SelectMenuButton: FC<SelectMenuButtonProps> = ({
                 </span>
             }
         >
-            <SelectedItems selectedItems={selectedAllergens} isfromFilter={isfromFilter} />
+            <SelectedItems selectedItems={selectedAllergens} fromFilter={fromFilter} />
         </MenuButton>
     );
 };

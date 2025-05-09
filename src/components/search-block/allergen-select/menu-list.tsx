@@ -1,14 +1,15 @@
 import { Box, Button, Checkbox, Input, InputGroup, MenuItem, MenuList } from '@chakra-ui/react';
 import { FC, useEffect, useRef } from 'react';
 
-import { BUTTON_ADD_OTHER_ALLERGEN, PLACEHOLDER_ALLERGEN } from '../../../constants/select';
-import { useAppDispatch, useAppSelector } from '../../../hooks/typed-react-redux-hooks';
+import { BUTTON_ADD_OTHER_ALLERGEN, PLACEHOLDER_ALLERGEN } from '~/constants/select';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import {
     deselectAllergen,
     selectAllergen,
     selectAllergens,
     selectSelectedAllergens,
-} from '../../../redux/features/allergens-slice';
+} from '~/redux/features/allergens-slice';
+
 import { PlusCircleIcon } from '../../icons/plus-circle-icon';
 
 type SelectMenuListProps = {
@@ -100,7 +101,7 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
                             display='block'
                             w='205px'
                             ref={inputRef}
-                            color={'var(--chakra-colors-lime-800)'}
+                            color='var(--chakra-colors-lime-800)'
                             value={newAllergen}
                             onChange={(e) => setNewAllergen(e.target.value)}
                             onKeyDown={handleKeyDown}
@@ -115,12 +116,12 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
                     ) : (
                         <Button
                             data-test-id='add-other-allergen'
-                            display={'block'}
+                            display='block'
                             textAlign='start'
                             w='205px'
                             fontWeight={400}
-                            color={'var(--chakra-colors-lime-800)'}
-                            background={'--chakra-ring-offset-color'}
+                            color='var(--chakra-colors-lime-800)'
+                            background='--chakra-ring-offset-color'
                             border='1px solid var(--chakra-colors-blackAlpha-200)'
                             onClick={handleAddClick}
                         >
@@ -128,7 +129,7 @@ export const SelectMenuList: FC<SelectMenuListProps> = ({
                         </Button>
                     )}
                     <PlusCircleIcon
-                        cursor={'pointer'}
+                        cursor='pointer'
                         onClick={handleAddAllergen}
                         data-test-id='add-allergen-button'
                     />

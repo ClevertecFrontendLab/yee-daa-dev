@@ -18,13 +18,14 @@ export const theme = extendTheme({
         mono: `Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"`,
     },
     breakpoints: {
-        sm: '35em', // 560px
-        md: '48em', // 768px
-        xmd: '56em', // 896px
-        lg: '62em', // 992px
-        xl: '70em', // 1120px
-        xxl: '80em', // 1280px
-        '2xl': '96em', // 1536px
-        '3xl': '109em', // 1744px
+        sm: '560px',
+        md: '769px',
+        xmd: '896px',
+        lg: '992px',
+        xl: '1120px',
+        xxl: '1280px',
+        '2xl': '1536px',
+        '3xl': '1744px',
+        // в px жестко, чтобы не зависело от em - а то м.б. непредсказуемо у children блоков
     },
 });

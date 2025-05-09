@@ -1,191 +1,130 @@
-import { FC, useEffect, useState } from 'react';
+import { Center } from '@chakra-ui/react';
+import { FC, Fragment } from 'react';
+import { shallowEqual } from 'react-redux';
 
-import { BlogSection } from '../../components/blog-section/blog-section.tsx';
-import { Carousel } from '../../components/carousel/carousel.tsx';
-import { FavouritesBlock } from '../../components/favourites-block/favourites-block.tsx';
-import { KitchenTabs } from '../../components/kitchen-tabs/kitchen-tabs.tsx';
-import { RecipeCardList } from '../../components/recipes-card-list/recipes-card-list.tsx';
-import { RelevantKitchen } from '../../components/relevant-kitchen';
-import { SectionBox } from '../../components/section-box/section-box.tsx';
-import { SectionHeader } from '../../components/section-header';
-import { useAppDispatch, useAppSelector } from '../../hooks/typed-react-redux-hooks.ts';
-import {
-    selectFilteredByAllergens,
-    selectisfromFilter,
-    selectSelectedAllergens,
-    setFilteredByAllergens,
-} from '../../redux/features/allergens-slice.ts';
-import { selectCategoriesMenu } from '../../redux/features/categories-slice.ts';
-import { selectChoosenCategory } from '../../redux/features/choosen-category-slice.ts';
-import { selectFilteredRecipes, selectRecipes } from '../../redux/features/recipies-slice.ts';
+import { BlogSection } from '~/components/blog-section/blog-section.tsx';
+import { Carousel } from '~/components/carousel/carousel.tsx';
+import { CriteriaTagsList } from '~/components/criteria-tags-list';
+import { getRequestParams } from '~/components/drawer/helpers/get-request-params';
+import { FavoritesBlock } from '~/components/favorites-block/favorites-block';
+import { KitchenTabs } from '~/components/kitchen-tabs/kitchen-tabs.tsx';
+import { RecipeCardList } from '~/components/recipes-card-list/recipes-card-list.tsx';
+import { RelevantKitchen } from '~/components/relevant-kitchen';
+import { SectionHeader } from '~/components/section-header';
+import { FILTERED_RECIPES_LIMIT } from '~/constants/general';
+import { JuiciestRecipesList } from '~/containers/juiciest-recipes-list/juiciest-recipes-list.tsx';
+import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { useDetectParams } from '~/hooks/use-detect-params.ts';
+import { useGetAllRecipesMergeQuery } from '~/redux/api/services/recipes-api';
+import { selectSelectedAllergens } from '~/redux/features/allergens-slice';
+import { selectSelectedSubCategoriesIds } from '~/redux/features/categories-slice';
+import { selectIsFiltering } from '~/redux/features/filter-drawer-slice';
+import { selectSelectedMeats } from '~/redux/features/meats-slice';
+import { selectFilteredRecipes } from '~/redux/features/recipes-slice';
 import {
     selectInputValue,
-    selectMatchedRecipes,
-    setInputValue,
-    setMatchedRecipes,
-} from '../../redux/features/search-slice.ts';
-import { PageType } from '../../types/page.ts';
-import { Recipe } from '../../types/recipe.ts';
-import { filterRecipes } from '../../utils/filter-recipes.ts';
-import { filterRecipesByTitle } from './helpers/filter-by-title.ts';
-import { getCategoryRecipes, getFavouritesRecipes } from './helpers/get-recipes.ts';
+    selectSelectedPage,
+    setSelectedPage,
+} from '~/redux/features/search-slice';
+import { selectSelectedSides } from '~/redux/features/sides-slice';
+import { PageType } from '~/types/page.ts';
+import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
 type KitchenPageProps = {
     pageType: PageType;
-    relevantTitle?: string;
-    relevantDesc?: string;
 };
 
 export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
-    const dispatch = useAppDispatch();
-    const recipes = useAppSelector(selectRecipes);
-    const selectedCategory = useAppSelector(selectChoosenCategory);
-    const categories = useAppSelector(selectCategoriesMenu);
-    const matchedRecipes = useAppSelector(selectMatchedRecipes);
-    const selectedAllergens = useAppSelector(selectSelectedAllergens);
-    const filteredByAllergens = useAppSelector(selectFilteredByAllergens);
-    const filteredRecipes = useAppSelector(selectFilteredRecipes);
-    const isfromFilter = useAppSelector(selectisfromFilter);
-
-    const [relevantRecipes, setRelevantRecipes] = useState([] as Recipe[]);
-    const [relevantTitle, setRelevantTitle] = useState('');
-    const [relevantDesc, setRelevantDesc] = useState('');
-    const [startSearch, setStartSearch] = useState(false);
-    const searchValue = useAppSelector(selectInputValue);
-
     const isMainPage = pageType === PageType.Main;
     const isCategoryPage = pageType === PageType.Category;
     const isJuiciestPage = pageType === PageType.Juiciest;
 
-    const favouritesRecipes = getFavouritesRecipes(recipes);
-    const categoryRecipes = getCategoryRecipes(recipes, selectedCategory);
+    const { selectedCategory, selectedSubCategory } = useDetectParams();
+    const dispatch = useAppDispatch();
 
-    const searchRecipes: Record<PageType, Recipe[]> = {
-        main: recipes,
-        juiciest: favouritesRecipes,
-        category: categoryRecipes,
+    const selectedAllergens = useAppSelector(selectSelectedAllergens, shallowEqual);
+    const filteredRecipes = useAppSelector(selectFilteredRecipes, shallowEqual);
+    const selectedMeats = useAppSelector(selectSelectedMeats, shallowEqual);
+    const searchInputValue = useAppSelector(selectInputValue);
+    const selectedSides = useAppSelector(selectSelectedSides, shallowEqual);
+    const selectedSubcategories = useAppSelector(selectSelectedSubCategoriesIds, shallowEqual);
+    const isFiltering = useAppSelector(selectIsFiltering);
+    const selectedPage = useAppSelector(selectSelectedPage);
+
+    const requestParams = getRequestParams({
+        allergens: selectedAllergens,
+        meats: selectedMeats,
+        searchInput: searchInputValue,
+        sides: selectedSides,
+        subCategories: selectedSubcategories,
+        page: selectedPage,
+    });
+
+    const isFilteringWithCategory = selectedSubCategory?.id && isFiltering;
+
+    // для запросов с главной страницы
+    const { data: allRecipes, isFetching } = useGetAllRecipesMergeQuery(
+        { ...requestParams, limit: FILTERED_RECIPES_LIMIT },
+        { skip: isJuiciestPage || !isFiltering || Boolean(selectedSubCategory?.id) },
+    );
+
+    // для запросов внутри выбранной категории
+    const { data: recipesData, isFetching: isFetchingByCategory } = useGetAllRecipesMergeQuery(
+        {
+            ...requestParams,
+            limit: FILTERED_RECIPES_LIMIT,
+            subcategoriesIds: selectedSubCategory?.id ? [selectedSubCategory.id] : [],
+        },
+        { skip: isJuiciestPage || !selectedSubCategory?.id || !isFiltering },
+    );
+    const subCategoryRecipes = recipesData?.data ?? [];
+    const allFilteredRecipes = allRecipes?.data ?? [];
+
+    const totalPages =
+        (isFilteringWithCategory && recipesData?.meta?.totalPages) ||
+        allRecipes?.meta?.totalPages ||
+        1;
+
+    const loadMoreCallback = () => {
+        dispatch(setSelectedPage(selectedPage + 1));
     };
 
-    const handleSearch = (inputValue: string) => {
-        setStartSearch(true);
-
-        let nameFiltered: Recipe[] | undefined;
-
-        if (filteredRecipes.length) {
-            nameFiltered = filterRecipesByTitle(filteredRecipes, inputValue);
-        } else if (filteredByAllergens.length) {
-            nameFiltered = filterRecipesByTitle(filteredByAllergens, inputValue);
-        } else {
-            nameFiltered = filterRecipesByTitle(searchRecipes[pageType] || [], inputValue);
-        }
-
-        dispatch(setMatchedRecipes(nameFiltered));
-    };
-
-    useEffect(() => {
-        dispatch(setInputValue(''));
-        setStartSearch(false);
-    }, [selectedCategory]);
-
-    useEffect(() => {
-        if (!searchValue) {
-            dispatch(setMatchedRecipes([]));
-            setStartSearch(false);
-        }
-    }, [searchValue]);
-
-    useEffect(() => {
-        const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-
-        setRelevantTitle(randomCategory.title);
-        setRelevantDesc(randomCategory.description ?? '');
-
-        const relatedRecipes = recipes.filter((recipe) =>
-            recipe.category.includes(randomCategory.category),
-        );
-
-        setRelevantRecipes(relatedRecipes);
-    }, [categories, recipes]);
-
-    useEffect(() => {
-        const recipesToFilter =
-            (filteredRecipes.length && filteredRecipes) ||
-            (categoryRecipes.length && categoryRecipes) ||
-            (recipes.length && recipes) ||
-            [];
-
-        if (selectedAllergens.length && !isfromFilter) {
-            const getAllergensRecipes = () => filterRecipes(recipesToFilter, selectedAllergens);
-
-            const allergensRecipes = getAllergensRecipes();
-
-            dispatch(setFilteredByAllergens(allergensRecipes));
-        } else {
-            dispatch(setFilteredByAllergens([]));
-        }
-    }, [selectedAllergens]);
+    const isFilteredRecipesShowed = isArrayWithItems(filteredRecipes);
 
     return (
-        <>
-            <SectionHeader onSearch={handleSearch} pageType={pageType} startSearch={startSearch} />
+        <Fragment key='kitchen-page'>
+            <SectionHeader pageType={pageType} />
 
-            {startSearch && matchedRecipes.length > 0 && (
-                <RecipeCardList recipeList={matchedRecipes} />
-            )}
-
-            {startSearch && !matchedRecipes.length && (
-                <>
-                    {isCategoryPage && <KitchenTabs recipeList={categoryRecipes} />}
-                    {isJuiciestPage && (
-                        <SectionBox>
-                            <RecipeCardList recipeList={favouritesRecipes} />
-                        </SectionBox>
-                    )}
-                    {(isMainPage || !selectedCategory) && (
-                        <>
+            {isFilteredRecipesShowed ? (
+                <Fragment key='filtered part'>
+                    <Center w='100%' flexWrap='wrap'>
+                        <CriteriaTagsList withAllergens={false} />
+                    </Center>
+                    <RecipeCardList
+                        recipeList={
+                            isFilteringWithCategory ? subCategoryRecipes : allFilteredRecipes
+                        }
+                        currentPage={selectedPage}
+                        isLoading={isFetching || isFetchingByCategory}
+                        totalPages={totalPages}
+                        loadMoreCallback={loadMoreCallback}
+                    />
+                </Fragment>
+            ) : (
+                <Fragment key='usual part'>
+                    {isCategoryPage && <KitchenTabs />}
+                    {isJuiciestPage && <JuiciestRecipesList />}
+                    {(isMainPage || (!selectedCategory && !isJuiciestPage)) && (
+                        <Fragment key='main-page-flow'>
                             <Carousel />
-                            <FavouritesBlock />
+                            <FavoritesBlock />
                             <BlogSection />
-                        </>
+                        </Fragment>
                     )}
-                </>
-            )}
-            {!startSearch && (
-                <>
-                    {isfromFilter && filteredRecipes.length > 0 && (
-                        <RecipeCardList recipeList={filteredRecipes} />
-                    )}
-                    {!isfromFilter && filteredByAllergens.length > 0 && (
-                        <RecipeCardList recipeList={filteredByAllergens} />
-                    )}
-                    {!isfromFilter && !filteredByAllergens.length && filteredRecipes.length > 0 && (
-                        <RecipeCardList recipeList={filteredRecipes} />
-                    )}
-                    {!filteredRecipes.length && !filteredByAllergens.length && (
-                        <>
-                            {isCategoryPage && <KitchenTabs recipeList={categoryRecipes} />}
-                            {isJuiciestPage && (
-                                <SectionBox>
-                                    <RecipeCardList recipeList={favouritesRecipes} />
-                                </SectionBox>
-                            )}
-                            {(isMainPage || !selectedCategory) && (
-                                <>
-                                    <Carousel />
-                                    <FavouritesBlock />
-                                    <BlogSection />
-                                </>
-                            )}
-                        </>
-                    )}
-                </>
+                </Fragment>
             )}
 
-            <RelevantKitchen
-                recipes={relevantRecipes}
-                title={relevantTitle}
-                description={relevantDesc}
-            />
-        </>
+            <RelevantKitchen />
+        </Fragment>
     );
 };

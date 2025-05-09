@@ -1,7 +1,7 @@
-import man from '../assets/images/man.png';
-import userImg from '../assets/images/user.webp';
-import woman from '../assets/images/woman.png';
-import { UserProps } from '../types/user.ts';
+import man from '~/assets/images/man.png';
+import userImg from '~/assets/images/user.webp';
+import woman from '~/assets/images/woman.png';
+import { UserProps } from '~/types/user.ts';
 
 export const users: UserProps[] = [
     {
