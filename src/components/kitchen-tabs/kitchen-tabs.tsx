@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { useDetectParams } from '~/hooks/use-detect-params';
-import { useGetRecipeByCategoryIdInfiniteInfiniteQuery } from '~/redux/api/services/recipes-api';
+import { useGetRecipeByCategoryIdInfiniteInfiniteQuery } from '~/redux/api/recipes-api';
 import { selectCategoriesMenu } from '~/redux/features/categories-slice';
 
 import { AppLoader } from '../app-loader';

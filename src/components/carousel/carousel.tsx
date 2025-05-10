@@ -8,7 +8,7 @@ import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 
 import { SLIDER_RECIPES_LIMIT } from '~/constants/general.ts';
 import { NEWEST_PARAMS } from '~/redux/api/constants.ts';
-import { useGetAllRecipesWithParamsQuery } from '~/redux/api/services/recipes-api/index.ts';
+import { useGetAllRecipesWithParamsQuery } from '~/redux/api/recipes-api/index.js';
 import { Nullable } from '~/types/common.ts';
 import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
@@ -19,10 +19,7 @@ export const Carousel = () => {
     const carouselItems = data?.data ?? [];
     const swiperRef = useRef<Nullable<SwiperRef>>(null);
 
-    const carouselRecipes = carouselItems
-        ?.slice()
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-        .slice(0, SLIDER_RECIPES_LIMIT);
+    const carouselRecipes = carouselItems.slice(0, SLIDER_RECIPES_LIMIT);
 
     return (
         <Box maxWidth='1360px' mb={{ base: 8, xmd: 10 }} position='relative'>

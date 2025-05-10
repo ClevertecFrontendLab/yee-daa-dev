@@ -27,9 +27,7 @@
 }
 
 .nav {
-    box-shadow:
-        0 0 1px -1px rgba(0, 0, 0, 0.2),
-        0 0 1px 0 rgba(0, 0, 0, 0.14),
+    box-shadow: 0 0 1px -1px rgba(0, 0, 0, 0.2), 0 0 1px 0 rgba(0, 0, 0, 0.14),
         0 0 3px 0 rgba(0, 0, 0, 0.12);
     background: #fff;
 }
@@ -40,9 +38,7 @@
     padding-bottom: 16px;
     padding-left: 24px;
     padding-right: 24px;
-    transition:
-        filter 0.3s ease,
-        box-shadow 0.3s ease;
+    transition: filter 0.3s ease, box-shadow 0.3s ease;
 }
 
 .footer {
@@ -83,9 +79,7 @@
         border-top-right-radius: 0;
         height: auto;
         padding: 0 var(--chakra-space-4) var(--chakra-space-4) var(--chakra-space-4);
-        transition:
-            top 0.3s ease,
-            opacity 0.3s ease;
+        transition: top 0.3s ease, opacity 0.3s ease;
         opacity: 0;
         visibility: hidden;
     }

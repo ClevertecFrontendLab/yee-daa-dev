@@ -1,0 +1,13 @@
+.signUpProgress [role='progressbar'] {
+    background-color: var(--chakra-colors-lime-150);
+    background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        var(--chakra-colors-lime-300) 50%,
+        var(--chakra-colors-lime-300) 75%,
+        transparent 75%,
+        transparent
+    );
+}

@@ -9,12 +9,12 @@ export const Loader = ({ boxSize, ...spinnerProps }: LoaderProps) => (
         className={styles.wrapper}
         h={boxSize}
         w={boxSize}
-        bgGradient='radial(50% 50% at 50% 50%, lime.300 0%, transparent 95%)'
+        bgGradient='radial-gradient(circle, lime.300 0%, rgba(227, 255, 181, 0.3) 42%, rgba(255, 255, 255, 0) 67%);'
         borderRadius='50%'
         border='none'
         outline='none'
         shadow='none'
     >
-        <Spinner {...spinnerProps} thickness='2px' speed='0.6s' background='transparent' />
+        <Spinner {...spinnerProps} thickness='2px' background='transparent' />
     </Center>
 );

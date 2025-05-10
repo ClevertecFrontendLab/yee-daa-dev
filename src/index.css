@@ -33,3 +33,7 @@ body,
 .no-scroll {
     overflow-y: hidden;
 }
+
+.chakra-alert[data-status='error'] {
+    --alert-bg: var(--chakra-colors-red-500);
+}
