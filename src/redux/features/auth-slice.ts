@@ -2,10 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type AuthSliceState = {
     accessToken: string;
+    userId: string;
 };
 
 export const initialState: AuthSliceState = {
     accessToken: '',
+    userId: '',
 };
 
 export const authSlice = createSlice({
@@ -16,13 +18,17 @@ export const authSlice = createSlice({
             state.accessToken = action.payload;
         },
 
-        resetAuth: () => ({ ...initialState }),
+        resetAuth: () => initialState,
+        setUserId: (state, action: PayloadAction<string>) => {
+            state.userId = action.payload;
+        },
     },
     selectors: {
         selectAccessToken: (state) => state.accessToken,
+        selectUserId: (state) => state.userId,
     },
 });
 
 export const authReducer = authSlice.reducer;
-export const { setAccessToken, resetAuth } = authSlice.actions;
-export const { selectAccessToken } = authSlice.selectors;
+export const { setAccessToken, setUserId, resetAuth } = authSlice.actions;
+export const { selectAccessToken, selectUserId } = authSlice.selectors;

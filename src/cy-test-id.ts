@@ -31,5 +31,9 @@ export const CyTestId = {
         Submit: 'submit-button',
         Repeat: 'repeat-button',
         Close: 'close-button',
+        CloseAlert: 'close-alert-button',
+    },
+    Notification: {
+        Error: 'error-notification',
     },
 } as const;

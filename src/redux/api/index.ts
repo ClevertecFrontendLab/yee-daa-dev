@@ -6,6 +6,7 @@ import {
     FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
 
+import { HttpStatus } from '~/constants/http-status';
 import { AppState } from '~/types/store';
 
 import { resetAuth, setAccessToken } from '../features/auth-slice';
@@ -34,15 +35,22 @@ const reauthQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>
 ) => {
     let result = await baseAuthQuery(args, api, extraOptions);
 
-    if (result.error && result.error.status === 401) {
+    if (result.error && result.error.status === HttpStatus.UNAUTHORIZED) {
         if (requestQueue.shouldSubscribe) {
-            return new Promise((resolve, reject) => {
-                requestQueue.subscribe(async () => {
-                    try {
-                        const queuedResult = await baseAuthQuery(args, api, extraOptions);
-                        resolve(queuedResult);
-                    } catch (error) {
-                        reject(error);
+            return new Promise((res, rej) => {
+                requestQueue.subscribe(async (abort = false) => {
+                    if (abort) {
+                        rej(result.error);
+
+                        return;
+                    }
+
+                    const queuedResponse = await baseAuthQuery(args, api, extraOptions);
+
+                    if (queuedResponse.error) {
+                        rej(queuedResponse.error);
+                    } else {
+                        res(queuedResponse);
                     }
                 });
             });
@@ -61,12 +69,20 @@ const reauthQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>
 
         if (refreshResult.error) {
             api.dispatch(resetAuth());
-            requestQueue.reset();
+            requestQueue.notify(true);
 
             return result;
         }
 
-        const newAccessToken = refreshResult.meta?.response?.headers.get(ACCESS_TOKEN_HEADER) ?? '';
+        const newAccessToken = refreshResult.meta?.response?.headers.get(ACCESS_TOKEN_HEADER);
+
+        if (!newAccessToken) {
+            api.dispatch(resetAuth());
+            requestQueue.notify(true);
+
+            return result;
+        }
+
         api.dispatch(setAccessToken(newAccessToken));
 
         requestQueue.notify();
@@ -85,6 +101,6 @@ export const unauthorizedApi = createApi({
 export const authorizedApi = createApi({
     reducerPath: 'authorized-api',
     baseQuery: reauthQuery,
-    tagTypes: [],
+    tagTypes: ['Recipe'],
     endpoints: () => ({}),
 });

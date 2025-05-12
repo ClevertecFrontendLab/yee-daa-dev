@@ -1,6 +1,7 @@
-import { resetAuth, setAccessToken } from '~/redux/features/auth-slice';
+import { resetAuth, setAccessToken, setUserId } from '~/redux/features/auth-slice';
 import { setCurrUserId } from '~/redux/features/bloggers-slice';
 import { getUserIdFromToken } from '~/utils/get-user-id-from-token';
+import { decodeJwt } from '~/utils/jwt';
 
 import { unauthorizedApi } from '..';
 import { ACCESS_TOKEN_HEADER, ApiEndpoints } from '../constants';
@@ -38,9 +39,14 @@ export const authApi = unauthorizedApi.injectEndpoints({
                     }
 
                     dispatch(setAccessToken(accessToken));
+
+                    // Извлекаем userId из токена
+                    const decodedToken = decodeJwt(accessToken);
+                    if (decodedToken?.userId) {
+                        dispatch(setUserId(decodedToken.userId));
+                    }
                 } catch (error) {
                     dispatch(resetAuth());
-
                     console.error(error);
                 }
             },
@@ -55,7 +61,6 @@ export const authApi = unauthorizedApi.injectEndpoints({
             async onQueryStarted(_, { queryFulfilled, dispatch }) {
                 try {
                     const { meta } = await queryFulfilled;
-
                     const accessToken = meta?.response?.headers.get(ACCESS_TOKEN_HEADER);
                     if (accessToken) {
                         const userID = getUserIdFromToken(accessToken);
@@ -69,9 +74,14 @@ export const authApi = unauthorizedApi.injectEndpoints({
                     }
 
                     dispatch(setAccessToken(accessToken));
+
+                    // Извлекаем userId из токена
+                    const decodedToken = decodeJwt(accessToken);
+                    if (decodedToken?.userId) {
+                        dispatch(setUserId(decodedToken.userId));
+                    }
                 } catch (error) {
                     dispatch(resetAuth());
-
                     console.error(error);
                 }
             },

@@ -16,12 +16,13 @@ import { CyTestId } from '~/cy-test-id';
 import { ModalCloseIcon } from '../modal-close-icon/modal-close-icon';
 
 type ResultModalProps = PropsWithChildren &
-    ModalProps & {
-        title?: ReactNode | ReactNode[];
-        imageUrl?: string;
-        isClosable?: boolean;
-        dataTestId?: string;
-    };
+    ModalProps &
+    Partial<{
+        title: ReactNode | ReactNode[];
+        imageUrl: string;
+        isClosable: boolean;
+        dataTestId: string;
+    }>;
 
 export const ResultModal: FC<ResultModalProps> = ({
     children,

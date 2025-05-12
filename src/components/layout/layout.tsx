@@ -1,7 +1,8 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import { Fragment, useEffect } from 'react';
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 
+import { EDIT_RECIPE_PATH, Paths } from '~/constants/path';
 import { useIsTablet } from '~/hooks/media-query';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { useIsErrorPage } from '~/hooks/use-is-error-page';
@@ -18,6 +19,9 @@ const Layout = () => {
     const isOpen = useAppSelector(selectMenu);
     const isTablet = useIsTablet();
     const isErrorPage = useIsErrorPage();
+    const location = useLocation();
+    const isHideAside =
+        location.pathname === Paths.NEW_RECIPE || location.pathname.includes(EDIT_RECIPE_PATH);
 
     useEffect(() => {
         if (isOpen) {
@@ -77,14 +81,16 @@ const Layout = () => {
                 </GridItem>
                 {!isErrorPage && (
                     <Fragment>
-                        <GridItem
-                            area='aside'
-                            className={styles.aside}
-                            display={{ base: 'none', xl: 'block' }}
-                        >
-                            <Aside />
-                            <FilterDrawer />
-                        </GridItem>
+                        {isHideAside || (
+                            <GridItem
+                                area='aside'
+                                className={styles.aside}
+                                display={{ base: 'none', xl: 'block' }}
+                            >
+                                <Aside />
+                                <FilterDrawer />
+                            </GridItem>
+                        )}
 
                         <GridItem
                             bg='lime.50'

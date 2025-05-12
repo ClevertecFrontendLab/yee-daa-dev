@@ -10,9 +10,11 @@ import { AppLayout } from '~/layout/app-layout';
 import { BlogProfile } from '~/pages/blog-profile/blog-profile.tsx';
 import { BlogsPage } from '~/pages/blogs-page/blogs-page.tsx';
 import { CategoryPage } from '~/pages/category-page';
+import { EditRecipePage } from '~/pages/edit-recipe-page';
 import { ErrorPage } from '~/pages/error-page/error-page';
 import { JuiciestPage } from '~/pages/juiciest-page';
 import { MainPage } from '~/pages/main-page';
+import { NewRecipePage } from '~/pages/new-recipe-page';
 import { RecipePageWrapper } from '~/pages/recipe-page';
 import { blogsLoader } from '~/routes/loaders/blogs-loader.ts';
 
@@ -88,6 +90,8 @@ export const appRouter = createBrowserRouter(
                         }
                         loader={recipeLoader}
                     />
+                    <Route path={Paths.NEW_RECIPE} element={<NewRecipePage />} />
+                    <Route path={Paths.EDIT_RECIPE} element={<EditRecipePage />} />
                     <Route
                         path={Paths.JUICIEST}
                         element={<JuiciestPage />}

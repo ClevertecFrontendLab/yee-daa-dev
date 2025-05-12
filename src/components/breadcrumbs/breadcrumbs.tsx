@@ -23,16 +23,19 @@ export const Breadcrumbs = () => {
     const isBlogs = pathname.includes(Paths.BLOGS);
     const isBlogCurrent = bloggerInfo.login;
     const isRecipes = !isJuiciestPath && !isBlogs;
+    const isNewRecipePage = pathname.includes(Paths.NEW_RECIPE);
 
     const pathsArrNames = [
         selectedCategory?.title,
         selectedSubCategory?.title,
-        recipeId ? recipeData?.existRecipe?.title : undefined,
+        recipeId ? recipeData?.title : undefined,
+        isNewRecipePage ? 'Новый рецепт' : undefined,
     ].filter(Boolean);
     const pathsArr = [
         selectedCategory?.category,
         selectedSubCategory?.category,
-        recipeId ? recipeData?.existRecipe?.id : undefined,
+        recipeId ? recipeData?.id : undefined,
+        isNewRecipePage ? 'new-recipe' : undefined,
     ].filter(Boolean);
 
     const handleCategoryClick = () => dispatch(closeMenu());
