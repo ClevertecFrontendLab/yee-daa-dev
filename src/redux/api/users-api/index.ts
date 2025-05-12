@@ -3,6 +3,7 @@ import { ApiEndpoints } from '~/redux/api/constants';
 import { RawRecipe, Recipe } from '~/redux/api/types/recipes';
 import { replaceUnderscoreId } from '~/redux/api/utils/replace-underscore-id';
 import {
+    BloggerCard,
     BloggerInfo,
     BloggersMainType,
     resetToInit,
@@ -20,7 +21,7 @@ type ToggleSubscriptionRequestType = {
     toUserId: string;
 };
 
-type NoteType = {
+export type NoteType = {
     date: string;
     text: string;
 };
@@ -55,6 +56,12 @@ export type CurrentUserType = {
     subscriptions: string[];
 };
 
+const replaceNotesWithText = (bloggers: BloggerCard[]) =>
+    bloggers.map((item) => {
+        const { notes, ...rest } = item;
+        return { ...rest, text: notes && notes.length ? notes[0].text : '' };
+    });
+
 export const usersApi = authorizedApi
     .enhanceEndpoints({ addTagTypes: ['Bloggers'] })
     .injectEndpoints({
@@ -80,9 +87,15 @@ export const usersApi = authorizedApi
                         const { data } = await queryFulfilled;
 
                         if (!limit) {
-                            dispatch(setBloggersPreview(data.others));
+                            const dataWithText = replaceNotesWithText(data.others);
+
+                            dispatch(setBloggersPreview(dataWithText));
                         } else {
-                            dispatch(setBloggersMain(data));
+                            const dataWithText = {
+                                favorites: replaceNotesWithText(data.favorites),
+                                others: replaceNotesWithText(data.others),
+                            };
+                            dispatch(setBloggersMain(dataWithText));
                         }
                     } catch (err: unknown) {
                         dispatch(resetToInit());

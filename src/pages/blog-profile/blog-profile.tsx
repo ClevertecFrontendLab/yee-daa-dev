@@ -86,9 +86,10 @@ export const BlogProfile = () => {
                         firstName={el.firstName}
                         lastName={el.lastName}
                         login={el.login}
-                        // text={el.descr}
+                        text={el.text}
                         isFavorite={el.isFavorite}
                         cardType='PROFILE'
+                        newRecipesCount={el.newRecipesCount}
                         subscribersCount={el.subscribersCount}
                         bookmarksCount={el.bookmarksCount}
                         link={`${Paths.BLOGS}/${el._id}`}

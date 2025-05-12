@@ -31,7 +31,7 @@ type BlogCardProps = {
     subscribersCount: number;
     bookmarksCount: number;
     isFavorite?: boolean;
-    newRecipes?: number;
+    newRecipesCount?: number;
     link?: string;
 };
 
@@ -44,7 +44,7 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
     cardType,
     subscribersCount,
     bookmarksCount,
-    newRecipes,
+    newRecipesCount,
     isFavorite,
     link,
     _id,
@@ -63,7 +63,7 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                     shrinks
                     _id={_id}
                 />
-                {newRecipes && (
+                {Boolean(newRecipesCount) && newRecipesCount !== undefined && (
                     <Float top={{ base: 1, xl: 2 }} right={{ base: 1, xl: 2 }}>
                         <Badge
                             fontWeight='400'
@@ -74,7 +74,7 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                             textTransform='lowercase'
                             p='2px 8px'
                         >
-                            {makeNewRecipeBadge(newRecipes)}
+                            {makeNewRecipeBadge(newRecipesCount)}
                         </Badge>
                     </Float>
                 )}

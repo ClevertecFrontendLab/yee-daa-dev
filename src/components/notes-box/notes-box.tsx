@@ -60,6 +60,7 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
                 <Flex flexWrap='wrap' gap={4}>
                     {items.map((item) => (
                         <NoteCard
+                            key={item.date}
                             {...item}
                             minHeight={variant}
                             minWidth={{

@@ -68,7 +68,7 @@ export const AllBlogsCollapse = () => {
                                     lastName={el.lastName}
                                     login={el.login}
                                     isFavorite={el.isFavorite}
-                                    // text={el.descr}
+                                    text={el.text}
                                     cardType='AVAILABLE'
                                     subscribersCount={el.subscribersCount}
                                     bookmarksCount={el.bookmarksCount}

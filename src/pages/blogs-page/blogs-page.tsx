@@ -5,12 +5,10 @@ import { Carousel } from '~/components/carousel';
 import { Paths } from '~/constants/path';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { AllBlogsCollapse } from '~/pages/blogs-page/components/all-blogs-collapse';
-import { store } from '~/redux/configure-store';
-import { resetBlogger, selectBloggersFavorite } from '~/redux/features/bloggers-slice';
+import { selectBloggersFavorite } from '~/redux/features/bloggers-slice';
 
 export const BlogsPage = () => {
     const bloggersFavorites = useAppSelector(selectBloggersFavorite);
-    store.dispatch(resetBlogger());
 
     return (
         <Stack spacing={6} mb={8} mt={{ base: 1, sm: 0, md: -7, xmd: 0 }}>
@@ -46,12 +44,12 @@ export const BlogsPage = () => {
                                 firstName={el.firstName}
                                 lastName={el.lastName}
                                 login={el.login}
-                                // text={el}
+                                text={el.text}
                                 cardType='FAVORITE'
                                 subscribersCount={el.subscribersCount}
                                 bookmarksCount={el.bookmarksCount}
                                 isFavorite={el.isFavorite}
-                                // newRecipes={el.newRecipes}
+                                newRecipesCount={el.newRecipesCount}
                                 link={`${Paths.BLOGS}/${el._id}`}
                             />
                         ))}

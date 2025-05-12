@@ -10,6 +10,7 @@ import { BlogCard } from '../blog-card/blog-card.tsx';
 
 export const BlogSection = () => {
     const bloggersPreview = useAppSelector(selectBloggersPreview);
+    console.log('bloggersPreview', bloggersPreview);
 
     return (
         <Box mb={{ base: 8, md: 10 }} bg='lime.400' borderRadius={6} p={6}>
