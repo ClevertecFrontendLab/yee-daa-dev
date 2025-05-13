@@ -41,7 +41,6 @@ type BloggersState = {
     };
     bloggerByIdLoading: boolean;
     forceUpdateBlogsList: boolean;
-    currUserId: string;
     bloggersLimit?: string;
 };
 
@@ -76,7 +75,6 @@ const initialState: BloggersState = {
     bloggersUnfoldLoading: true,
     bloggersLimit: undefined,
     bloggerByIdLoading: false,
-    currUserId: '',
 };
 
 export const bloggersSlice = createSlice({
@@ -107,9 +105,6 @@ export const bloggersSlice = createSlice({
         setBloggerByIdLoading(state, { payload }: PayloadAction<boolean>) {
             state.bloggerByIdLoading = payload;
         },
-        setCurrUserId(state, { payload }: PayloadAction<string>) {
-            state.currUserId = payload;
-        },
         resetBlogger(state) {
             state.bloggerCurrent = initialState.bloggerCurrent;
         },
@@ -129,7 +124,6 @@ export const bloggersSlice = createSlice({
         selectBloggerByIdLoading: (state) => state.bloggerByIdLoading,
         selectForceUpdateBlogsList: (state) => state.forceUpdateBlogsList,
         selectBloggersInfoById: (state) => state.bloggerCurrent.info,
-        selectCurrUserId: (state) => state.currUserId,
     },
 });
 
@@ -144,7 +138,6 @@ export const {
     setBloggersDataById,
     setBloggersInfoById,
     setBloggerByIdLoading,
-    setCurrUserId,
     resetBlogger,
     resetToInit,
 } = bloggersSlice.actions;
@@ -160,5 +153,4 @@ export const {
     selectBloggerByIdLoading,
     selectForceUpdateBlogsList,
     selectBloggersInfoById,
-    selectCurrUserId,
 } = bloggersSlice.selectors;

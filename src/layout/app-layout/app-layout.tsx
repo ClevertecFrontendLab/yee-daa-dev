@@ -8,6 +8,7 @@ import { JUICIEST_PARAMS, NEWEST_PARAMS } from '~/redux/api/constants';
 import { useGetAllRecipesWithParamsQuery } from '~/redux/api/recipes-api';
 import { useGetBloggersQuery } from '~/redux/api/users-api';
 import { appLoadingSelector } from '~/redux/features/app-slice';
+import { selectUserId } from '~/redux/features/auth-slice';
 import { selectBloggersLimit, setBloggersUnfoldLoading } from '~/redux/features/bloggers-slice';
 
 const Layout = lazy(() => import('~/components/layout/layout.tsx'));
@@ -15,11 +16,12 @@ const Layout = lazy(() => import('~/components/layout/layout.tsx'));
 export const AppLayout = () => {
     const isLoaderOpen = useAppSelector(appLoadingSelector);
     const bloggersLimit = useAppSelector(selectBloggersLimit);
+    const userId = useAppSelector(selectUserId);
     const dispatch = useAppDispatch();
 
     const { isLoading: loadingBloggers } = useGetBloggersQuery(
         {
-            id: '67e41d2a0f68c23754bc1e07',
+            id: userId,
             limit: bloggersLimit,
         },
         { refetchOnMountOrArgChange: true },
