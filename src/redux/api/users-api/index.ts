@@ -56,6 +56,11 @@ export type CurrentUserType = {
     subscriptions: string[];
 };
 
+type GetBloggerInfoByIdType = {
+    bloggerId: string;
+    currentUserId: string;
+};
+
 const replaceNotesWithText = (bloggers: BloggerCard[]) =>
     bloggers.map((item) => {
         const { notes, ...rest } = item;
@@ -117,9 +122,9 @@ export const usersApi = authorizedApi
                     url: `${ApiEndpoints.GetBloggerInfoById}/${id}`,
                 }),
             }),
-            getUserById: build.query<BloggerInfo, string>({
-                query: (id) => ({
-                    url: `${ApiEndpoints.GetUserById}/${id}`,
+            getBloggerInfoById: build.query<BloggerInfo, GetBloggerInfoByIdType>({
+                query: ({ bloggerId, currentUserId }) => ({
+                    url: `${ApiEndpoints.GetBloggers}/${bloggerId}?currentUserId=${currentUserId}`,
                 }),
             }),
         }),
@@ -129,6 +134,6 @@ export const {
     useToggleSubscriptionMutation,
     useGetBloggersQuery,
     useGetBloggerRecipesByIdQuery,
-    useGetUserByIdQuery,
-    useLazyGetUserByIdQuery,
+    useGetBloggerInfoByIdQuery,
+    useLazyGetBloggerInfoByIdQuery,
 } = usersApi;

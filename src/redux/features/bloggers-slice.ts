@@ -16,13 +16,19 @@ export type BloggerCard = {
 };
 
 export type BloggerInfo = {
-    _id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    login: string;
-    recipesIds: string[];
-    subscribers: string[];
+    bloggerInfo: {
+        _id: string;
+        email: string;
+        login: string;
+        firstName: string;
+        lastName: string;
+        recipesIds: string[];
+        drafts: never[];
+        subscribers: string[];
+    };
+    totalSubscribers: number;
+    totalBookmarks: number;
+    isFavorite: boolean;
 };
 
 export type BloggersMainType = {
@@ -61,13 +67,19 @@ const initialState: BloggersState = {
             userId: '',
         },
         info: {
-            _id: '',
-            email: '',
-            firstName: '',
-            lastName: '',
-            login: '',
-            recipesIds: [],
-            subscribers: [],
+            bloggerInfo: {
+                _id: '',
+                email: '',
+                login: '',
+                firstName: '',
+                lastName: '',
+                recipesIds: [],
+                drafts: [],
+                subscribers: [],
+            },
+            totalSubscribers: 0,
+            totalBookmarks: 0,
+            isFavorite: false,
         },
     },
     forceUpdateBlogsList: false,

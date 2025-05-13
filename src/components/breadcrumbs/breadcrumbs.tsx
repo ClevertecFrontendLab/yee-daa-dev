@@ -15,7 +15,7 @@ export const Breadcrumbs = () => {
     const { pathname } = useLocation();
     const { selectedCategory, selectedSubCategory, recipeId } = useDetectParams();
     const dispatch = useAppDispatch();
-    const bloggerInfo = useAppSelector(selectBloggersInfoById);
+    const { bloggerInfo } = useAppSelector(selectBloggersInfoById);
 
     const { data: recipeData } = useGetRecipeByIdQuery(recipeId as string, { skip: !recipeId });
 

@@ -23,21 +23,21 @@ export const BlogProfile = () => {
         setRecipePages(2);
     };
 
-    const isBlogExists = data.userId && info._id;
+    const isBlogExists = data.userId && info.bloggerInfo._id;
 
     return isBlogExists ? (
         <Stack spacing={{ base: 3, xmd: 6 }} align='center'>
             <UserInfoBig
                 // imgSrc={info.imgSrc}
-                firstName={info.firstName}
-                lastName={info.lastName}
-                login={info.login}
-                subscribersCount={info.subscribersCount}
-                bookmarksCount={info.bookmarksCount}
+                firstName={info.bloggerInfo.firstName}
+                lastName={info.bloggerInfo.lastName}
+                login={info.bloggerInfo.login}
+                subscribersCount={info.totalSubscribers}
+                bookmarksCount={info.totalBookmarks}
                 isFavorite={info.isFavorite}
                 mt={{ base: 0, md: -8, xmd: -4 }}
                 minWidth={{ base: 0, sm: 356, xmd: 422, '2xl': 480 }}
-                _id={info._id}
+                _id={info.bloggerInfo._id}
             />
             {isArrayWithItems(data.recipes) && (
                 <RecipeCardList
