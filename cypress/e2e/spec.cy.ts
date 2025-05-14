@@ -3,7 +3,7 @@ import { RouteMatcherOptions, StaticResponseWithOptions } from 'cypress/types/ne
 
 const RESOLUTION = {
     desktop: [1887, 1120],
-    tablet: [768, 1024],
+    tablet: [769, 1024],
     mobile: [360, 800],
 } as const;
 
@@ -1336,7 +1336,7 @@ const CATEGORIES_RESPONSE = [
         description:
             'Небольшое вступление к основным блюдам, основная роль которого — возбудить аппетит, — вот классическое определение закуски. Но для русского стола закуска — это нечто большее.',
         category: 'snacks',
-        icon: '/media/icons/f3c309e1-b701-4ebc-bdf3-f388f51e8d67.svg',
+        icon: '/media/icons/d81dc799-aa68-4ae2-8c1b-f3fb6709c1fe.svg',
         subCategories: [
             {
                 _id: '67c46eb2f51967aa8390beec',
@@ -1382,7 +1382,7 @@ const CATEGORIES_RESPONSE = [
         description:
             'В том виде и разнообразии, к которому мы привыкли, салаты существуют только в России и нигде больше. Чем закусывать первую рюмку?',
         category: 'salads',
-        icon: '/media/icons/3580fd20-e2dd-469c-b886-652c00d35c37.svg',
+        icon: '/media/icons/b052e552-3f18-46a1-bb67-7664da1f80cb.svg',
         subCategories: [
             {
                 _id: '67c46df5f51967aa8390bee7',
@@ -1428,7 +1428,7 @@ const CATEGORIES_RESPONSE = [
         description:
             'Веганская кухня предлагает бесчисленное множество вариантов блюд, включая разнообразные супы, салаты, гарниры, основные блюда и десерты, приготовленные из самых разнообразных растительных ингредиентов.',
         category: 'vegan',
-        icon: '/media/icons/008376c0-9516-4e38-993d-f2a19b32c78c.svg',
+        icon: '/media/icons/35305129-05b0-49d9-a634-1ca4da7195e5.svg',
         subCategories: [
             {
                 _id: '67c48e627b493acd8a41030c',
@@ -1474,12 +1474,76 @@ const CATEGORIES_RESPONSE = [
 
 const meatSnacks = [
     {
+        _id: '67d5b91fc3df99732a05d344',
+        createdAt: '2025-03-15T17:30:07.801Z',
+        title: 'Паровой куриный рулет с мандаринами и черносливом',
+        description:
+            'Главная прелесть этого рулета заключается в том, что начинка в нем может быть какой угодно: овощной, грибной, или как тут — фруктовой.',
+        time: 40,
+        image: '/media/images/cf402bc3-f9e4-4daa-a01e-6c9824b54bf6.jpg',
+        likes: 0,
+        views: 0,
+        bookmarks: 0,
+        portions: 1,
+        authorId: '357',
+        categoriesIds: ['67c46eb2f51967aa8390beec'],
+        steps: [
+            {
+                stepNumber: 1,
+                description:
+                    'Чернослив избавить от косточек, залить кипятком и оставить на час-полтора, чтобы он хорошо пропитался. Мандарины тщательно очистить от кожуры и пленок, разделить на дольки.',
+                image: '/media/images/ca513d1f-ccc6-4793-9438-b91773418e7a.webp',
+            },
+            {
+                stepNumber: 2,
+                description:
+                    'Разрезать куриное филе вдоль на две части. Полученные куски выложить внахлест на разделочную доску, покрытую пищевой пленкой, и хорошенько отбить, особенно в местах, где куски соединяются. Слегка посолить и поперчить мясо.',
+                image: '/media/images/e3b6791a-4c12-43b7-9f1b-de85619f2325.webp',
+            },
+            {
+                stepNumber: 3,
+                description:
+                    'Грецкие орехи порубить острым ножом или смолоть в блендере. Половиной получившихся ореховых крошек равномерно посыпать отбитое и приправленное мясо.',
+                image: '/media/images/470d144f-ada4-4db8-b041-1a5cd32e10ab.webp',
+            },
+            {
+                stepNumber: 4,
+                description:
+                    'Сверху на орехи выложить чернослив (его при желании можно измельчить, а можно оставить как есть, чтобы затем на срезе рулета были видны целые фрукты), на чернослив — дольки мандарина. Сверху посыпать оставшимися орехами.',
+                image: '/media/images/f4fedd8d-9ae7-4f53-9dc3-649c204f1af0.webp',
+            },
+        ],
+        nutritionValue: {
+            calories: 185,
+            protein: 20,
+            fats: 8,
+            carbohydrates: 8,
+        },
+        ingredients: [
+            {
+                title: 'Куриное филе',
+                count: 4,
+                measureUnit: 'шт',
+            },
+            {
+                title: 'Мандарины',
+                count: 3,
+                measureUnit: 'шт',
+            },
+            {
+                title: 'Толченые грецкие орехи',
+                count: 100,
+                measureUnit: 'г',
+            },
+        ],
+    },
+    {
         _id: '67d5a8bdc3df99732a05d330',
         createdAt: '2025-03-15T16:20:13.090Z',
         title: 'Куриные ножки в соево-медовом соусе',
         description: 'Курица получается очень вкусная даже без предварительного маринования.',
         time: 35,
-        image: '/media/images/0b088a8a-69e5-472c-8ffc-83a90f382bd1.webp',
+        image: '/media/images/2c4df20c-0cc0-4a70-8f82-7df32573d6ef.webp',
         likes: 0,
         views: 0,
         bookmarks: 0,
@@ -1547,64 +1611,6 @@ const meatSnacks = [
             },
         ],
     },
-    {
-        _id: '67d5b91fc3df99732a05d344',
-        createdAt: '2025-03-15T17:30:07.801Z',
-        title: 'Паровой куриный рулет с мандаринами и черносливом',
-        description:
-            'Главная прелесть этого рулета заключается в том, что начинка в нем может быть какой угодно: овощной, грибной, или как тут — фруктовой.',
-        time: 40,
-        image: '/media/images/0163d6a5-07ba-4838-997c-abad3d3b4aa4.jpg',
-        likes: 0,
-        views: 0,
-        bookmarks: 0,
-        portions: 10,
-        authorId: '357',
-        categoriesIds: ['67c46eb2f51967aa8390beec'],
-        steps: [
-            {
-                stepNumber: 1,
-                description:
-                    'Чернослив избавить от косточек, залить кипятком и оставить на час-полтора, чтобы он хорошо пропитался. Мандарины тщательно очистить от кожуры и пленок, разделить на дольки.',
-                image: '/media/images/81b315d9-fe55-4970-9098-83de6e301233.webp',
-            },
-            {
-                stepNumber: 2,
-                description:
-                    'Разрезать куриное филе вдоль на две части. Полученные куски выложить внахлест на разделочную доску, покрытую пищевой пленкой, и хорошенько отбить, особенно в местах, где куски соединяются. Слегка посолить и поперчить мясо.',
-                image: '/media/images/44ac5c0d-2af8-449a-8d9d-fd26f361ddb3.webp',
-            },
-            {
-                stepNumber: 3,
-                description:
-                    'Грецкие орехи порубить острым ножом или смолоть в блендере. Половиной получившихся ореховых крошек равномерно посыпать отбитое и приправленное мясо.',
-                image: '/media/images/0fdf2848-78cd-45b4-a5bb-3c95942a7386.webp',
-            },
-        ],
-        nutritionValue: {
-            calories: 185,
-            protein: 20,
-            fats: 8,
-            carbohydrates: 8,
-        },
-        ingredients: [
-            {
-                title: 'Куриное филе',
-                count: 4,
-                measureUnit: 'шт',
-            },
-            {
-                title: 'Мандарины',
-                count: 3,
-                measureUnit: 'шт',
-            },
-            {
-                title: 'Толченые грецкие орехи',
-                count: 100,
-                measureUnit: 'г',
-            },
-        ],
-    },
 ];
 
 const fishSnacks = [
@@ -1615,7 +1621,7 @@ const fishSnacks = [
         description:
             'Тут в лаваш заворачивают конкретно семгу — жирную, чуть сладковатую, очень вкусную.',
         time: 10,
-        image: '/media/images/f0330098-14b5-4485-9e1d-256d1a3f8882.jpg',
+        image: '/media/images/79150e80-36a7-4d7c-9450-e226e96790cd.webp',
         likes: 0,
         views: 0,
         bookmarks: 0,
@@ -1691,7 +1697,7 @@ const fishSnacks = [
         title: 'Бутербродная паста из тунца',
         description: 'Такую пасту удобно брать с собой - на работу или на пикник.',
         time: 20,
-        image: '/media/images/afed880a-d832-45cf-906a-76f9fff1eb1a.webp',
+        image: '/media/images/3497913f-ba9f-494e-81fe-30f21fb82ced.webp',
         likes: 0,
         views: 0,
         bookmarks: 0,
@@ -1740,7 +1746,7 @@ const vegetablesSnacks = [
         description:
             'Брускетта с помидорами – вкусная итальянская закуска, а также простейший способ положить что-то на зуб, почувствовать легкую сытость, но обойтись при этом без переедания. ',
         time: 10,
-        image: '/media/images/3eceebf2-850b-41b4-b6da-789fa1b2c291.jpg',
+        image: '/media/images/7f1dfc6f-b1d9-44f8-a04f-d7e1c99bc41e.jpg',
         likes: 0,
         views: 0,
         bookmarks: 0,
@@ -1752,25 +1758,25 @@ const vegetablesSnacks = [
                 stepNumber: 1,
                 description:
                     'Поджарить хлеб на сухой сковородке или в духовке до золотистой корочки. В духовке это займет три-пять минут (в зависимости от размера ломтя хлеба) при температуре 200 градусов.',
-                image: '/media/images/dff2b8a4-5910-4a34-a272-d62a9a59e8b4.webp',
+                image: '/media/images/7f0ec832-52f6-4433-a2f0-20f291a6c7ba.webp',
             },
             {
                 stepNumber: 2,
                 description:
                     'Помидоры нарезать кубиками с ребром около полсантиметра. Мелко нарубить три зубчика чеснока.',
-                image: '/media/images/115aba7f-32a7-41bf-91d9-a84f84f3f06f.webp',
+                image: '/media/images/0fd38d64-c0a1-4987-8a01-571b61a875a9.webp',
             },
             {
                 stepNumber: 3,
                 description:
                     'Разогреть сковороду, плеснуть в нее немного оливкового масла и высыпать в него помидоры и чеснок. Готовить их минуту-другую, просто чтобы прогреть, не потеряв вкуса свежего помидора. Тогда капнуть в сковороду бальзамического крема, перемешать и снять с огня.',
-                image: '/media/images/3d669318-421d-403f-955f-d7c87b1e20a4.web',
+                image: '/media/images/eae9e53c-383f-40a0-a997-55095f1322d7.webp',
             },
             {
                 stepNumber: 4,
                 description:
                     'Поджаренный хлеб пропитать оставшимся оливковым маслом, разлив понемногу на каждый ломоть. Сверху выложить теплые помидоры, посолить по вкусу, посыпать свежемолотым черным перцем и мелко нарезанной зеленью — любой, какая окажется под рукой. ',
-                image: '/media/images/1d13f250-f5a1-4f1c-9b82-6a6298c32d12.webp',
+                image: '/media/images/8594c68d-1d9a-4112-a282-fea8f494a918.webp',
             },
         ],
         nutritionValue: {
@@ -1814,7 +1820,7 @@ const vegetablesSnacks = [
         description:
             'Гуакамоле как закуска, — или как соус, кому что ближе — традиционно известна в мексиканской кухне, но очень популярна во всем мире. Главное, найти хороший спелый авокадо и непременно размять мякоть с соком лимона',
         time: 20,
-        image: '/media/images/f0330098-14b5-4485-9e1d-256d1a3f8882.jpg',
+        image: '/media/images/c8af83bf-20cc-412a-b0f2-4d17abe0a8e3.webp',
         likes: 0,
         views: 0,
         bookmarks: 0,
@@ -1826,19 +1832,19 @@ const vegetablesSnacks = [
                 stepNumber: 1,
                 description:
                     'Помидоры очистить и мелко нарезать. Чили избавить от семян и измельчить вместе с луком, чесноком и кинзой. В большой ступке пестиком превратить чили, кинзу, помидоры и цедру лайма и лук в однородную пасту. Слегка посолить и снова перемешать.',
-                image: '/media/images/845f506d-43ea-42f4-aba8-89fe1f81caaa.webp',
+                image: '/media/images/44c3ca4c-a642-4b16-8d18-8529e0ceb2bd.webp',
             },
             {
                 stepNumber: 2,
                 description:
                     'Добавить одну-две столовые ложки воды и сок лайма, чтобы смесь стала более жидкой.',
-                image: '/media/images/a181a7a4-f962-46b9-9c70-01064295657d.webp',
+                image: '/media/images/f76f0840-d0fe-48b5-99b5-79dab7a0c7e4.webp',
             },
             {
                 stepNumber: 3,
                 description:
                     'Очистить авокадо, удалить косточки, нарезать мякоть небольшими кубиками. Добавить к пасте из чили и помидоров и тщательно все размять. Подавать с кукурузными чипсами',
-                image: '/media/images/f06fabd5-d5d4-4569-9755-d91ac995b0b4.webp',
+                image: '/media/images/f1b27c8c-496d-4ba0-8e2a-b1bdd5051c4b.webp',
             },
         ],
         nutritionValue: {
@@ -1872,7 +1878,7 @@ const vegetablesSnacks = [
         description:
             'Классический грибной жюльен — еще один результат недопонимания русскими поварами французской кухни. То, что у нас считается блюдом, французы на самом деле называют способом нарезки овощей.',
         time: 40,
-        image: '/media/images/9cfad38a-bd0b-46ea-bd49-788bf3782e61.jpg',
+        image: '/media/images/f324c69d-e9c8-4089-a4f6-4408ffc6005b.webp',
         likes: 0,
         views: 0,
         bookmarks: 0,
@@ -1884,13 +1890,13 @@ const vegetablesSnacks = [
                 stepNumber: 1,
                 description:
                     'Измельчить лук и грибы, обжарить с солью и перцем на сливочном масле. Добавить муку и перемешать.',
-                image: '/media/images/74d011ce-39ae-4552-9c24-1abf1284e1bc.webp',
+                image: '/media/images/05b82249-38ad-4636-aea4-1ff6646627a2.webp',
             },
             {
                 stepNumber: 2,
                 description:
                     'Разложить грибную смесь по формочкам, залить сливками, посыпать тертым сыром и запекать в духовке при 180 градусах 20–25 минут.',
-                image: '/media/images/e05b690a-6ecf-4c35-8115-eb0a6278a7eb.webp',
+                image: '/media/images/364a87d0-b68a-4145-80de-c8bec91d2bc5.webp',
             },
         ],
         nutritionValue: {
@@ -2035,12 +2041,13 @@ const fishSalads = [
             {
                 stepNumber: 1,
                 description:
-                    'Взять два болгарских перца, красный и желтый, вырезать плодоножку, вычистить семена и на их место вложить по раздавленному зубчику чеснока и веточке тимьяна. ',
+                    'Взять два болгарских перца, красный и желтый, вырезать плодоножку, вычистить семена и на их место вложить по раздавленному зубчику чеснока и веточке тимьяна. Завернуть в фольгу и запекать сорок минут при 180 градусах, после чего сразу окунуть в ледяную воду, снять кожуру — и нарезать в произвольном формате.',
                 image: '/media/images/0db72f46-c691-4838-a0d5-47e293c28ba3.webp',
             },
             {
                 stepNumber: 2,
-                description: 'Для домашнего майонеза смешать три желтка с дижонской горчицей',
+                description:
+                    'Для домашнего майонеза смешать три желтка с дижонской горчицей и, не спеша постоянно размешивая, влить растительное масло. В конце добавить пару чайных ложек хересного уксуса, соль и перец. Смешать майонез с пробитым в блендере консервированным тунцом.',
                 image: '/media/images/548f2a07-851f-4a9e-80eb-fda2e5509a8a.webp',
             },
             {
@@ -2161,7 +2168,7 @@ const veganSnacks = [
         title: 'Картошка, тушенная с болгарским перцем и фасолью в томатном соусе',
         description: 'Картошка, тушенная с болгарским перцем, фасолью, морковью и луком',
         time: 35,
-        image: '/media/images/1bb65f74-c472-48ac-8070-b8662ee4a6da.jpg',
+        image: '/media/images/a754ecaf-9e9a-45d2-8df4-56ea97f43b13.jpg',
         likes: 152,
         views: 180,
         bookmarks: 25,
@@ -2174,18 +2181,18 @@ const veganSnacks = [
                 stepNumber: 1,
                 description:
                     'Подготовьте необходимые ингредиенты. Из ёмкости с консервированной фасолью слейте маринад. Вскипятите любым способом 60 мл воды.',
-                image: '/media/images/de0d84c8-ef34-4638-89f1-d9439a556675.jpg',
+                image: '/media/images/f6873dcc-2755-4acc-ba56-6f9b39720813.jpg',
             },
             {
                 stepNumber: 2,
                 description:
                     'Болгарский перец промойте и удалите внутренние перегородки с семенами. Очищенные лук, морковь и болгарский перец нарежьте небольшими кубиками.',
-                image: '/media/images/1fdde382-b7e1-4235-8fa3-b28833965ea0.jpg',
+                image: '/media/images/40e9c2fe-9bf2-4dba-85ea-8d4ddd056281.jpg',
             },
             {
-                stepNumber: 12,
+                stepNumber: 3,
                 description: 'Приятного аппетита!',
-                image: '/media/images/aa02178e-c001-4670-81eb-5e6cf0f9665d.jpg',
+                image: '/media/images/cd696a32-05a0-4a95-b2f9-372bbc68b0f7.jpg',
             },
         ],
         nutritionValue: {
@@ -2219,7 +2226,7 @@ const veganSnacks = [
         description:
             'Рекомендую всем приготовить постное блюдо из картофеля и грибов. Готовится это блюдо без яиц, без мяса и без сыра, из самых простых ингредиентов!',
         time: 60,
-        image: '/media/images/735078bc-01ee-4df7-b5cb-83e65f8c4d9d.jpg',
+        image: '/media/images/00b0f891-a720-4742-84fa-a004ffdf15f2.jpg',
         likes: 120,
         views: 193,
         bookmarks: 10,
@@ -2231,22 +2238,22 @@ const veganSnacks = [
             {
                 stepNumber: 1,
                 description: 'Подготавливаем необходимые ингредиенты.',
-                image: '/media/images/d20a4177-e940-4222-a4b4-e0611013a607.jpg',
+                image: '/media/images/bdb03412-2851-4dd9-96ac-8d0f425532f9.jpg',
             },
             {
                 stepNumber: 2,
                 description: 'Картофель нарезаем кусочками и отправляем его вариться.',
-                image: '/media/images/b9bfd6ac-c1b4-4af2-adb2-7359840111b7.jpg',
+                image: '/media/images/24992e5a-46e3-49ab-ab9c-e300d5b97746.jpg',
             },
             {
                 stepNumber: 3,
                 description: 'Лук мелко нарезаем.',
-                image: '/media/images/2575bf4c-446f-40bd-86ef-92182e7292b0.jpg',
+                image: '/media/images/4839f466-9604-4db7-8c83-0d3f7c99592a.jpg',
             },
             {
                 stepNumber: 4,
                 description: 'Нарезаем грибы.',
-                image: '/media/images/f56d5c51-59ae-47f0-89ee-b06bb034281d.jpg',
+                image: '/media/images/1aeb1db3-50e6-44c9-b062-65f44164b7c6.jpg',
             },
         ],
         nutritionValue: {
@@ -2288,7 +2295,7 @@ const veganGarnish = [
         description:
             'Такая картошечка украсит любой семейный обед! Все будут в полном восторге, очень вкусно! Аромат чеснока, хрустящая корочка на картошечке - просто объедение! Отличная идея для обеда или ужина, готовится просто!',
         time: 50,
-        image: '/media/images/b2f35118-262f-408c-8364-07285ba41580.jpg',
+        image: '/media/images/5fd9861e-06b4-4043-99d1-4f2c0b02434f.jpg',
         likes: 55,
         views: 78,
         bookmarks: 6,
@@ -2305,24 +2312,24 @@ const veganGarnish = [
             {
                 stepNumber: 1,
                 description: 'Подготовьте все ингредиенты.',
-                image: '/media/images/743768d9-edb2-42cb-889c-6930001cd3fd.jpg',
+                image: '/media/images/af75d303-3599-42e3-90b0-72f5a850d941.jpg',
             },
             {
                 stepNumber: 2,
                 description: 'Картофель тщательно помойте, обсушите.',
-                image: '/media/images/144e0ad8-c982-4b0e-a65b-aaa0646060f5.jpg',
+                image: '/media/images/cc186430-481b-4d7b-9f1a-26db4b7fcf8f.jpg',
             },
             {
                 stepNumber: 3,
                 description:
                     'Добавьте растительное масло, соль, чёрный молотый перец и панировочные сухарики. Все перемешайте так, чтобы специи и сухари равномерно распределились по картофелю.',
-                image: '/media/images/6b17d657-aed1-41ff-868e-b357f04e2a3b.jpg',
+                image: '/media/images/f1129db1-0e3c-4b34-9f97-154c80c17f14.jpg',
             },
             {
                 stepNumber: 4,
                 description:
                     'На край формы для запекания добавьте половинку головки чеснока в кожуре. Запекайте картофель в разогретой до 190 градусов духовке 35-40 минут.',
-                image: '/media/images/84cdc854-d04d-47e0-a58d-260087fec65f.jpg',
+                image: '/media/images/7d406e43-b386-4b81-b7c5-1b175fb81a05.jpg',
             },
         ],
         nutritionValue: {
@@ -2356,7 +2363,7 @@ const veganGarnish = [
         description:
             'Есть такие блюда, которые актуальны в любое время года. Приготовьте по нашему рецепту овощное рагу с кабачками, и наслаждайтесь вкусом и богатым ароматом приготовленных овощей.',
         time: 50,
-        image: '/media/images/d74c3805-d534-45a9-9a60-ef232dfb07d8.jpg',
+        image: '/media/images/45ed37b3-5583-4336-a059-bc9d27183237.jpg',
         likes: 258,
         views: 400,
         bookmarks: 342,
@@ -2372,18 +2379,18 @@ const veganGarnish = [
                 stepNumber: 1,
                 description:
                     'Нарезать мелко петрушку и базилик, добавить соль, перец и 1 размолотый зубчик чеснока, все хорошо перемешать.',
-                image: '/media/images/e1805fd7-87bf-43fd-890e-d21ce8fbe980.jpg',
+                image: '/media/images/cbea9347-f960-4593-bc69-fde0ca5ac7d6.jpg',
             },
             {
                 stepNumber: 2,
                 description: 'Нарезать все овощи мелкими кубиками.',
-                image: '/media/images/679348be-1e0b-47e2-a7c2-d55a320c2ada.jpg',
+                image: '/media/images/5df90d60-a28d-40a0-bee0-0b4f56cb343c.jpg',
             },
             {
                 stepNumber: 3,
                 description:
                     'На разогретую сковороду добавить растительное масло и выложить лук. Обжарить лук в течение 1 минуты.',
-                image: '/media/images/6d29497b-da4a-4fc4-9ab9-4dc1171e81cb.jpg',
+                image: '/media/images/bc874c99-6588-4a7e-b5a9-72799bb141fd.jpg',
             },
         ],
         nutritionValue: {
@@ -2427,7 +2434,7 @@ const veganGarnish = [
         description:
             'Освежающий, яркий и легкий - лучший для летних посиделок! Салат с арбузом, Фетой и рукколой - это контраст сочного и сладкого арбуза с соленой и нежной Фетой.',
         time: 15,
-        image: '/media/images/dbec4e25-6eee-443d-b67f-35ed16c72c2a.jpg',
+        image: '/media/images/88f990b7-ed06-45af-8c1f-9122107f8138.jpg',
         likes: 40,
         views: 254,
         bookmarks: 33,
@@ -2438,32 +2445,32 @@ const veganGarnish = [
             {
                 stepNumber: 1,
                 description:
-                    'Как сделать салат с арбузом, Фетой и рукколой? Для начала необходимо подготовить все ингредиенты. Арбуз выбирайте не переспевший, сладкий и, желательно, с минимальным количеством зерен. Арбуз, перед тем как разрезать тщательно вымойте в теплой воде.',
-                image: '/media/images/facc029e-04a4-4e38-a138-bbe7fa66e521.jpg',
+                    'Как сделать салат с арбузом, Фетой и рукколой. Для начала необходимо подготовить все ингредиенты. Арбуз выбирайте не переспевший, сладкий и, желательно, с минимальным количеством зерен. Для добавления хрустящей текстуры можно добавить к салату свежий огурец.',
+                image: '/media/images/93433284-17e6-4b7c-925e-0c367249f575.jpg',
             },
             {
                 stepNumber: 2,
                 description:
-                    'Арбуз нарежьте на куски, а затем разрежьте каждый кусок на квадраты среднего размера. Достаньте из арбуза косточки и переложите нарезанный арбуз в салатник',
-                image: '/media/images/7f629449-9a03-486b-babb-619e170b4af8.jpg',
+                    'Арбуз нарежьте на куски, а затем разрежьте каждый кусок на квадраты среднего размера. Достаньте из арбуза косточки и переложите нарезанный арбуз в салатник, накройте крышкой или пленкой и отправьте в холодильник (чтобы он слегка охладился, пока подготавливаются остальные ингредиенты). Листочки мяты промойте и мелко нарежьте.',
+                image: '/media/images/811e1382-2a75-443b-998f-8d6d6858edc0.jpg',
             },
             {
                 stepNumber: 3,
                 description:
                     'Сыр фета нарежьте на кусочки одинакового среднего размера. О том, какие виды сыра подойдут в качестве замены, читайте в статье по ссылке в конце рецепта.',
-                image: '/media/images/82d14cd4-e8c4-4ce7-9073-06188045d311.jpg',
+                image: '/media/images/5ed6e475-0a16-4f56-aec6-b3de0a066a0e.jpg',
             },
             {
                 stepNumber: 4,
                 description:
-                    'Рукколу хорошо промойте под проточной водой и обсушите бумажным полотенцем. Достаньте арбуз из холодильника. ',
-                image: '/media/images/8e5bb352-6cbc-41d9-a1d8-f18051ec7668.jpg',
+                    'Рукколу хорошо промойте под проточной водой и обсушите бумажным полотенцем. Достаньте арбуз из холодильника. Добавьте к арбузу сыр, рукколу, мяту, оливковое масло. Посолите и поперчите по вкусу. Тщательно и аккуратно перемешайте салат.',
+                image: '/media/images/23fc6f59-a32c-48c9-86d0-a9649d60aef5.jpg',
             },
             {
                 stepNumber: 5,
                 description:
                     'После приготовления салат с арбузом, Фетой и рукколой можно сразу подавать к столу. Приятного аппетита!',
-                image: '/media/images/49362b13-2091-45d3-8a00-d1c48c2dd407.jpg',
+                image: '/media/images/646e8f62-74d6-45d1-96c0-f176971754b9.jpg',
             },
         ],
         nutritionValue: {
@@ -2500,7 +2507,7 @@ const veganDesserts = [
         description:
             'Даже летний зной с таким освежителем окажется раем! Что может быть лучше, чем освежающий, кисло-сладкий, ароматный фруктовый лед, в котором нет ни грамма химии? В отличие от покупного фруктового мороженого в таком замороженном фруктовом пюре содержатся только натуральные компоненты.',
         time: 180,
-        image: '/media/images/8fd43f81-f395-4af1-8109-2137d5715914.jpg',
+        image: '/media/images/b4568550-60d4-467f-bad5-ed61e2e5c339.jpg',
         likes: 49,
         views: 207,
         bookmarks: 61,
@@ -2511,58 +2518,58 @@ const veganDesserts = [
             {
                 stepNumber: 1,
                 description:
-                    'Для этого блюда подходит даже не очень сладкая и не слишком красивая клубника, такая неизбежно попадается, как старательно ни выбирай.',
-                image: '/media/images/277f896f-0d23-4add-834b-8c319275deea.jpg',
+                    'Для этого блюда подходит даже не очень сладкая и не слишком красивая клубника, такая неизбежно попадается, как старательно ни выбирай. Наоборот, чем мягче она будет, тем однороднее пюре и качественней лед получится. Киви тоже лучше выбирать мягкие, очень спелые.',
+                image: '/media/images/52461e40-17c0-4c7b-831a-bae4fba8d25d.jpg',
             },
             {
                 stepNumber: 2,
                 description:
                     'Сахар всыпать в воду, нагреть до полного его растворения. Добавить лимонный сок. Количество сахара и лимонного сока регулируйте по своему вкусу, много еще зависит от сладости ягод и фруктов.',
-                image: '/media/images/92bdba7b-0b37-4214-bc0f-1041c07e8493.jpg',
+                image: '/media/images/058de5ad-db3f-409b-9539-388ff4d05d17.jpg',
             },
             {
                 stepNumber: 3,
                 description: 'Клубнику очистить, растолочь давилкой.',
-                image: '/media/images/1cc1950f-6392-49b9-8faf-d7cf308c6810.jpg',
+                image: '/media/images/767e4ebc-fc97-476a-a92f-a5a0ca925ddc.jpg',
             },
             {
                 stepNumber: 4,
                 description:
                     'Киви очистить, нарезать кусочками и пюрировать. Можно использовать блендер или терку.',
-                image: '/media/images/08de3f74-02c8-438a-9a6b-9c82d91396ef.jpg',
+                image: '/media/images/a46c8961-4be8-46fa-a2b3-9fc9e544ba39.jpg',
             },
             {
                 stepNumber: 5,
                 description: 'В клубничное пюре добавить половину сахарного сиропа.',
-                image: '/media/images/85faf462-a4bc-48fa-ac6c-8224a87755ea.jpg',
+                image: '/media/images/05c699d0-6f20-4f38-983a-99b3b80e7ef1.jpg',
             },
             {
                 stepNumber: 6,
                 description: 'Влить в пюре из киви оставшийся сахарный сироп.',
-                image: '/media/images/80c3c498-19f7-476e-9ef6-921363308fa9.jpg',
+                image: '/media/images/5f92d664-9ba4-477e-98d0-ffcf480fd0e4.jpg',
             },
             {
                 stepNumber: 7,
                 description:
-                    'В качестве формочек я использовала небольшие пластиковые стаканчики (100 мл) и деревянные палочки для мороженого.',
-                image: '/media/images/a79f37ea-5e87-486d-aae0-3b7011383295.jpg',
+                    'В качестве формочек я использовала небольшие пластиковые стаканчики (100 мл) и деревянные палочки для мороженого. А вообще в продаже есть специальные формы для домашнего мороженого.',
+                image: '/media/images/2759fa3f-4a63-4997-b86b-2662eb74d28b.jpg',
             },
             {
                 stepNumber: 8,
                 description:
-                    'В один стаканчик влить клубничное пюре, заполнив его до половины. Другой наполовину заполнить пюре из киви.',
-                image: '/media/images/ac52d330-91ef-4a39-bd5d-c4ed97f01776.jpg',
+                    'В один стаканчик влить клубничное пюре, заполнив его до половины. Другой наполовину заполнить пюре из киви. Поставить формы в морозилку на 1 час.',
+                image: '/media/images/53657c67-5537-420a-846c-50526f08e5a2.jpg',
             },
             {
                 stepNumber: 9,
                 description: 'Воткнуть в подмерзшую смесь деревянные палочки.',
-                image: '/media/images/2b1f0431-050c-4965-be25-51ce118c2321.jpg',
+                image: '/media/images/f646be37-e941-486b-aad1-b609a2c6617a.jpg',
             },
             {
                 stepNumber: 10,
                 description:
-                    'Залить оставшимся пюре из клубники и киви соответственно. Поставить формы в холодильник до полного замерзания, это займет 2-3 часа.',
-                image: '/media/images/b343212a-c8ca-4329-8e8b-77eccff4f759.jpg',
+                    'Залить оставшимся пюре из клубники и киви соответственно. Поставить формы в холодильник до полного замерзания, это займет 2-3 часа. Достать фруктовый лед из формочек. Если он застрял, их можно на пару секунд опустить в горячую воду.',
+                image: '/media/images/f7025dc0-346c-475e-af0a-b787ce9e5a5d.jpg',
             },
         ],
         nutritionValue: {
@@ -2620,7 +2627,7 @@ const metaData = {
 };
 
 const MOCK_RECIPES_BY_CATEGORY = {
-    data: [allRecipes.slice(5, 10)],
+    data: allRecipes.slice(5, 10),
     meta: { total: 5, limit: RELEVANT_KITCHEN_LIMIT, page: 1, totalPages: 1 },
 };
 
@@ -2666,7 +2673,11 @@ const interceptNewestRecipes = (delay: number = DELAY.SM, mockBody = null) =>
             statusCode: 200,
             delay,
             body: mockBody ?? {
-                data: allRecipes.slice(0, Number(SLIDER_SIZE)),
+                data: allRecipes
+                    .slice(0, Number(SLIDER_SIZE))
+                    .sort(
+                        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+                    ),
                 meta: { ...metaData, limit: Number(SLIDER_SIZE) },
             },
         },
@@ -2964,7 +2975,8 @@ describe('application', () => {
             cy.viewport(768, 1024);
             interceptJuiciestPage();
 
-            cy.getByTestId(TEST_ID.Link.Jusiest).should('exist').click();
+            cy.getByTestId(TEST_ID.Link.Jusiest).should('not.be.visible');
+            cy.getByTestId(TEST_ID.Link.JusiestMob).should('exist').and('be.visible').click();
 
             setElementPosition();
             cy.getByTestId(TEST_ID.Nav).should('not.exist');
@@ -3084,7 +3096,7 @@ describe('application', () => {
             const { _id, title } = juiciestRecipes[0];
             interceptApi(
                 {
-                    url: `${API_ENDPOINTS.Recipe}/${juiciestRecipes[0]._id}`,
+                    url: `${API_ENDPOINTS.Recipe}/${_id}`,
                 },
                 { body: juiciestRecipes[0] },
             );
@@ -3093,14 +3105,14 @@ describe('application', () => {
             cy.url().should('include', _id);
             cy.contains(title).should('exist');
             cy.scrollTo('top');
-            cy.getByTestId('ingredient-quantity-0').contains('3');
-            cy.getByTestId('ingredient-quantity-1').contains('6');
-            cy.getByTestId('increment-stepper').click();
             cy.getByTestId('ingredient-quantity-0').contains('4');
-            cy.getByTestId('ingredient-quantity-1').contains('8');
+            cy.getByTestId('ingredient-quantity-1').contains('3');
+            cy.getByTestId('increment-stepper').click();
+            cy.getByTestId('ingredient-quantity-0').contains('8');
+            cy.getByTestId('ingredient-quantity-1').contains('6');
             cy.getByTestId('decrement-stepper').click().click();
-            cy.getByTestId('ingredient-quantity-0').contains('2');
-            cy.getByTestId('ingredient-quantity-1').contains('4');
+            cy.getByTestId('ingredient-quantity-0').contains('4');
+            cy.getByTestId('ingredient-quantity-1').contains('3');
         });
     });
 
@@ -3438,7 +3450,7 @@ describe('application', () => {
             cy.contains('Самое сочное').should('exist').and('be.visible');
 
             interceptJuiciestPage();
-            cy.getByTestId(TEST_ID.Link.Jusiest).should('exist').click();
+            cy.getByTestId(TEST_ID.Link.JusiestMob).should('exist').click();
 
             cy.get(`[data-test-id^=${TEST_ID.Card.Food}]`).should(
                 'have.length',
