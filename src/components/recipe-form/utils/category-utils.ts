@@ -1,10 +1,10 @@
 import { Category, SubCategory } from '~/redux/api/types/categories';
 
-interface GetRecipePathParams {
+type GetRecipePathParams = {
     categoriesIds: string[];
     subCategories: SubCategory[];
     categories: Category[];
-}
+};
 
 export const getRecipePath = ({
     categories,

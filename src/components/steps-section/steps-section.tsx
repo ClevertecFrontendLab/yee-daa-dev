@@ -8,23 +8,22 @@ import {
     IconButton,
     Text,
     Textarea,
-    useMediaQuery,
     VStack,
 } from '@chakra-ui/react';
 import { Control, FieldErrors, useFieldArray, UseFormRegister } from 'react-hook-form';
 
 import { AddPlusIcon } from '~/components/icons/add-plus-icon';
 import { ImageUpload } from '~/components/image-upload/image-upload';
-import { theme } from '~/theme/theme';
+import { useIsSmallScreen } from '~/hooks/media-query';
 import { RecipeFormValues } from '~/types/recipe-form';
 
 import { BasketIcon } from '../icons/basket-icon';
 
-interface StepsSectionProps {
+type StepsSectionProps = {
     control: Control<RecipeFormValues>;
     register: UseFormRegister<RecipeFormValues>;
     errors: FieldErrors<RecipeFormValues>;
-}
+};
 
 export const StepsSection = ({ control, register, errors }: StepsSectionProps) => {
     const {
@@ -36,7 +35,7 @@ export const StepsSection = ({ control, register, errors }: StepsSectionProps) =
         control,
         name: 'steps',
     });
-    const [isSmallScreen] = useMediaQuery(`(width < ${theme.breakpoints.md})`);
+    const isSmallScreen = useIsSmallScreen();
 
     const handleRemoveStep = (index: number) => {
         steps.forEach((step, i) => {

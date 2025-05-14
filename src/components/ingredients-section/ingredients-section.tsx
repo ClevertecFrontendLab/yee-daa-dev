@@ -8,29 +8,29 @@ import {
     NumberInputField,
     Select,
     Text,
-    useMediaQuery,
     VStack,
 } from '@chakra-ui/react';
 import { Control, Controller, FieldErrors, useFieldArray, UseFormRegister } from 'react-hook-form';
 
 import { AddPlusIcon } from '~/components/icons/add-plus-icon';
 import { PlusIcon } from '~/components/icons/plus-icon';
+import { MAX_SECTION_LENGTH } from '~/containers/validations';
+import { useIsSmallScreen } from '~/hooks/media-query';
 import { useGetMeasureUnitsQuery } from '~/redux/api/measure-api';
-import { theme } from '~/theme/theme';
 import { RecipeFormValues } from '~/types/recipe-form';
 
 import { BasketIcon } from '../icons/basket-icon';
 
-interface IngredientsSectionProps {
+type IngredientsSectionProps = {
     control: Control<RecipeFormValues>;
     register: UseFormRegister<RecipeFormValues>;
     errors: FieldErrors<RecipeFormValues>;
-}
+};
 
 export const IngredientsSection = ({ control, register, errors }: IngredientsSectionProps) => {
     const { data: measureUnits = [] } = useGetMeasureUnitsQuery();
 
-    const [isSmallScreen] = useMediaQuery(`(width < ${theme.breakpoints.md})`);
+    const isSmallScreen = useIsSmallScreen();
 
     const {
         fields: ingredients,
@@ -42,7 +42,7 @@ export const IngredientsSection = ({ control, register, errors }: IngredientsSec
     });
 
     const handleAddIngredient = () => {
-        if (ingredients.length <= 50) {
+        if (ingredients.length <= MAX_SECTION_LENGTH) {
             appendIngredient({
                 measureUnit: null,
                 title: null,

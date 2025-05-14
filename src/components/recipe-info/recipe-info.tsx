@@ -9,26 +9,25 @@ import {
     NumberInputStepper,
     Text,
     Textarea,
-    useMediaQuery,
     VStack,
 } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { Control, Controller, FieldErrors, UseFormRegister } from 'react-hook-form';
 
 import { MultiSelect } from '~/components/multi-select';
+import { useIsSmallScreen } from '~/hooks/media-query';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { selectSubCategories } from '~/redux/features/categories-slice';
-import { theme } from '~/theme/theme';
 import { RecipeFormValues } from '~/types/recipe-form';
 
-interface RecipeInfoProps {
+type RecipeInfoProps = {
     control: Control<RecipeFormValues>;
     register: UseFormRegister<RecipeFormValues>;
     errors: FieldErrors<RecipeFormValues>;
-}
+};
 
 export const RecipeInfo = ({ control, register, errors }: RecipeInfoProps) => {
-    const [isSmallScreen] = useMediaQuery(`(width < ${theme.breakpoints.md})`);
+    const isSmallScreen = useIsSmallScreen();
     const subCategories = useAppSelector(selectSubCategories);
 
     const categoryOptions = useMemo(

@@ -89,7 +89,7 @@ export const recipeApi = authorizedApi.injectEndpoints({
                         dispatch(setFilteredRecipes(data.data));
                         dispatch(setShowedEmptyText(!data.data.length));
                     }
-                } catch (_error) {
+                } catch {
                     dispatch(setIsFilterError(true));
                 }
             },

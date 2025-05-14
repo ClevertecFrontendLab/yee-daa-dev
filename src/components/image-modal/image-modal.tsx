@@ -16,16 +16,16 @@ import { FC } from 'react';
 
 import { ImgIcon } from '../icons/img-icon';
 
-interface ImageModalProps {
+type ImageModalProps = {
     isOpen: boolean;
-    onClose: () => void;
+    onClose: VoidFunction;
     currentImage?: string;
     isExistingImage: boolean;
-    onImageSelect: () => void;
-    onSave: () => void;
-    onDelete: () => void;
+    onImageSelect: VoidFunction;
+    onSave: VoidFunction;
+    onDelete: VoidFunction;
     isLoading?: boolean;
-}
+};
 
 export const ImageModal: FC<ImageModalProps> = ({
     isOpen,
@@ -37,7 +37,7 @@ export const ImageModal: FC<ImageModalProps> = ({
     onDelete,
     isLoading = false,
 }) => (
-    <Modal isOpen={isOpen} onClose={isLoading ? () => {} : onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent maxW='400px'>
             <ModalHeader>Изображение</ModalHeader>

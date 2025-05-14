@@ -1,4 +1,4 @@
-import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import { ChevronUpIcon } from '@chakra-ui/icons';
 import {
     Button,
     ChakraProps,
@@ -14,6 +14,8 @@ import {
 } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import { Control, FieldValues, Path, useController } from 'react-hook-form';
+
+import { isArrayWithItems } from '~/utils/is-array-with-items';
 
 type MultiSelectOption = {
     id: string;
@@ -54,12 +56,10 @@ export const MultiSelect = <T extends FieldValues = FieldValues>({
 
     const [isOpen, setIsOpen] = useState(false);
 
-    const handleMenuToggle = () => {
-        setIsOpen(!isOpen);
-    };
+    const handleMenuToggle = () => setIsOpen((prevState) => !prevState);
 
     const handleOptionClick = (value: string) => {
-        const currentValues = Array.isArray(field.value) ? (field.value as string[]) : [];
+        const currentValues = isArrayWithItems(field.value) ? (field.value as string[]) : [];
         const newSelected = currentValues.includes(value)
             ? currentValues.filter((item) => item !== value)
             : [...currentValues, value];
@@ -68,7 +68,7 @@ export const MultiSelect = <T extends FieldValues = FieldValues>({
     };
 
     const selectedValues = useMemo(
-        () => (Array.isArray(field.value) ? (field.value as string[]) : []),
+        () => (isArrayWithItems(field.value) ? (field.value as string[]) : []),
         [field.value],
     );
     const selectedOptions = useMemo(
@@ -102,7 +102,11 @@ export const MultiSelect = <T extends FieldValues = FieldValues>({
                         borderColor: error ? 'red.500' : 'lime.150',
                         boxShadow: error ? '0 0 0 1px #E53E3E' : 'none',
                     }}
-                    rightIcon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                    rightIcon={
+                        <ChevronUpIcon
+                            style={{ transform: isOpen ? 'rotate(0turn)' : 'rotate(0.5turn)' }}
+                        />
+                    }
                     {...rest}
                 >
                     <Flex wrap='wrap' gap={1} width='100%'>

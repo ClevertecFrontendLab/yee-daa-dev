@@ -4,13 +4,13 @@ import { FC } from 'react';
 import { PenIcon } from '../icons/pen-icon';
 import { ResultModal } from '../result-modal/result-modal';
 
-interface ExitWithoutSavingModalProps {
+type ExitWithoutSavingModalProps = {
     isOpen: boolean;
-    handleContinueNavigation: () => void;
-    handleCancelNavigation: () => void;
+    handleContinueNavigation: VoidFunction;
+    handleCancelNavigation: VoidFunction;
     isLoading: boolean;
-    onSaveDraft: () => void;
-}
+    onSaveDraft: VoidFunction;
+};
 
 export const ExitWithoutSavingModal: FC<ExitWithoutSavingModalProps> = ({
     isOpen,

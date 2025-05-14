@@ -37,9 +37,9 @@ import { BookmarkIcon } from '../icons/bookmark-icon';
 import { LikeIcon } from '../icons/like-icon';
 import { PenIcon } from '../icons/pen-icon';
 
-interface RecipeCardProps {
+type RecipeCardProps = {
     recipe?: Recipe;
-}
+};
 
 export const RecipeCard: FC<RecipeCardProps> = ({ recipe }) => {
     const userId = useAppSelector(selectUserId);
@@ -54,11 +54,10 @@ export const RecipeCard: FC<RecipeCardProps> = ({ recipe }) => {
 
     const isCanEditRecipe = recipe?.authorId === userId;
 
-    const onEditRecipe = () => {
+    const onEditRecipe = () =>
         navigate(
             `/${EDIT_RECIPE_PATH}/${selectedCategory?.category}/${selectedSubCategory?.category}/${recipeId}`,
         );
-    };
 
     const onDeleteRecipe = async () => {
         try {
