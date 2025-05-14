@@ -130,6 +130,7 @@ export const RecipeCard: FC<RecipeCardProps> = ({ recipe }) => {
                                 icon={<BasketIcon />}
                                 h={2}
                                 onClick={onDeleteRecipe}
+                                data-test-id='delete-recipe-button'
                                 sx={{
                                     display: 'grid',
                                     placeItems: 'center',

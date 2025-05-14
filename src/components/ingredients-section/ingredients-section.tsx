@@ -42,11 +42,11 @@ export const IngredientsSection = ({ control, register, errors }: IngredientsSec
     });
 
     const handleAddIngredient = () => {
-        if (ingredients.length < 50) {
+        if (ingredients.length <= 50) {
             appendIngredient({
                 measureUnit: null,
                 title: null,
-                count: null,
+                count: 0,
             });
         }
     };
@@ -93,6 +93,7 @@ export const IngredientsSection = ({ control, register, errors }: IngredientsSec
                 >
                     <FormControl isInvalid={!!errors.ingredients?.[index]?.title} minW={0} w='100%'>
                         <Input
+                            data-test-id={`recipe-ingredients-title-${index}`}
                             id='title'
                             placeholder='Ингредиент'
                             _focus={{ borderColor: 'lime.150', boxShadow: 'none' }}
@@ -117,16 +118,30 @@ export const IngredientsSection = ({ control, register, errors }: IngredientsSec
                             <Controller
                                 name={`ingredients.${index}.count`}
                                 control={control}
-                                rules={{ required: true }}
+                                rules={{ required: true, min: 1 }}
                                 render={({ field: { onChange, value } }) => (
                                     <NumberInput
                                         step={1}
-                                        min={1}
-                                        value={value || undefined}
-                                        onChange={(_, valueAsNumber) => onChange(valueAsNumber)}
+                                        value={value}
+                                        onChange={(value) => {
+                                            let val;
+
+                                            switch (value) {
+                                                case '':
+                                                    val = '';
+                                                    break;
+                                                case '-':
+                                                    val = '-';
+                                                    break;
+                                                default:
+                                                    val = Number(value);
+                                            }
+                                            onChange(val);
+                                        }}
                                     >
                                         <NumberInputField
                                             placeholder='100'
+                                            data-test-id={`recipe-ingredients-count-${index}`}
                                             _focus={{ borderColor: 'lime.150', boxShadow: 'none' }}
                                         />
                                     </NumberInput>
@@ -141,6 +156,7 @@ export const IngredientsSection = ({ control, register, errors }: IngredientsSec
                             w='100%'
                             isInvalid={!!errors.ingredients?.[index]?.measureUnit}
                             _focus={{ borderColor: 'lime.150', boxShadow: 'none' }}
+                            data-test-id={`recipe-ingredients-measureUnit-${index}`}
                             {...register(`ingredients.${index}.measureUnit`, {
                                 required: true,
                             })}
@@ -151,12 +167,13 @@ export const IngredientsSection = ({ control, register, errors }: IngredientsSec
                                 </option>
                             ))}
                         </Select>
-                        {index === ingredients.length - 1 ? (
+                        {index === ingredients.length - 1 && ingredients.length < 50 ? (
                             <IconButton
                                 isRound={true}
                                 variant='unstyled'
                                 fontSize='32px'
                                 aria-label='Done'
+                                data-test-id='recipe-ingredients-add-ingredients'
                                 icon={<AddPlusIcon />}
                                 onClick={handleAddIngredient}
                                 sx={{
@@ -169,6 +186,7 @@ export const IngredientsSection = ({ control, register, errors }: IngredientsSec
                                 variant='unstyled'
                                 fontSize='14px'
                                 aria-label='Remove'
+                                data-test-id={`recipe-ingredients-remove-ingredients-${index}`}
                                 icon={<BasketIcon />}
                                 onClick={() => removeIngredient(index)}
                                 sx={{

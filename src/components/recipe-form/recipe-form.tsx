@@ -34,7 +34,7 @@ export const RecipeForm = () => {
     const { recipeId } = useDetectParams();
 
     const { data: recipe } = useGetRecipeByIdQuery(recipeId as string, { skip: !recipeId });
-    const { data: measureUnits = [] } = useGetMeasureUnitsQuery();
+    const { data: measureUnits } = useGetMeasureUnitsQuery();
 
     const [createRecipe, { isLoading: isLoadingCreateRecipe }] = useCreateRecipeMutation();
     const [updateRecipe, { isLoading: isLoadingUpdateRecipe }] = useUpdateRecipeMutation();
@@ -61,15 +61,16 @@ export const RecipeForm = () => {
         formState: { errors, isSubmitting, isSubmitSuccessful },
     } = useForm<RecipeFormValues>({
         defaultValues: {
-            ingredients: [{ measureUnit: null, title: null, count: null }],
+            ingredients: [{ measureUnit: null, title: null, count: undefined }],
             steps: [{ stepNumber: 1, description: null, image: null }],
+            description: null,
         },
         shouldFocusError: false,
     });
 
     const formValues = watch();
 
-    const { handleCancelNavigation, handleContinueNavigation, isOpen } = useBlockerControl(
+    const { handleCancelNavigation, handleContinueNavigation, isOpen, onClose } = useBlockerControl(
         hasAnyFieldsChanged(formValues, recipe, isSubmitSuccessful || isSuccessCreateRecipeDraft),
     );
 
@@ -82,6 +83,7 @@ export const RecipeForm = () => {
 
         try {
             if (recipeId) {
+                console.log(values);
                 const response = await updateRecipe({
                     id: recipeId,
                     data: values,
@@ -100,6 +102,7 @@ export const RecipeForm = () => {
         const isValid = await trigger('title');
 
         if (!isValid) {
+            onClose();
             return;
         }
 
@@ -132,7 +135,11 @@ export const RecipeForm = () => {
 
     return (
         <>
-            <form onSubmit={formHandleSubmit(onSubmit)} style={{ width: '100%' }}>
+            <form
+                onSubmit={formHandleSubmit(onSubmit)}
+                style={{ width: '100%' }}
+                data-test-id='recipe-form'
+            >
                 <VStack spacing={10}>
                     <Flex
                         alignItems='start'

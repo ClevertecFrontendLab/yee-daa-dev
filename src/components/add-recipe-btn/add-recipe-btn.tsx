@@ -11,7 +11,7 @@ export const AddRecipeBtn = () => {
     const onClick = () => navigate(Paths.NEW_RECIPE);
 
     return (
-        <div className={styles.wrapper} onClick={onClick}>
+        <div className={styles.wrapper} onClick={onClick} data-test-id='add-recipe-button'>
             <button className={styles.btn}>
                 <svg
                     width='24'

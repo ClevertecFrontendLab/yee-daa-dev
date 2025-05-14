@@ -22,7 +22,12 @@ export const RecipeImage = ({ control, errors }: RecipeImageProps) => {
             width='100%'
             h={isLargeScreen ? 410 : 224}
         >
-            <ImageUpload name='image' control={control} rules={{ required: true }} />
+            <ImageUpload
+                testId='recipe-image-block'
+                name='image'
+                control={control}
+                rules={{ required: true }}
+            />
         </FormControl>
     );
 };

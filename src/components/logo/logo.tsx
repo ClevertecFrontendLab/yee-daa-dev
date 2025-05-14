@@ -9,7 +9,14 @@ type LogoProps = FlexProps & {
 };
 
 export const Logo: FC<LogoProps> = ({ height = DEFAULT_HEIGHT, hideMd = true, ...restProps }) => (
-    <Flex alignItems='flex-end' h={`${height}px`} justify='center' gap='3%' {...restProps}>
+    <Flex
+        alignItems='flex-end'
+        h={`${height}px`}
+        justify='center'
+        gap='3%'
+        {...restProps}
+        data-test-id='header-logo'
+    >
         <Box h='full'>
             <svg
                 xmlns='http://www.w3.org/2000/svg'

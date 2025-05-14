@@ -27,14 +27,17 @@ function takeScreenshot(screenshotName: string, device: keyof typeof RESOLUTION 
 }
 
 const takeAllScreenshots = (key: string) => {
-    (['desktop', 'tablet', 'mobile'] as const).forEach((device) => takeScreenshot(key, device));
+    (['mobile', 'tablet', 'desktop'] as const).forEach((device) => takeScreenshot(key, device));
 };
 
 const API_BASE_URL = 'https://marathon-api.clevertec.ru';
 const VERIFICATION_CODE_PIN_ID = [1, 2, 3, 4, 5, 6];
 const INPUT_OVER_50 = 'А'.repeat(51);
 const VERIFICATION_ROUTE = '/verification';
-const ACCESS_TOKEN_HEADER = ['Authentication-Access', 'access_token'];
+const ACCESS_TOKEN_HEADER = [
+    'Authentication-Access',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWExYmMyM2Y4ZTdkOTAxZjRjM2QyYTEiLCJsb2dpbiI6InVzZXJfdGVzdCIsImlhdCI6MTc0Njk5MTEwOCwiZXhwIjoxNzQ2OTk0NzA4fQ',
+];
 const SIGN_UP_LOGIN_CONFLICT_MESSAGE = 'Пользователь с таким login уже существует.';
 const SIGN_UP_EMAIL_CONFLICT_MESSAGE = 'Пользователь с таким email уже существует.';
 
@@ -129,10 +132,12 @@ export const API_ENDPOINTS = {
     CheckVerificationCode: '/auth/verify-otp',
     ResetCredentials: '/auth/reset-password',
     CheckAuth: '/auth/check-auth',
-
+    MeasureUnits: '/measure-units',
     Category: '/category',
     Recipe: '/recipe',
+    RecipeDraft: '/recipe/draft',
     RecipeByCategory: '/recipe/category',
+    FileUpload: '/file/upload',
 } as const;
 
 export const TOAST_MESSAGE = {
@@ -658,7 +663,6 @@ describe('authorization', () => {
 
             checkToastMessage({
                 ...TOAST_MESSAGE.SignInToast[401],
-                callback: () => takeAllScreenshots('sign-in-invalid-credentials'),
             });
         });
 
@@ -706,7 +710,6 @@ describe('authorization', () => {
                 cy.contains('Что-то пошло не так.').should('be.visible');
                 cy.contains('Попробуйте еще раз').should('be.visible');
             });
-            takeAllScreenshots('sign-in-server-error');
             withModal('SignInError', () => {
                 cy.getByTestId(TEST_ID.Button.Close).click();
             });
@@ -785,7 +788,6 @@ describe('authorization', () => {
                 cy.get('@passwordInput').type('{enter}');
             });
             cy.wait(500);
-            takeScreenshot('sign-in-loader');
             wait200();
             cy.wait('@uncaptured');
             cy.contains('Приятного аппетита!').should('be.visible');
@@ -847,8 +849,6 @@ describe('authorization', () => {
             cy.get('@firstNameInput').clear().type(VALIDATION_PASS_VALUE.FirstName);
             checkProgressBar(14, 18);
 
-            takeScreenshot('sign-up-progress-bar');
-
             cy.get('@firstNameInput').clear();
             checkProgressBar(0, 0);
 
@@ -857,8 +857,6 @@ describe('authorization', () => {
             checkProgressBar(14, 18);
             cy.get('@lastNameInput').clear().type(VALIDATION_PASS_VALUE.LastName);
             checkProgressBar(31, 35);
-
-            takeScreenshot('sign-up-progress-bar', 'tablet');
 
             cy.get('@emailInput').type(VALIDATION_FAIL_VALUE.Email);
             checkProgressBar(31, 35);
@@ -875,8 +873,6 @@ describe('authorization', () => {
             checkProgressBar(48, 52);
             cy.get('@loginInput').clear().type(VALIDATION_PASS_VALUE.Login);
             checkProgressBar(65, 69);
-
-            takeScreenshot('sign-up-progress-bar', 'mobile');
 
             cy.get('@passwordInput').type(VALIDATION_FAIL_VALUE.Password);
             checkProgressBar(65, 69);
@@ -908,7 +904,6 @@ describe('authorization', () => {
 
             checkToastMessage({
                 ...TOAST_MESSAGE.ServerErrorToast,
-                callback: () => takeAllScreenshots('sign-up-server-error'),
             });
         });
 
@@ -937,7 +932,6 @@ describe('authorization', () => {
             checkToastMessage({
                 ...TOAST_MESSAGE.SignUpToast[400],
                 title: SIGN_UP_LOGIN_CONFLICT_MESSAGE,
-                callback: () => takeScreenshot('sign-up-login-conflict', 'tablet'),
             });
 
             const waitEmail400 = interceptApi(
@@ -962,7 +956,6 @@ describe('authorization', () => {
             checkToastMessage({
                 ...TOAST_MESSAGE.SignUpToast[400],
                 title: SIGN_UP_EMAIL_CONFLICT_MESSAGE,
-                callback: () => takeScreenshot('sign-up-email-conflict', 'mobile'),
             });
         });
 
@@ -1000,7 +993,6 @@ describe('authorization', () => {
                 cy.contains(VALIDATION_PASS_VALUE.Email).should('be.visible');
                 cy.contains('ссылку для верификации.').should('be.visible');
             });
-            takeAllScreenshots('sign-up-success');
             withModal('SignUpSuccess', () => {
                 cy.getByTestId(TEST_ID.Button.Close).click();
             });
@@ -1016,7 +1008,6 @@ describe('authorization', () => {
 
             checkToastMessage({
                 ...TOAST_MESSAGE.EmailVerificationToast[200],
-                callback: () => takeAllScreenshots('verificate-email-success'),
             });
             cy.getByTestId(TEST_ID.Form.SignIn).should('be.visible');
         });
@@ -1029,7 +1020,6 @@ describe('authorization', () => {
                 cy.contains('Ваша ссылка для верификации недействительна.').should('be.visible');
                 cy.contains('Попробуйте зарегистрироваться снова.').should('be.visible');
             });
-            takeAllScreenshots('verificate-email-failure');
             withModal('EmailVerificationFailed', () => {
                 cy.getByTestId(TEST_ID.Button.Close).click();
             });
@@ -1102,7 +1092,6 @@ describe('authorization', () => {
             cy.getByTestId(TEST_ID.Input.Email).should('have.value', '');
             checkToastMessage({
                 ...TOAST_MESSAGE.SendVerificationCodeToast[403],
-                callback: () => takeAllScreenshots('send-email-modal-not-exist'),
             });
         });
 
@@ -1127,7 +1116,6 @@ describe('authorization', () => {
 
             checkToastMessage({
                 ...TOAST_MESSAGE.ServerErrorToast,
-                callback: () => takeAllScreenshots('send-email-modal-server-error'),
             });
         });
 
@@ -1140,7 +1128,6 @@ describe('authorization', () => {
                 cy.contains('шестизначный код.').should('be.visible');
                 cy.contains('Введите его ниже.').should('be.visible');
             });
-            takeScreenshot('verification-code-modal');
             withModal('VerificationCodeModal', () => {
                 cy.getByTestId(TEST_ID.Button.Close).click();
             });
@@ -1169,7 +1156,6 @@ describe('authorization', () => {
                 fillVerificationCode();
             });
 
-            takeScreenshot('verification-code-modal', 'tablet');
             wait403();
             takeScreenshot('verification-code-modal', 'mobile');
 
@@ -1200,7 +1186,6 @@ describe('authorization', () => {
 
             checkToastMessage({
                 ...TOAST_MESSAGE.ServerErrorToast,
-                callback: () => takeAllScreenshots('verification-code-modal-server-error'),
             });
 
             const wait200 = interceptApi(
@@ -1268,7 +1253,6 @@ describe('authorization', () => {
 
             checkToastMessage({
                 ...TOAST_MESSAGE.RestoreCredentials[200],
-                callback: () => takeAllScreenshots('reset-credentials-modal-success'),
             });
         });
 
@@ -1292,7 +1276,6 @@ describe('authorization', () => {
 
             checkToastMessage({
                 ...TOAST_MESSAGE.ServerErrorToast,
-                callback: () => takeAllScreenshots('reset-credentials-modal-server-error'),
             });
         });
     });
@@ -1480,7 +1463,7 @@ const meatSnacks = [
         views: 0,
         bookmarks: 0,
         portions: 3,
-        authorId: '357',
+        authorId: '6813a97738ff6fb67965a99d',
         categoriesIds: ['67c46eb2f51967aa8390beec', '67c46ee5f51967aa8390beef'],
         steps: [
             {
@@ -2809,6 +2792,77 @@ const signIn = () => {
     );
 };
 
+const interceptGetMyRecipe = () =>
+    interceptApi(
+        {
+            url: `${API_ENDPOINTS.Recipe}/681cbbd4b6c3c1bbdbf32bba`,
+            alias: 'getMyRecipe',
+            method: 'GET',
+        },
+        {
+            statusCode: 200,
+            body: NEW_RECIPE_RESPONSE,
+            delay: 100,
+        },
+    );
+
+const interceptGetMeasureUnits = () =>
+    interceptApi(
+        { url: API_ENDPOINTS.MeasureUnits, alias: 'getMeasureUnits' },
+        {
+            statusCode: 200,
+            body: [
+                { id: '1', name: 'г' },
+                { id: '2', name: 'кг' },
+                { id: '3', name: 'мл' },
+                { id: '4', name: 'л' },
+                { id: '5', name: 'шт' },
+                { id: '6', name: 'столовая ложка' },
+                { id: '7', name: 'чайная ложка' },
+                { id: '8', name: 'по вкусу' },
+            ],
+            delay: 100,
+        },
+    );
+
+const interceptUploadFile = () =>
+    interceptApi(
+        { url: API_ENDPOINTS.FileUpload, alias: 'uploadFile', method: 'POST' },
+        {
+            statusCode: 200,
+            body: {
+                name: '9dc4a27e-923f-4e2c-bd86-4246d34408a5.webp',
+                url: '/media/images/9dc4a27e-923f-4e2c-bd86-4246d34408a5.webp',
+                _id: '681a718cb6c3c1bbdbf32bb8',
+            },
+            delay: 100,
+        },
+    );
+
+const interceptUpdateRecipe = () =>
+    interceptApi(
+        {
+            url: `${API_ENDPOINTS.Recipe}/681cbbd4b6c3c1bbdbf32bba`,
+            alias: 'updateRecipe',
+            method: 'PATCH',
+        },
+        {
+            statusCode: 200,
+            body: UPDATE_RECIPE_RESPONSE,
+            delay: 100,
+        },
+    );
+
+const interceptCreateDraftRecipe = () =>
+    interceptApi(
+        { url: API_ENDPOINTS.RecipeDraft, alias: 'createDraftRecipe', method: 'POST' },
+        {
+            statusCode: 200,
+            body: {},
+            delay: 100,
+        },
+    );
+
 describe('application', () => {
     beforeEach(() => {
         cy.clearLocalStorage();
@@ -3416,68 +3470,1082 @@ describe('application', () => {
             cy.url().should('contain', '/');
         });
     });
+
+    describe('app loader and error notification', () => {
+        beforeEach(() => {
+            cy.clearLocalStorage();
+            cy.clearAllSessionStorage();
+            interceptApi(
+                { url: '/**', alias: 'uncaptured' },
+                {
+                    statusCode: 200,
+                    delay: 0,
+                },
+            );
+            interceptCategories(2000);
+            interceptNewestRecipes();
+            interceptJuiciestRecipes();
+            interceptRelevantRecipes();
+            signIn();
+        });
+
+        context('apploader flow', () => {
+            it('apploader should exist when app is loading screnn 1920px', () => {
+                cy.viewport(1920, 750);
+                cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
+                cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
+            });
+
+            it('apploader should exist when app is loading screen 360px', () => {
+                cy.viewport(360, 800);
+                cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
+                cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
+                cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
+            });
+        });
+
+        context('error notification', () => {
+            beforeEach(() => {
+                interceptApi(
+                    {
+                        url: `${API_ENDPOINTS.RecipeByCategory}/*`,
+                        query: { [SEARCH_PARAMS.LIMIT_QUERY]: RELEVANT_KITCHEN_LIMIT },
+                    },
+                    { statusCode: 404, body: {}, delay: DELAY.SM },
+                );
+            });
+
+            it('error notification should be visible when the request error occured screen 768px', () => {
+                cy.viewport(768, 1080);
+                cy.getByTestId(TEST_ID.Notification.Error).should('exist').and('be.visible');
+                cy.contains('Ошибка сервера').should('exist').and('be.visible');
+                cy.contains('Попробуйте поискать снова попозже').and('be.visible');
+                cy.getByTestId(TEST_ID.Button.CloseAlert).should('exist').and('not.be.disabled');
+            });
+
+            it('error notification should be visible when the request error occured and screen 360px. Close alert', () => {
+                cy.viewport(360, 800);
+                cy.getByTestId(TEST_ID.Notification.Error).should('exist').and('be.visible');
+                cy.getByTestId(TEST_ID.Button.CloseAlert)
+                    .should('exist')
+                    .and('not.be.disabled')
+                    .click();
+                cy.getByTestId(TEST_ID.Notification.Error).should('not.exist');
+            });
+        });
+    });
 });
 
-describe('app loader and error notification', () => {
+const NEW_RECIPE_RESPONSE = {
+    title: 'Плов из детства',
+    description: 'Супер вкусный и нежный плов по рецепту из вашего детства',
+    time: '54',
+    image: '/media/images/bc0748c4-8d00-4c10-ad8e-534874343d46.webp',
+    portions: '5',
+    authorId: '65a1bc23f8e7d901f4c3d2a1',
+    categoriesIds: [
+        '67c46df5f51967aa8390bee7',
+        '67c46e19f51967aa8390bee8',
+        '67c46e2bf51967aa8390bee9',
+    ],
+    steps: [
+        {
+            stepNumber: 1,
+            description: 'Берем сперва укропу',
+            image: '/media/images/bc0748c4-8d00-4c10-ad8e-534874343d46.webp',
+        },
+        {
+            stepNumber: 2,
+            description: 'Потом кошачью попу',
+            image: '/media/images/bc0748c4-8d00-4c10-ad8e-534874343d46.webp',
+        },
+        {
+            stepNumber: 3,
+            description: 'Дальше сами знаете...',
+            image: null,
+        },
+    ],
+    nutritionValue: {
+        calories: 1,
+        protein: 0,
+        fats: 0,
+        carbohydrates: 1,
+    },
+    ingredients: [
+        {
+            measureUnit: 'столовая ложка',
+            title: 'сахар',
+            count: '4',
+        },
+        {
+            measureUnit: 'кг',
+            title: 'кот',
+            count: '1',
+        },
+        {
+            measureUnit: 'шт',
+            title: 'укроп',
+            count: '10',
+        },
+    ],
+    views: 0,
+    createdAt: '2025-05-08T14:12:36.062Z',
+    _id: '681cbbd4b6c3c1bbdbf32bba',
+};
+
+const UPDATE_RECIPE_RESPONSE = {
+    categoriesIds: [
+        '67c46df5f51967aa8390bee7',
+        '67c46e19f51967aa8390bee8',
+        '67c46e2bf51967aa8390bee9',
+    ],
+    authorId: '65a1bc23f8e7d901f4c3d2a1',
+    nutritionValue: {
+        calories: 1,
+        protein: 0,
+        fats: 0,
+        carbohydrates: 1,
+    },
+    description:
+        'Супер вкусный и нежный плов по рецепту из вашего детства, с небольшими но приятными изменениями',
+    image: '/media/images/bc0748c4-8d00-4c10-ad8e-534874343d46.webp',
+    ingredients: [
+        { measureUnit: 'столовая ложка', title: 'дрова', count: 50 },
+        { measureUnit: 'кг', title: 'кот', count: '1' },
+        { measureUnit: 'шт', title: 'укроп', count: 10 },
+    ],
+    portions: 7,
+    steps: [
+        { stepNumber: 1, description: 'Берем сперва укропу', image: null },
+        {
+            stepNumber: 2,
+            description: 'Потом кошачью попу',
+            image: '/media/images/bc0748c4-8d00-4c10-ad8e-534874343d46.webp',
+        },
+        { stepNumber: 3, description: 'охапка дров', image: null },
+        {
+            stepNumber: 4,
+            description: 'и плов готов',
+            image: '/media/images/9dc4a27e-923f-4e2c-bd86-4246d34408a5.webp',
+        },
+    ],
+    time: 40,
+    title: 'Доработанный плов из детства',
+    views: 0,
+    createdAt: '2025-05-08T14:12:36.062Z',
+    _id: '681cbbd4b6c3c1bbdbf32bba',
+};
+
+const NOT_MY_RECIPE = { ...UPDATE_RECIPE_RESPONSE, authorId: '000000000000000' };
+
+const checkBorderColor = (testId: string) =>
+    cy.getByTestId(testId).should('have.css', 'border-color', 'rgb(229, 62, 62)');
+
+describe('recipe management', () => {
     beforeEach(() => {
         cy.clearLocalStorage();
         cy.clearAllSessionStorage();
-        interceptApi(
-            { url: '/**', alias: 'uncaptured' },
-            {
-                statusCode: 200,
-                delay: 0,
-            },
-        );
-        interceptCategories(2000);
+
+        interceptApi({ url: '/**', alias: 'uncaptured' }, { statusCode: 200, delay: 0 });
+
+        interceptGetMeasureUnits();
+
+        interceptUploadFile();
+
+        interceptUpdateRecipe();
+
+        interceptCreateDraftRecipe();
+
+        interceptGetMyRecipe();
+
+        interceptCategories();
+
         interceptNewestRecipes();
+
         interceptJuiciestRecipes();
+
         interceptRelevantRecipes();
+
+        interceptRecipesByCategory(DELAY.LG, {
+            data: allRecipes.filter((item) => item.title.includes('')),
+            meta: metaData,
+        });
+
         signIn();
     });
 
-    context('apploader flow', () => {
-        it('apploader should exist when app is loading screnn 1920px', () => {
-            cy.viewport(1920, 750);
-            cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
-            cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
-        });
-
-        it('apploader should exist when app is loading screen 360px', () => {
-            cy.viewport(360, 800);
-            cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
-            cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
-            cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
-        });
-    });
-
-    context('error notification', () => {
+    describe('create recipe', () => {
         beforeEach(() => {
+            cy.viewport(...RESOLUTION.desktop);
+            cy.getByTestId('add-recipe-button').click();
+            cy.url().should('include', '/new-recipe');
+            cy.wait('@getMeasureUnits');
+
             interceptApi(
                 {
-                    url: `${API_ENDPOINTS.RecipeByCategory}/*`,
-                    query: { [SEARCH_PARAMS.LIMIT_QUERY]: RELEVANT_KITCHEN_LIMIT },
+                    url: `${API_ENDPOINTS.Recipe}/681cbbd4b6c3c1bbdbf32bba`,
+                    alias: 'getNewRecipe',
+                    method: 'GET',
                 },
-                { statusCode: 404, body: {}, delay: DELAY.SM },
+                {
+                    statusCode: 200,
+                    body: NEW_RECIPE_RESPONSE,
+                    delay: 100,
+                },
             );
         });
 
-        it('error notification should be visible when the request error occured screen 768px', () => {
-            cy.viewport(768, 1080);
-            cy.getByTestId(TEST_ID.Notification.Error).should('exist').and('be.visible');
-            cy.contains('Ошибка сервера').should('exist').and('be.visible');
-            cy.contains('Попробуйте поискать снова попозже').and('be.visible');
-            cy.getByTestId(TEST_ID.Button.CloseAlert).should('exist').and('not.be.disabled');
+        it('should display recipe creation form with all required elements', () => {
+            takeAllScreenshots('new-recipe-page');
+            cy.getByTestId('recipe-form').should('exist');
+            cy.getByTestId('recipe-form').within(() => {
+                cy.getByTestId('recipe-image-block').should('exist');
+
+                cy.getByTestId('recipe-title').should('exist');
+                cy.getByTestId('recipe-description').should('exist');
+                cy.getByTestId('recipe-time').should('exist');
+                cy.getByTestId('recipe-portions').should('exist');
+                cy.getByTestId('recipe-categories').should('exist');
+
+                cy.getByTestId('recipe-ingredients-title-0').should('exist');
+                cy.getByTestId('recipe-ingredients-count-0').should('exist');
+                cy.getByTestId('recipe-ingredients-measureUnit-0').should('exist');
+
+                cy.getByTestId('recipe-steps-image-block-0').should('exist');
+                cy.contains('Шаг 1').should('exist');
+                cy.getByTestId('recipe-steps-description-0').should('exist');
+
+                cy.getByTestId('recipe-save-draft-button').should('exist');
+                cy.getByTestId('recipe-publish-recipe-button').should('exist');
+            });
         });
 
-        it('error notification should be visible when the request error occured and screen 360px. Close alert', () => {
-            cy.viewport(360, 800);
-            cy.getByTestId(TEST_ID.Notification.Error).should('exist').and('be.visible');
-            cy.getByTestId(TEST_ID.Button.CloseAlert)
+        it('should validate recipe fields properly', () => {
+            cy.getByTestId('recipe-form').within(() => {
+                const longTitle = 'А'.repeat(51);
+                cy.getByTestId('recipe-title').invoke('val', longTitle).trigger('change');
+                cy.getByTestId('recipe-publish-recipe-button').click();
+                checkBorderColor('recipe-title');
+                cy.getByTestId('recipe-title').clear().type('Тестовый салат');
+
+                const longDescription = 'А'.repeat(501);
+                cy.getByTestId('recipe-description')
+                    .invoke('val', longDescription)
+                    .trigger('change');
+                cy.getByTestId('recipe-publish-recipe-button').click();
+                checkBorderColor('recipe-description');
+                cy.getByTestId('recipe-description').clear().type('Описание тестового рецепта');
+
+                cy.getByTestId('recipe-portions').type('-5');
+                cy.getByTestId('recipe-publish-recipe-button').click();
+                checkBorderColor('recipe-portions');
+                cy.getByTestId('recipe-portions').clear().type('4');
+
+                cy.getByTestId('recipe-time').type('-30');
+                cy.getByTestId('recipe-publish-recipe-button').click();
+                checkBorderColor('recipe-time');
+                cy.getByTestId('recipe-time').clear().type('20000');
+                cy.getByTestId('recipe-publish-recipe-button').click();
+                checkBorderColor('recipe-time');
+                cy.getByTestId('recipe-time').clear().type('30');
+            });
+        });
+
+        it('should handle recipe categories selection', () => {
+            cy.getByTestId('recipe-form').within(() => {
+                cy.getByTestId('recipe-categories').click();
+                ['Мясные салаты', 'Рыбные салаты', 'Овощные салаты', 'Закуски', 'Гарниры'].forEach(
+                    (category) => {
+                        cy.contains(category).click({ force: true });
+                    },
+                );
+                cy.contains('+3').should('exist');
+                cy.contains('Закуски').click({ force: true });
+                cy.contains('+2').should('exist');
+                cy.contains('Овощные салаты').click({ force: true });
+                cy.contains('+1').should('exist');
+            });
+            takeAllScreenshots('recipe-categories');
+            cy.getByTestId('recipe-categories').click();
+        });
+
+        it('should handle recipe ingredients properly', () => {
+            cy.getByTestId('recipe-form').within(() => {
+                Array.from({ length: 49 }).forEach(() => {
+                    cy.getByTestId('recipe-ingredients-add-ingredients').click();
+                });
+                cy.getByTestId('recipe-ingredients-add-ingredients').should('not.exist');
+                Array.from({ length: 49 }).forEach(() => {
+                    cy.getByTestId('recipe-ingredients-remove-ingredients-0').click();
+                });
+
+                cy.getByTestId('recipe-ingredients-title-0').clear().type('Мука');
+                cy.getByTestId('recipe-ingredients-count-0').clear().type('-30');
+                cy.getByTestId('recipe-publish-recipe-button').click();
+                checkBorderColor('recipe-ingredients-count-0');
+                cy.getByTestId('recipe-ingredients-count-0').clear().type('200');
+                cy.getByTestId('recipe-ingredients-measureUnit-0').select('г');
+            });
+        });
+
+        it('should validate recipe steps properly', () => {
+            cy.getByTestId('recipe-form').within(() => {
+                const longStepDescription = 'А'.repeat(301);
+                cy.getByTestId('recipe-steps-description-0')
+                    .invoke('val', longStepDescription)
+                    .trigger('change');
+                cy.getByTestId('recipe-publish-recipe-button').click();
+                checkBorderColor('recipe-steps-description-0');
+                cy.getByTestId('recipe-steps-description-0')
+                    .clear()
+                    .type('Смешать все ингредиенты');
+            });
+        });
+
+        it('should handle recipe image uploads', () => {
+            cy.getByTestId('recipe-image-block').click();
+            cy.getByTestId('recipe-image-modal').should('exist');
+            takeAllScreenshots('recipe-image-modal');
+            cy.getByTestId('recipe-image-modal').within(() => {
+                cy.contains('Удалить').should('not.exist');
+                cy.contains('Сохранить').should('not.exist');
+            });
+
+            cy.getByTestId('recipe-image-block-input-file').selectFile(
+                'cypress/fixtures/test-1.webp',
+                {
+                    force: true,
+                },
+            );
+            cy.getByTestId('recipe-image-modal-preview-image')
                 .should('exist')
-                .and('not.be.disabled')
-                .click();
-            cy.getByTestId(TEST_ID.Notification.Error).should('not.exist');
+                .and('have.attr', 'src');
+
+            takeAllScreenshots('recipe-image-modal-with-image');
+
+            cy.getByTestId('recipe-image-modal').within(() => {
+                cy.contains('Удалить').should('exist');
+                cy.contains('Сохранить').should('exist');
+                cy.contains('Удалить').click();
+            });
+
+            cy.getByTestId('recipe-image-block').click();
+            cy.getByTestId('recipe-image-block-input-file').selectFile(
+                'cypress/fixtures/test-1.webp',
+                {
+                    force: true,
+                },
+            );
+            cy.getByTestId('recipe-image-modal').within(() => {
+                cy.contains('Сохранить').click();
+            });
+            cy.wait('@uploadFile');
+            cy.getByTestId('recipe-image-block-preview-image').should('have.attr', 'src');
+
+            cy.getByTestId('recipe-steps-image-block-0').click();
+            cy.getByTestId('recipe-steps-image-block-0-input-file').selectFile(
+                'cypress/fixtures/test-1.webp',
+                { force: true },
+            );
+            cy.getByTestId('recipe-image-modal').within(() => {
+                cy.contains('Сохранить').click();
+            });
+            cy.wait('@uploadFile');
+        });
+
+        it('should handle recipe steps management', () => {
+            cy.contains('Новый шаг').click();
+            cy.contains('Новый шаг').click();
+
+            cy.contains('Шаг 1').should('exist');
+            cy.contains('Шаг 2').should('exist');
+            cy.contains('Шаг 3').should('exist');
+
+            cy.getByTestId('recipe-steps-remove-button-0').should('not.exist');
+            cy.getByTestId('recipe-steps-remove-button-1').should('exist');
+            cy.getByTestId('recipe-steps-remove-button-2').should('exist');
+
+            cy.getByTestId('recipe-steps-remove-button-1').click();
+            cy.getByTestId('recipe-steps-description-1')
+                .clear()
+                .type('И еще раз смешать все ингредиенты');
+
+            cy.contains('Шаг 1').should('exist');
+            cy.contains('Шаг 2').should('exist');
+        });
+
+        it('should handle recipe publication errors', () => {
+            cy.getByTestId('recipe-title').clear().type('Тестовый рецепт');
+            cy.getByTestId('recipe-description').clear().type('Описание тестового рецепта');
+            cy.getByTestId('recipe-time').clear().type('30');
+            cy.getByTestId('recipe-portions').clear().type('4');
+
+            cy.getByTestId('recipe-image-block').click();
+            cy.getByTestId('recipe-image-block-input-file').selectFile(
+                'cypress/fixtures/test-1.webp',
+                { force: true },
+            );
+            cy.getByTestId('recipe-image-modal').within(() => {
+                cy.contains('Сохранить').click();
+            });
+            cy.wait('@uploadFile');
+
+            cy.getByTestId('recipe-form').within(() => {
+                cy.getByTestId('recipe-categories').click();
+                ['Мясные салаты', 'Рыбные салаты', 'Овощные салаты', 'Закуски', 'Гарниры'].forEach(
+                    (category) => {
+                        cy.contains(category).click({ force: true });
+                    },
+                );
+                cy.getByTestId('recipe-categories').click();
+            });
+
+            cy.getByTestId('recipe-ingredients-title-0').clear().type('Мука');
+            cy.getByTestId('recipe-ingredients-count-0').clear().type('200');
+            cy.getByTestId('recipe-ingredients-measureUnit-0').select('г');
+
+            cy.getByTestId('recipe-steps-description-0').clear().type('Смешать все ингредиенты');
+
+            interceptApi(
+                { url: API_ENDPOINTS.Recipe, alias: 'createRecipe500', method: 'POST' },
+                {
+                    statusCode: 500,
+                    delay: 100,
+                },
+            );
+
+            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.wait('@createRecipe500');
+            takeAllScreenshots('create-recipe-500');
+            cy.contains('Ошибка сервера').should('be.visible');
+            cy.contains('Попробуйте пока сохранить в черновик').should('be.visible');
+            cy.getByTestId(TEST_ID.Button.CloseAlert).click();
+
+            interceptApi(
+                { url: API_ENDPOINTS.Recipe, alias: 'createRecipe409', method: 'POST' },
+                {
+                    statusCode: 409,
+                    delay: 100,
+                },
+            );
+
+            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.wait('@createRecipe409');
+            takeAllScreenshots('create-recipe-409');
+            cy.contains('Ошибка').should('be.visible');
+            cy.contains('Рецепт с таким названием уже существует').should('be.visible');
+            cy.getByTestId(TEST_ID.Button.CloseAlert).click();
+        });
+
+        it('should successfully publish a recipe', () => {
+            cy.getByTestId('recipe-title').clear().type('Тестовый рецепт');
+            cy.getByTestId('recipe-description').clear().type('Описание тестового рецепта');
+            cy.getByTestId('recipe-time').clear().type('30');
+            cy.getByTestId('recipe-portions').clear().type('4');
+
+            cy.getByTestId('recipe-image-block').click();
+            cy.getByTestId('recipe-image-block-input-file').selectFile(
+                'cypress/fixtures/test-1.webp',
+                { force: true },
+            );
+            cy.getByTestId('recipe-image-modal').within(() => {
+                cy.contains('Сохранить').click();
+            });
+            cy.wait('@uploadFile');
+
+            cy.getByTestId('recipe-form').within(() => {
+                cy.getByTestId('recipe-categories').click();
+                ['Мясные салаты', 'Рыбные салаты', 'Овощные салаты', 'Закуски', 'Гарниры'].forEach(
+                    (category) => {
+                        cy.contains(category).click({ force: true });
+                    },
+                );
+                cy.getByTestId('recipe-categories').click();
+            });
+
+            cy.getByTestId('recipe-ingredients-title-0').clear().type('Мука');
+            cy.getByTestId('recipe-ingredients-count-0').clear().type('200');
+            cy.getByTestId('recipe-ingredients-measureUnit-0').select('г');
+
+            cy.getByTestId('recipe-steps-description-0').clear().type('Смешать все ингредиенты');
+
+            interceptApi(
+                { url: API_ENDPOINTS.Recipe, alias: 'createRecipe', method: 'POST' },
+                {
+                    statusCode: 200,
+                    body: NEW_RECIPE_RESPONSE,
+                    delay: 100,
+                },
+            );
+
+            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.wait('@createRecipe');
+            cy.wait('@getNewRecipe');
+            takeAllScreenshots('create-recipe-200');
+            cy.contains('Рецепт успешно опубликован').should('be.visible');
+            cy.url().should('include', '/salads/meat-salads/681cbbd4b6c3c1bbdbf32bba');
+        });
+    });
+
+    describe('preventative modal', () => {
+        beforeEach(() => {
+            cy.viewport(...RESOLUTION.desktop);
+            cy.getByTestId('add-recipe-button').click();
+            cy.url().should('include', '/new-recipe');
+            cy.wait('@getMeasureUnits');
+        });
+
+        const checkPreventiveModal = () => {
+            cy.getByTestId('recipe-preventive-modal').should('exist');
+            cy.contains('Сохранить черновик').should('exist');
+            cy.contains('Выйти без сохранения').should('exist');
+        };
+
+        const closePreventiveModal = () => {
+            cy.getByTestId('close-button').click();
+        };
+
+        const saveDraft = () => {
+            cy.getByTestId('recipe-preventive-modal').within(() => {
+                cy.contains('Сохранить черновик').click();
+            });
+        };
+
+        const exitWithoutSaving = () => {
+            cy.getByTestId('recipe-preventive-modal').within(() => {
+                cy.getByTestId('recipe-preventive-modal-exit-button').click();
+            });
+        };
+
+        it('should show preventative modal when changing basic recipe information', () => {
+            cy.getByTestId('recipe-title').clear().type('Внесли изменения');
+            cy.getByTestId('header-logo').click();
+            takeAllScreenshots('preventive-modal');
+            checkPreventiveModal();
+            closePreventiveModal();
+            cy.getByTestId('recipe-title').clear();
+
+            cy.getByTestId('recipe-description').clear().type('Внесли изменения');
+            cy.contains('Закуски').click();
+            checkPreventiveModal();
+            closePreventiveModal();
+            cy.getByTestId('recipe-description').clear();
+
+            cy.getByTestId('recipe-portions').type('4');
+            cy.getByTestId('header-logo').click();
+            checkPreventiveModal();
+            closePreventiveModal();
+            cy.getByTestId('recipe-portions').clear();
+
+            cy.getByTestId('recipe-time').type('30');
+            cy.getByTestId('header-logo').click();
+            checkPreventiveModal();
+            closePreventiveModal();
+        });
+
+        it('should show preventative modal when modifying recipe images', () => {
+            cy.getByTestId('recipe-image-block').click();
+            cy.getByTestId('recipe-image-block-input-file').selectFile(
+                'cypress/fixtures/test-1.webp',
+                {
+                    force: true,
+                },
+            );
+            cy.getByTestId('recipe-image-modal').within(() => {
+                cy.contains('Сохранить').click();
+            });
+            cy.wait('@uploadFile');
+
+            cy.getByTestId('header-logo').click();
+            checkPreventiveModal();
+            closePreventiveModal();
+
+            cy.getByTestId('recipe-image-block').click();
+            cy.getByTestId('recipe-image-modal').should('exist');
+            cy.getByTestId('recipe-image-modal').within(() => {
+                cy.contains('Удалить').click();
+            });
+        });
+
+        it('should show preventative modal when changing recipe steps and categories', () => {
+            cy.getByTestId('recipe-steps-description-0').type('Внесли изменения');
+            cy.contains('Главная').click();
+            checkPreventiveModal();
+            closePreventiveModal();
+            cy.getByTestId('recipe-steps-description-0').type('clear');
+
+            cy.getByTestId('recipe-form').within(() => {
+                cy.getByTestId('recipe-categories').click();
+                ['Закуски', 'Гарниры'].forEach((category) => {
+                    cy.contains(category).click({ force: true });
+                });
+            });
+
+            cy.getByTestId('header-logo').click();
+            checkPreventiveModal();
+            closePreventiveModal();
+        });
+
+        it('should handle draft saving and cancellation correctly', () => {
+            cy.getByTestId('recipe-ingredients-measureUnit-0').select('г');
+            cy.getByTestId('header-logo').click();
+            saveDraft();
+            cy.getByTestId('recipe-preventive-modal').should('not.exist');
+            checkBorderColor('recipe-title');
+
+            cy.getByTestId('recipe-title').type('Будущий шедевр');
+            cy.getByTestId('header-logo').click();
+            saveDraft();
+            cy.wait('@createDraftRecipe');
+            cy.contains('Черновик успешно сохранен').should('exist');
+
+            cy.getByTestId('add-recipe-button').click();
+            cy.getByTestId('recipe-ingredients-measureUnit-0').select('г');
+            cy.contains('Закуски').click();
+            checkPreventiveModal();
+            exitWithoutSaving();
+            cy.url().should('include', '/snacks/meat-snacks');
+        });
+    });
+
+    describe('create draft', () => {
+        beforeEach(() => {
+            cy.viewport(...RESOLUTION.desktop);
+            cy.getByTestId('add-recipe-button').click();
+            cy.url().should('include', '/new-recipe');
+            cy.wait('@getMeasureUnits');
+        });
+
+        it('should create draft successfully', () => {
+            cy.getByTestId('recipe-save-draft-button').click();
+            checkBorderColor('recipe-title');
+            cy.getByTestId('recipe-title').clear().type('Проверяем черновик');
+
+            cy.getByTestId('recipe-save-draft-button').click();
+            cy.wait('@createDraftRecipe');
+            takeAllScreenshots('create-draft-recipe');
+            cy.contains('Черновик успешно сохранен').should('exist');
+        });
+
+        it('should handle 409 error when creating draft', () => {
+            cy.getByTestId('recipe-title').clear().type('Конфликтующий черновик');
+
+            interceptApi(
+                { url: API_ENDPOINTS.RecipeDraft, alias: 'createDraftRecipe409', method: 'POST' },
+                {
+                    statusCode: 409,
+                    delay: 100,
+                },
+            );
+
+            cy.getByTestId('recipe-save-draft-button').click();
+            cy.wait('@createDraftRecipe409');
+
+            takeAllScreenshots('create-draft-recipe-409');
+            cy.contains('Ошибка').should('be.visible');
+            cy.contains('Рецепт с таким названием уже существует').should('be.visible');
+            cy.getByTestId(TEST_ID.Button.CloseAlert).click();
+        });
+
+        it('should handle 500 error when creating draft', () => {
+            cy.getByTestId('recipe-title').clear().type('Черновик с серверной ошибкой');
+
+            interceptApi(
+                { url: API_ENDPOINTS.RecipeDraft, alias: 'createDraftRecipe500', method: 'POST' },
+                {
+                    statusCode: 500,
+                    delay: 100,
+                },
+            );
+
+            cy.getByTestId('recipe-save-draft-button').click();
+            cy.wait('@createDraftRecipe500');
+            takeAllScreenshots('create-draft-recipe-500');
+            cy.contains('Ошибка сервера').should('be.visible');
+            cy.contains('Не удалось сохранить черновик рецепта').should('be.visible');
+            cy.getByTestId(TEST_ID.Button.CloseAlert).click();
+        });
+    });
+
+    describe('edit recipe', () => {
+        beforeEach(() => {
+            cy.viewport(...RESOLUTION.desktop);
+            cy.visit('/salads/meat-salads/681cbbd4b6c3c1bbdbf32bba');
+            cy.wait('@getMyRecipe');
+
+            interceptApi(
+                {
+                    url: `${API_ENDPOINTS.Recipe}/681cbbd4b6c3c1bbdbf32bba`,
+                    alias: 'getRecipeAfterUpdate',
+                    method: 'GET',
+                },
+                {
+                    statusCode: 200,
+                    body: UPDATE_RECIPE_RESPONSE,
+                    delay: 100,
+                },
+            );
+        });
+
+        it('should navigate to edit recipe page and show form with correct data', () => {
+            cy.contains('Редактировать рецепт').should('exist');
+            cy.contains('Редактировать рецепт').click();
+
+            cy.url().should('include', 'edit-recipe/salads/meat-salads/681cbbd4b6c3c1bbdbf32bba');
+
+            takeAllScreenshots('edit-recipe-page');
+            cy.getByTestId('recipe-form').within(() => {
+                cy.getByTestId('recipe-title')
+                    .invoke('val')
+                    .should('eq', NEW_RECIPE_RESPONSE.title);
+                cy.getByTestId('recipe-description')
+                    .invoke('val')
+                    .should('eq', NEW_RECIPE_RESPONSE.description);
+                cy.getByTestId('recipe-time').invoke('val').should('eq', NEW_RECIPE_RESPONSE.time);
+                cy.getByTestId('recipe-portions')
+                    .invoke('val')
+                    .should('eq', NEW_RECIPE_RESPONSE.portions);
+
+                cy.getByTestId('recipe-categories').contains('Мясные салаты').should('be.visible');
+                cy.getByTestId('recipe-categories').contains('Рыбные салаты').should('be.visible');
+                cy.getByTestId('recipe-categories').contains('+1').should('be.visible');
+
+                cy.getByTestId(`recipe-image-block-preview-image`)
+                    .should('have.attr', 'src')
+                    .and('include', NEW_RECIPE_RESPONSE.image);
+            });
+        });
+
+        it('should show correct ingredients in edit form', () => {
+            cy.contains('Редактировать рецепт').click();
+
+            cy.getByTestId('recipe-form').within(() => {
+                NEW_RECIPE_RESPONSE.ingredients.forEach((item, index) => {
+                    cy.getByTestId(`recipe-ingredients-title-${index}`)
+                        .invoke('val')
+                        .should('eq', item.title);
+                    cy.getByTestId(`recipe-ingredients-count-${index}`)
+                        .invoke('val')
+                        .should('eq', item.count);
+                    cy.getByTestId(`recipe-ingredients-measureUnit-${index}`)
+                        .invoke('val')
+                        .should('eq', item.measureUnit);
+                });
+            });
+        });
+
+        it('should show correct steps in edit form', () => {
+            cy.contains('Редактировать рецепт').click();
+
+            cy.getByTestId('recipe-form').within(() => {
+                NEW_RECIPE_RESPONSE.steps.forEach((item, index) => {
+                    cy.getByTestId(`recipe-steps-description-${index}`)
+                        .invoke('val')
+                        .should('eq', item.description);
+                    cy.contains(`Шаг ${item.stepNumber}`).should('exist').should('be.visible');
+
+                    if (item.image) {
+                        cy.getByTestId(`recipe-steps-image-block-${index}-preview-image`)
+                            .should('have.attr', 'src')
+                            .and('include', item.image);
+                    }
+                });
+            });
+        });
+
+        it('should edit recipe basic information successfully', () => {
+            cy.contains('Редактировать рецепт').click();
+
+            cy.getByTestId('recipe-form').within(() => {
+                cy.getByTestId('recipe-title').clear().type('Доработанный плов из детства');
+                cy.getByTestId('recipe-description')
+                    .clear()
+                    .type(
+                        'Супер вкусный и нежный плов по рецепту из вашего детства, с небольшими но приятными изменениями',
+                        { timeout: 10000 },
+                    );
+                cy.getByTestId('recipe-time').clear().type('40');
+                cy.getByTestId('recipe-portions').clear().type('7');
+            });
+
+            cy.getByTestId('recipe-publish-recipe-button').click();
+
+            cy.wait('@updateRecipe');
+            cy.wait('@getRecipeAfterUpdate');
+        });
+
+        it('should modify recipe ingredients successfully', () => {
+            cy.contains('Редактировать рецепт').click();
+
+            cy.getByTestId('recipe-form').within(() => {
+                cy.getByTestId(`recipe-ingredients-title-0`).clear().type('дрова');
+                cy.getByTestId(`recipe-ingredients-count-0`).clear().type('50');
+            });
+
+            cy.getByTestId('recipe-publish-recipe-button').click();
+
+            cy.wait('@updateRecipe');
+            cy.wait('@getRecipeAfterUpdate');
+        });
+
+        it('should edit recipe steps successfully', () => {
+            cy.contains('Редактировать рецепт').click();
+
+            cy.getByTestId('recipe-form').within(() => {
+                cy.getByTestId(`recipe-steps-description-2`).clear().type('охапка дров');
+
+                cy.contains('Новый шаг').click();
+                cy.getByTestId(`recipe-steps-description-3`).type('и плов готов');
+            });
+
+            cy.getByTestId('recipe-publish-recipe-button').click();
+
+            cy.wait('@updateRecipe');
+            cy.wait('@getRecipeAfterUpdate');
+        });
+
+        it('should handle recipe images modification correctly', () => {
+            cy.contains('Редактировать рецепт').click();
+
+            cy.getByTestId('recipe-form').within(() => {
+                cy.getByTestId('recipe-steps-image-block-0-preview-image').click();
+            });
+
+            cy.getByTestId('recipe-image-modal-preview-image')
+                .should('be.visible')
+                .should('have.attr', 'src')
+                .and('include', NEW_RECIPE_RESPONSE.steps[0].image);
+
+            cy.contains('Удалить').click();
+
+            cy.getByTestId('recipe-steps-image-block-2').click();
+            cy.getByTestId('recipe-steps-image-block-2-input-file').selectFile(
+                'cypress/fixtures/plov.jpeg',
+                { force: true },
+            );
+
+            cy.getByTestId('recipe-image-modal').within(() => {
+                cy.contains('Сохранить').click();
+            });
+
+            cy.wait('@uploadFile');
+
+            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.wait('@updateRecipe');
+            cy.wait('@getRecipeAfterUpdate');
+        });
+
+        it('should save all changes in recipe successfully', () => {
+            cy.contains('Редактировать рецепт').click();
+
+            cy.getByTestId('recipe-form').within(() => {
+                cy.getByTestId('recipe-title').clear().type('Доработанный плов из детства');
+                cy.getByTestId('recipe-description')
+                    .clear()
+                    .type(
+                        'Супер вкусный и нежный плов по рецепту из вашего детства, с небольшими но приятными изменениями',
+                        { timeout: 10000 },
+                    );
+                cy.getByTestId('recipe-time').clear().type('40');
+                cy.getByTestId('recipe-portions').clear().type('7');
+
+                cy.getByTestId(`recipe-ingredients-title-0`).clear().type('дрова');
+                cy.getByTestId(`recipe-ingredients-count-0`).clear().type('50');
+
+                cy.getByTestId(`recipe-steps-description-2`).clear().type('охапка дров');
+                cy.contains('Новый шаг').click();
+                cy.getByTestId(`recipe-steps-description-3`).type('и плов готов');
+            });
+
+            cy.getByTestId('recipe-steps-image-block-0-preview-image').click();
+            cy.contains('Удалить').click();
+
+            cy.getByTestId('recipe-steps-image-block-3').click();
+            cy.getByTestId('recipe-steps-image-block-3-input-file').selectFile(
+                'cypress/fixtures/plov.jpeg',
+                { force: true },
+            );
+            cy.getByTestId('recipe-image-modal').within(() => {
+                cy.contains('Сохранить').click();
+            });
+            cy.wait('@uploadFile');
+
+            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.wait('@updateRecipe');
+            cy.wait('@getRecipeAfterUpdate');
+            cy.contains('Рецепт успешно опубликован').should('be.visible');
+        });
+
+        it('should handle 409 error when update recipe', () => {
+            cy.contains('Редактировать рецепт').click();
+
+            cy.getByTestId('recipe-title').clear().type('Конфликтующее обновленное название');
+
+            interceptApi(
+                {
+                    url: `${API_ENDPOINTS.Recipe}/681cbbd4b6c3c1bbdbf32bba`,
+                    alias: 'updateRecipe409',
+                    method: 'PATCH',
+                },
+                {
+                    statusCode: 409,
+                    delay: 100,
+                },
+            );
+
+            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.wait('@updateRecipe409');
+            takeAllScreenshots('edit-recipe-page-409');
+
+            cy.contains('Ошибка').should('be.visible');
+            cy.contains('Рецепт с таким названием уже существует').should('be.visible');
+            cy.getByTestId(TEST_ID.Button.CloseAlert).click();
+        });
+
+        it('should handle 500 error when update recipe', () => {
+            cy.contains('Редактировать рецепт').click();
+
+            cy.getByTestId('recipe-title').clear().type('Конфликтующее обновленное название');
+
+            interceptApi(
+                {
+                    url: `${API_ENDPOINTS.Recipe}/681cbbd4b6c3c1bbdbf32bba`,
+                    alias: 'updateRecipe500',
+                    method: 'PATCH',
+                },
+                {
+                    statusCode: 500,
+                    delay: 100,
+                },
+            );
+            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.wait('@updateRecipe500');
+            takeAllScreenshots('edit-recipe-page-500');
+
+            cy.contains('Ошибка сервера').should('be.visible');
+            cy.contains('Попробуйте пока сохранить в черновик').should('be.visible');
+            cy.getByTestId(TEST_ID.Button.CloseAlert).click();
+        });
+    });
+
+    describe('delete recipe', () => {
+        beforeEach(() => {
+            cy.viewport(...RESOLUTION.desktop);
+            cy.visit('/salads/meat-salads/681cbbd4b6c3c1bbdbf32bba');
+            cy.wait('@getMyRecipe');
+
+            interceptApi(
+                {
+                    url: `${API_ENDPOINTS.Recipe}/681cbbd4b6c3c1bbdbf32bba`,
+                    alias: 'deleteRecipe',
+                    method: 'DELETE',
+                },
+                {
+                    statusCode: 200,
+                    delay: 100,
+                },
+            );
+        });
+
+        it('should delete recipe', () => {
+            cy.getByTestId('delete-recipe-button').should('be.visible');
+            cy.getByTestId('delete-recipe-button').click();
+
+            cy.wait('@deleteRecipe');
+
+            cy.contains('Рецепт успешно удален').should('be.visible');
+        });
+
+        it('should handle 500 error when delete recipe', () => {
+            cy.getByTestId('delete-recipe-button').should('be.visible');
+
+            interceptApi(
+                {
+                    url: `${API_ENDPOINTS.Recipe}/681cbbd4b6c3c1bbdbf32bba`,
+                    alias: 'deleteRecipe500',
+                    method: 'DELETE',
+                },
+                {
+                    statusCode: 500,
+                    delay: 100,
+                },
+            );
+
+            cy.getByTestId('delete-recipe-button').click();
+
+            cy.wait('@deleteRecipe500');
+
+            cy.contains('Ошибка сервера').should('be.visible');
+            cy.contains('Не удалось удалить рецепт').should('be.visible');
+            cy.getByTestId(TEST_ID.Button.CloseAlert).click();
+        });
+    });
+
+    describe('like and save recipe', () => {
+        beforeEach(() => {
+            cy.viewport(...RESOLUTION.desktop);
+
+            interceptApi(
+                {
+                    url: `${API_ENDPOINTS.Recipe}/000000000000000`,
+                    alias: 'getNotMyRecipe',
+                    method: 'GET',
+                },
+                {
+                    statusCode: 200,
+                    body: NOT_MY_RECIPE,
+                    delay: 100,
+                    withLoader: true,
+                },
+            );
+
+            cy.visit('/salads/meat-salads/000000000000000');
+
+            cy.wait('@getNotMyRecipe');
+
+            interceptApi(
+                {
+                    url: `${API_ENDPOINTS.Recipe}/000000000000000/like`,
+                    alias: 'likeRecipe',
+                    method: 'POST',
+                },
+                {
+                    statusCode: 200,
+                    delay: 100,
+                },
+            );
+
+            interceptApi(
+                {
+                    url: `${API_ENDPOINTS.Recipe}/000000000000000/bookmark`,
+                    alias: 'saveRecipe',
+                    method: 'POST',
+                },
+                {
+                    statusCode: 200,
+                    delay: 100,
+                },
+            );
+        });
+
+        it('should like recipe', () => {
+            cy.contains('Оценить рецепт').should('be.visible').click();
+
+            cy.wait('@likeRecipe');
+
+            cy.contains('Оценить рецепт').should('be.visible').click();
+
+            cy.wait('@likeRecipe');
+        });
+
+        it('should like recipe', () => {
+            cy.contains('Сохранить').should('be.visible').click();
+
+            cy.wait('@saveRecipe');
+
+            cy.contains('Сохранить').should('be.visible').click();
+
+            cy.wait('@saveRecipe');
         });
     });
 });

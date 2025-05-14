@@ -15,9 +15,10 @@ interface ImageUploadProps {
     rules?: {
         required?: string | boolean;
     };
+    testId?: string;
 }
 
-export const ImageUpload: FC<ImageUploadProps> = ({ control, name, rules }) => {
+export const ImageUpload: FC<ImageUploadProps> = ({ control, name, rules, testId }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -103,13 +104,14 @@ export const ImageUpload: FC<ImageUploadProps> = ({ control, name, rules }) => {
     const pagePreviewUrl = imageUrl ? getAbsoluteImagePath(imageUrl) : undefined;
 
     return (
-        <Box width='100%' height='100%'>
+        <Box width='100%' height='100%' data-test-id={testId}>
             <input
                 type='file'
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 accept='image/*'
                 style={{ display: 'none' }}
+                data-test-id={`${testId}-input-file`}
             />
             {pagePreviewUrl ? (
                 <Box
@@ -130,6 +132,7 @@ export const ImageUpload: FC<ImageUploadProps> = ({ control, name, rules }) => {
                         width='100%'
                         height='100%'
                         objectFit='cover'
+                        data-test-id={`${testId}-preview-image`}
                     />
                 </Box>
             ) : (

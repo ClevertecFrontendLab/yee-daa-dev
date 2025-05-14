@@ -21,10 +21,17 @@ export const FormButtons = ({ isSubmitting, onSaveDraft, isLoading }: FormButton
                 variant='outline'
                 onClick={onSaveDraft}
                 type='button'
+                data-test-id='recipe-save-draft-button'
             >
                 Сохранить черновик
             </Button>
-            <Button bg='black' color='white' isLoading={isSubmitting} type='submit'>
+            <Button
+                bg='black'
+                color='white'
+                isLoading={isSubmitting}
+                type='submit'
+                data-test-id='recipe-publish-recipe-button'
+            >
                 Опубликовать рецепт
             </Button>
         </Flex>
