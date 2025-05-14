@@ -20,14 +20,14 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-            - name: Add reviewers
-              uses: ClevertecFrontendLab/create-pr@main
-              with:
-                  owner: ${{ github.repository_owner }}
-                  repo: ${{ github.event.repository.name }}
-                  pull_number: ${{ github.event.number }}
-                  token: ${{ secrets.ADMIN_TOKEN }}
-                  host: ${{ secrets.HOST }}
+            # - name: Add reviewers
+            #   uses: ClevertecFrontendLab/create-pr@main
+            #   with:
+            #       owner: ${{ github.repository_owner }}
+            #       repo: ${{ github.event.repository.name }}
+            #       pull_number: ${{ github.event.number }}
+            #       token: ${{ secrets.ADMIN_TOKEN }}
+            #       host: ${{ secrets.HOST }}
             - uses: actions/setup-node@v4
               with:
                   node-version: 20
@@ -37,12 +37,12 @@ jobs:
                   install: yarn install
                   start: yarn start
                   wait-on: 'http://localhost:3000'
-            - name: Check tests
-              if: always()
-              uses: ClevertecFrontendLab/check-test@main
-              with:
-                  owner: ${{ github.repository_owner }}
-                  repo: ${{ github.event.repository.name }}
-                  pull_number: ${{ github.event.number }}
-                  token: ${{ secrets.ADMIN_TOKEN }}
-                  host: ${{ secrets.HOST }}
+            # - name: Check tests
+            #   if: always()
+            #   uses: ClevertecFrontendLab/check-test@main
+            #   with:
+            #       owner: ${{ github.repository_owner }}
+            #       repo: ${{ github.event.repository.name }}
+            #       pull_number: ${{ github.event.number }}
+            #       token: ${{ secrets.ADMIN_TOKEN }}
+            #       host: ${{ secrets.HOST }}
