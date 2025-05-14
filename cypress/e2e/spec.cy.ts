@@ -4538,7 +4538,7 @@ describe('recipe management', () => {
             cy.wait('@likeRecipe');
         });
 
-        it('should like recipe', () => {
+        it('should save recipe', () => {
             cy.contains('Сохранить').should('be.visible').click();
 
             cy.wait('@saveRecipe');
