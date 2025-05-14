@@ -48,7 +48,7 @@ const TEST_ID = {
     AppLoader: 'app-loader',
     SearchBlockLoader: 'loader-search-block',
     Breadcrumbs: 'breadcrumbs',
-
+    HeaderLogo: 'header-logo',
     Progress: {
         SignUp: 'sign-up-progress',
     },
@@ -73,6 +73,9 @@ const TEST_ID = {
         SendEmailModal: 'send-email-modal',
         VerificationCodeModal: 'verification-code-modal',
         ResetCredentialsModal: 'reset-credentials-modal',
+        RecipeImageModal: 'recipe-image-modal',
+        RecipeImageModalPreviewImage: 'recipe-image-modal-preview-image',
+        PreventiveModal: 'recipe-preventive-modal',
     },
     Button: {
         Submit: 'submit-button',
@@ -122,7 +125,25 @@ const TEST_ID = {
     Notification: {
         Error: 'error-notification',
     },
+    Recipe: {
+        Title: 'recipe-title',
+        Description: 'recipe-description',
+        Categories: 'recipe-categories',
+        Time: 'recipe-time',
+        Portions: 'recipe-portions',
+        Form: 'recipe-form',
+        DeleteButton: 'recipe-delete-button',
+        SaveDraftButton: 'recipe-save-draft-button',
+        PublishButton: 'recipe-publish-recipe-button',
+        ImageBlock: 'recipe-image-block',
+        AddRecipeButton: 'add-recipe-button',
+        ImageBlockInputFile: 'recipe-image-block-input-file',
+        ImageBlockPreviewImage: 'recipe-image-block-preview-image',
+        AddIngredientsButton: 'recipe-ingredients-add-ingredients',
+    },
 } as const;
+
+TEST_ID.Recipe.Description;
 
 export const API_ENDPOINTS = {
     SignIn: '/auth/login',
@@ -3677,7 +3698,7 @@ describe('recipe management', () => {
     describe('create recipe', () => {
         beforeEach(() => {
             cy.viewport(...RESOLUTION.desktop);
-            cy.getByTestId('add-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.AddRecipeButton).click();
             cy.url().should('include', '/new-recipe');
             cy.wait('@getMeasureUnits');
 
@@ -3697,15 +3718,15 @@ describe('recipe management', () => {
 
         it('should display recipe creation form with all required elements', () => {
             takeAllScreenshots('new-recipe-page');
-            cy.getByTestId('recipe-form').should('exist');
-            cy.getByTestId('recipe-form').within(() => {
-                cy.getByTestId('recipe-image-block').should('exist');
+            cy.getByTestId(TEST_ID.Recipe.Form).should('exist');
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
+                cy.getByTestId(TEST_ID.Recipe.ImageBlock).should('exist');
 
-                cy.getByTestId('recipe-title').should('exist');
-                cy.getByTestId('recipe-description').should('exist');
-                cy.getByTestId('recipe-time').should('exist');
-                cy.getByTestId('recipe-portions').should('exist');
-                cy.getByTestId('recipe-categories').should('exist');
+                cy.getByTestId(TEST_ID.Recipe.Title).should('exist');
+                cy.getByTestId(TEST_ID.Recipe.Description).should('exist');
+                cy.getByTestId(TEST_ID.Recipe.Time).should('exist');
+                cy.getByTestId(TEST_ID.Recipe.Portions).should('exist');
+                cy.getByTestId(TEST_ID.Recipe.Categories).should('exist');
 
                 cy.getByTestId('recipe-ingredients-title-0').should('exist');
                 cy.getByTestId('recipe-ingredients-count-0').should('exist');
@@ -3715,45 +3736,47 @@ describe('recipe management', () => {
                 cy.contains('Шаг 1').should('exist');
                 cy.getByTestId('recipe-steps-description-0').should('exist');
 
-                cy.getByTestId('recipe-save-draft-button').should('exist');
-                cy.getByTestId('recipe-publish-recipe-button').should('exist');
+                cy.getByTestId(TEST_ID.Recipe.SaveDraftButton).should('exist');
+                cy.getByTestId(TEST_ID.Recipe.PublishButton).should('exist');
             });
         });
 
         it('should validate recipe fields properly', () => {
-            cy.getByTestId('recipe-form').within(() => {
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
                 const longTitle = 'А'.repeat(51);
-                cy.getByTestId('recipe-title').invoke('val', longTitle).trigger('change');
-                cy.getByTestId('recipe-publish-recipe-button').click();
-                checkBorderColor('recipe-title');
-                cy.getByTestId('recipe-title').clear().type('Тестовый салат');
+                cy.getByTestId(TEST_ID.Recipe.Title).invoke('val', longTitle).trigger('change');
+                cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
+                checkBorderColor(TEST_ID.Recipe.Title);
+                cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Тестовый салат');
 
                 const longDescription = 'А'.repeat(501);
-                cy.getByTestId('recipe-description')
+                cy.getByTestId(TEST_ID.Recipe.Description)
                     .invoke('val', longDescription)
                     .trigger('change');
-                cy.getByTestId('recipe-publish-recipe-button').click();
-                checkBorderColor('recipe-description');
-                cy.getByTestId('recipe-description').clear().type('Описание тестового рецепта');
+                cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
+                checkBorderColor(TEST_ID.Recipe.Description);
+                cy.getByTestId(TEST_ID.Recipe.Description)
+                    .clear()
+                    .type('Описание тестового рецепта');
 
-                cy.getByTestId('recipe-portions').type('-5');
-                cy.getByTestId('recipe-publish-recipe-button').click();
-                checkBorderColor('recipe-portions');
-                cy.getByTestId('recipe-portions').clear().type('4');
+                cy.getByTestId(TEST_ID.Recipe.Portions).type('-5');
+                cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
+                checkBorderColor(TEST_ID.Recipe.Portions);
+                cy.getByTestId(TEST_ID.Recipe.Portions).clear().type('4');
 
-                cy.getByTestId('recipe-time').type('-30');
-                cy.getByTestId('recipe-publish-recipe-button').click();
-                checkBorderColor('recipe-time');
-                cy.getByTestId('recipe-time').clear().type('20000');
-                cy.getByTestId('recipe-publish-recipe-button').click();
-                checkBorderColor('recipe-time');
-                cy.getByTestId('recipe-time').clear().type('30');
+                cy.getByTestId(TEST_ID.Recipe.Time).type('-30');
+                cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
+                checkBorderColor(TEST_ID.Recipe.Time);
+                cy.getByTestId(TEST_ID.Recipe.Time).clear().type('20000');
+                cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
+                checkBorderColor(TEST_ID.Recipe.Time);
+                cy.getByTestId(TEST_ID.Recipe.Time).clear().type('30');
             });
         });
 
         it('should handle recipe categories selection', () => {
-            cy.getByTestId('recipe-form').within(() => {
-                cy.getByTestId('recipe-categories').click();
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
+                cy.getByTestId(TEST_ID.Recipe.Categories).click();
                 ['Мясные салаты', 'Рыбные салаты', 'Овощные салаты', 'Закуски', 'Гарниры'].forEach(
                     (category) => {
                         cy.contains(category).click({ force: true });
@@ -3766,22 +3789,22 @@ describe('recipe management', () => {
                 cy.contains('+1').should('exist');
             });
             takeAllScreenshots('recipe-categories');
-            cy.getByTestId('recipe-categories').click();
+            cy.getByTestId(TEST_ID.Recipe.Categories).click();
         });
 
         it('should handle recipe ingredients properly', () => {
-            cy.getByTestId('recipe-form').within(() => {
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
                 Array.from({ length: 49 }).forEach(() => {
-                    cy.getByTestId('recipe-ingredients-add-ingredients').click();
+                    cy.getByTestId(TEST_ID.Recipe.AddIngredientsButton).click();
                 });
-                cy.getByTestId('recipe-ingredients-add-ingredients').should('not.exist');
+                cy.getByTestId(TEST_ID.Recipe.AddIngredientsButton).should('not.exist');
                 Array.from({ length: 49 }).forEach(() => {
                     cy.getByTestId('recipe-ingredients-remove-ingredients-0').click();
                 });
 
                 cy.getByTestId('recipe-ingredients-title-0').clear().type('Мука');
                 cy.getByTestId('recipe-ingredients-count-0').clear().type('-30');
-                cy.getByTestId('recipe-publish-recipe-button').click();
+                cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
                 checkBorderColor('recipe-ingredients-count-0');
                 cy.getByTestId('recipe-ingredients-count-0').clear().type('200');
                 cy.getByTestId('recipe-ingredients-measureUnit-0').select('г');
@@ -3789,12 +3812,12 @@ describe('recipe management', () => {
         });
 
         it('should validate recipe steps properly', () => {
-            cy.getByTestId('recipe-form').within(() => {
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
                 const longStepDescription = 'А'.repeat(301);
                 cy.getByTestId('recipe-steps-description-0')
                     .invoke('val', longStepDescription)
                     .trigger('change');
-                cy.getByTestId('recipe-publish-recipe-button').click();
+                cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
                 checkBorderColor('recipe-steps-description-0');
                 cy.getByTestId('recipe-steps-description-0')
                     .clear()
@@ -3803,51 +3826,51 @@ describe('recipe management', () => {
         });
 
         it('should handle recipe image uploads', () => {
-            cy.getByTestId('recipe-image-block').click();
-            cy.getByTestId('recipe-image-modal').should('exist');
+            cy.getByTestId(TEST_ID.Recipe.ImageBlock).click();
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).should('exist');
             takeAllScreenshots('recipe-image-modal');
-            cy.getByTestId('recipe-image-modal').within(() => {
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
                 cy.contains('Удалить').should('not.exist');
                 cy.contains('Сохранить').should('not.exist');
             });
 
-            cy.getByTestId('recipe-image-block-input-file').selectFile(
+            cy.getByTestId(TEST_ID.Recipe.ImageBlockInputFile).selectFile(
                 'cypress/fixtures/test-1.webp',
                 {
                     force: true,
                 },
             );
-            cy.getByTestId('recipe-image-modal-preview-image')
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModalPreviewImage)
                 .should('exist')
                 .and('have.attr', 'src');
 
             takeAllScreenshots('recipe-image-modal-with-image');
 
-            cy.getByTestId('recipe-image-modal').within(() => {
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
                 cy.contains('Удалить').should('exist');
                 cy.contains('Сохранить').should('exist');
                 cy.contains('Удалить').click();
             });
 
-            cy.getByTestId('recipe-image-block').click();
-            cy.getByTestId('recipe-image-block-input-file').selectFile(
+            cy.getByTestId(TEST_ID.Recipe.ImageBlock).click();
+            cy.getByTestId(TEST_ID.Recipe.ImageBlockInputFile).selectFile(
                 'cypress/fixtures/test-1.webp',
                 {
                     force: true,
                 },
             );
-            cy.getByTestId('recipe-image-modal').within(() => {
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
                 cy.contains('Сохранить').click();
             });
             cy.wait('@uploadFile');
-            cy.getByTestId('recipe-image-block-preview-image').should('have.attr', 'src');
+            cy.getByTestId(TEST_ID.Recipe.ImageBlockPreviewImage).should('have.attr', 'src');
 
             cy.getByTestId('recipe-steps-image-block-0').click();
             cy.getByTestId('recipe-steps-image-block-0-input-file').selectFile(
                 'cypress/fixtures/test-1.webp',
                 { force: true },
             );
-            cy.getByTestId('recipe-image-modal').within(() => {
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
                 cy.contains('Сохранить').click();
             });
             cy.wait('@uploadFile');
@@ -3875,29 +3898,29 @@ describe('recipe management', () => {
         });
 
         it('should handle recipe publication errors', () => {
-            cy.getByTestId('recipe-title').clear().type('Тестовый рецепт');
-            cy.getByTestId('recipe-description').clear().type('Описание тестового рецепта');
-            cy.getByTestId('recipe-time').clear().type('30');
-            cy.getByTestId('recipe-portions').clear().type('4');
+            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Тестовый рецепт');
+            cy.getByTestId(TEST_ID.Recipe.Description).clear().type('Описание тестового рецепта');
+            cy.getByTestId(TEST_ID.Recipe.Time).clear().type('30');
+            cy.getByTestId(TEST_ID.Recipe.Portions).clear().type('4');
 
-            cy.getByTestId('recipe-image-block').click();
-            cy.getByTestId('recipe-image-block-input-file').selectFile(
+            cy.getByTestId(TEST_ID.Recipe.ImageBlock).click();
+            cy.getByTestId(TEST_ID.Recipe.ImageBlockInputFile).selectFile(
                 'cypress/fixtures/test-1.webp',
                 { force: true },
             );
-            cy.getByTestId('recipe-image-modal').within(() => {
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
                 cy.contains('Сохранить').click();
             });
             cy.wait('@uploadFile');
 
-            cy.getByTestId('recipe-form').within(() => {
-                cy.getByTestId('recipe-categories').click();
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
+                cy.getByTestId(TEST_ID.Recipe.Categories).click();
                 ['Мясные салаты', 'Рыбные салаты', 'Овощные салаты', 'Закуски', 'Гарниры'].forEach(
                     (category) => {
                         cy.contains(category).click({ force: true });
                     },
                 );
-                cy.getByTestId('recipe-categories').click();
+                cy.getByTestId(TEST_ID.Recipe.Categories).click();
             });
 
             cy.getByTestId('recipe-ingredients-title-0').clear().type('Мука');
@@ -3914,7 +3937,7 @@ describe('recipe management', () => {
                 },
             );
 
-            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
             cy.wait('@createRecipe500');
             takeAllScreenshots('create-recipe-500');
             cy.contains('Ошибка сервера').should('be.visible');
@@ -3929,7 +3952,7 @@ describe('recipe management', () => {
                 },
             );
 
-            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
             cy.wait('@createRecipe409');
             takeAllScreenshots('create-recipe-409');
             cy.contains('Ошибка').should('be.visible');
@@ -3938,29 +3961,29 @@ describe('recipe management', () => {
         });
 
         it('should successfully publish a recipe', () => {
-            cy.getByTestId('recipe-title').clear().type('Тестовый рецепт');
-            cy.getByTestId('recipe-description').clear().type('Описание тестового рецепта');
-            cy.getByTestId('recipe-time').clear().type('30');
-            cy.getByTestId('recipe-portions').clear().type('4');
+            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Тестовый рецепт');
+            cy.getByTestId(TEST_ID.Recipe.Description).clear().type('Описание тестового рецепта');
+            cy.getByTestId(TEST_ID.Recipe.Time).clear().type('30');
+            cy.getByTestId(TEST_ID.Recipe.Portions).clear().type('4');
 
-            cy.getByTestId('recipe-image-block').click();
-            cy.getByTestId('recipe-image-block-input-file').selectFile(
+            cy.getByTestId(TEST_ID.Recipe.ImageBlock).click();
+            cy.getByTestId(TEST_ID.Recipe.ImageBlockInputFile).selectFile(
                 'cypress/fixtures/test-1.webp',
                 { force: true },
             );
-            cy.getByTestId('recipe-image-modal').within(() => {
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
                 cy.contains('Сохранить').click();
             });
             cy.wait('@uploadFile');
 
-            cy.getByTestId('recipe-form').within(() => {
-                cy.getByTestId('recipe-categories').click();
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
+                cy.getByTestId(TEST_ID.Recipe.Categories).click();
                 ['Мясные салаты', 'Рыбные салаты', 'Овощные салаты', 'Закуски', 'Гарниры'].forEach(
                     (category) => {
                         cy.contains(category).click({ force: true });
                     },
                 );
-                cy.getByTestId('recipe-categories').click();
+                cy.getByTestId(TEST_ID.Recipe.Categories).click();
             });
 
             cy.getByTestId('recipe-ingredients-title-0').clear().type('Мука');
@@ -3978,7 +4001,7 @@ describe('recipe management', () => {
                 },
             );
 
-            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
             cy.wait('@createRecipe');
             cy.wait('@getNewRecipe');
             takeAllScreenshots('create-recipe-200');
@@ -3990,13 +4013,13 @@ describe('recipe management', () => {
     describe('preventative modal', () => {
         beforeEach(() => {
             cy.viewport(...RESOLUTION.desktop);
-            cy.getByTestId('add-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.AddRecipeButton).click();
             cy.url().should('include', '/new-recipe');
             cy.wait('@getMeasureUnits');
         });
 
         const checkPreventiveModal = () => {
-            cy.getByTestId('recipe-preventive-modal').should('exist');
+            cy.getByTestId(TEST_ID.Modal.PreventiveModal).should('exist');
             cy.contains('Сохранить черновик').should('exist');
             cy.contains('Выйти без сохранения').should('exist');
         };
@@ -4006,63 +4029,63 @@ describe('recipe management', () => {
         };
 
         const saveDraft = () => {
-            cy.getByTestId('recipe-preventive-modal').within(() => {
+            cy.getByTestId(TEST_ID.Modal.PreventiveModal).within(() => {
                 cy.contains('Сохранить черновик').click();
             });
         };
 
         const exitWithoutSaving = () => {
-            cy.getByTestId('recipe-preventive-modal').within(() => {
+            cy.getByTestId(TEST_ID.Modal.PreventiveModal).within(() => {
                 cy.getByTestId('recipe-preventive-modal-exit-button').click();
             });
         };
 
         it('should show preventative modal when changing basic recipe information', () => {
-            cy.getByTestId('recipe-title').clear().type('Внесли изменения');
-            cy.getByTestId('header-logo').click();
+            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Внесли изменения');
+            cy.getByTestId(TEST_ID.HeaderLogo).click();
             takeAllScreenshots('preventive-modal');
             checkPreventiveModal();
             closePreventiveModal();
-            cy.getByTestId('recipe-title').clear();
+            cy.getByTestId(TEST_ID.Recipe.Title).clear();
 
-            cy.getByTestId('recipe-description').clear().type('Внесли изменения');
+            cy.getByTestId(TEST_ID.Recipe.Description).clear().type('Внесли изменения');
             cy.contains('Закуски').click();
             checkPreventiveModal();
             closePreventiveModal();
-            cy.getByTestId('recipe-description').clear();
+            cy.getByTestId(TEST_ID.Recipe.Description).clear();
 
-            cy.getByTestId('recipe-portions').type('4');
-            cy.getByTestId('header-logo').click();
+            cy.getByTestId(TEST_ID.Recipe.Portions).type('4');
+            cy.getByTestId(TEST_ID.HeaderLogo).click();
             checkPreventiveModal();
             closePreventiveModal();
-            cy.getByTestId('recipe-portions').clear();
+            cy.getByTestId(TEST_ID.Recipe.Portions).clear();
 
-            cy.getByTestId('recipe-time').type('30');
-            cy.getByTestId('header-logo').click();
+            cy.getByTestId(TEST_ID.Recipe.Time).type('30');
+            cy.getByTestId(TEST_ID.HeaderLogo).click();
             checkPreventiveModal();
             closePreventiveModal();
         });
 
         it('should show preventative modal when modifying recipe images', () => {
-            cy.getByTestId('recipe-image-block').click();
-            cy.getByTestId('recipe-image-block-input-file').selectFile(
+            cy.getByTestId(TEST_ID.Recipe.ImageBlock).click();
+            cy.getByTestId(TEST_ID.Recipe.ImageBlockInputFile).selectFile(
                 'cypress/fixtures/test-1.webp',
                 {
                     force: true,
                 },
             );
-            cy.getByTestId('recipe-image-modal').within(() => {
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
                 cy.contains('Сохранить').click();
             });
             cy.wait('@uploadFile');
 
-            cy.getByTestId('header-logo').click();
+            cy.getByTestId(TEST_ID.HeaderLogo).click();
             checkPreventiveModal();
             closePreventiveModal();
 
-            cy.getByTestId('recipe-image-block').click();
-            cy.getByTestId('recipe-image-modal').should('exist');
-            cy.getByTestId('recipe-image-modal').within(() => {
+            cy.getByTestId(TEST_ID.Recipe.ImageBlock).click();
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).should('exist');
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
                 cy.contains('Удалить').click();
             });
         });
@@ -4074,32 +4097,32 @@ describe('recipe management', () => {
             closePreventiveModal();
             cy.getByTestId('recipe-steps-description-0').type('clear');
 
-            cy.getByTestId('recipe-form').within(() => {
-                cy.getByTestId('recipe-categories').click();
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
+                cy.getByTestId(TEST_ID.Recipe.Categories).click();
                 ['Закуски', 'Гарниры'].forEach((category) => {
                     cy.contains(category).click({ force: true });
                 });
             });
 
-            cy.getByTestId('header-logo').click();
+            cy.getByTestId(TEST_ID.HeaderLogo).click();
             checkPreventiveModal();
             closePreventiveModal();
         });
 
         it('should handle draft saving and cancellation correctly', () => {
             cy.getByTestId('recipe-ingredients-measureUnit-0').select('г');
-            cy.getByTestId('header-logo').click();
+            cy.getByTestId(TEST_ID.HeaderLogo).click();
             saveDraft();
-            cy.getByTestId('recipe-preventive-modal').should('not.exist');
-            checkBorderColor('recipe-title');
+            cy.getByTestId(TEST_ID.Modal.PreventiveModal).should('not.exist');
+            checkBorderColor(TEST_ID.Recipe.Title);
 
-            cy.getByTestId('recipe-title').type('Будущий шедевр');
-            cy.getByTestId('header-logo').click();
+            cy.getByTestId(TEST_ID.Recipe.Title).type('Будущий шедевр');
+            cy.getByTestId(TEST_ID.HeaderLogo).click();
             saveDraft();
             cy.wait('@createDraftRecipe');
             cy.contains('Черновик успешно сохранен').should('exist');
 
-            cy.getByTestId('add-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.AddRecipeButton).click();
             cy.getByTestId('recipe-ingredients-measureUnit-0').select('г');
             cy.contains('Закуски').click();
             checkPreventiveModal();
@@ -4111,24 +4134,24 @@ describe('recipe management', () => {
     describe('create draft', () => {
         beforeEach(() => {
             cy.viewport(...RESOLUTION.desktop);
-            cy.getByTestId('add-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.AddRecipeButton).click();
             cy.url().should('include', '/new-recipe');
             cy.wait('@getMeasureUnits');
         });
 
         it('should create draft successfully', () => {
-            cy.getByTestId('recipe-save-draft-button').click();
-            checkBorderColor('recipe-title');
-            cy.getByTestId('recipe-title').clear().type('Проверяем черновик');
+            cy.getByTestId(TEST_ID.Recipe.SaveDraftButton).click();
+            checkBorderColor(TEST_ID.Recipe.Title);
+            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Проверяем черновик');
 
-            cy.getByTestId('recipe-save-draft-button').click();
+            cy.getByTestId(TEST_ID.Recipe.SaveDraftButton).click();
             cy.wait('@createDraftRecipe');
             takeAllScreenshots('create-draft-recipe');
             cy.contains('Черновик успешно сохранен').should('exist');
         });
 
         it('should handle 409 error when creating draft', () => {
-            cy.getByTestId('recipe-title').clear().type('Конфликтующий черновик');
+            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Конфликтующий черновик');
 
             interceptApi(
                 { url: API_ENDPOINTS.RecipeDraft, alias: 'createDraftRecipe409', method: 'POST' },
@@ -4138,7 +4161,7 @@ describe('recipe management', () => {
                 },
             );
 
-            cy.getByTestId('recipe-save-draft-button').click();
+            cy.getByTestId(TEST_ID.Recipe.SaveDraftButton).click();
             cy.wait('@createDraftRecipe409');
 
             takeAllScreenshots('create-draft-recipe-409');
@@ -4148,7 +4171,7 @@ describe('recipe management', () => {
         });
 
         it('should handle 500 error when creating draft', () => {
-            cy.getByTestId('recipe-title').clear().type('Черновик с серверной ошибкой');
+            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Черновик с серверной ошибкой');
 
             interceptApi(
                 { url: API_ENDPOINTS.RecipeDraft, alias: 'createDraftRecipe500', method: 'POST' },
@@ -4158,7 +4181,7 @@ describe('recipe management', () => {
                 },
             );
 
-            cy.getByTestId('recipe-save-draft-button').click();
+            cy.getByTestId(TEST_ID.Recipe.SaveDraftButton).click();
             cy.wait('@createDraftRecipe500');
             takeAllScreenshots('create-draft-recipe-500');
             cy.contains('Ошибка сервера').should('be.visible');
@@ -4194,23 +4217,29 @@ describe('recipe management', () => {
             cy.url().should('include', 'edit-recipe/salads/meat-salads/681cbbd4b6c3c1bbdbf32bba');
 
             takeAllScreenshots('edit-recipe-page');
-            cy.getByTestId('recipe-form').within(() => {
-                cy.getByTestId('recipe-title')
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
+                cy.getByTestId(TEST_ID.Recipe.Title)
                     .invoke('val')
                     .should('eq', NEW_RECIPE_RESPONSE.title);
-                cy.getByTestId('recipe-description')
+                cy.getByTestId(TEST_ID.Recipe.Description)
                     .invoke('val')
                     .should('eq', NEW_RECIPE_RESPONSE.description);
-                cy.getByTestId('recipe-time').invoke('val').should('eq', NEW_RECIPE_RESPONSE.time);
-                cy.getByTestId('recipe-portions')
+                cy.getByTestId(TEST_ID.Recipe.Time)
+                    .invoke('val')
+                    .should('eq', NEW_RECIPE_RESPONSE.time);
+                cy.getByTestId(TEST_ID.Recipe.Portions)
                     .invoke('val')
                     .should('eq', NEW_RECIPE_RESPONSE.portions);
 
-                cy.getByTestId('recipe-categories').contains('Мясные салаты').should('be.visible');
-                cy.getByTestId('recipe-categories').contains('Рыбные салаты').should('be.visible');
-                cy.getByTestId('recipe-categories').contains('+1').should('be.visible');
+                cy.getByTestId(TEST_ID.Recipe.Categories)
+                    .contains('Мясные салаты')
+                    .should('be.visible');
+                cy.getByTestId(TEST_ID.Recipe.Categories)
+                    .contains('Рыбные салаты')
+                    .should('be.visible');
+                cy.getByTestId(TEST_ID.Recipe.Categories).contains('+1').should('be.visible');
 
-                cy.getByTestId(`recipe-image-block-preview-image`)
+                cy.getByTestId(TEST_ID.Recipe.ImageBlockPreviewImage)
                     .should('have.attr', 'src')
                     .and('include', NEW_RECIPE_RESPONSE.image);
             });
@@ -4219,7 +4248,7 @@ describe('recipe management', () => {
         it('should show correct ingredients in edit form', () => {
             cy.contains('Редактировать рецепт').click();
 
-            cy.getByTestId('recipe-form').within(() => {
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
                 NEW_RECIPE_RESPONSE.ingredients.forEach((item, index) => {
                     cy.getByTestId(`recipe-ingredients-title-${index}`)
                         .invoke('val')
@@ -4237,7 +4266,7 @@ describe('recipe management', () => {
         it('should show correct steps in edit form', () => {
             cy.contains('Редактировать рецепт').click();
 
-            cy.getByTestId('recipe-form').within(() => {
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
                 NEW_RECIPE_RESPONSE.steps.forEach((item, index) => {
                     cy.getByTestId(`recipe-steps-description-${index}`)
                         .invoke('val')
@@ -4256,19 +4285,19 @@ describe('recipe management', () => {
         it('should edit recipe basic information successfully', () => {
             cy.contains('Редактировать рецепт').click();
 
-            cy.getByTestId('recipe-form').within(() => {
-                cy.getByTestId('recipe-title').clear().type('Доработанный плов из детства');
-                cy.getByTestId('recipe-description')
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
+                cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Доработанный плов из детства');
+                cy.getByTestId(TEST_ID.Recipe.Description)
                     .clear()
                     .type(
                         'Супер вкусный и нежный плов по рецепту из вашего детства, с небольшими но приятными изменениями',
                         { timeout: 10000 },
                     );
-                cy.getByTestId('recipe-time').clear().type('40');
-                cy.getByTestId('recipe-portions').clear().type('7');
+                cy.getByTestId(TEST_ID.Recipe.Time).clear().type('40');
+                cy.getByTestId(TEST_ID.Recipe.Portions).clear().type('7');
             });
 
-            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
 
             cy.wait('@updateRecipe');
             cy.wait('@getRecipeAfterUpdate');
@@ -4277,12 +4306,12 @@ describe('recipe management', () => {
         it('should modify recipe ingredients successfully', () => {
             cy.contains('Редактировать рецепт').click();
 
-            cy.getByTestId('recipe-form').within(() => {
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
                 cy.getByTestId(`recipe-ingredients-title-0`).clear().type('дрова');
                 cy.getByTestId(`recipe-ingredients-count-0`).clear().type('50');
             });
 
-            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
 
             cy.wait('@updateRecipe');
             cy.wait('@getRecipeAfterUpdate');
@@ -4291,14 +4320,14 @@ describe('recipe management', () => {
         it('should edit recipe steps successfully', () => {
             cy.contains('Редактировать рецепт').click();
 
-            cy.getByTestId('recipe-form').within(() => {
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
                 cy.getByTestId(`recipe-steps-description-2`).clear().type('охапка дров');
 
                 cy.contains('Новый шаг').click();
                 cy.getByTestId(`recipe-steps-description-3`).type('и плов готов');
             });
 
-            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
 
             cy.wait('@updateRecipe');
             cy.wait('@getRecipeAfterUpdate');
@@ -4307,11 +4336,11 @@ describe('recipe management', () => {
         it('should handle recipe images modification correctly', () => {
             cy.contains('Редактировать рецепт').click();
 
-            cy.getByTestId('recipe-form').within(() => {
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
                 cy.getByTestId('recipe-steps-image-block-0-preview-image').click();
             });
 
-            cy.getByTestId('recipe-image-modal-preview-image')
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModalPreviewImage)
                 .should('be.visible')
                 .should('have.attr', 'src')
                 .and('include', NEW_RECIPE_RESPONSE.steps[0].image);
@@ -4324,13 +4353,13 @@ describe('recipe management', () => {
                 { force: true },
             );
 
-            cy.getByTestId('recipe-image-modal').within(() => {
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
                 cy.contains('Сохранить').click();
             });
 
             cy.wait('@uploadFile');
 
-            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
             cy.wait('@updateRecipe');
             cy.wait('@getRecipeAfterUpdate');
         });
@@ -4338,16 +4367,16 @@ describe('recipe management', () => {
         it('should save all changes in recipe successfully', () => {
             cy.contains('Редактировать рецепт').click();
 
-            cy.getByTestId('recipe-form').within(() => {
-                cy.getByTestId('recipe-title').clear().type('Доработанный плов из детства');
-                cy.getByTestId('recipe-description')
+            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
+                cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Доработанный плов из детства');
+                cy.getByTestId(TEST_ID.Recipe.Description)
                     .clear()
                     .type(
                         'Супер вкусный и нежный плов по рецепту из вашего детства, с небольшими но приятными изменениями',
                         { timeout: 10000 },
                     );
-                cy.getByTestId('recipe-time').clear().type('40');
-                cy.getByTestId('recipe-portions').clear().type('7');
+                cy.getByTestId(TEST_ID.Recipe.Time).clear().type('40');
+                cy.getByTestId(TEST_ID.Recipe.Portions).clear().type('7');
 
                 cy.getByTestId(`recipe-ingredients-title-0`).clear().type('дрова');
                 cy.getByTestId(`recipe-ingredients-count-0`).clear().type('50');
@@ -4365,12 +4394,12 @@ describe('recipe management', () => {
                 'cypress/fixtures/plov.jpeg',
                 { force: true },
             );
-            cy.getByTestId('recipe-image-modal').within(() => {
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
                 cy.contains('Сохранить').click();
             });
             cy.wait('@uploadFile');
 
-            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
             cy.wait('@updateRecipe');
             cy.wait('@getRecipeAfterUpdate');
             cy.contains('Рецепт успешно опубликован').should('be.visible');
@@ -4379,7 +4408,7 @@ describe('recipe management', () => {
         it('should handle 409 error when update recipe', () => {
             cy.contains('Редактировать рецепт').click();
 
-            cy.getByTestId('recipe-title').clear().type('Конфликтующее обновленное название');
+            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Конфликтующее обновленное название');
 
             interceptApi(
                 {
@@ -4393,7 +4422,7 @@ describe('recipe management', () => {
                 },
             );
 
-            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
             cy.wait('@updateRecipe409');
             takeAllScreenshots('edit-recipe-page-409');
 
@@ -4405,7 +4434,7 @@ describe('recipe management', () => {
         it('should handle 500 error when update recipe', () => {
             cy.contains('Редактировать рецепт').click();
 
-            cy.getByTestId('recipe-title').clear().type('Конфликтующее обновленное название');
+            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Конфликтующее обновленное название');
 
             interceptApi(
                 {
@@ -4418,7 +4447,7 @@ describe('recipe management', () => {
                     delay: 100,
                 },
             );
-            cy.getByTestId('recipe-publish-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
             cy.wait('@updateRecipe500');
             takeAllScreenshots('edit-recipe-page-500');
 
@@ -4448,8 +4477,8 @@ describe('recipe management', () => {
         });
 
         it('should delete recipe', () => {
-            cy.getByTestId('delete-recipe-button').should('be.visible');
-            cy.getByTestId('delete-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.DeleteButton).should('be.visible');
+            cy.getByTestId(TEST_ID.Recipe.DeleteButton).click();
 
             cy.wait('@deleteRecipe');
 
@@ -4457,7 +4486,7 @@ describe('recipe management', () => {
         });
 
         it('should handle 500 error when delete recipe', () => {
-            cy.getByTestId('delete-recipe-button').should('be.visible');
+            cy.getByTestId(TEST_ID.Recipe.DeleteButton).should('be.visible');
 
             interceptApi(
                 {
@@ -4471,7 +4500,7 @@ describe('recipe management', () => {
                 },
             );
 
-            cy.getByTestId('delete-recipe-button').click();
+            cy.getByTestId(TEST_ID.Recipe.DeleteButton).click();
 
             cy.wait('@deleteRecipe500');
 
