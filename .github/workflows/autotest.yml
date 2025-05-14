@@ -5,6 +5,9 @@ on:
         branches:
             - main
             - feat/sprint5
+    push:
+        branches:
+            - feat/sprint5
 
 permissions:
     checks: write
