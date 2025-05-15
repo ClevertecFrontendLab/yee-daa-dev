@@ -99,6 +99,7 @@ export const IngredientsSection = ({ control, register, errors }: IngredientsSec
                             _focus={{ borderColor: 'lime.150', boxShadow: 'none' }}
                             {...register(`ingredients.${index}.title`, {
                                 required: true,
+                                maxLength: 50,
                             })}
                         />
                     </FormControl>

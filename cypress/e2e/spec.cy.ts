@@ -3806,14 +3806,24 @@ describe('recipe management', () => {
 
         it('should handle recipe ingredients properly', () => {
             cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
-                Array.from({ length: 49 }).forEach(() => {
+                Array.from({ length: 5 }).forEach(() => {
                     cy.getByTestId(TEST_ID.Recipe.AddIngredientsButton).click();
                 });
-                cy.getByTestId(TEST_ID.Recipe.AddIngredientsButton).should('not.exist');
-                Array.from({ length: 49 }).forEach(() => {
+                cy.getByTestId(TEST_ID.Recipe.AddIngredientsButton)
+                    .should('exist')
+                    .and('have.length', 1);
+                Array.from({ length: 5 }).forEach((_, index) => {
+                    cy.getByTestId(`recipe-ingredients-remove-ingredients-${index}`).should(
+                        'exist',
+                    );
+                });
+                Array.from({ length: 5 }).forEach(() => {
                     cy.getByTestId('recipe-ingredients-remove-ingredients-0').click();
                 });
-
+                const longTitle = 'А'.repeat(51);
+                cy.getByTestId('recipe-ingredients-title-0').type(longTitle);
+                cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
+                checkBorderColor('recipe-ingredients-title-0');
                 cy.getByTestId('recipe-ingredients-title-0').clear().type('Мука');
                 cy.getByTestId('recipe-ingredients-count-0').clear().type('-30');
                 cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
