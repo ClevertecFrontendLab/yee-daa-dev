@@ -3847,7 +3847,7 @@ describe('recipe management', () => {
             });
 
             cy.getByTestId(TEST_ID.Recipe.ImageBlockInputFile).selectFile(
-                'cypress/fixtures/test-1.webp',
+                'cypress/fixtures/meat.webp',
                 {
                     force: true,
                 },
@@ -3866,7 +3866,7 @@ describe('recipe management', () => {
 
             cy.getByTestId(TEST_ID.Recipe.ImageBlock).click();
             cy.getByTestId(TEST_ID.Recipe.ImageBlockInputFile).selectFile(
-                'cypress/fixtures/test-1.webp',
+                'cypress/fixtures/meat.webp',
                 {
                     force: true,
                 },
@@ -3879,7 +3879,7 @@ describe('recipe management', () => {
 
             cy.getByTestId('recipe-steps-image-block-0').click();
             cy.getByTestId('recipe-steps-image-block-0-input-file').selectFile(
-                'cypress/fixtures/test-1.webp',
+                'cypress/fixtures/meat.webp',
                 { force: true },
             );
             cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
@@ -3917,7 +3917,7 @@ describe('recipe management', () => {
 
             cy.getByTestId(TEST_ID.Recipe.ImageBlock).click();
             cy.getByTestId(TEST_ID.Recipe.ImageBlockInputFile).selectFile(
-                'cypress/fixtures/test-1.webp',
+                'cypress/fixtures/meat.webp',
                 { force: true },
             );
             cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
@@ -3980,7 +3980,7 @@ describe('recipe management', () => {
 
             cy.getByTestId(TEST_ID.Recipe.ImageBlock).click();
             cy.getByTestId(TEST_ID.Recipe.ImageBlockInputFile).selectFile(
-                'cypress/fixtures/test-1.webp',
+                'cypress/fixtures/meat.webp',
                 { force: true },
             );
             cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
@@ -4081,7 +4081,7 @@ describe('recipe management', () => {
         it('should show preventative modal when modifying recipe images', () => {
             cy.getByTestId(TEST_ID.Recipe.ImageBlock).click();
             cy.getByTestId(TEST_ID.Recipe.ImageBlockInputFile).selectFile(
-                'cypress/fixtures/test-1.webp',
+                'cypress/fixtures/meat.webp',
                 {
                     force: true,
                 },
