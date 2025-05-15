@@ -2,41 +2,38 @@ import { Avatar, Card, CardBody, CardHeader, Heading, HStack, Text } from '@chak
 import { FC } from 'react';
 
 import { ButtonSubscribe } from '~/components/button-subscribe';
-import { AuthorDataType } from '~/redux/api/types/recipes';
+import { BloggerInfo } from '~/redux/features/bloggers-slice';
 
 import { FollowersIcon } from '../icons/followers-icon';
 
-export const AuthorCard: FC<{ author: AuthorDataType; authorId: string }> = ({
-    author,
-    authorId,
-}) => (
+export const AuthorCard: FC<{ author: BloggerInfo; authorId: string }> = ({ author, authorId }) => (
     <Card bg='var(--chakra-colors-lime-300)' p={{ base: 3, sm: 6 }} flexDirection='row' gap={4}>
         <CardHeader p={0}>
             <Avatar
                 // src={author.imageUrl}
-                name={`${author.firstName} ${author.lastName}`}
+                name={`${author.bloggerInfo.firstName} ${author.bloggerInfo.lastName}`}
                 size='lg'
             />
         </CardHeader>
         <CardBody p={0}>
             <HStack flexWrap='wrap' justifyContent='space-between'>
                 <Heading fontSize={{ base: 'xl', sm: '2xl' }}>
-                    {author.firstName} {author.lastName}
+                    {author.bloggerInfo.firstName} {author.bloggerInfo.lastName}
                 </Heading>
                 <Text>Автор рецепта</Text>
             </HStack>
             <Text mb={5} mt={2}>
-                @{author.login}
+                @{author.bloggerInfo.login}
             </Text>
             <HStack flexWrap='wrap' justifyContent='space-between'>
                 {/* TODO: add author id from request */}
-                <ButtonSubscribe userId={authorId} />
+                <ButtonSubscribe userId={authorId} isSubscribedFromReq={author.isFavorite} />
 
                 <HStack>
                     <HStack>
                         <FollowersIcon />
                         <Text fontSize='xs' lineHeight={6} color='lime.600'>
-                            {author?.subscribers?.length ?? 0 ?? 0}
+                            {author?.bloggerInfo.subscribers?.length ?? 0 ?? 0}
                         </Text>
                     </HStack>
                 </HStack>

@@ -63,27 +63,29 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                     shrinks
                     _id={_id}
                 />
-                {Boolean(newRecipesCount) && newRecipesCount !== undefined && (
-                    <Float top={{ base: 1, xl: 2 }} right={{ base: 1, xl: 2 }}>
-                        <Badge
-                            fontWeight='400'
-                            color='black'
-                            bg='blackAlpha.100'
-                            fontSize='14px'
-                            variant='solid'
-                            textTransform='lowercase'
-                            p='2px 8px'
-                        >
-                            {makeNewRecipeBadge(newRecipesCount)}
-                        </Badge>
-                    </Float>
-                )}
+                {cardType === 'FAVORITE' &&
+                    Boolean(newRecipesCount) &&
+                    newRecipesCount !== undefined && (
+                        <Float top={{ base: 1, xl: 2 }} right={{ base: 1, xl: 2 }}>
+                            <Badge
+                                fontWeight='400'
+                                color='black'
+                                bg='blackAlpha.100'
+                                fontSize='14px'
+                                variant='solid'
+                                textTransform='lowercase'
+                                p='2px 8px'
+                            >
+                                {makeNewRecipeBadge(newRecipesCount)}
+                            </Badge>
+                        </Float>
+                    )}
             </CardHeader>
             <CardBody {...cardData.CardBody}>
                 <Text
                     fontSize='sm'
                     lineHeight={5}
-                    noOfLines={3}
+                    noOfLines={cardType === 'DEFAULT' ? 4 : 3}
                     minHeight='60px'
                     letterSpacing={{ base: '-0.5px', md: 'initial' }}
                 >

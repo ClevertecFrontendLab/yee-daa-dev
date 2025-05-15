@@ -129,6 +129,11 @@ export const API_ENDPOINTS = {
     CheckVerificationCode: '/auth/verify-otp',
     ResetCredentials: '/auth/reset-password',
     CheckAuth: '/auth/check-auth',
+    GetBloggerById: '/recipe/user',
+    GetBloggerInfoById: '/user',
+    GetUserById: '/users',
+    GetMe: '/users/me',
+    GetBloggers: '/bloggers',
 
     Category: '/category',
     Recipe: '/recipe',
@@ -576,727 +581,6 @@ const goToRestoreCredentialsForm = () => {
 
     wait();
 };
-
-describe('authorization', () => {
-    beforeEach(() => {
-        cy.clearLocalStorage();
-        cy.clearAllSessionStorage();
-        interceptApi({ url: '/**', alias: 'uncaptured' }, { statusCode: 200, delay: 0 });
-
-        interceptApi(
-            { url: API_ENDPOINTS.RefreshToken, alias: 'refreshToken500' },
-            { statusCode: 500, delay: 0 },
-        );
-
-        interceptApi(
-            { url: API_ENDPOINTS.CheckAuth, alias: 'checkAuth403' },
-            { statusCode: 403, delay: 0 },
-        );
-
-        cy.visit('/');
-    });
-
-    describe('sign in flow', () => {
-        beforeEach(() => {
-            cy.getByTestId(TEST_ID.Form.SignIn).as('signInForm');
-            cy.getByTestId(TEST_ID.Input.Login).as('loginInput');
-            cy.getByTestId(TEST_ID.Input.Password).as('passwordInput');
-            cy.getByTestId(TEST_ID.Button.Submit).as('submitButton');
-        });
-
-        it('should validate sign in form fields', () => {
-            cy.get('@signInForm').within(() => {
-                cy.get('@submitButton').click();
-                cy.contains(VALIDATION_MESSAGE.Login.Required).should('be.visible');
-                cy.contains(VALIDATION_MESSAGE.Password.Required).should('be.visible');
-
-                validateField('@loginInput', INPUT_OVER_50, VALIDATION_MESSAGE.MaxLength);
-                cy.get('@loginInput').clear().type('login');
-                validateField('@passwordInput', INPUT_OVER_50, VALIDATION_MESSAGE.MaxLength);
-
-                cy.get('@loginInput').clear().type(VALIDATION_TO_TRIM_VALUE.Login).blur();
-                cy.get('@loginInput').should('have.value', VALIDATION_PASS_VALUE.Login);
-            });
-        });
-
-        it('should show password only while mouse is holding on visibility button', () => {
-            cy.viewport(...RESOLUTION.tablet);
-
-            cy.get('@signInForm').within(() => {
-                fillSignInForm();
-
-                cy.get('@passwordInput').should('have.attr', 'type', 'password');
-
-                cy.getByTestId(TEST_ID.Button.PasswordVisibility).then(($toggle) => {
-                    cy.wrap($toggle).trigger('mousedown');
-                    cy.get('@passwordInput').should('have.attr', 'type', 'text');
-                    cy.wrap($toggle).trigger('mouseup');
-                    cy.get('@passwordInput').should('have.attr', 'type', 'password');
-                });
-            });
-        });
-
-        it('should display error message for 401 invalid credentials', () => {
-            cy.viewport(...RESOLUTION.mobile);
-
-            interceptApi(
-                {
-                    url: API_ENDPOINTS.SignIn,
-                    method: 'POST',
-                    alias: 'signInRequest401',
-                },
-                {
-                    statusCode: 401,
-                },
-            );
-
-            cy.get('@signInForm').within(() => {
-                fillSignInForm();
-                cy.get('@passwordInput').type('{enter}');
-            });
-            cy.wait('@signInRequest401');
-
-            checkToastMessage({
-                ...TOAST_MESSAGE.SignInToast[401],
-                callback: () => takeAllScreenshots('sign-in-invalid-credentials'),
-            });
-        });
-
-        it('should display error message for 403 email is not verified', () => {
-            interceptApi(
-                {
-                    url: API_ENDPOINTS.SignIn,
-                    method: 'POST',
-                    alias: 'signInRequest403',
-                },
-                {
-                    statusCode: 403,
-                },
-            );
-
-            cy.get('@signInForm').within(() => {
-                fillSignInForm();
-                cy.get('@passwordInput').type('{enter}');
-            });
-            cy.wait('@signInRequest403');
-
-            checkToastMessage(TOAST_MESSAGE.SignInToast[403]);
-        });
-
-        it('should display error modal for 500 server error', () => {
-            const wait500 = interceptApi(
-                {
-                    url: API_ENDPOINTS.SignIn,
-                    method: 'POST',
-                    alias: 'signInRequest500',
-                },
-                {
-                    statusCode: 500,
-                },
-            );
-
-            cy.get('@signInForm').within(() => {
-                fillSignInForm();
-                cy.get('@passwordInput').type('{enter}');
-            });
-            wait500();
-
-            withModal('SignInError', () => {
-                cy.contains('Вход не выполнен').should('be.visible');
-                cy.contains('Что-то пошло не так.').should('be.visible');
-                cy.contains('Попробуйте еще раз').should('be.visible');
-            });
-            takeAllScreenshots('sign-in-server-error');
-            withModal('SignInError', () => {
-                cy.getByTestId(TEST_ID.Button.Close).click();
-            });
-
-            cy.getByTestId(TEST_ID.Modal.SignInError).should('not.exist');
-        });
-
-        it('should send new request on server error retry button', () => {
-            cy.viewport(...RESOLUTION.mobile);
-
-            const wait500 = interceptApi(
-                {
-                    url: API_ENDPOINTS.SignIn,
-                    method: 'POST',
-                    alias: 'signInRequest500',
-                },
-                {
-                    statusCode: 500,
-                    delay: 0,
-                },
-            );
-
-            cy.get('@signInForm').within(() => {
-                fillSignInForm();
-                cy.get('@passwordInput').type('{enter}');
-            });
-            wait500();
-
-            const wait200 = interceptApi(
-                {
-                    url: API_ENDPOINTS.SignIn,
-                    method: 'POST',
-                    alias: 'signInRequest200',
-                },
-                {
-                    statusCode: 200,
-                    headers: {
-                        'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
-                        [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
-                    },
-                },
-            );
-
-            withModal('SignInError', () => {
-                cy.getByTestId(TEST_ID.Button.Repeat).click();
-            });
-            wait200();
-
-            cy.wait('@uncaptured');
-            cy.contains('Приятного аппетита!').should('be.visible');
-        });
-
-        it('should navigate to main page on sign in success', () => {
-            const wait200 = interceptApi(
-                {
-                    url: API_ENDPOINTS.SignIn,
-                    method: 'POST',
-                    alias: 'signInRequest200',
-                },
-                {
-                    statusCode: 200,
-                    withLoader: true,
-                    headers: {
-                        'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
-                        [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
-                    },
-                    expectedBody: {
-                        login: VALIDATION_PASS_VALUE.Login,
-                        password: VALIDATION_PASS_VALUE.Password,
-                    },
-                },
-            );
-
-            cy.get('@signInForm').within(() => {
-                fillSignInForm();
-                cy.get('@passwordInput').type('{enter}');
-            });
-            cy.wait(500);
-            takeScreenshot('sign-in-loader');
-            wait200();
-            cy.wait('@uncaptured');
-            cy.contains('Приятного аппетита!').should('be.visible');
-        });
-    });
-
-    describe('sign up flow', () => {
-        beforeEach(() => {
-            cy.contains('Регистрация').click();
-            cy.reload();
-
-            cy.getByTestId(TEST_ID.Form.SignUp).as('signUpForm');
-            cy.getByTestId(TEST_ID.Button.Submit).as('submitButton');
-        });
-
-        it('should validate sign up form fields step 1', () => {
-            cy.viewport(...RESOLUTION.tablet);
-            cy.get('@signUpForm').within(() => {
-                validateFirstNameField();
-                validateLastNameField();
-                validateEmailField();
-            });
-        });
-
-        it('should validate sign up form fields step 2', () => {
-            cy.viewport(...RESOLUTION.mobile);
-            cy.get('@signUpForm').within(() => {
-                fillPersonalInfoForm();
-                cy.get('@submitButton').click();
-            });
-
-            cy.get('@signUpForm').within(() => {
-                validateLoginField();
-                validatePasswordField();
-                validateConfirmPasswordField();
-            });
-        });
-
-        it('progress bar shows validation progress', () => {
-            cy.getByTestId(TEST_ID.Progress.SignUp).as('signUpProgress');
-            cy.getByTestId(TEST_ID.Input.FirstName).as('firstNameInput');
-            cy.getByTestId(TEST_ID.Input.LastName).as('lastNameInput');
-            cy.getByTestId(TEST_ID.Input.Email).as('emailInput');
-
-            const checkProgressBar = (min: number, max: number) => {
-                cy.get('@signUpProgress')
-                    .find('[role=progressbar]')
-                    .then(($el) => {
-                        const numericValue = parseFloat($el.attr('aria-valuenow'));
-                        const roundedValue = Math.round(numericValue);
-                        expect(roundedValue).to.be.within(min, max);
-                    });
-            };
-
-            checkProgressBar(0, 0);
-
-            cy.get('@firstNameInput').type(VALIDATION_FAIL_VALUE.FirstName);
-            checkProgressBar(0, 0);
-            cy.get('@firstNameInput').clear().type(VALIDATION_PASS_VALUE.FirstName);
-            checkProgressBar(14, 18);
-
-            takeScreenshot('sign-up-progress-bar');
-
-            cy.get('@firstNameInput').clear();
-            checkProgressBar(0, 0);
-
-            cy.get('@firstNameInput').clear().type(VALIDATION_PASS_VALUE.FirstName);
-            cy.get('@lastNameInput').type(VALIDATION_FAIL_VALUE.LastName);
-            checkProgressBar(14, 18);
-            cy.get('@lastNameInput').clear().type(VALIDATION_PASS_VALUE.LastName);
-            checkProgressBar(31, 35);
-
-            takeScreenshot('sign-up-progress-bar', 'tablet');
-
-            cy.get('@emailInput').type(VALIDATION_FAIL_VALUE.Email);
-            checkProgressBar(31, 35);
-            cy.get('@emailInput').clear().type(VALIDATION_PASS_VALUE.Email);
-            checkProgressBar(48, 52);
-
-            cy.get('@submitButton').click();
-
-            cy.getByTestId(TEST_ID.Input.Login).as('loginInput');
-            cy.getByTestId(TEST_ID.Input.Password).as('passwordInput');
-            cy.getByTestId(TEST_ID.Input.PasswordConfirm).as('passwordConfirmInput');
-
-            cy.get('@loginInput').type(VALIDATION_FAIL_VALUE.Login);
-            checkProgressBar(48, 52);
-            cy.get('@loginInput').clear().type(VALIDATION_PASS_VALUE.Login);
-            checkProgressBar(65, 69);
-
-            takeScreenshot('sign-up-progress-bar', 'mobile');
-
-            cy.get('@passwordInput').type(VALIDATION_FAIL_VALUE.Password);
-            checkProgressBar(65, 69);
-            cy.get('@passwordInput').clear().type(VALIDATION_PASS_VALUE.Password);
-            checkProgressBar(81, 85);
-
-            cy.get('@passwordConfirmInput').type(VALIDATION_FAIL_VALUE.ConfirmPassword);
-            checkProgressBar(81, 85);
-            cy.get('@passwordConfirmInput').clear().type(VALIDATION_PASS_VALUE.Password);
-            checkProgressBar(98, 100);
-        });
-
-        it('should display error message on sign up 500 server error', () => {
-            fillSignUpForm();
-
-            interceptApi(
-                {
-                    url: API_ENDPOINTS.SignUp,
-                    method: 'POST',
-                    alias: 'signUpRequest500',
-                },
-                {
-                    statusCode: 500,
-                },
-            );
-
-            cy.getByTestId(TEST_ID.Button.Submit).click();
-            cy.wait('@signUpRequest500');
-
-            checkToastMessage({
-                ...TOAST_MESSAGE.ServerErrorToast,
-                callback: () => takeAllScreenshots('sign-up-server-error'),
-            });
-        });
-
-        it('should display errors messages on email and login conflicts', () => {
-            fillSignUpForm();
-
-            const waitLogin400 = interceptApi(
-                {
-                    url: API_ENDPOINTS.SignUp,
-                    method: 'POST',
-                    alias: 'signUpRequest400',
-                },
-                {
-                    statusCode: 400,
-                    body: {
-                        message: SIGN_UP_LOGIN_CONFLICT_MESSAGE,
-                        statusCode: 400,
-                    },
-                    delay: 0,
-                },
-            );
-
-            cy.getByTestId(TEST_ID.Button.Submit).click();
-            waitLogin400();
-
-            checkToastMessage({
-                ...TOAST_MESSAGE.SignUpToast[400],
-                title: SIGN_UP_LOGIN_CONFLICT_MESSAGE,
-                callback: () => takeScreenshot('sign-up-login-conflict', 'tablet'),
-            });
-
-            const waitEmail400 = interceptApi(
-                {
-                    url: API_ENDPOINTS.SignUp,
-                    method: 'POST',
-                    alias: 'signUpRequest400',
-                },
-                {
-                    statusCode: 400,
-                    body: {
-                        message: SIGN_UP_EMAIL_CONFLICT_MESSAGE,
-                        statusCode: 400,
-                    },
-                    delay: 0,
-                },
-            );
-
-            cy.getByTestId(TEST_ID.Button.Submit).click();
-            waitEmail400();
-
-            checkToastMessage({
-                ...TOAST_MESSAGE.SignUpToast[400],
-                title: SIGN_UP_EMAIL_CONFLICT_MESSAGE,
-                callback: () => takeScreenshot('sign-up-email-conflict', 'mobile'),
-            });
-        });
-
-        it('should display success modal on sign up success 200', () => {
-            cy.viewport(...RESOLUTION.mobile);
-            fillSignUpForm();
-
-            interceptApi(
-                {
-                    url: API_ENDPOINTS.SignUp,
-                    method: 'POST',
-                    alias: 'signUpRequest200',
-                },
-                {
-                    statusCode: 200,
-                    withLoader: true,
-                    expectedBody: {
-                        login: VALIDATION_PASS_VALUE.Login,
-                        password: VALIDATION_PASS_VALUE.Password,
-                        confirmPassword: VALIDATION_PASS_VALUE.Password,
-                        firstName: VALIDATION_PASS_VALUE.FirstName,
-                        lastName: VALIDATION_PASS_VALUE.LastName,
-                        email: VALIDATION_PASS_VALUE.Email,
-                    },
-                },
-            );
-
-            cy.getByTestId(TEST_ID.Button.Submit).click();
-            cy.wait('@signUpRequest200');
-
-            withModal('SignUpSuccess', () => {
-                cy.contains('Остался последний шаг.').should('be.visible');
-                cy.contains('Нужно верифицировать ваш e-mail').should('be.visible');
-                cy.contains('Мы отправили вам на почту').should('be.visible');
-                cy.contains(VALIDATION_PASS_VALUE.Email).should('be.visible');
-                cy.contains('ссылку для верификации.').should('be.visible');
-            });
-            takeAllScreenshots('sign-up-success');
-            withModal('SignUpSuccess', () => {
-                cy.getByTestId(TEST_ID.Button.Close).click();
-            });
-
-            cy.getByTestId(TEST_ID.Modal.SignUpSuccess).should('not.exist');
-            cy.getByTestId(TEST_ID.Form.SignIn).should('be.visible');
-        });
-    });
-
-    describe('email verification flow', () => {
-        it('should show success message on email verification success', () => {
-            cy.visit(`${VERIFICATION_ROUTE}?emailVerified=true`);
-
-            checkToastMessage({
-                ...TOAST_MESSAGE.EmailVerificationToast[200],
-                callback: () => takeAllScreenshots('verificate-email-success'),
-            });
-            cy.getByTestId(TEST_ID.Form.SignIn).should('be.visible');
-        });
-
-        it('should show error modal on email verification failure', () => {
-            cy.visit(`${VERIFICATION_ROUTE}?emailVerified=false`);
-
-            withModal('EmailVerificationFailed', () => {
-                cy.contains('Упс! Что-то пошло не так').should('be.visible');
-                cy.contains('Ваша ссылка для верификации недействительна.').should('be.visible');
-                cy.contains('Попробуйте зарегистрироваться снова.').should('be.visible');
-            });
-            takeAllScreenshots('verificate-email-failure');
-            withModal('EmailVerificationFailed', () => {
-                cy.getByTestId(TEST_ID.Button.Close).click();
-            });
-
-            cy.getByTestId(TEST_ID.Modal.EmailVerificationFailed).should('not.exist');
-            cy.getByTestId(TEST_ID.Form.SignUp).should('be.visible');
-        });
-    });
-
-    describe('restore credentials flow', () => {
-        beforeEach(() => {
-            cy.getByTestId(TEST_ID.Button.ForgotPassword).as('forgotPasswordButton').click();
-        });
-
-        it('should open send verification email modal', () => {
-            withModal('SendEmailModal', () => {
-                cy.contains(
-                    'Для восстановления входа введите ваш e-mail, куда можно отправить уникальный код',
-                ).should('be.visible');
-                cy.contains('Получить код').should('be.visible');
-                cy.getByTestId(TEST_ID.Input.Email).type(VALIDATION_PASS_VALUE.Email);
-                cy.getByTestId(TEST_ID.Button.Close).click();
-            });
-
-            cy.get('@SendEmailModal').should('not.exist');
-            cy.get('@forgotPasswordButton').click();
-            cy.get('@SendEmailModal', { timeout: 5000 }).should('be.visible');
-
-            withModal('SendEmailModal', () => {
-                cy.getByTestId(TEST_ID.Input.Email).should('have.value', '');
-            });
-        });
-
-        it('should validate send verification form email field', () => {
-            const wait = interceptApi(
-                {
-                    url: API_ENDPOINTS.SendVerificationCode,
-                    method: 'POST',
-                    alias: 'sendVerificationCode200',
-                },
-                {
-                    statusCode: 200,
-                },
-            );
-
-            withModal('SendEmailModal', () => {
-                cy.getByTestId(TEST_ID.Button.Submit).as('submitButton');
-                validateEmailField();
-            });
-            wait();
-        });
-
-        it('should show error message on email 403 existance fail', () => {
-            const wait = interceptApi(
-                {
-                    url: API_ENDPOINTS.SendVerificationCode,
-                    method: 'POST',
-                    alias: 'sendVerificationCode403',
-                },
-                {
-                    statusCode: 403,
-                },
-            );
-
-            withModal('SendEmailModal', () => {
-                cy.getByTestId(TEST_ID.Input.Email).type(`${VALIDATION_PASS_VALUE.Email}{enter}`);
-            });
-            wait();
-
-            cy.getByTestId(TEST_ID.Input.Email).should('have.value', '');
-            checkToastMessage({
-                ...TOAST_MESSAGE.SendVerificationCodeToast[403],
-                callback: () => takeAllScreenshots('send-email-modal-not-exist'),
-            });
-        });
-
-        it('should show error message on send code 500 server error', () => {
-            const wait = interceptApi(
-                {
-                    url: API_ENDPOINTS.SendVerificationCode,
-                    method: 'POST',
-                    alias: 'sendVerificationCode500',
-                },
-                {
-                    statusCode: 500,
-                },
-            );
-
-            withModal('SendEmailModal', () => {
-                cy.getByTestId(TEST_ID.Input.Email).type(`${VALIDATION_PASS_VALUE.Email}{enter}`);
-            });
-            wait();
-            cy.getByTestId(TEST_ID.Input.Email).type(`${VALIDATION_PASS_VALUE.Email}{enter}`);
-            wait();
-
-            checkToastMessage({
-                ...TOAST_MESSAGE.ServerErrorToast,
-                callback: () => takeAllScreenshots('send-email-modal-server-error'),
-            });
-        });
-
-        it('should open validate verification code modal', () => {
-            goToCheckVerificationCode();
-
-            withModal('VerificationCodeModal', () => {
-                cy.contains('Мы отправили вам на e-mail').should('be.visible');
-                cy.contains(VALIDATION_PASS_VALUE.Email).should('be.visible');
-                cy.contains('шестизначный код.').should('be.visible');
-                cy.contains('Введите его ниже.').should('be.visible');
-            });
-            takeScreenshot('verification-code-modal');
-            withModal('VerificationCodeModal', () => {
-                cy.getByTestId(TEST_ID.Button.Close).click();
-            });
-
-            cy.get('@VerificationCodeModal').should('not.exist');
-            cy.get('@forgotPasswordButton').click();
-
-            withModal('SendEmailModal', () => {
-                cy.getByTestId(TEST_ID.Input.Email).should('have.value', '');
-            });
-        });
-
-        it('should handle verification code validation', () => {
-            goToCheckVerificationCode();
-
-            const wait403 = interceptApi(
-                {
-                    url: API_ENDPOINTS.CheckVerificationCode,
-                    method: 'POST',
-                    alias: 'checkVerificationCode403',
-                },
-                { statusCode: 403 },
-            );
-
-            withModal('VerificationCodeModal', () => {
-                fillVerificationCode();
-            });
-
-            takeScreenshot('verification-code-modal', 'tablet');
-            wait403();
-            takeScreenshot('verification-code-modal', 'mobile');
-
-            const wait500 = interceptApi(
-                {
-                    url: API_ENDPOINTS.CheckVerificationCode,
-                    method: 'POST',
-                    alias: 'checkVerificationCode500',
-                },
-                { statusCode: 500 },
-            );
-
-            const checkPinReset = () => {
-                VERIFICATION_CODE_PIN_ID.forEach((id) => {
-                    cy.getByTestId(`${TEST_ID.Input.VerificationCode}-${id}`).should(
-                        'have.value',
-                        '',
-                    );
-                });
-            };
-
-            withModal('VerificationCodeModal', () => {
-                cy.contains('Неверный код').should('be.visible');
-                checkPinReset();
-                fillVerificationCode();
-            });
-            wait500();
-
-            checkToastMessage({
-                ...TOAST_MESSAGE.ServerErrorToast,
-                callback: () => takeAllScreenshots('verification-code-modal-server-error'),
-            });
-
-            const wait200 = interceptApi(
-                {
-                    url: API_ENDPOINTS.CheckVerificationCode,
-                    method: 'POST',
-                    alias: 'checkVerificationCode200',
-                },
-                {
-                    statusCode: 200,
-                    withLoader: true,
-                },
-            );
-
-            withModal('VerificationCodeModal', () => {
-                cy.contains('Неверный код').should('not.exist');
-                checkPinReset();
-                fillVerificationCode();
-            });
-            wait200();
-            withModal('ResetCredentialsModal').should('be.visible');
-        });
-
-        it('should validate restore credentials form', () => {
-            goToRestoreCredentialsForm();
-
-            withModal('ResetCredentialsModal', () => {
-                cy.getByTestId(TEST_ID.Button.Submit).as('submitButton');
-                validateLoginField();
-                validatePasswordField();
-                validateConfirmPasswordField();
-                cy.getByTestId(TEST_ID.Button.Close).click();
-            });
-
-            cy.get('@ResetCredentialsModal').should('not.exist');
-        });
-
-        it('should show success message on reset success 200', () => {
-            goToRestoreCredentialsForm();
-
-            const wait200 = interceptApi(
-                {
-                    url: API_ENDPOINTS.ResetCredentials,
-                    method: 'POST',
-                    alias: 'resetCredentials200',
-                },
-                {
-                    statusCode: 200,
-                    withLoader: true,
-                    expectedBody: {
-                        email: VALIDATION_PASS_VALUE.Email,
-                        login: VALIDATION_PASS_VALUE.Login,
-                        password: VALIDATION_PASS_VALUE.Password,
-                        passwordConfirm: VALIDATION_PASS_VALUE.Password,
-                    },
-                },
-            );
-
-            withModal('ResetCredentialsModal', () => {
-                fillCredentialsForm();
-                cy.getByTestId(TEST_ID.Input.PasswordConfirm).type('{enter}');
-            });
-            wait200();
-            cy.get('@ResetCredentialsModal').should('not.exist');
-
-            checkToastMessage({
-                ...TOAST_MESSAGE.RestoreCredentials[200],
-                callback: () => takeAllScreenshots('reset-credentials-modal-success'),
-            });
-        });
-
-        it('should show error message on reset credentials 500 server error', () => {
-            goToRestoreCredentialsForm();
-
-            const wait500 = interceptApi(
-                {
-                    url: API_ENDPOINTS.ResetCredentials,
-                    method: 'POST',
-                    alias: 'resetCredentials500',
-                },
-                { statusCode: 500 },
-            );
-
-            withModal('ResetCredentialsModal', () => {
-                fillCredentialsForm();
-                cy.getByTestId(TEST_ID.Button.Submit).click();
-            });
-            wait500();
-
-            checkToastMessage({
-                ...TOAST_MESSAGE.ServerErrorToast,
-                callback: () => takeAllScreenshots('reset-credentials-modal-server-error'),
-            });
-        });
-    });
-});
 
 const SEARCH_PARAMS = {
     CREATED_AT_SORT: 'createdAt',
@@ -2623,6 +1907,88 @@ const MOCK_RECIPES_BY_CATEGORY = {
 const juiciestData = {
     data: [...allRecipes].sort((a, b) => a.likes - b.likes).slice(0, DEFAULT_RECIPE_LIMIT),
 };
+
+// bloggers
+const MOCK_PREVIEW_BLOGGERS = {
+    favorites: [],
+    others: [
+        {
+            _id: 'testId1',
+            firstName: 'Test FirstName 1',
+            lastName: 'test LastName 1',
+            login: 'test_login_1',
+            subscribersCount: 36,
+            bookmarksCount: 943,
+            isFavorite: true,
+            notes: [
+                {
+                    date: '2025-03-26T15:27:16.066Z',
+                    text: ' 1 acs nidc nisjdc sdnnjkcx ajksnx jisjdxoic xm',
+                },
+                {
+                    date: '2025-03-26T15:27:16.066Z',
+                    text: 'Random text 2',
+                },
+            ],
+            newRecipesCount: 3,
+        },
+        {
+            _id: 'testId2',
+            firstName: 'Test FirstName 2',
+            lastName: 'test LastName 2',
+            login: 'test_login_2',
+            subscribersCount: 0,
+            bookmarksCount: 0,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 0,
+        },
+        {
+            _id: 'testId3',
+            firstName: 'Test FirstName 3',
+            lastName: 'test LastName 3',
+            login: 'test_login_3',
+            subscribersCount: 366,
+            bookmarksCount: 9,
+            isFavorite: false,
+            notes: [
+                {
+                    date: '2025-03-26T15:27:16.066Z',
+                    text: ' test test test test test test test test test test test test test test test test test test test ',
+                },
+            ],
+            newRecipesCount: 0,
+        },
+    ],
+};
+
+// const MOCK_ALL_BLOGGERS = {};
+
+const MOCK_BLOGGER_PROFILE = {
+    bloggerInfo: {
+        _id: 'test id 1',
+        email: 'test@test.com',
+        login: 'test_login_1',
+        firstName: 'Test FirstName 1',
+        lastName: 'Test LastName 1',
+        recipesIds: ['1'],
+        subscribers: ['2'],
+        notes: [
+            {
+                date: '2025-03-26T15:27:16.066Z',
+                text: 'Test test test test test test test test test test',
+            },
+            {
+                date: '2025-03-26T15:27:16.066Z',
+                text: 'Random text 2',
+            },
+        ],
+    },
+    totalSubscribers: 13,
+    totalBookmarks: 338,
+    isFavorite: true,
+};
+
 const interceptJuiciestPage = (page: number = 1, delay = DELAY.SM, mockData = juiciestData) =>
     interceptApi(
         {
@@ -2745,6 +2111,37 @@ const interceptRecipesBySubCategory = (delay: number = DELAY.SM, mockBody = null
         },
     );
 
+const interceptBloggers = (currentUserId = '', delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
+        {
+            url: `${API_ENDPOINTS.GetBloggers}?currentUserId=${currentUserId}`,
+            alias: 'getBloggers',
+        },
+        {
+            statusCode: 200,
+            delay,
+            body: mockBody ?? MOCK_PREVIEW_BLOGGERS,
+        },
+    );
+
+const interceptBloggerById = (
+    bloggerId = '',
+    currentUserId = '',
+    delay: number = DELAY.SM,
+    mockBody = null,
+) =>
+    interceptApi(
+        {
+            url: `${API_ENDPOINTS.GetBloggers}/${bloggerId}?currentUserId=${currentUserId}`,
+            alias: 'getBloggerById',
+        },
+        {
+            statusCode: 200,
+            delay,
+            body: mockBody ?? MOCK_BLOGGER_PROFILE,
+        },
+    );
+
 const signIn = () => {
     interceptApi(
         {
@@ -2809,6 +2206,727 @@ const signIn = () => {
     );
 };
 
+describe('authorization', () => {
+    beforeEach(() => {
+        cy.clearLocalStorage();
+        cy.clearAllSessionStorage();
+        interceptApi({ url: '/**', alias: 'uncaptured' }, { statusCode: 200, delay: 0 });
+
+        interceptApi(
+            { url: API_ENDPOINTS.RefreshToken, alias: 'refreshToken500' },
+            { statusCode: 500, delay: 0 },
+        );
+
+        interceptApi(
+            { url: API_ENDPOINTS.CheckAuth, alias: 'checkAuth403' },
+            { statusCode: 403, delay: 0 },
+        );
+
+        cy.visit('/');
+    });
+
+    describe('sign in flow', () => {
+        beforeEach(() => {
+            cy.getByTestId(TEST_ID.Form.SignIn).as('signInForm');
+            cy.getByTestId(TEST_ID.Input.Login).as('loginInput');
+            cy.getByTestId(TEST_ID.Input.Password).as('passwordInput');
+            cy.getByTestId(TEST_ID.Button.Submit).as('submitButton');
+        });
+
+        it('should validate sign in form fields', () => {
+            cy.get('@signInForm').within(() => {
+                cy.get('@submitButton').click();
+                cy.contains(VALIDATION_MESSAGE.Login.Required).should('be.visible');
+                cy.contains(VALIDATION_MESSAGE.Password.Required).should('be.visible');
+
+                validateField('@loginInput', INPUT_OVER_50, VALIDATION_MESSAGE.MaxLength);
+                cy.get('@loginInput').clear().type('login');
+                validateField('@passwordInput', INPUT_OVER_50, VALIDATION_MESSAGE.MaxLength);
+
+                cy.get('@loginInput').clear().type(VALIDATION_TO_TRIM_VALUE.Login).blur();
+                cy.get('@loginInput').should('have.value', VALIDATION_PASS_VALUE.Login);
+            });
+        });
+
+        it('should show password only while mouse is holding on visibility button', () => {
+            cy.viewport(...RESOLUTION.tablet);
+
+            cy.get('@signInForm').within(() => {
+                fillSignInForm();
+
+                cy.get('@passwordInput').should('have.attr', 'type', 'password');
+
+                cy.getByTestId(TEST_ID.Button.PasswordVisibility).then(($toggle) => {
+                    cy.wrap($toggle).trigger('mousedown');
+                    cy.get('@passwordInput').should('have.attr', 'type', 'text');
+                    cy.wrap($toggle).trigger('mouseup');
+                    cy.get('@passwordInput').should('have.attr', 'type', 'password');
+                });
+            });
+        });
+
+        it('should display error message for 401 invalid credentials', () => {
+            cy.viewport(...RESOLUTION.mobile);
+
+            interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest401',
+                },
+                {
+                    statusCode: 401,
+                },
+            );
+
+            cy.get('@signInForm').within(() => {
+                fillSignInForm();
+                cy.get('@passwordInput').type('{enter}');
+            });
+            cy.wait('@signInRequest401');
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.SignInToast[401],
+                callback: () => takeAllScreenshots('sign-in-invalid-credentials'),
+            });
+        });
+
+        it('should display error message for 403 email is not verified', () => {
+            interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest403',
+                },
+                {
+                    statusCode: 403,
+                },
+            );
+
+            cy.get('@signInForm').within(() => {
+                fillSignInForm();
+                cy.get('@passwordInput').type('{enter}');
+            });
+            cy.wait('@signInRequest403');
+
+            checkToastMessage(TOAST_MESSAGE.SignInToast[403]);
+        });
+
+        it('should display error modal for 500 server error', () => {
+            const wait500 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest500',
+                },
+                {
+                    statusCode: 500,
+                },
+            );
+
+            cy.get('@signInForm').within(() => {
+                fillSignInForm();
+                cy.get('@passwordInput').type('{enter}');
+            });
+            wait500();
+
+            withModal('SignInError', () => {
+                cy.contains('Вход не выполнен').should('be.visible');
+                cy.contains('Что-то пошло не так.').should('be.visible');
+                cy.contains('Попробуйте еще раз').should('be.visible');
+            });
+            takeAllScreenshots('sign-in-server-error');
+            withModal('SignInError', () => {
+                cy.getByTestId(TEST_ID.Button.Close).click();
+            });
+
+            cy.getByTestId(TEST_ID.Modal.SignInError).should('not.exist');
+        });
+
+        it('should send new request on server error retry button', () => {
+            cy.viewport(...RESOLUTION.mobile);
+
+            const wait500 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest500',
+                },
+                {
+                    statusCode: 500,
+                    delay: 0,
+                },
+            );
+
+            cy.get('@signInForm').within(() => {
+                fillSignInForm();
+                cy.get('@passwordInput').type('{enter}');
+            });
+            wait500();
+
+            const wait200 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest200',
+                },
+                {
+                    statusCode: 200,
+                    headers: {
+                        'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
+                        [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
+                    },
+                },
+            );
+
+            withModal('SignInError', () => {
+                cy.getByTestId(TEST_ID.Button.Repeat).click();
+            });
+            wait200();
+
+            cy.wait('@uncaptured');
+            cy.contains('Приятного аппетита!').should('be.visible');
+        });
+
+        it('should navigate to main page on sign in success', () => {
+            const wait200 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignIn,
+                    method: 'POST',
+                    alias: 'signInRequest200',
+                },
+                {
+                    statusCode: 200,
+                    withLoader: true,
+                    headers: {
+                        'Access-Control-Expose-Headers': ACCESS_TOKEN_HEADER[0],
+                        [ACCESS_TOKEN_HEADER[0]]: ACCESS_TOKEN_HEADER[1],
+                    },
+                    expectedBody: {
+                        login: VALIDATION_PASS_VALUE.Login,
+                        password: VALIDATION_PASS_VALUE.Password,
+                    },
+                },
+            );
+
+            cy.get('@signInForm').within(() => {
+                fillSignInForm();
+                cy.get('@passwordInput').type('{enter}');
+            });
+            cy.wait(500);
+            takeScreenshot('sign-in-loader');
+            wait200();
+            cy.wait('@uncaptured');
+            cy.contains('Приятного аппетита!').should('be.visible');
+        });
+    });
+
+    describe('sign up flow', () => {
+        beforeEach(() => {
+            cy.contains('Регистрация').click();
+            cy.reload();
+
+            cy.getByTestId(TEST_ID.Form.SignUp).as('signUpForm');
+            cy.getByTestId(TEST_ID.Button.Submit).as('submitButton');
+        });
+
+        it('should validate sign up form fields step 1', () => {
+            cy.viewport(...RESOLUTION.tablet);
+            cy.get('@signUpForm').within(() => {
+                validateFirstNameField();
+                validateLastNameField();
+                validateEmailField();
+            });
+        });
+
+        it('should validate sign up form fields step 2', () => {
+            cy.viewport(...RESOLUTION.mobile);
+            cy.get('@signUpForm').within(() => {
+                fillPersonalInfoForm();
+                cy.get('@submitButton').click();
+            });
+
+            cy.get('@signUpForm').within(() => {
+                validateLoginField();
+                validatePasswordField();
+                validateConfirmPasswordField();
+            });
+        });
+
+        it('progress bar shows validation progress', () => {
+            cy.getByTestId(TEST_ID.Progress.SignUp).as('signUpProgress');
+            cy.getByTestId(TEST_ID.Input.FirstName).as('firstNameInput');
+            cy.getByTestId(TEST_ID.Input.LastName).as('lastNameInput');
+            cy.getByTestId(TEST_ID.Input.Email).as('emailInput');
+
+            const checkProgressBar = (min: number, max: number) => {
+                cy.get('@signUpProgress')
+                    .find('[role=progressbar]')
+                    .then(($el) => {
+                        const numericValue = parseFloat($el.attr('aria-valuenow'));
+                        const roundedValue = Math.round(numericValue);
+                        expect(roundedValue).to.be.within(min, max);
+                    });
+            };
+
+            checkProgressBar(0, 0);
+
+            cy.get('@firstNameInput').type(VALIDATION_FAIL_VALUE.FirstName);
+            checkProgressBar(0, 0);
+            cy.get('@firstNameInput').clear().type(VALIDATION_PASS_VALUE.FirstName);
+            checkProgressBar(14, 18);
+
+            takeScreenshot('sign-up-progress-bar');
+
+            cy.get('@firstNameInput').clear();
+            checkProgressBar(0, 0);
+
+            cy.get('@firstNameInput').clear().type(VALIDATION_PASS_VALUE.FirstName);
+            cy.get('@lastNameInput').type(VALIDATION_FAIL_VALUE.LastName);
+            checkProgressBar(14, 18);
+            cy.get('@lastNameInput').clear().type(VALIDATION_PASS_VALUE.LastName);
+            checkProgressBar(31, 35);
+
+            takeScreenshot('sign-up-progress-bar', 'tablet');
+
+            cy.get('@emailInput').type(VALIDATION_FAIL_VALUE.Email);
+            checkProgressBar(31, 35);
+            cy.get('@emailInput').clear().type(VALIDATION_PASS_VALUE.Email);
+            checkProgressBar(48, 52);
+
+            cy.get('@submitButton').click();
+
+            cy.getByTestId(TEST_ID.Input.Login).as('loginInput');
+            cy.getByTestId(TEST_ID.Input.Password).as('passwordInput');
+            cy.getByTestId(TEST_ID.Input.PasswordConfirm).as('passwordConfirmInput');
+
+            cy.get('@loginInput').type(VALIDATION_FAIL_VALUE.Login);
+            checkProgressBar(48, 52);
+            cy.get('@loginInput').clear().type(VALIDATION_PASS_VALUE.Login);
+            checkProgressBar(65, 69);
+
+            takeScreenshot('sign-up-progress-bar', 'mobile');
+
+            cy.get('@passwordInput').type(VALIDATION_FAIL_VALUE.Password);
+            checkProgressBar(65, 69);
+            cy.get('@passwordInput').clear().type(VALIDATION_PASS_VALUE.Password);
+            checkProgressBar(81, 85);
+
+            cy.get('@passwordConfirmInput').type(VALIDATION_FAIL_VALUE.ConfirmPassword);
+            checkProgressBar(81, 85);
+            cy.get('@passwordConfirmInput').clear().type(VALIDATION_PASS_VALUE.Password);
+            checkProgressBar(98, 100);
+        });
+
+        it('should display error message on sign up 500 server error', () => {
+            fillSignUpForm();
+
+            interceptApi(
+                {
+                    url: API_ENDPOINTS.SignUp,
+                    method: 'POST',
+                    alias: 'signUpRequest500',
+                },
+                {
+                    statusCode: 500,
+                },
+            );
+
+            cy.getByTestId(TEST_ID.Button.Submit).click();
+            cy.wait('@signUpRequest500');
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.ServerErrorToast,
+                callback: () => takeAllScreenshots('sign-up-server-error'),
+            });
+        });
+
+        it('should display errors messages on email and login conflicts', () => {
+            fillSignUpForm();
+
+            const waitLogin400 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignUp,
+                    method: 'POST',
+                    alias: 'signUpRequest400',
+                },
+                {
+                    statusCode: 400,
+                    body: {
+                        message: SIGN_UP_LOGIN_CONFLICT_MESSAGE,
+                        statusCode: 400,
+                    },
+                    delay: 0,
+                },
+            );
+
+            cy.getByTestId(TEST_ID.Button.Submit).click();
+            waitLogin400();
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.SignUpToast[400],
+                title: SIGN_UP_LOGIN_CONFLICT_MESSAGE,
+                callback: () => takeScreenshot('sign-up-login-conflict', 'tablet'),
+            });
+
+            const waitEmail400 = interceptApi(
+                {
+                    url: API_ENDPOINTS.SignUp,
+                    method: 'POST',
+                    alias: 'signUpRequest400',
+                },
+                {
+                    statusCode: 400,
+                    body: {
+                        message: SIGN_UP_EMAIL_CONFLICT_MESSAGE,
+                        statusCode: 400,
+                    },
+                    delay: 0,
+                },
+            );
+
+            cy.getByTestId(TEST_ID.Button.Submit).click();
+            waitEmail400();
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.SignUpToast[400],
+                title: SIGN_UP_EMAIL_CONFLICT_MESSAGE,
+                callback: () => takeScreenshot('sign-up-email-conflict', 'mobile'),
+            });
+        });
+
+        it('should display success modal on sign up success 200', () => {
+            cy.viewport(...RESOLUTION.mobile);
+            fillSignUpForm();
+
+            interceptApi(
+                {
+                    url: API_ENDPOINTS.SignUp,
+                    method: 'POST',
+                    alias: 'signUpRequest200',
+                },
+                {
+                    statusCode: 200,
+                    withLoader: true,
+                    expectedBody: {
+                        login: VALIDATION_PASS_VALUE.Login,
+                        password: VALIDATION_PASS_VALUE.Password,
+                        confirmPassword: VALIDATION_PASS_VALUE.Password,
+                        firstName: VALIDATION_PASS_VALUE.FirstName,
+                        lastName: VALIDATION_PASS_VALUE.LastName,
+                        email: VALIDATION_PASS_VALUE.Email,
+                    },
+                },
+            );
+
+            cy.getByTestId(TEST_ID.Button.Submit).click();
+            cy.wait('@signUpRequest200');
+
+            withModal('SignUpSuccess', () => {
+                cy.contains('Остался последний шаг.').should('be.visible');
+                cy.contains('Нужно верифицировать ваш e-mail').should('be.visible');
+                cy.contains('Мы отправили вам на почту').should('be.visible');
+                cy.contains(VALIDATION_PASS_VALUE.Email).should('be.visible');
+                cy.contains('ссылку для верификации.').should('be.visible');
+            });
+            takeAllScreenshots('sign-up-success');
+            withModal('SignUpSuccess', () => {
+                cy.getByTestId(TEST_ID.Button.Close).click();
+            });
+
+            cy.getByTestId(TEST_ID.Modal.SignUpSuccess).should('not.exist');
+            cy.getByTestId(TEST_ID.Form.SignIn).should('be.visible');
+        });
+    });
+
+    describe('email verification flow', () => {
+        it('should show success message on email verification success', () => {
+            cy.visit(`${VERIFICATION_ROUTE}?emailVerified=true`);
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.EmailVerificationToast[200],
+                callback: () => takeAllScreenshots('verificate-email-success'),
+            });
+            cy.getByTestId(TEST_ID.Form.SignIn).should('be.visible');
+        });
+
+        it('should show error modal on email verification failure', () => {
+            cy.visit(`${VERIFICATION_ROUTE}?emailVerified=false`);
+
+            withModal('EmailVerificationFailed', () => {
+                cy.contains('Упс! Что-то пошло не так').should('be.visible');
+                cy.contains('Ваша ссылка для верификации недействительна.').should('be.visible');
+                cy.contains('Попробуйте зарегистрироваться снова.').should('be.visible');
+            });
+            takeAllScreenshots('verificate-email-failure');
+            withModal('EmailVerificationFailed', () => {
+                cy.getByTestId(TEST_ID.Button.Close).click();
+            });
+
+            cy.getByTestId(TEST_ID.Modal.EmailVerificationFailed).should('not.exist');
+            cy.getByTestId(TEST_ID.Form.SignUp).should('be.visible');
+        });
+    });
+
+    describe('restore credentials flow', () => {
+        beforeEach(() => {
+            cy.getByTestId(TEST_ID.Button.ForgotPassword).as('forgotPasswordButton').click();
+        });
+
+        it('should open send verification email modal', () => {
+            withModal('SendEmailModal', () => {
+                cy.contains(
+                    'Для восстановления входа введите ваш e-mail, куда можно отправить уникальный код',
+                ).should('be.visible');
+                cy.contains('Получить код').should('be.visible');
+                cy.getByTestId(TEST_ID.Input.Email).type(VALIDATION_PASS_VALUE.Email);
+                cy.getByTestId(TEST_ID.Button.Close).click();
+            });
+
+            cy.get('@SendEmailModal').should('not.exist');
+            cy.get('@forgotPasswordButton').click();
+            cy.get('@SendEmailModal', { timeout: 5000 }).should('be.visible');
+
+            withModal('SendEmailModal', () => {
+                cy.getByTestId(TEST_ID.Input.Email).should('have.value', '');
+            });
+        });
+
+        it('should validate send verification form email field', () => {
+            const wait = interceptApi(
+                {
+                    url: API_ENDPOINTS.SendVerificationCode,
+                    method: 'POST',
+                    alias: 'sendVerificationCode200',
+                },
+                {
+                    statusCode: 200,
+                },
+            );
+
+            withModal('SendEmailModal', () => {
+                cy.getByTestId(TEST_ID.Button.Submit).as('submitButton');
+                validateEmailField();
+            });
+            wait();
+        });
+
+        it('should show error message on email 403 existance fail', () => {
+            const wait = interceptApi(
+                {
+                    url: API_ENDPOINTS.SendVerificationCode,
+                    method: 'POST',
+                    alias: 'sendVerificationCode403',
+                },
+                {
+                    statusCode: 403,
+                },
+            );
+
+            withModal('SendEmailModal', () => {
+                cy.getByTestId(TEST_ID.Input.Email).type(`${VALIDATION_PASS_VALUE.Email}{enter}`);
+            });
+            wait();
+
+            cy.getByTestId(TEST_ID.Input.Email).should('have.value', '');
+            checkToastMessage({
+                ...TOAST_MESSAGE.SendVerificationCodeToast[403],
+                callback: () => takeAllScreenshots('send-email-modal-not-exist'),
+            });
+        });
+
+        it('should show error message on send code 500 server error', () => {
+            const wait = interceptApi(
+                {
+                    url: API_ENDPOINTS.SendVerificationCode,
+                    method: 'POST',
+                    alias: 'sendVerificationCode500',
+                },
+                {
+                    statusCode: 500,
+                },
+            );
+
+            withModal('SendEmailModal', () => {
+                cy.getByTestId(TEST_ID.Input.Email).type(`${VALIDATION_PASS_VALUE.Email}{enter}`);
+            });
+            wait();
+            cy.getByTestId(TEST_ID.Input.Email).type(`${VALIDATION_PASS_VALUE.Email}{enter}`);
+            wait();
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.ServerErrorToast,
+                callback: () => takeAllScreenshots('send-email-modal-server-error'),
+            });
+        });
+
+        it('should open validate verification code modal', () => {
+            goToCheckVerificationCode();
+
+            withModal('VerificationCodeModal', () => {
+                cy.contains('Мы отправили вам на e-mail').should('be.visible');
+                cy.contains(VALIDATION_PASS_VALUE.Email).should('be.visible');
+                cy.contains('шестизначный код.').should('be.visible');
+                cy.contains('Введите его ниже.').should('be.visible');
+            });
+            takeScreenshot('verification-code-modal');
+            withModal('VerificationCodeModal', () => {
+                cy.getByTestId(TEST_ID.Button.Close).click();
+            });
+
+            cy.get('@VerificationCodeModal').should('not.exist');
+            cy.get('@forgotPasswordButton').click();
+
+            withModal('SendEmailModal', () => {
+                cy.getByTestId(TEST_ID.Input.Email).should('have.value', '');
+            });
+        });
+
+        it('should handle verification code validation', () => {
+            goToCheckVerificationCode();
+
+            const wait403 = interceptApi(
+                {
+                    url: API_ENDPOINTS.CheckVerificationCode,
+                    method: 'POST',
+                    alias: 'checkVerificationCode403',
+                },
+                { statusCode: 403 },
+            );
+
+            withModal('VerificationCodeModal', () => {
+                fillVerificationCode();
+            });
+
+            takeScreenshot('verification-code-modal', 'tablet');
+            wait403();
+            takeScreenshot('verification-code-modal', 'mobile');
+
+            const wait500 = interceptApi(
+                {
+                    url: API_ENDPOINTS.CheckVerificationCode,
+                    method: 'POST',
+                    alias: 'checkVerificationCode500',
+                },
+                { statusCode: 500 },
+            );
+
+            const checkPinReset = () => {
+                VERIFICATION_CODE_PIN_ID.forEach((id) => {
+                    cy.getByTestId(`${TEST_ID.Input.VerificationCode}-${id}`).should(
+                        'have.value',
+                        '',
+                    );
+                });
+            };
+
+            withModal('VerificationCodeModal', () => {
+                cy.contains('Неверный код').should('be.visible');
+                checkPinReset();
+                fillVerificationCode();
+            });
+            wait500();
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.ServerErrorToast,
+                callback: () => takeAllScreenshots('verification-code-modal-server-error'),
+            });
+
+            const wait200 = interceptApi(
+                {
+                    url: API_ENDPOINTS.CheckVerificationCode,
+                    method: 'POST',
+                    alias: 'checkVerificationCode200',
+                },
+                {
+                    statusCode: 200,
+                    withLoader: true,
+                },
+            );
+
+            withModal('VerificationCodeModal', () => {
+                cy.contains('Неверный код').should('not.exist');
+                checkPinReset();
+                fillVerificationCode();
+            });
+            wait200();
+            withModal('ResetCredentialsModal').should('be.visible');
+        });
+
+        it('should validate restore credentials form', () => {
+            goToRestoreCredentialsForm();
+
+            withModal('ResetCredentialsModal', () => {
+                cy.getByTestId(TEST_ID.Button.Submit).as('submitButton');
+                validateLoginField();
+                validatePasswordField();
+                validateConfirmPasswordField();
+                cy.getByTestId(TEST_ID.Button.Close).click();
+            });
+
+            cy.get('@ResetCredentialsModal').should('not.exist');
+        });
+
+        it('should show success message on reset success 200', () => {
+            goToRestoreCredentialsForm();
+
+            const wait200 = interceptApi(
+                {
+                    url: API_ENDPOINTS.ResetCredentials,
+                    method: 'POST',
+                    alias: 'resetCredentials200',
+                },
+                {
+                    statusCode: 200,
+                    withLoader: true,
+                    expectedBody: {
+                        email: VALIDATION_PASS_VALUE.Email,
+                        login: VALIDATION_PASS_VALUE.Login,
+                        password: VALIDATION_PASS_VALUE.Password,
+                        passwordConfirm: VALIDATION_PASS_VALUE.Password,
+                    },
+                },
+            );
+
+            withModal('ResetCredentialsModal', () => {
+                fillCredentialsForm();
+                cy.getByTestId(TEST_ID.Input.PasswordConfirm).type('{enter}');
+            });
+            wait200();
+            cy.get('@ResetCredentialsModal').should('not.exist');
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.RestoreCredentials[200],
+                callback: () => takeAllScreenshots('reset-credentials-modal-success'),
+            });
+        });
+
+        it('should show error message on reset credentials 500 server error', () => {
+            goToRestoreCredentialsForm();
+
+            const wait500 = interceptApi(
+                {
+                    url: API_ENDPOINTS.ResetCredentials,
+                    method: 'POST',
+                    alias: 'resetCredentials500',
+                },
+                { statusCode: 500 },
+            );
+
+            withModal('ResetCredentialsModal', () => {
+                fillCredentialsForm();
+                cy.getByTestId(TEST_ID.Button.Submit).click();
+            });
+            wait500();
+
+            checkToastMessage({
+                ...TOAST_MESSAGE.ServerErrorToast,
+                callback: () => takeAllScreenshots('reset-credentials-modal-server-error'),
+            });
+        });
+    });
+});
+
 describe('application', () => {
     beforeEach(() => {
         cy.clearLocalStorage();
@@ -2821,6 +2939,7 @@ describe('application', () => {
             },
         );
 
+        interceptBloggers();
         interceptCategories();
         interceptNewestRecipes();
         interceptJuiciestRecipes();
@@ -3006,13 +3125,14 @@ describe('application', () => {
     describe('recipe Functionality', () => {
         it('recipe page render', () => {
             const juiciestRecipes = allRecipes.slice(0, Number(JUICIEST_LIMIT));
-            const { _id, title } = juiciestRecipes[0];
+            const { _id, title, authorId } = juiciestRecipes[0];
             interceptApi(
                 {
                     url: `${API_ENDPOINTS.Recipe}/${juiciestRecipes[0]._id}`,
                 },
                 { body: juiciestRecipes[0] },
             );
+            interceptBloggerById(authorId);
 
             cy.getByTestId('card-link-0').click();
             cy.url().should('include', _id);
@@ -3320,6 +3440,7 @@ describe('application', () => {
                 { url: `${API_ENDPOINTS.Recipe}/*` },
                 { statusCode: 200, delay: DELAY.SM, body: meatSnacks[1] },
             );
+            interceptBloggerById(meatSnacks[1].authorId);
 
             cy.getByTestId(`${TEST_ID.Card.Carousel}-3`).click();
 
@@ -3481,3 +3602,5 @@ describe('app loader and error notification', () => {
         });
     });
 });
+
+describe('bloggers', () => {});

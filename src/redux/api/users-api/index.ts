@@ -1,5 +1,7 @@
+import { NotificationMessages } from '~/constants/notification-messages';
 import { authorizedApi } from '~/redux/api';
-import { ApiEndpoints } from '~/redux/api/constants';
+import { ApiEndpoints, NOTIFICATION_STATE_NAME } from '~/redux/api/constants';
+import { StatusTypesEnum } from '~/redux/api/types/common';
 import { RawRecipe, Recipe } from '~/redux/api/types/recipes';
 import { replaceUnderscoreId } from '~/redux/api/utils/replace-underscore-id';
 import {
@@ -80,6 +82,14 @@ export const usersApi = authorizedApi
                 invalidatesTags: ['Bloggers'],
                 transformResponse: (response: { message: string }): boolean =>
                     response.message.includes('Подписка'),
+                transformErrorResponse: (response) => ({
+                    ...response,
+                    [NOTIFICATION_STATE_NAME]: {
+                        status: StatusTypesEnum.Error,
+                        title: NotificationMessages.ERROR_GENERAL_TITLE,
+                        description: 'Попробуйте немного позже.',
+                    },
+                }),
             }),
             getBloggers: build.query<BloggersMainType, BloggersRequestType>({
                 providesTags: ['Bloggers'],
@@ -107,6 +117,14 @@ export const usersApi = authorizedApi
                         console.error('Error in get Bloggers list', err);
                     }
                 },
+                transformErrorResponse: (response) => ({
+                    ...response,
+                    [NOTIFICATION_STATE_NAME]: {
+                        status: StatusTypesEnum.Error,
+                        title: NotificationMessages.ERROR_GENERAL_TITLE,
+                        description: 'Попробуйте немного позже.',
+                    },
+                }),
             }),
             getBloggerRecipesById: build.query<BloggerById, string>({
                 query: (id) => ({
@@ -121,10 +139,26 @@ export const usersApi = authorizedApi
                 query: (id) => ({
                     url: `${ApiEndpoints.GetBloggerInfoById}/${id}`,
                 }),
+                transformErrorResponse: (response) => ({
+                    ...response,
+                    [NOTIFICATION_STATE_NAME]: {
+                        status: StatusTypesEnum.Error,
+                        title: NotificationMessages.ERROR_GENERAL_TITLE,
+                        description: 'Попробуйте немного позже.',
+                    },
+                }),
             }),
             getBloggerInfoById: build.query<BloggerInfo, GetBloggerInfoByIdType>({
                 query: ({ bloggerId, currentUserId }) => ({
                     url: `${ApiEndpoints.GetBloggers}/${bloggerId}?currentUserId=${currentUserId}`,
+                }),
+                transformErrorResponse: (response) => ({
+                    ...response,
+                    [NOTIFICATION_STATE_NAME]: {
+                        status: StatusTypesEnum.Error,
+                        title: NotificationMessages.ERROR_GENERAL_TITLE,
+                        description: 'Попробуйте немного позже.',
+                    },
                 }),
             }),
         }),

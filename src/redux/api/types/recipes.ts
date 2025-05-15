@@ -28,6 +28,7 @@ export type AuthorDataType = {
     lastName: string;
     login: string;
     subscribers: string[];
+    isFavorite: boolean;
 };
 
 export type RecipeResponse = {

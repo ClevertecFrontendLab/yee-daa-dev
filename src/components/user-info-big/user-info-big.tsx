@@ -57,7 +57,7 @@ export const UserInfoBig: FC<UserInfoBigProps> = ({
                         color='blackAlpha.700'
                         textAlign={{ base: 'center', sm: 'left' }}
                     >
-                        {login}
+                        @{login}
                     </Text>
                     <HStack justify='space-between'>
                         <ButtonSubscribe userId={_id} isSubscribedFromReq={isFavorite} />

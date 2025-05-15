@@ -22,6 +22,7 @@ export const RecipePage = () => {
 
     useEffect(() => {
         if (recipeData?.authorId) trigger({ bloggerId: recipeData?.authorId, currentUserId });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [recipeData?.authorId]);
 
     return (
@@ -34,7 +35,7 @@ export const RecipePage = () => {
                     <StepsBlock {...recipeData} />
                 </Stack>
                 {result.data && recipeData && (
-                    <AuthorCard author={result.data.bloggerInfo} authorId={recipeData.authorId} />
+                    <AuthorCard author={result.data} authorId={recipeData.authorId} />
                 )}
             </Stack>
             <Box width='100%'>

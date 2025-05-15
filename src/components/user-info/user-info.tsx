@@ -44,7 +44,7 @@ export const UserInfo: FC<Props> = ({
                     maxWidth='296px'
                     {...userInfoParams.login}
                 >
-                    {login}
+                    @{login}
                 </Text>
             </Box>
         </Flex>

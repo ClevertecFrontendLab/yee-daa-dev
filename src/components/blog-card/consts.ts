@@ -1,6 +1,6 @@
 export const CardTypeProps = {
     DEFAULT: {
-        minHeight: 'none',
+        minHeight: 184,
         CardHeader: {
             p: 4,
             pb: 2,
@@ -15,7 +15,7 @@ export const CardTypeProps = {
         },
     },
     PROFILE: {
-        minHeight: 'none',
+        minHeight: 0,
         CardHeader: {
             p: { base: 2, xmd: 5 },
             pb: 2,
