@@ -46,6 +46,15 @@ const TEST_ID = {
     SearchBlockLoader: 'loader-search-block',
     Breadcrumbs: 'breadcrumbs',
 
+    Bloggers: {
+        MainPageBlogsBox: 'main-page-blogs-box',
+        MainPageBlogsButton: 'main-page-blogs-button',
+        MainPageBlogsGrid: 'main-page-blogs-grid',
+        BlogsCard: 'blogs-card',
+        BlogsCardName: 'blogs-card-name',
+        BlogsCardLogin: 'blogs-card-login',
+        BlogsCardNotesText: 'blogs-card-notes-text',
+    },
     Progress: {
         SignUp: 'sign-up-progress',
     },
@@ -118,6 +127,8 @@ const TEST_ID = {
     },
     Notification: {
         Error: 'error-notification',
+        ErrorTitle: 'error-notification-title',
+        ErrorDescription: 'error-notification-description',
     },
 } as const;
 
@@ -2111,14 +2122,19 @@ const interceptRecipesBySubCategory = (delay: number = DELAY.SM, mockBody = null
         },
     );
 
-const interceptBloggers = (currentUserId = '', delay: number = DELAY.SM, mockBody = null) =>
+const interceptBloggers = (
+    currentUserId = '',
+    code = 200,
+    delay: number = DELAY.SM,
+    mockBody = null,
+) =>
     interceptApi(
         {
             url: `${API_ENDPOINTS.GetBloggers}?currentUserId=${currentUserId}`,
             alias: 'getBloggers',
         },
         {
-            statusCode: 200,
+            statusCode: code ?? 200,
             delay,
             body: mockBody ?? MOCK_PREVIEW_BLOGGERS,
         },
@@ -3603,4 +3619,81 @@ describe('app loader and error notification', () => {
     });
 });
 
-describe('bloggers', () => {});
+describe('bloggers', () => {
+    describe('main page bloggers section', () => {
+        beforeEach(() => {
+            cy.clearLocalStorage();
+            cy.clearAllSessionStorage();
+            interceptApi(
+                { url: '/**', alias: 'uncaptured' },
+                {
+                    statusCode: 200,
+                    delay: 0,
+                },
+            );
+
+            interceptCategories();
+            interceptNewestRecipes();
+            interceptJuiciestRecipes();
+            interceptRelevantRecipes();
+            signIn();
+        });
+
+        it('the bloggers box is being filled correctly', () => {
+            interceptBloggers();
+
+            cy.viewport(1920, 750);
+            cy.getByTestId(TEST_ID.Bloggers.MainPageBlogsBox)
+                .should('exist')
+                .and('be.visible')
+                .scrollIntoView();
+            cy.getByTestId(TEST_ID.Bloggers.MainPageBlogsButton).should('exist');
+
+            cy.getByTestId(TEST_ID.Bloggers.MainPageBlogsGrid).should('exist').and('be.visible');
+            cy.getByTestId(TEST_ID.Bloggers.MainPageBlogsGrid).children().should('have.length', 3);
+            cy.getByTestId(TEST_ID.Bloggers.MainPageBlogsGrid)
+                .children()
+                .first()
+                .within(() => {
+                    const { firstName, lastName, login, notes } = MOCK_PREVIEW_BLOGGERS.others[0];
+                    cy.getByTestId(TEST_ID.Bloggers.BlogsCardName).should(
+                        'have.text',
+                        `${firstName} ${lastName}`,
+                    );
+                    cy.getByTestId(TEST_ID.Bloggers.BlogsCardLogin).should(
+                        'have.text',
+                        `@${login}`,
+                    );
+                    cy.getByTestId(TEST_ID.Bloggers.BlogsCardNotesText).should(
+                        'have.text',
+                        notes[0].text,
+                    );
+                });
+
+            cy.wait(2000);
+            takeAllScreenshots('bloggers-box');
+        });
+
+        it('the bloggers box is not being filled on API error', () => {
+            interceptBloggers('', 500);
+
+            cy.viewport(1920, 750);
+            cy.getByTestId(TEST_ID.Bloggers.MainPageBlogsBox).should('not.exist');
+            cy.getByTestId(TEST_ID.Notification.Error).should('exist').and('be.visible');
+            cy.getByTestId(TEST_ID.Notification.ErrorTitle).should('have.text', 'Ошибка сервера');
+            cy.getByTestId(TEST_ID.Notification.ErrorDescription).should(
+                'have.text',
+                'Попробуйте немного позже.',
+            );
+        });
+
+        it('the button "Все авторы" reroutes to the /blogs route', () => {
+            interceptBloggers();
+
+            cy.viewport(1920, 750);
+
+            cy.getByTestId(TEST_ID.Bloggers.MainPageBlogsButton).should('exist').click();
+            cy.url().should('contain', '/blogs');
+        });
+    });
+});

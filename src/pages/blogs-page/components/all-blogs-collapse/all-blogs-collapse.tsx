@@ -9,7 +9,7 @@ import {
     useDisclosure,
 } from '@chakra-ui/react';
 
-import { BlogCard } from '~/components/blog-card/blog-card';
+import { BlogCard } from '~/components/blog-card';
 import { MobileLoader } from '~/components/mobile-loader';
 import { Paths } from '~/constants/path';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';

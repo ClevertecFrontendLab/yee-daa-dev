@@ -35,7 +35,7 @@ export const UserInfo: FC<Props> = ({
                     letterSpacing='-0.5px'
                     {...userInfoParams.userName}
                 >
-                    {firstName} {lastName}
+                    {`${firstName} ${lastName}`}
                 </Text>
                 <Text
                     lineHeight={5}

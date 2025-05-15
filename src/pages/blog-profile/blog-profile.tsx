@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 
 import { AppLoader } from '~/components/app-loader';
-import { BlogCard } from '~/components/blog-card/blog-card';
+import { BlogCard } from '~/components/blog-card';
 import { NotesBox } from '~/components/notes-box';
 import { RecipeCardList } from '~/components/recipes-card-list';
 import { UserInfoBig } from '~/components/user-info-big';

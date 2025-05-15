@@ -1,6 +1,6 @@
 import { Box, Heading, SimpleGrid, Stack } from '@chakra-ui/react';
 
-import { BlogCard } from '~/components/blog-card/blog-card';
+import { BlogCard } from '~/components/blog-card';
 import { Carousel } from '~/components/carousel';
 import { Paths } from '~/constants/path';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks';

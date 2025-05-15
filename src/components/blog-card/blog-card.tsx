@@ -53,7 +53,7 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
     const bloggersLoadingId = useAppSelector(selectBloggersToggleLoading);
 
     return (
-        <Card minHeight={cardData.minHeight}>
+        <Card minHeight={cardData.minHeight} data-test-id='blogs-card'>
             <CardHeader {...cardData.CardHeader}>
                 <UserInfo
                     firstName={firstName}
@@ -88,6 +88,7 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                     noOfLines={cardType === 'DEFAULT' ? 4 : 3}
                     minHeight='60px'
                     letterSpacing={{ base: '-0.5px', md: 'initial' }}
+                    data-test-id='blogs-card-notes-text'
                 >
                     {text}
                 </Text>
