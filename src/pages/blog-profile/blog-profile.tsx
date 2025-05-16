@@ -28,7 +28,6 @@ export const BlogProfile = () => {
     return isBlogExists ? (
         <Stack spacing={{ base: 3, xmd: 6 }} align='center'>
             <UserInfoBig
-                // imgSrc={info.imgSrc}
                 firstName={info.bloggerInfo.firstName}
                 lastName={info.bloggerInfo.lastName}
                 login={info.bloggerInfo.login}

@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, useEffect } from 'react';
+import { FC, PropsWithChildren } from 'react';
 import { Navigate, useLocation } from 'react-router';
 
 import { AppLoader } from '~/components/app-loader';
@@ -6,11 +6,7 @@ import { Paths } from '~/constants/path';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { useGetBloggerInfoByIdQuery, useGetBloggerRecipesByIdQuery } from '~/redux/api/users-api';
 import { selectUserId } from '~/redux/features/auth-slice';
-import {
-    setBloggerByIdLoading,
-    setBloggersDataById,
-    setBloggersInfoById,
-} from '~/redux/features/bloggers-slice';
+import { setBloggersDataById, setBloggersInfoById } from '~/redux/features/bloggers-slice';
 
 export const BlogExistProtected: FC<PropsWithChildren> = ({ children }) => {
     const { pathname } = useLocation();
@@ -26,11 +22,6 @@ export const BlogExistProtected: FC<PropsWithChildren> = ({ children }) => {
         currentUserId,
     });
     const dispatch = useAppDispatch();
-
-    useEffect(() => {
-        dispatch(setBloggerByIdLoading(isLoading || isLoadingUser));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLoading, isLoadingUser, data?.userId]);
 
     if (isLoading || isLoadingUser) return <AppLoader isOpen={true} />;
 

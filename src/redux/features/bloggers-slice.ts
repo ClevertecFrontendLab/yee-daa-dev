@@ -45,8 +45,6 @@ type BloggersState = {
         data: BloggerById;
         info: BloggerInfo;
     };
-    bloggerByIdLoading: boolean;
-    forceUpdateBlogsList: boolean;
     bloggersLimit?: string;
 };
 
@@ -82,11 +80,9 @@ const initialState: BloggersState = {
             isFavorite: false,
         },
     },
-    forceUpdateBlogsList: false,
     bloggersLoadingId: '',
     bloggersUnfoldLoading: true,
     bloggersLimit: undefined,
-    bloggerByIdLoading: false,
 };
 
 export const bloggersSlice = createSlice({
@@ -114,9 +110,6 @@ export const bloggersSlice = createSlice({
         setBloggersInfoById(state, { payload }: PayloadAction<BloggerInfo>) {
             state.bloggerCurrent.info = payload;
         },
-        setBloggerByIdLoading(state, { payload }: PayloadAction<boolean>) {
-            state.bloggerByIdLoading = payload;
-        },
         resetBlogger(state) {
             state.bloggerCurrent = initialState.bloggerCurrent;
         },
@@ -127,14 +120,11 @@ export const bloggersSlice = createSlice({
     selectors: {
         selectBloggersPreview: (state) => state.bloggersPreview,
         selectBloggersLimit: (state) => state.bloggersLimit,
-        selectBloggersMain: (state) => state.bloggersMain,
         selectBloggersFavorite: (state) => state.bloggersMain.favorites,
         selectBloggersOthers: (state) => state.bloggersMain.others,
         selectBloggersToggleLoading: (state) => state.bloggersLoadingId,
         selectBloggersUnfoldLoading: (state) => state.bloggersUnfoldLoading,
         selectBloggersById: (state) => state.bloggerCurrent,
-        selectBloggerByIdLoading: (state) => state.bloggerByIdLoading,
-        selectForceUpdateBlogsList: (state) => state.forceUpdateBlogsList,
         selectBloggersInfoById: (state) => state.bloggerCurrent.info,
     },
 });
@@ -149,20 +139,16 @@ export const {
     setBloggersUnfoldLoading,
     setBloggersDataById,
     setBloggersInfoById,
-    setBloggerByIdLoading,
     resetBlogger,
     resetToInit,
 } = bloggersSlice.actions;
 export const {
     selectBloggersPreview,
     selectBloggersLimit,
-    selectBloggersMain,
     selectBloggersFavorite,
     selectBloggersOthers,
     selectBloggersToggleLoading,
     selectBloggersUnfoldLoading,
     selectBloggersById,
-    selectBloggerByIdLoading,
-    selectForceUpdateBlogsList,
     selectBloggersInfoById,
 } = bloggersSlice.selectors;
