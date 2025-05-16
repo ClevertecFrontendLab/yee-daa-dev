@@ -34,7 +34,7 @@ export const RecipePage = () => {
                 <Stack gap={5}>
                     <StepsBlock {...recipeData} />
                 </Stack>
-                {result.data && recipeData && (
+                {result.data && recipeData && recipeData.authorId !== currentUserId && (
                     <AuthorCard author={result.data} authorId={recipeData.authorId} />
                 )}
             </Stack>
