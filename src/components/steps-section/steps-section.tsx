@@ -8,23 +8,22 @@ import {
     IconButton,
     Text,
     Textarea,
-    useMediaQuery,
     VStack,
 } from '@chakra-ui/react';
 import { Control, FieldErrors, useFieldArray, UseFormRegister } from 'react-hook-form';
 
 import { AddPlusIcon } from '~/components/icons/add-plus-icon';
 import { ImageUpload } from '~/components/image-upload/image-upload';
-import { theme } from '~/theme/theme';
+import { useIsSmallScreen } from '~/hooks/media-query';
 import { RecipeFormValues } from '~/types/recipe-form';
 
 import { BasketIcon } from '../icons/basket-icon';
 
-interface StepsSectionProps {
+type StepsSectionProps = {
     control: Control<RecipeFormValues>;
     register: UseFormRegister<RecipeFormValues>;
     errors: FieldErrors<RecipeFormValues>;
-}
+};
 
 export const StepsSection = ({ control, register, errors }: StepsSectionProps) => {
     const {
@@ -36,7 +35,7 @@ export const StepsSection = ({ control, register, errors }: StepsSectionProps) =
         control,
         name: 'steps',
     });
-    const [isSmallScreen] = useMediaQuery(`(width < ${theme.breakpoints.md})`);
+    const isSmallScreen = useIsSmallScreen();
 
     const handleRemoveStep = (index: number) => {
         steps.forEach((step, i) => {
@@ -71,9 +70,11 @@ export const StepsSection = ({ control, register, errors }: StepsSectionProps) =
                     borderColor='blackAlpha.200'
                     p={0}
                 >
-                    <FormControl isInvalid={!!errors.steps?.[index]?.image} h='100%' m={0}>
-                        <ImageUpload name={`steps.${index}.image`} control={control} />
-                    </FormControl>
+                    <ImageUpload
+                        testId={`recipe-steps-image-block-${index}`}
+                        name={`steps.${index}.image`}
+                        control={control}
+                    />
                     <VStack spacing={4} align='stretch' h='100%' p={5} minW={0}>
                         <HStack justify='space-between'>
                             <Badge
@@ -93,6 +94,7 @@ export const StepsSection = ({ control, register, errors }: StepsSectionProps) =
                                     fontSize='14px'
                                     aria-label='Remove'
                                     icon={<BasketIcon />}
+                                    data-test-id={`recipe-steps-remove-button-${index}`}
                                     h={2}
                                     onClick={() => handleRemoveStep(index)}
                                     sx={{
@@ -107,9 +109,11 @@ export const StepsSection = ({ control, register, errors }: StepsSectionProps) =
                             <Textarea
                                 placeholder='Шаг'
                                 resize='vertical'
+                                data-test-id={`recipe-steps-description-${index}`}
                                 _focus={{ borderColor: 'lime.150', boxShadow: 'none' }}
                                 {...register(`steps.${index}.description`, {
                                     required: 'Поле обязательно для заполнения',
+                                    maxLength: 300,
                                 })}
                             />
                         </FormControl>
@@ -121,13 +125,11 @@ export const StepsSection = ({ control, register, errors }: StepsSectionProps) =
                     rightIcon={<AddPlusIcon />}
                     variant='outline'
                     onClick={() => {
-                        if (steps.length < 300) {
-                            appendStep({
-                                description: null,
-                                image: null,
-                                stepNumber: steps.length + 1,
-                            });
-                        }
+                        appendStep({
+                            description: null,
+                            image: null,
+                            stepNumber: steps.length + 1,
+                        });
                     }}
                 >
                     Новый шаг

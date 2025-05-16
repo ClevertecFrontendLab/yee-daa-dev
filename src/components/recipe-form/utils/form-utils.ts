@@ -2,6 +2,7 @@ import { UseFormReset } from 'react-hook-form';
 
 import { Recipe } from '~/redux/api/types/recipes';
 import { RecipeFormValues } from '~/types/recipe-form';
+import { isArrayWithItems } from '~/utils/is-array-with-items';
 
 type ArrayItem = Record<string, string | number | undefined | null>;
 
@@ -20,7 +21,7 @@ export const hasAnyFieldsChanged = (
                 values.description?.trim() ||
                 values.time ||
                 values.portions ||
-                values.categoriesIds?.length > 0 ||
+                isArrayWithItems(values.categoriesIds?.length) ||
                 values.image ||
                 values.ingredients?.some(
                     (ing) => ing.title?.trim() || ing.measureUnit?.trim() || ing.count,

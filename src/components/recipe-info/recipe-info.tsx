@@ -9,32 +9,36 @@ import {
     NumberInputStepper,
     Text,
     Textarea,
-    useMediaQuery,
     VStack,
 } from '@chakra-ui/react';
+import { useMemo } from 'react';
 import { Control, Controller, FieldErrors, UseFormRegister } from 'react-hook-form';
 
 import { MultiSelect } from '~/components/multi-select';
+import { useIsSmallScreen } from '~/hooks/media-query';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { selectSubCategories } from '~/redux/features/categories-slice';
-import { theme } from '~/theme/theme';
 import { RecipeFormValues } from '~/types/recipe-form';
 
-interface RecipeInfoProps {
+type RecipeInfoProps = {
     control: Control<RecipeFormValues>;
     register: UseFormRegister<RecipeFormValues>;
     errors: FieldErrors<RecipeFormValues>;
-}
+};
 
 export const RecipeInfo = ({ control, register, errors }: RecipeInfoProps) => {
-    const [isSmallScreen] = useMediaQuery(`(width < ${theme.breakpoints.md})`);
+    const isSmallScreen = useIsSmallScreen();
     const subCategories = useAppSelector(selectSubCategories);
 
-    const categoryOptions = subCategories.map((category) => ({
-        id: category.id,
-        label: category.title,
-        value: category.id,
-    }));
+    const categoryOptions = useMemo(
+        () =>
+            subCategories.map((category) => ({
+                id: category.id,
+                label: category.title,
+                value: category.id,
+            })),
+        [subCategories],
+    );
 
     return (
         <VStack
@@ -58,12 +62,14 @@ export const RecipeInfo = ({ control, register, errors }: RecipeInfoProps) => {
                     options={categoryOptions}
                     placeholder='Выберите из списка...'
                     rules={{ required: true }}
+                    data-test-id='recipe-categories'
                 />
             </HStack>
             <FormControl isInvalid={!!errors.title}>
                 <Input
                     id='title'
                     placeholder='Название рецепта'
+                    data-test-id='recipe-title'
                     _focus={{ borderColor: 'lime.150', boxShadow: 'none' }}
                     {...register('title', {
                         required: true,
@@ -75,6 +81,7 @@ export const RecipeInfo = ({ control, register, errors }: RecipeInfoProps) => {
                 <Textarea
                     id='description'
                     placeholder='Краткое описание рецепта'
+                    data-test-id='recipe-description'
                     _focus={{ borderColor: 'lime.150', boxShadow: 'none' }}
                     {...register('description', {
                         required: true,
@@ -94,15 +101,29 @@ export const RecipeInfo = ({ control, register, errors }: RecipeInfoProps) => {
                     <Controller
                         name='portions'
                         control={control}
-                        rules={{ required: true }}
+                        rules={{ required: true, min: 1 }}
                         render={({ field: { onChange, value } }) => (
                             <NumberInput
                                 step={1}
-                                min={1}
-                                value={value || undefined}
-                                onChange={(_, valueAsNumber) => onChange(valueAsNumber)}
+                                value={value}
+                                onChange={(value) => {
+                                    let val;
+
+                                    switch (value) {
+                                        case '':
+                                            val = '';
+                                            break;
+                                        case '-':
+                                            val = '-';
+                                            break;
+                                        default:
+                                            val = Number(value);
+                                    }
+                                    onChange(val);
+                                }}
                             >
                                 <NumberInputField
+                                    data-test-id='recipe-portions'
                                     _focus={{ borderColor: 'lime.150', boxShadow: 'none' }}
                                 />
                                 <NumberInputStepper>
@@ -126,17 +147,34 @@ export const RecipeInfo = ({ control, register, errors }: RecipeInfoProps) => {
                     <Controller
                         name='time'
                         control={control}
-                        rules={{ required: true }}
+                        rules={{
+                            required: true,
+                            min: 1,
+                            max: 10000,
+                        }}
                         render={({ field: { onChange, value } }) => (
                             <NumberInput
                                 step={1}
-                                min={1}
-                                max={10000}
-                                value={value || undefined}
-                                onChange={(_, valueAsNumber) => onChange(valueAsNumber)}
+                                value={value}
+                                onChange={(value) => {
+                                    let val;
+
+                                    switch (value) {
+                                        case '':
+                                            val = '';
+                                            break;
+                                        case '-':
+                                            val = '-';
+                                            break;
+                                        default:
+                                            val = Number(value);
+                                    }
+                                    onChange(val);
+                                }}
                             >
                                 <NumberInputField
                                     id='time'
+                                    data-test-id='recipe-time'
                                     _focus={{ borderColor: 'lime.150', boxShadow: 'none' }}
                                 />
                                 <NumberInputStepper>

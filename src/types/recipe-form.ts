@@ -9,7 +9,7 @@ export type RecipeFormValues = {
     }[];
     ingredients: {
         title: Ingredient['title'] | null;
-        count: Ingredient['count'] | null;
+        count: Ingredient['count'];
         measureUnit: Ingredient['measureUnit'] | null;
     }[];
 } & Pick<Recipe, 'title' | 'categoriesIds' | 'image' | 'portions' | 'time'>;

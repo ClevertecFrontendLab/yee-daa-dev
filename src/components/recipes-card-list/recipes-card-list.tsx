@@ -9,7 +9,7 @@ type RecipeCardListProps = {
     recipeList: Recipe[];
     currentPage?: number;
     totalPages?: number;
-    loadMoreCallback?: () => void;
+    loadMoreCallback?: VoidFunction;
     isLoading?: boolean;
 } & SimpleGridProps;
 

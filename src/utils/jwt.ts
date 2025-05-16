@@ -1,9 +1,9 @@
 import { jwtDecode } from 'jwt-decode';
 
-interface JwtPayloadWithUserId {
+type JwtPayloadWithUserId = {
     userId: string;
     login: string;
-}
+};
 
 export const decodeJwt = (token: string): JwtPayloadWithUserId | null => {
     try {

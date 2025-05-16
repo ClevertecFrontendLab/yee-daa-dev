@@ -1,16 +1,16 @@
-import { Button, Flex, useMediaQuery } from '@chakra-ui/react';
+import { Button, Flex } from '@chakra-ui/react';
 
 import { PenIcon } from '~/components/icons/pen-icon';
-import { theme } from '~/theme/theme';
+import { useIsSmallScreen } from '~/hooks/media-query';
 
-interface FormButtonsProps {
+type FormButtonsProps = {
     isSubmitting: boolean;
-    onSaveDraft: () => void;
+    onSaveDraft: VoidFunction;
     isLoading: boolean;
-}
+};
 
 export const FormButtons = ({ isSubmitting, onSaveDraft, isLoading }: FormButtonsProps) => {
-    const [isSmallScreen] = useMediaQuery(`(width < ${theme.breakpoints.md})`);
+    const isSmallScreen = useIsSmallScreen();
 
     return (
         <Flex gap={5} justifyContent='center' direction={isSmallScreen ? 'column' : 'row'} w='100%'>
@@ -21,10 +21,17 @@ export const FormButtons = ({ isSubmitting, onSaveDraft, isLoading }: FormButton
                 variant='outline'
                 onClick={onSaveDraft}
                 type='button'
+                data-test-id='recipe-save-draft-button'
             >
                 Сохранить черновик
             </Button>
-            <Button bg='black' color='white' isLoading={isSubmitting} type='submit'>
+            <Button
+                bg='black'
+                color='white'
+                isLoading={isSubmitting}
+                type='submit'
+                data-test-id='recipe-publish-recipe-button'
+            >
                 Опубликовать рецепт
             </Button>
         </Flex>

@@ -4,11 +4,11 @@ import { authorizedApi } from '../';
 import { ApiEndpoints, NOTIFICATION_STATE_NAME } from '../constants';
 import { StatusTypesEnum } from '../types/common';
 
-interface FileUploadResponse {
+type FileUploadResponse = {
     name: string;
     url: string;
     _id: string;
-}
+};
 
 export const fileApi = authorizedApi.injectEndpoints({
     endpoints: (build) => ({

@@ -63,7 +63,7 @@ export const AllergenSelect: FC<{ fromFilter: boolean }> = ({ fromFilter }) => {
             spacing={4}
             direction={{ md: 'column', xl: 'row' }}
             alignItems={fromFilter ? 'flex-start' : 'center'}
-            display={{ base: 'none', md: 'flex', xl: 'flex' }}
+            display={{ base: 'flex', md: 'flex', xl: 'flex' }}
             flexWrap='wrap'
         >
             <Switcher handleSwitchChangeCb={handleSwitchChangeCb} fromFilter={fromFilter} />

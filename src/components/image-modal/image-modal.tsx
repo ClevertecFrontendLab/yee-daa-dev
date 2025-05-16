@@ -16,16 +16,16 @@ import { FC } from 'react';
 
 import { ImgIcon } from '../icons/img-icon';
 
-interface ImageModalProps {
+type ImageModalProps = {
     isOpen: boolean;
-    onClose: () => void;
+    onClose: VoidFunction;
     currentImage?: string;
     isExistingImage: boolean;
-    onImageSelect: () => void;
-    onSave: () => void;
-    onDelete: () => void;
+    onImageSelect: VoidFunction;
+    onSave: VoidFunction;
+    onDelete: VoidFunction;
     isLoading?: boolean;
-}
+};
 
 export const ImageModal: FC<ImageModalProps> = ({
     isOpen,
@@ -37,12 +37,12 @@ export const ImageModal: FC<ImageModalProps> = ({
     onDelete,
     isLoading = false,
 }) => (
-    <Modal isOpen={isOpen} onClose={isLoading ? () => {} : onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent maxW='400px'>
             <ModalHeader>Изображение</ModalHeader>
             <ModalCloseButton isDisabled={isLoading} />
-            <ModalBody>
+            <ModalBody data-test-id='recipe-image-modal'>
                 <VStack spacing={4} pb={4}>
                     {currentImage ? (
                         <Image
@@ -57,6 +57,7 @@ export const ImageModal: FC<ImageModalProps> = ({
                             borderRadius='lg'
                             cursor={isLoading ? 'not-allowed' : 'pointer'}
                             onClick={isLoading ? undefined : onImageSelect}
+                            data-test-id='recipe-image-modal-preview-image'
                             _hover={{
                                 borderColor: isLoading ? 'gray.300' : 'gray.400',
                             }}
@@ -72,6 +73,7 @@ export const ImageModal: FC<ImageModalProps> = ({
                             height='300px'
                             onClick={isLoading ? undefined : onImageSelect}
                             _hover='gray.300'
+                            data-test-id='recipe-image-modal-image-block'
                         >
                             <Center height='100%' flexDirection='column'>
                                 <ImgIcon w={8} h={7} />
@@ -86,6 +88,7 @@ export const ImageModal: FC<ImageModalProps> = ({
                                     w='100%'
                                     onClick={onSave}
                                     isDisabled={isLoading}
+                                    data-test-id='recipe-image-modal-save-button'
                                 >
                                     Сохранить
                                 </Button>
@@ -95,6 +98,7 @@ export const ImageModal: FC<ImageModalProps> = ({
                                 w='100%'
                                 onClick={onDelete}
                                 isDisabled={isLoading}
+                                data-test-id='recipe-image-modal-delete-button'
                             >
                                 Удалить
                             </Button>

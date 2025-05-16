@@ -23,5 +23,5 @@ export const useBlockerControl = (condition: boolean) => {
         }
     }, [blocker, onOpen]);
 
-    return { isOpen, handleContinueNavigation, handleCancelNavigation };
+    return { isOpen, handleContinueNavigation, handleCancelNavigation, onClose };
 };

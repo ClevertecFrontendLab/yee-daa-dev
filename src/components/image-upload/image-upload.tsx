@@ -3,27 +3,29 @@ import { FC, useRef, useState } from 'react';
 import { Control, useController } from 'react-hook-form';
 
 import { useUploadFileMutation } from '~/redux/api/file-api';
+import { Nullable } from '~/types/common';
 import { RecipeFormValues } from '~/types/recipe-form';
 import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path';
 
 import { ImgIcon } from '../icons/img-icon';
 import { ImageModal } from '../image-modal/image-modal';
 
-interface ImageUploadProps {
+type ImageUploadProps = {
     control: Control<RecipeFormValues>;
     name: 'image' | `steps.${number}.image`;
     rules?: {
         required?: string | boolean;
     };
-}
+    testId?: string;
+};
 
-export const ImageUpload: FC<ImageUploadProps> = ({ control, name, rules }) => {
+export const ImageUpload: FC<ImageUploadProps> = ({ control, name, rules, testId }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [uploadFile, { isLoading }] = useUploadFileMutation();
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedFile, setSelectedFile] = useState<Nullable<File>>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     const {
@@ -41,9 +43,8 @@ export const ImageUpload: FC<ImageUploadProps> = ({ control, name, rules }) => {
     };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (isLoading) return;
         const file = event.target.files?.[0];
-        if (!file) return;
+        if (isLoading || !file) return;
 
         setSelectedFile(file);
         const localPreviewUrl = URL.createObjectURL(file);
@@ -103,13 +104,14 @@ export const ImageUpload: FC<ImageUploadProps> = ({ control, name, rules }) => {
     const pagePreviewUrl = imageUrl ? getAbsoluteImagePath(imageUrl) : undefined;
 
     return (
-        <Box width='100%' height='100%'>
+        <Box width='100%' height='100%' data-test-id={testId}>
             <input
                 type='file'
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 accept='image/*'
                 style={{ display: 'none' }}
+                data-test-id={`${testId}-input-file`}
             />
             {pagePreviewUrl ? (
                 <Box
@@ -130,6 +132,7 @@ export const ImageUpload: FC<ImageUploadProps> = ({ control, name, rules }) => {
                         width='100%'
                         height='100%'
                         objectFit='cover'
+                        data-test-id={`${testId}-preview-image`}
                     />
                 </Box>
             ) : (
