@@ -4598,5 +4598,49 @@ describe('recipe management', () => {
 
             cy.wait('@saveRecipe');
         });
+
+        it('should handle 500 error when like recipe', () => {
+            interceptApi(
+                {
+                    url: `${API_ENDPOINTS.Recipe}/000000000000000/like`,
+                    alias: 'likeRecipe500',
+                    method: 'POST',
+                },
+                {
+                    statusCode: 500,
+                    delay: 100,
+                },
+            );
+
+            cy.contains('Оценить рецепт').should('be.visible').click();
+
+            cy.wait('@likeRecipe500');
+
+            cy.contains('Ошибка сервера').should('be.visible');
+            cy.contains('Попробуйте немного позже').should('be.visible');
+            cy.getByTestId(TEST_ID.Button.CloseAlert).click();
+        });
+
+        it('should handle 500 error when save recipe', () => {
+            interceptApi(
+                {
+                    url: `${API_ENDPOINTS.Recipe}/000000000000000/bookmark`,
+                    alias: 'saveRecipe500',
+                    method: 'POST',
+                },
+                {
+                    statusCode: 500,
+                    delay: 100,
+                },
+            );
+
+            cy.contains('Сохранить').should('be.visible').click();
+
+            cy.wait('@saveRecipe500');
+
+            cy.contains('Ошибка сервера').should('be.visible');
+            cy.contains('Попробуйте немного позже').should('be.visible');
+            cy.getByTestId(TEST_ID.Button.CloseAlert).click();
+        });
     });
 });
