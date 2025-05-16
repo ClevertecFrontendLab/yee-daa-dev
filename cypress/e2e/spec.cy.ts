@@ -4058,7 +4058,7 @@ describe('recipe management', () => {
 
         const exitWithoutSaving = () => {
             cy.getByTestId(TEST_ID.Modal.PreventiveModal).within(() => {
-                cy.getByTestId('recipe-preventive-modal-exit-button').click();
+                cy.contains(/^Выйти без сохранения$/).click();
             });
         };
 
