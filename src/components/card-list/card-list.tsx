@@ -20,6 +20,7 @@ export const CardList: FC<CardListProps> = ({ recipeList, ...rest }) => (
             lg: '1fr',
             '2xl': 'repeat(2, 1fr)',
         }}
+        data-test-id='recipe-card-list'
         {...rest}
     >
         {recipeList.map((el, index) => (

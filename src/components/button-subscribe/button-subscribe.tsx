@@ -27,6 +27,7 @@ export const ButtonSubscribe: FC<ButtonSubscribeProps> = ({ userId, isSubscribed
     useEffect(() => {
         if (isLoading) dispatch(setBloggersToggleLoader(userId));
         else dispatch(setBloggersToggleLoader(''));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoading]);
 
     useEffect(() => {
@@ -57,6 +58,7 @@ export const ButtonSubscribe: FC<ButtonSubscribeProps> = ({ userId, isSubscribed
                 borderColor='blackAlpha.600'
                 leftIcon={<SubscribeCompleteIcon />}
                 onClick={handleButtonClick}
+                data-test-id='blog-toggle-unsubscribe'
             >
                 Вы подписаны
             </Button>
@@ -69,6 +71,7 @@ export const ButtonSubscribe: FC<ButtonSubscribeProps> = ({ userId, isSubscribed
             fontSize='xs'
             leftIcon={<SubscribeIcon />}
             onClick={handleButtonClick}
+            data-test-id='blog-toggle-subscribe'
         >
             Подписаться
         </Button>

@@ -75,6 +75,7 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                                 variant='solid'
                                 textTransform='lowercase'
                                 p='2px 8px'
+                                data-test-id='blogs-card-new-recipes-badge'
                             >
                                 {makeNewRecipeBadge(newRecipesCount)}
                             </Badge>
@@ -106,7 +107,14 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                         {cardType === 'AVAILABLE' || cardType === 'PROFILE' ? (
                             <ButtonSubscribe userId={_id} isSubscribedFromReq={isFavorite} />
                         ) : (
-                            <Button size='xs' bg='lime.400' fontSize='xs' as={Link} to={link}>
+                            <Button
+                                size='xs'
+                                bg='lime.400'
+                                fontSize='xs'
+                                as={Link}
+                                to={link}
+                                data-test-id='blogs-card-recipes-button'
+                            >
                                 Рецепты
                             </Button>
                         )}
@@ -118,6 +126,7 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                             variant='outline'
                             as={Link}
                             to={`${link}#notes`}
+                            data-test-id='blogs-card-notes-button'
                         >
                             Читать
                         </Button>

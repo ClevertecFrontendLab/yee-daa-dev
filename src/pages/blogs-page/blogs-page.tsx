@@ -22,6 +22,7 @@ export const BlogsPage = () => {
                     bg='lime.400'
                     borderRadius={{ base: 16, xl: 24 }}
                     padding={{ base: '8px 12px 12px', sm: 2, xl: 6 }}
+                    data-test-id='blogs-favorites-box'
                 >
                     <Heading fontSize={{ base: '2xl', xl: '4xl' }} lineHeight={10} fontWeight={400}>
                         Избранные блоги
@@ -36,6 +37,7 @@ export const BlogsPage = () => {
                             xl: '1fr',
                             xxxl: 'repeat(2, 1fr)',
                         }}
+                        data-test-id='blogs-favorites-grid'
                     >
                         {bloggersFavorites.map((el) => (
                             <BlogCard

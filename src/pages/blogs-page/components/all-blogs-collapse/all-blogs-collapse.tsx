@@ -29,11 +29,11 @@ export const AllBlogsCollapse = () => {
         base: 1068,
         md: 850,
         xl: 1068,
-        '2xl': 1064,
+        '2xl': 794,
     });
 
     const onMoreBloggersClick = () => {
-        if (bloggersOthers.length < 9) dispatch(setBloggersLimit('all'));
+        if (bloggersOthers.length <= 9) dispatch(setBloggersLimit('all'));
         onToggle();
     };
 
@@ -46,19 +46,23 @@ export const AllBlogsCollapse = () => {
                 borderRadius={6}
                 padding={{ base: 4, xl: 6 }}
                 alignItems='center'
+                data-test-id='blogs-others-box'
             >
                 <Stack align='center'>
                     <Collapse in={isOpen} startingHeight={value} style={{ width: '100%' }}>
                         <SimpleGrid
-                            columns={{ base: 1, md: 2, xmd: 1, '2xl': 2 }}
+                            columns={{ base: 1, md: 2, xxl: 1, '2xl': 3 }}
                             columnGap={{ base: 4, xl: 4 }}
                             rowGap={{ base: 4, xl: 6 }}
                             gridTemplateColumns={{
                                 base: '1fr',
                                 md: 'repeat(2, 1fr)',
                                 xl: '1fr',
-                                xxxl: 'repeat(2, 1fr)',
+                                xxl: '1fr',
+                                xxxl: '1fr',
+                                '2xl': 'repeat(3, 1fr)',
                             }}
+                            data-test-id='blogs-others-grid'
                         >
                             {bloggersOthers.map((el) => (
                                 <BlogCard
@@ -87,6 +91,7 @@ export const AllBlogsCollapse = () => {
                         alignItems='center'
                         variant='ghost'
                         onClick={onMoreBloggersClick}
+                        data-test-id='blogs-others-button'
                     >
                         {isOpen ? 'Свернуть' : 'Всe авторы'}
                     </Button>

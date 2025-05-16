@@ -38,6 +38,7 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
             pb={3}
             pt={{ base: 6, sm: 5, lg: 6 }}
             gap={{ base: 2, sm: '10px', lg: 4 }}
+            data-test-id='blog-notes-box'
             {...rest}
         >
             <HStack alignItems='center' mb={{ base: 4, '2xl': 3 }} w='100%'>

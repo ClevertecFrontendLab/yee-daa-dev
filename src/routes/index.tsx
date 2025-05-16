@@ -4,6 +4,7 @@ import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from '
 import { AuthGuard } from '~/components/authorization/auth-guard/auth-guard.tsx';
 import { Paths } from '~/constants/path.js';
 import { BlogExistProtected } from '~/hoc/blog-exist-protected.tsx';
+import { BlogsExistProtected } from '~/hoc/blogs-exist-protected.tsx';
 import { CategoryExistProtected } from '~/hoc/category-exist-protected';
 import { SubcategoryRedirect } from '~/hoc/subcategory-redirect';
 import { AppLayout } from '~/layout/app-layout';
@@ -72,7 +73,15 @@ export const appRouter = createBrowserRouter(
                         }
                         loader={clearFilterStateLoader}
                     />
-                    <Route path={Paths.BLOGS} element={<BlogsPage />} loader={blogsLoader} />
+                    <Route
+                        path={Paths.BLOGS}
+                        element={
+                            <BlogsExistProtected>
+                                <BlogsPage />
+                            </BlogsExistProtected>
+                        }
+                        loader={blogsLoader}
+                    />
                     <Route
                         path={Paths.BLOGS_ITEM}
                         element={

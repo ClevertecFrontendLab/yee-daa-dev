@@ -47,6 +47,7 @@ const TEST_ID = {
     Breadcrumbs: 'breadcrumbs',
 
     Bloggers: {
+        // main page
         MainPageBlogsBox: 'main-page-blogs-box',
         MainPageBlogsButton: 'main-page-blogs-button',
         MainPageBlogsGrid: 'main-page-blogs-grid',
@@ -54,6 +55,20 @@ const TEST_ID = {
         BlogsCardName: 'blogs-card-name',
         BlogsCardLogin: 'blogs-card-login',
         BlogsCardNotesText: 'blogs-card-notes-text',
+        BlogsCardNewRecipesBadge: 'blogs-card-new-recipes-badge',
+        BlogsCardRecipesButton: 'blogs-card-recipes-button',
+        BlogsCardNotesButton: 'blogs-card-notes-button',
+        RecipeCardList: 'recipe-card-list',
+        BlogNotesBox: 'blog-notes-box',
+
+        // blogs page
+        BlogsFavoritesBox: 'blogs-favorites-box',
+        BlogsFavoritesGrid: 'blogs-favorites-grid',
+        BlogsOthersBox: 'blogs-others-box',
+        BlogsOthersGrid: 'blogs-others-grid',
+        BlogsOthersButton: 'blogs-others-button',
+        BlogToggleSubscribe: 'blog-toggle-subscribe',
+        BlogToggleUnsubscribe: 'blog-toggle-unsubscribe',
     },
     Progress: {
         SignUp: 'sign-up-progress',
@@ -145,6 +160,7 @@ export const API_ENDPOINTS = {
     GetUserById: '/users',
     GetMe: '/users/me',
     GetBloggers: '/bloggers',
+    ToggleSubscription: '/users/toggle-subscription',
 
     Category: '/category',
     Recipe: '/recipe',
@@ -1973,11 +1989,300 @@ const MOCK_PREVIEW_BLOGGERS = {
     ],
 };
 
-// const MOCK_ALL_BLOGGERS = {};
+const MOCK_ALL_BLOGGERS = {
+    favorites: [
+        {
+            _id: 'testIdFav1',
+            firstName: 'Test Fav FirstName 1',
+            lastName: 'test Fav LastName 1',
+            login: 'test_fav_login_1',
+            subscribersCount: 36,
+            bookmarksCount: 943,
+            isFavorite: true,
+            notes: [
+                {
+                    date: '2025-03-26T15:27:16.066Z',
+                    text: ' 1 acs nidc nisjdc sdnnjkcx ajksnx jisjdxoic xm',
+                },
+                {
+                    date: '2025-03-26T15:27:16.066Z',
+                    text: 'Random text 2',
+                },
+            ],
+            newRecipesCount: 3,
+        },
+    ],
+    others: [
+        {
+            _id: 'testId1',
+            firstName: 'Test FirstName 1',
+            lastName: 'test LastName 1',
+            login: 'test_login_1',
+            subscribersCount: 0,
+            bookmarksCount: 0,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 5,
+        },
+        {
+            _id: 'testId2',
+            firstName: 'Test FirstName 2',
+            lastName: 'test LastName 2',
+            login: 'test_login_2',
+            subscribersCount: 366,
+            bookmarksCount: 9,
+            isFavorite: false,
+            notes: [
+                {
+                    date: '2025-03-26T15:27:16.066Z',
+                    text: ' test test test test test test test test test test test test test test test test test test test ',
+                },
+            ],
+            newRecipesCount: 0,
+        },
+        {
+            _id: 'testId3',
+            firstName: 'Test FirstName 3',
+            lastName: 'test LastName 3',
+            login: 'test_login_3',
+            subscribersCount: 23,
+            bookmarksCount: 0,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 0,
+        },
+        {
+            _id: 'testId4',
+            firstName: 'Test FirstName 4',
+            lastName: 'test LastName 4',
+            login: 'test_login_4',
+            subscribersCount: 222,
+            bookmarksCount: 111,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 2,
+        },
+        {
+            _id: 'testId5',
+            firstName: 'Test FirstName 5',
+            lastName: 'test LastName 5',
+            login: 'test_login_5',
+            subscribersCount: 0,
+            bookmarksCount: 0,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 2,
+        },
+        {
+            _id: 'testId6',
+            firstName: 'Test FirstName 6',
+            lastName: 'test LastName 6',
+            login: 'test_login_6',
+            subscribersCount: 0,
+            bookmarksCount: 0,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 2,
+        },
+        {
+            _id: 'testId7',
+            firstName: 'Test FirstName 7',
+            lastName: 'test LastName 7',
+            login: 'test_login_7',
+            subscribersCount: 0,
+            bookmarksCount: 0,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 2,
+        },
+        {
+            _id: 'testId8',
+            firstName: 'Test FirstName 8',
+            lastName: 'test LastName 8',
+            login: 'test_login_8',
+            subscribersCount: 0,
+            bookmarksCount: 0,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 2,
+        },
+        {
+            _id: 'testId9',
+            firstName: 'Test FirstName 9',
+            lastName: 'test LastName 9',
+            login: 'test_login_9',
+            subscribersCount: 10,
+            bookmarksCount: 10,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 2,
+        },
+    ],
+};
+
+const MOCK_ALL_BLOGGERS_SUBSCRIBED = {
+    favorites: [
+        {
+            _id: 'testIdFav1',
+            firstName: 'Test Fav FirstName 1',
+            lastName: 'test Fav LastName 1',
+            login: 'test_fav_login_1',
+            subscribersCount: 36,
+            bookmarksCount: 943,
+            isFavorite: true,
+            notes: [
+                {
+                    date: '2025-03-26T15:27:16.066Z',
+                    text: ' 1 acs nidc nisjdc sdnnjkcx ajksnx jisjdxoic xm',
+                },
+                {
+                    date: '2025-03-26T15:27:16.066Z',
+                    text: 'Random text 2',
+                },
+            ],
+            newRecipesCount: 3,
+        },
+        {
+            _id: 'testId1',
+            firstName: 'Test FirstName 1',
+            lastName: 'test LastName 1',
+            login: 'test_login_1',
+            subscribersCount: 0,
+            bookmarksCount: 0,
+            isFavorite: true,
+            notes: [],
+            newRecipesCount: 5,
+        },
+    ],
+    others: [
+        {
+            _id: 'testId2',
+            firstName: 'Test FirstName 2',
+            lastName: 'test LastName 2',
+            login: 'test_login_2',
+            subscribersCount: 366,
+            bookmarksCount: 9,
+            isFavorite: false,
+            notes: [
+                {
+                    date: '2025-03-26T15:27:16.066Z',
+                    text: ' test test test test test test test test test test test test test test test test test test test ',
+                },
+            ],
+            newRecipesCount: 0,
+        },
+        {
+            _id: 'testId3',
+            firstName: 'Test FirstName 3',
+            lastName: 'test LastName 3',
+            login: 'test_login_3',
+            subscribersCount: 23,
+            bookmarksCount: 0,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 0,
+        },
+        {
+            _id: 'testId4',
+            firstName: 'Test FirstName 4',
+            lastName: 'test LastName 4',
+            login: 'test_login_4',
+            subscribersCount: 222,
+            bookmarksCount: 111,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 2,
+        },
+        {
+            _id: 'testId5',
+            firstName: 'Test FirstName 5',
+            lastName: 'test LastName 5',
+            login: 'test_login_5',
+            subscribersCount: 0,
+            bookmarksCount: 0,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 2,
+        },
+        {
+            _id: 'testId6',
+            firstName: 'Test FirstName 6',
+            lastName: 'test LastName 6',
+            login: 'test_login_6',
+            subscribersCount: 0,
+            bookmarksCount: 0,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 2,
+        },
+        {
+            _id: 'testId7',
+            firstName: 'Test FirstName 7',
+            lastName: 'test LastName 7',
+            login: 'test_login_7',
+            subscribersCount: 0,
+            bookmarksCount: 0,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 2,
+        },
+        {
+            _id: 'testId8',
+            firstName: 'Test FirstName 8',
+            lastName: 'test LastName 8',
+            login: 'test_login_8',
+            subscribersCount: 0,
+            bookmarksCount: 0,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 2,
+        },
+        {
+            _id: 'testId9',
+            firstName: 'Test FirstName 9',
+            lastName: 'test LastName 9',
+            login: 'test_login_9',
+            subscribersCount: 10,
+            bookmarksCount: 10,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 2,
+        },
+    ],
+};
+
+const MOCK_ALL_BLOGGERS_EXPANDED = {
+    favorites: MOCK_ALL_BLOGGERS.favorites,
+    others: [
+        ...MOCK_ALL_BLOGGERS.others,
+        {
+            _id: 'testId10',
+            firstName: 'Test FirstName 10',
+            lastName: 'test LastName 10',
+            login: 'test_login_10',
+            subscribersCount: 10,
+            bookmarksCount: 10,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 2,
+        },
+        {
+            _id: 'testId11',
+            firstName: 'Test FirstName 11',
+            lastName: 'test LastName 11',
+            login: 'test_login_11',
+            subscribersCount: 10,
+            bookmarksCount: 10,
+            isFavorite: false,
+            notes: [],
+            newRecipesCount: 2,
+        },
+    ],
+};
 
 const MOCK_BLOGGER_PROFILE = {
     bloggerInfo: {
-        _id: 'test id 1',
+        _id: 'test_id_1',
         email: 'test@test.com',
         login: 'test_login_1',
         firstName: 'Test FirstName 1',
@@ -1998,6 +2303,31 @@ const MOCK_BLOGGER_PROFILE = {
     totalSubscribers: 13,
     totalBookmarks: 338,
     isFavorite: true,
+};
+
+const MOCK_BLOGGER_RECIPE = {
+    recipes: allRecipes.slice(0, 10),
+    notes: [
+        {
+            date: '2025-03-26T15:27:16.066Z',
+            text: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
+        },
+        {
+            date: '2025-03-26T15:27:16.066Z',
+            text: 'Random text 2',
+        },
+        {
+            date: '2025-03-26T15:27:16.066Z',
+            text: 'Random text 3',
+        },
+        {
+            date: '2025-03-26T15:27:16.066Z',
+            text: 'Random text 3 Random text 3 Random text 3 Random text 3 Random text 3 Random text 3 Random text 3 ',
+        },
+    ],
+    totalBookmarks: 2,
+    totalSubscribers: 1,
+    userId: 'test_id_1',
 };
 
 const interceptJuiciestPage = (page: number = 1, delay = DELAY.SM, mockData = juiciestData) =>
@@ -2124,19 +2454,47 @@ const interceptRecipesBySubCategory = (delay: number = DELAY.SM, mockBody = null
 
 const interceptBloggers = (
     currentUserId = '',
+    limit = '',
     code = 200,
     delay: number = DELAY.SM,
     mockBody = null,
 ) =>
     interceptApi(
         {
-            url: `${API_ENDPOINTS.GetBloggers}?currentUserId=${currentUserId}`,
+            url: `${API_ENDPOINTS.GetBloggers}?currentUserId=${currentUserId}&limit=${limit}`,
             alias: 'getBloggers',
         },
         {
             statusCode: code ?? 200,
             delay,
             body: mockBody ?? MOCK_PREVIEW_BLOGGERS,
+        },
+    );
+
+const interceptToggleSubscription = (code = 200, delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
+        {
+            url: `${API_ENDPOINTS.ToggleSubscription}`,
+            method: 'PATCH',
+            alias: 'toggleSubscription',
+        },
+        {
+            statusCode: code ?? 200,
+            delay,
+            body: mockBody ?? 'Подписка произведена успешно',
+        },
+    );
+
+const interceptBloggerRecipesById = (bloggerId = '', delay: number = DELAY.SM, mockBody = null) =>
+    interceptApi(
+        {
+            url: `${API_ENDPOINTS.GetBloggerById}/${bloggerId}`,
+            alias: 'getBloggerRecipesById',
+        },
+        {
+            statusCode: 200,
+            delay,
+            body: mockBody ?? MOCK_BLOGGER_RECIPE,
         },
     );
 
@@ -2157,6 +2515,11 @@ const interceptBloggerById = (
             body: mockBody ?? MOCK_BLOGGER_PROFILE,
         },
     );
+
+const loadUser = (bloggerId: string) => {
+    interceptBloggerById(bloggerId);
+    interceptBloggerRecipesById(bloggerId);
+};
 
 const signIn = () => {
     interceptApi(
@@ -3675,7 +4038,7 @@ describe('bloggers', () => {
         });
 
         it('the bloggers box is not being filled on API error', () => {
-            interceptBloggers('', 500);
+            interceptBloggers('', '', 500);
 
             cy.viewport(1920, 750);
             cy.getByTestId(TEST_ID.Bloggers.MainPageBlogsBox).should('not.exist');
@@ -3694,6 +4057,156 @@ describe('bloggers', () => {
 
             cy.getByTestId(TEST_ID.Bloggers.MainPageBlogsButton).should('exist').click();
             cy.url().should('contain', '/blogs');
+        });
+    });
+
+    describe('blogs page', () => {
+        beforeEach(() => {
+            cy.clearLocalStorage();
+            cy.clearAllSessionStorage();
+            interceptApi(
+                { url: '/**', alias: 'uncaptured' },
+                {
+                    statusCode: 200,
+                    delay: 0,
+                },
+            );
+            interceptBloggers();
+            interceptCategories();
+            interceptNewestRecipes();
+            interceptJuiciestRecipes();
+            interceptRelevantRecipes();
+            signIn();
+        });
+
+        it('the page is being filled correctly', () => {
+            interceptBloggers('', '9', 200, DELAY.SM, MOCK_ALL_BLOGGERS);
+            cy.visit('/blogs');
+            cy.viewport(1920, 750);
+
+            cy.getByTestId(TEST_ID.Bloggers.BlogsFavoritesBox).should('exist').should('be.visible');
+            cy.getByTestId(TEST_ID.Bloggers.BlogsOthersBox).should('exist').should('be.visible');
+
+            cy.getByTestId(TEST_ID.Bloggers.BlogsFavoritesGrid)
+                .should('exist')
+                .should('be.visible')
+                .children()
+                .should('have.length', 1);
+            cy.getByTestId(TEST_ID.Bloggers.BlogsOthersGrid)
+                .should('exist')
+                .should('be.visible')
+                .children()
+                .should('have.length', 9);
+
+            cy.getByTestId(TEST_ID.Bloggers.BlogsFavoritesGrid)
+                .should('exist')
+                .should('be.visible')
+                .children()
+                .first()
+                .within(() => {
+                    cy.getByTestId(TEST_ID.Bloggers.BlogsCardNewRecipesBadge)
+                        .should('exist')
+                        .should('be.visible')
+                        .should('contain.text', '3 новых рецепта');
+                });
+
+            cy.get('html, body').invoke('attr', 'style', 'height: auto; scroll-behavior: auto;');
+            cy.wait(2000);
+            takeAllScreenshots('blogs-page');
+        });
+
+        it('redirect to the main page on fetch error', () => {
+            cy.visit('/blogs');
+            interceptBloggers('', '9', 500);
+            cy.viewport(1920, 750);
+
+            cy.getByTestId(TEST_ID.Bloggers.BlogsFavoritesBox).should('not.exist');
+            cy.getByTestId(TEST_ID.Bloggers.BlogsOthersBox).should('not.exist');
+            cy.getByTestId(TEST_ID.Notification.Error).should('exist').and('be.visible');
+            cy.getByTestId(TEST_ID.Notification.ErrorTitle).should('have.text', 'Ошибка сервера');
+            cy.getByTestId(TEST_ID.Notification.ErrorDescription).should(
+                'have.text',
+                'Попробуйте немного позже.',
+            );
+            cy.url().should('not.contain', '/blogs');
+        });
+
+        it('should correctly open the other blogs box', () => {
+            cy.visit('/blogs');
+            interceptBloggers('', '9', 200, DELAY.SM, MOCK_ALL_BLOGGERS);
+            cy.viewport(1920, 750);
+
+            interceptBloggers('', 'all', 500, DELAY.SM, MOCK_ALL_BLOGGERS_EXPANDED);
+            cy.getByTestId(TEST_ID.Bloggers.BlogsOthersButton).click();
+
+            cy.getByTestId(TEST_ID.Bloggers.BlogsOthersGrid)
+                .should('exist')
+                .should('be.visible')
+                .children()
+                .should('have.length', 11);
+            cy.getByTestId(TEST_ID.Bloggers.BlogsOthersButton).click();
+        });
+
+        it('should correctly subscribe the user and move the newly subscribed user card to the favorites', () => {
+            cy.visit('/blogs');
+            interceptBloggers('', '9', 200, DELAY.SM, MOCK_ALL_BLOGGERS);
+            cy.viewport(1920, 750);
+
+            cy.getByTestId(TEST_ID.Bloggers.BlogsOthersGrid)
+                .children()
+                .first()
+                .within(() => {
+                    cy.getByTestId(TEST_ID.Bloggers.BlogsCardNewRecipesBadge).should('not.exist');
+                });
+            interceptToggleSubscription();
+            interceptBloggers('', '9', 200, DELAY.SM, MOCK_ALL_BLOGGERS_SUBSCRIBED);
+            cy.getByTestId(TEST_ID.Bloggers.BlogToggleSubscribe).first().click();
+            cy.getByTestId(TEST_ID.Bloggers.BlogsFavoritesGrid).children().should('have.length', 2);
+            cy.getByTestId(TEST_ID.Bloggers.BlogsOthersGrid).children().should('have.length', 8);
+            cy.getByTestId(TEST_ID.Bloggers.BlogsFavoritesGrid)
+                .children()
+                .eq(1)
+                .within(() => {
+                    cy.getByTestId(TEST_ID.Bloggers.BlogsCardNewRecipesBadge)
+                        .should('exist')
+                        .should('contain.text', '5 новых рецептов');
+                });
+        });
+
+        it('should correctly unsubscribe the user and move the unsubscribed user card to the other blogs', () => {
+            cy.visit('/blogs');
+            interceptBloggers('', '9', 200, DELAY.SM, MOCK_ALL_BLOGGERS_SUBSCRIBED);
+            cy.viewport(1920, 750);
+
+            interceptToggleSubscription();
+            interceptBloggers('', '9', 200, DELAY.SM, MOCK_ALL_BLOGGERS);
+            cy.getByTestId(TEST_ID.Bloggers.BlogToggleSubscribe).eq(1).click();
+            cy.getByTestId(TEST_ID.Bloggers.BlogsFavoritesGrid).children().should('have.length', 1);
+            cy.getByTestId(TEST_ID.Bloggers.BlogsOthersGrid).children().should('have.length', 9);
+        });
+
+        it('button "Рецепты" should route to the blogger\'s profile page', () => {
+            cy.visit('/blogs');
+            interceptBloggers('', '9', 200, DELAY.SM, MOCK_ALL_BLOGGERS);
+            cy.viewport(1920, 750);
+            const { _id: bloggerId } = MOCK_ALL_BLOGGERS.favorites[0];
+
+            loadUser(bloggerId);
+            cy.getByTestId(TEST_ID.Bloggers.BlogsCardRecipesButton).first().click();
+            cy.url().should('contain', `/blogs/${bloggerId}`);
+            cy.getByTestId(TEST_ID.Bloggers.RecipeCardList).should('exist').should('be.visible');
+        });
+
+        it('button "Читать" should route to the blogger\'s prorile page to the anchor #notes', () => {
+            cy.visit('/blogs');
+            interceptBloggers('', '9', 200, DELAY.SM, MOCK_ALL_BLOGGERS);
+            cy.viewport(1920, 750);
+            const { _id: bloggerId } = MOCK_ALL_BLOGGERS.favorites[0];
+
+            loadUser(bloggerId);
+            cy.getByTestId(TEST_ID.Bloggers.BlogsCardNotesButton).first().click();
+            cy.url().should('contain', `/blogs/${bloggerId}#notes`);
+            cy.getByTestId(TEST_ID.Bloggers.BlogNotesBox).should('exist').should('be.visible');
         });
     });
 });
