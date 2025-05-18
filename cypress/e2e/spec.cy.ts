@@ -3572,25 +3572,27 @@ describe('application', () => {
 const NEW_RECIPE_RESPONSE = {
     title: 'Плов из детства',
     description: 'Супер вкусный и нежный плов по рецепту из вашего детства',
-    time: '54',
-    image: '/media/images/bc0748c4-8d00-4c10-ad8e-534874343d46.webp',
-    portions: '5',
+    time: 54,
+    image: '/media/images/9dc4a27e-923f-4e2c-bd86-4246d34408a5.webp',
+    portions: 5,
     authorId: '65a1bc23f8e7d901f4c3d2a1',
     categoriesIds: [
         '67c46df5f51967aa8390bee7',
         '67c46e19f51967aa8390bee8',
         '67c46e2bf51967aa8390bee9',
+        '67c48e627b493acd8a41030c',
+        '67c48f60ed67ca980917d64e',
     ],
     steps: [
         {
             stepNumber: 1,
             description: 'Берем сперва укропу',
-            image: '/media/images/bc0748c4-8d00-4c10-ad8e-534874343d46.webp',
+            image: '/media/images/9dc4a27e-923f-4e2c-bd86-4246d34408a5.webp',
         },
         {
             stepNumber: 2,
-            description: 'Потом кошачью попу',
-            image: '/media/images/bc0748c4-8d00-4c10-ad8e-534874343d46.webp',
+            description: 'Потом кошачью ****',
+            image: null,
         },
         {
             stepNumber: 3,
@@ -3606,19 +3608,19 @@ const NEW_RECIPE_RESPONSE = {
     },
     ingredients: [
         {
-            measureUnit: 'столовая ложка',
+            measureUnit: 'г',
             title: 'сахар',
-            count: '4',
-        },
-        {
-            measureUnit: 'кг',
-            title: 'кот',
-            count: '1',
+            count: 4,
         },
         {
             measureUnit: 'шт',
+            title: 'кот',
+            count: 1,
+        },
+        {
+            measureUnit: 'кг',
             title: 'укроп',
-            count: '10',
+            count: 10,
         },
     ],
     views: 0,
@@ -3652,7 +3654,7 @@ const UPDATE_RECIPE_RESPONSE = {
         { stepNumber: 1, description: 'Берем сперва укропу', image: null },
         {
             stepNumber: 2,
-            description: 'Потом кошачью попу',
+            description: 'Потом кошачью ****',
             image: '/media/images/bc0748c4-8d00-4c10-ad8e-534874343d46.webp',
         },
         { stepNumber: 3, description: 'охапка дров', image: null },
@@ -3983,10 +3985,12 @@ describe('recipe management', () => {
         });
 
         it('should successfully publish a recipe', () => {
-            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Тестовый рецепт');
-            cy.getByTestId(TEST_ID.Recipe.Description).clear().type('Описание тестового рецепта');
-            cy.getByTestId(TEST_ID.Recipe.Time).clear().type('30');
-            cy.getByTestId(TEST_ID.Recipe.Portions).clear().type('4');
+            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Плов из детства');
+            cy.getByTestId(TEST_ID.Recipe.Description)
+                .clear()
+                .type('Супер вкусный и нежный плов по рецепту из вашего детства');
+            cy.getByTestId(TEST_ID.Recipe.Time).clear().type('54');
+            cy.getByTestId(TEST_ID.Recipe.Portions).clear().type('5');
 
             cy.getByTestId(TEST_ID.Recipe.ImageBlock).click();
             cy.getByTestId(TEST_ID.Recipe.ImageBlockInputFile).selectFile(
@@ -4008,23 +4012,60 @@ describe('recipe management', () => {
                 cy.getByTestId(TEST_ID.Recipe.Categories).click();
             });
 
-            cy.getByTestId('recipe-ingredients-title-0').clear().type('Мука');
-            cy.getByTestId('recipe-ingredients-count-0').clear().type('200');
+            cy.getByTestId('recipe-ingredients-title-0').clear().type('сахар');
+            cy.getByTestId('recipe-ingredients-count-0').clear().type('4');
             cy.getByTestId('recipe-ingredients-measureUnit-0').select('г');
 
-            cy.getByTestId('recipe-steps-description-0').clear().type('Смешать все ингредиенты');
+            cy.getByTestId(TEST_ID.Recipe.AddIngredientsButton).click();
+            cy.getByTestId(TEST_ID.Recipe.AddIngredientsButton).click();
 
-            interceptApi(
+            cy.getByTestId('recipe-ingredients-title-1').clear().type('кот');
+            cy.getByTestId('recipe-ingredients-count-1').clear().type('1');
+            cy.getByTestId('recipe-ingredients-measureUnit-1').select('шт');
+
+            cy.getByTestId('recipe-ingredients-title-2').clear().type('укроп');
+            cy.getByTestId('recipe-ingredients-count-2').clear().type('10');
+            cy.getByTestId('recipe-ingredients-measureUnit-2').select('кг');
+
+            cy.contains('Новый шаг').click();
+            cy.contains('Новый шаг').click();
+
+            cy.getByTestId('recipe-steps-description-0').clear().type('Берем сперва укропу');
+            cy.getByTestId('recipe-steps-description-1').clear().type('Потом кошачью ****');
+            cy.getByTestId('recipe-steps-description-2').clear().type('Дальше сами знаете...');
+
+            cy.getByTestId('recipe-steps-image-block-0').click();
+            cy.getByTestId('recipe-steps-image-block-0-input-file').selectFile(
+                'cypress/fixtures/plov.jpeg',
+                { force: true },
+            );
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
+                cy.contains('Сохранить').click();
+            });
+            cy.wait('@uploadFile');
+
+            const createRecipe = interceptApi(
                 { url: API_ENDPOINTS.Recipe, alias: 'createRecipe', method: 'POST' },
                 {
                     statusCode: 200,
                     body: NEW_RECIPE_RESPONSE,
                     delay: 100,
+                    expectedBody: {
+                        title: NEW_RECIPE_RESPONSE.title,
+                        description: NEW_RECIPE_RESPONSE.description,
+                        time: NEW_RECIPE_RESPONSE.time,
+                        portions: NEW_RECIPE_RESPONSE.portions,
+                        categoriesIds: NEW_RECIPE_RESPONSE.categoriesIds,
+                        image: NEW_RECIPE_RESPONSE.image,
+                        steps: NEW_RECIPE_RESPONSE.steps,
+                        ingredients: NEW_RECIPE_RESPONSE.ingredients,
+                    },
+                    withLoader: true,
                 },
             );
 
             cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
-            cy.wait('@createRecipe');
+            createRecipe();
             cy.wait('@getNewRecipe');
             takeAllScreenshots('create-recipe-200');
             cy.contains('Рецепт успешно опубликован').should('be.visible');
@@ -4248,10 +4289,10 @@ describe('recipe management', () => {
                     .should('eq', NEW_RECIPE_RESPONSE.description);
                 cy.getByTestId(TEST_ID.Recipe.Time)
                     .invoke('val')
-                    .should('eq', NEW_RECIPE_RESPONSE.time);
+                    .should('eq', String(NEW_RECIPE_RESPONSE.time));
                 cy.getByTestId(TEST_ID.Recipe.Portions)
                     .invoke('val')
-                    .should('eq', NEW_RECIPE_RESPONSE.portions);
+                    .should('eq', String(NEW_RECIPE_RESPONSE.portions));
 
                 cy.getByTestId(TEST_ID.Recipe.Categories)
                     .contains('Мясные салаты')
@@ -4259,7 +4300,7 @@ describe('recipe management', () => {
                 cy.getByTestId(TEST_ID.Recipe.Categories)
                     .contains('Рыбные салаты')
                     .should('be.visible');
-                cy.getByTestId(TEST_ID.Recipe.Categories).contains('+1').should('be.visible');
+                cy.getByTestId(TEST_ID.Recipe.Categories).contains('+3').should('be.visible');
 
                 cy.getByTestId(TEST_ID.Recipe.ImageBlockPreviewImage)
                     .should('have.attr', 'src')
@@ -4277,7 +4318,7 @@ describe('recipe management', () => {
                         .should('eq', item.title);
                     cy.getByTestId(`recipe-ingredients-count-${index}`)
                         .invoke('val')
-                        .should('eq', item.count);
+                        .should('eq', String(item.count));
                     cy.getByTestId(`recipe-ingredients-measureUnit-${index}`)
                         .invoke('val')
                         .should('eq', item.measureUnit);
