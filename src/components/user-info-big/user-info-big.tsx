@@ -16,6 +16,7 @@ type UserInfoBigProps = {
     bookmarksCount: number;
     isFavorite?: boolean;
     imgSrc?: string;
+    dataTestId?: string;
 } & FlexProps;
 
 export const UserInfoBig: FC<UserInfoBigProps> = ({
@@ -27,12 +28,17 @@ export const UserInfoBig: FC<UserInfoBigProps> = ({
     subscribersCount,
     bookmarksCount,
     isFavorite,
+    dataTestId,
     ...rest
 }) => {
     const isLoading = useAppSelector(selectBloggersToggleLoading);
 
     return (
-        <Box w={{ base: '100%', sm: 'auto' }} position='relative'>
+        <Box
+            w={{ base: '100%', sm: 'auto' }}
+            position='relative'
+            data-test-id={`${dataTestId}-box`}
+        >
             <Flex
                 alignItems='center'
                 flexDirection={{ base: 'column', sm: 'row' }}
@@ -50,12 +56,14 @@ export const UserInfoBig: FC<UserInfoBigProps> = ({
                         fontSize={{ base: '2xl', xmd: '5xl' }}
                         fontWeight={700}
                         textAlign={{ base: 'center', sm: 'left' }}
+                        data-test-id={`${dataTestId}-name`}
                     >{`${firstName} ${lastName}`}</Text>
                     <Text
                         fontSize='sm'
                         lineHeight={5}
                         color='blackAlpha.700'
                         textAlign={{ base: 'center', sm: 'left' }}
+                        data-test-id={`${dataTestId}-login`}
                     >
                         @{login}
                     </Text>

@@ -69,14 +69,22 @@ export const Breadcrumbs = () => {
                 )}
                 {isBlogs && (
                     <BreadcrumbItem>
-                        <BreadcrumbLink as={Link} to={Paths.BLOGS}>
+                        <BreadcrumbLink
+                            as={Link}
+                            to={Paths.BLOGS}
+                            data-test-id='blogger-user-breadcrumb-section'
+                        >
                             Блоги
                         </BreadcrumbLink>
                     </BreadcrumbItem>
                 )}
                 {isBlogs && isBlogCurrent && (
                     <BreadcrumbItem>
-                        <BreadcrumbLink as={Link} to={`${Paths.BLOGS}/${bloggerInfo._id}`}>
+                        <BreadcrumbLink
+                            as={Link}
+                            to={`${Paths.BLOGS}/${bloggerInfo._id}`}
+                            data-test-id='blogger-user-breadcrumb-name'
+                        >
                             {`${bloggerInfo.firstName} ${bloggerInfo.lastName} (@${bloggerInfo.login})`}
                         </BreadcrumbLink>
                     </BreadcrumbItem>

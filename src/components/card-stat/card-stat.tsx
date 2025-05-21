@@ -22,7 +22,13 @@ export const CardStat: FC<Props> = ({ bookmarks, likes, followers }) => (
         {(bookmarks || bookmarks === 0) && (
             <HStack spacing={2} p={1} alignItems='center'>
                 <BookmarkIcon w={3} h={3} />
-                <Text fontWeight={600} fontSize='xs' lineHeight={4} color='lime.600'>
+                <Text
+                    fontWeight={600}
+                    fontSize='xs'
+                    lineHeight={4}
+                    color='lime.600'
+                    data-test-id='blogger-followers-bookmarks'
+                >
                     {bookmarks}
                 </Text>
             </HStack>
@@ -38,7 +44,13 @@ export const CardStat: FC<Props> = ({ bookmarks, likes, followers }) => (
         {(followers || followers === 0) && (
             <HStack spacing={2} p={1} alignItems='center'>
                 <FollowersIcon w={3} h={3} />
-                <Text fontWeight={600} fontSize='xs' lineHeight={4} color='lime.600'>
+                <Text
+                    fontWeight={600}
+                    fontSize='xs'
+                    lineHeight={4}
+                    color='lime.600'
+                    data-test-id='blogger-followers-count'
+                >
                     {followers}
                 </Text>
             </HStack>

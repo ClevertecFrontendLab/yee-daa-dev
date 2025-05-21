@@ -14,7 +14,7 @@ const formatTime = (time: string) => dayjs(time).locale('ru').format('DD MMMM HH
 export const NoteCard: FC<NoteCardProps> = ({ date, text, ...rest }) => (
     <Card {...rest}>
         <CardHeader p={6} pb={4}>
-            <Text fontSize={{ base: 14, lg: 16 }} color='lime.600'>
+            <Text fontSize={{ base: 14, lg: 16 }} color='lime.600' data-test-id='notes-card-date'>
                 {formatTime(date)}
             </Text>
         </CardHeader>
@@ -24,6 +24,7 @@ export const NoteCard: FC<NoteCardProps> = ({ date, text, ...rest }) => (
                 lineHeight={5}
                 // noOfLines={{ base: 3, '2xl': 4 }}
                 letterSpacing='-0.8px'
+                data-test-id='notes-card-text'
             >
                 {text}
             </Text>
