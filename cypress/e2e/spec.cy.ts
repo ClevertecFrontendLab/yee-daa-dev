@@ -185,6 +185,9 @@ const TEST_ID = {
         BloggerUserBreadcrumbSection: 'blogger-user-breadcrumb-section',
         NotesCardDate: 'notes-card-date',
         NotesCardText: 'notes-card-text',
+
+        BlogTooltip: 'blog-tooltip',
+        MobileLoader: 'mobile-loader',
     },
 } as const;
 
@@ -5076,11 +5079,19 @@ const MOCK_BLOGGER_PROFILE = {
         notes: [
             {
                 date: '2025-03-26T15:27:16.066Z',
-                text: 'Test test test test test test test test test test',
+                text: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
             },
             {
                 date: '2025-03-26T15:27:16.066Z',
                 text: 'Random text 2',
+            },
+            {
+                date: '2025-03-26T15:27:16.066Z',
+                text: 'Random text 3',
+            },
+            {
+                date: '2025-03-26T15:27:16.066Z',
+                text: 'Random text 3 Random text 3 Random text 3 Random text 3 Random text 3 Random text 3 Random text 3 ',
             },
         ],
     },
@@ -5423,6 +5434,18 @@ describe('bloggers', () => {
             cy.url().should('contain', `/blogs/${bloggerId}#notes`);
             cy.getByTestId(TEST_ID.Bloggers.BlogNotesBox).should('exist').should('be.visible');
         });
+
+        it('should display loader in card while the request is loading', () => {
+            cy.visit('/blogs');
+            interceptBloggers(currentUserId, '9', 200, DELAY.SM, MOCK_ALL_BLOGGERS);
+            cy.viewport(1920, 750);
+
+            interceptToggleSubscription(200, 1000);
+            cy.getByTestId(TEST_ID.Bloggers.BlogToggleSubscribe).first().click();
+            cy.getByTestId(TEST_ID.Bloggers.MobileLoader).should('exist').should('be.visible');
+            cy.wait(1000);
+            cy.getByTestId(TEST_ID.Bloggers.MobileLoader).should('not.exist');
+        });
     });
 
     describe('blogger profile page', () => {
@@ -5556,6 +5579,23 @@ describe('bloggers', () => {
             cy.getByTestId(TEST_ID.Bloggers.BloggerUserOtherBlogsButton).should('exist');
         });
 
+        it('should show tooltip on hover', () => {
+            const { _id: bloggerId } = MOCK_BLOGGER_PROFILE.bloggerInfo;
+            cy.viewport(1920, 750);
+            loadUser(bloggerId, currentUserId);
+            cy.visit(`/blogs/${bloggerId}`);
+            cy.scrollTo('top');
+            cy.getByTestId(TEST_ID.Bloggers.BloggerUserInfoBox).within(() => {
+                cy.getByTestId(TEST_ID.Bloggers.BlogToggleUnsubscribe).rightclick();
+            });
+            cy.getByTestId(TEST_ID.Bloggers.BlogTooltip)
+                .should('be.visible')
+                .should('contain.text', 'Нажмите, если хотите отписаться');
+            cy.get('html, body').invoke('attr', 'style', 'height: auto; scroll-behavior: auto;');
+            cy.wait(2000);
+            takeAllScreenshots('blogger-profile-with-tooltip');
+        });
+
         it('should correctly expand recipes section', () => {
             const { _id: bloggerId } = MOCK_BLOGGER_PROFILE.bloggerInfo;
             cy.viewport(1920, 750);
@@ -5649,6 +5689,20 @@ describe('bloggers', () => {
                 'have.text',
                 'Попробуйте немного позже.',
             );
+        });
+
+        it('should display loader in card while the request is loading', () => {
+            const { _id: bloggerId } = MOCK_BLOGGER_PROFILE.bloggerInfo;
+            cy.viewport(1920, 750);
+            loadUser(bloggerId, currentUserId);
+            cy.visit(`/blogs/${bloggerId}`);
+            cy.getByTestId(TEST_ID.Bloggers.BloggerUserInfoBox).within(() => {
+                interceptToggleSubscription(200, 1000);
+                cy.getByTestId(TEST_ID.Bloggers.BlogToggleUnsubscribe).click();
+                cy.getByTestId(TEST_ID.Bloggers.MobileLoader).should('exist').should('be.visible');
+                cy.wait(1000);
+                cy.getByTestId(TEST_ID.Bloggers.MobileLoader).should('not.exist');
+            });
         });
     });
 });
