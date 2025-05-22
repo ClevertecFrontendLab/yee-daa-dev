@@ -191,8 +191,6 @@ const TEST_ID = {
     },
 } as const;
 
-TEST_ID.Recipe.Description;
-
 export const API_ENDPOINTS = {
     SignIn: '/auth/login',
     SignUp: '/auth/signup',
@@ -2885,7 +2883,8 @@ const interceptGetMyRecipe = () =>
         {
             statusCode: 200,
             body: NEW_RECIPE_RESPONSE,
-            delay: 100,
+            delay: DELAY.SM,
+            withLoader: true,
         },
     );
 
@@ -2904,7 +2903,7 @@ const interceptGetMeasureUnits = () =>
                 { id: '7', name: 'чайная ложка' },
                 { id: '8', name: 'по вкусу' },
             ],
-            delay: 100,
+            delay: DELAY.SM,
         },
     );
 
@@ -2918,7 +2917,7 @@ const interceptUploadFile = () =>
                 url: '/media/images/9dc4a27e-923f-4e2c-bd86-4246d34408a5.webp',
                 _id: '681a718cb6c3c1bbdbf32bb8',
             },
-            delay: 100,
+            delay: DELAY.SM,
         },
     );
 
@@ -2932,7 +2931,7 @@ const interceptUpdateRecipe = () =>
         {
             statusCode: 200,
             body: UPDATE_RECIPE_RESPONSE,
-            delay: 100,
+            delay: DELAY.SM,
         },
     );
 
@@ -2942,7 +2941,11 @@ const interceptCreateDraftRecipe = () =>
         {
             statusCode: 200,
             body: {},
-            delay: 100,
+            delay: DELAY.SM,
+            expectedBody: {
+                title: 'Будущий шедевр',
+                description: 'Описание будущего шедевра',
+            },
         },
     );
 
@@ -3628,25 +3631,27 @@ describe('application', () => {
 const NEW_RECIPE_RESPONSE = {
     title: 'Плов из детства',
     description: 'Супер вкусный и нежный плов по рецепту из вашего детства',
-    time: '54',
-    image: '/media/images/bc0748c4-8d00-4c10-ad8e-534874343d46.webp',
-    portions: '5',
+    time: 54,
+    image: '/media/images/9dc4a27e-923f-4e2c-bd86-4246d34408a5.webp',
+    portions: 5,
     authorId: '65a1bc23f8e7d901f4c3d2a1',
     categoriesIds: [
         '67c46df5f51967aa8390bee7',
         '67c46e19f51967aa8390bee8',
         '67c46e2bf51967aa8390bee9',
+        '67c48e627b493acd8a41030c',
+        '67c48f60ed67ca980917d64e',
     ],
     steps: [
         {
             stepNumber: 1,
             description: 'Берем сперва укропу',
-            image: '/media/images/bc0748c4-8d00-4c10-ad8e-534874343d46.webp',
+            image: '/media/images/9dc4a27e-923f-4e2c-bd86-4246d34408a5.webp',
         },
         {
             stepNumber: 2,
-            description: 'Потом кошачью попу',
-            image: '/media/images/bc0748c4-8d00-4c10-ad8e-534874343d46.webp',
+            description: 'Потом кошачью ****',
+            image: null,
         },
         {
             stepNumber: 3,
@@ -3662,19 +3667,19 @@ const NEW_RECIPE_RESPONSE = {
     },
     ingredients: [
         {
-            measureUnit: 'столовая ложка',
+            measureUnit: 'г',
             title: 'сахар',
-            count: '4',
-        },
-        {
-            measureUnit: 'кг',
-            title: 'кот',
-            count: '1',
+            count: 4,
         },
         {
             measureUnit: 'шт',
+            title: 'кот',
+            count: 1,
+        },
+        {
+            measureUnit: 'кг',
             title: 'укроп',
-            count: '10',
+            count: 10,
         },
     ],
     views: 0,
@@ -3708,7 +3713,7 @@ const UPDATE_RECIPE_RESPONSE = {
         { stepNumber: 1, description: 'Берем сперва укропу', image: null },
         {
             stepNumber: 2,
-            description: 'Потом кошачью попу',
+            description: 'Потом кошачью ****',
             image: '/media/images/bc0748c4-8d00-4c10-ad8e-534874343d46.webp',
         },
         { stepNumber: 3, description: 'охапка дров', image: null },
@@ -3771,19 +3776,6 @@ describe('recipe management', () => {
             cy.getByTestId(TEST_ID.Recipe.AddRecipeButton).click();
             cy.url().should('include', '/new-recipe');
             cy.wait('@getMeasureUnits');
-
-            interceptApi(
-                {
-                    url: `${API_ENDPOINTS.Recipe}/681cbbd4b6c3c1bbdbf32bba`,
-                    alias: 'getNewRecipe',
-                    method: 'GET',
-                },
-                {
-                    statusCode: 200,
-                    body: NEW_RECIPE_RESPONSE,
-                    delay: 100,
-                },
-            );
         });
 
         it('should display recipe creation form with all required elements', () => {
@@ -4013,7 +4005,7 @@ describe('recipe management', () => {
                 { url: API_ENDPOINTS.Recipe, alias: 'createRecipe500', method: 'POST' },
                 {
                     statusCode: 500,
-                    delay: 100,
+                    delay: DELAY.SM,
                 },
             );
 
@@ -4022,13 +4014,12 @@ describe('recipe management', () => {
             takeAllScreenshots('create-recipe-500');
             cy.contains('Ошибка сервера').should('be.visible');
             cy.contains('Попробуйте пока сохранить в черновик').should('be.visible');
-            cy.getByTestId(TEST_ID.Button.CloseAlert).click({ force: true });
 
             interceptApi(
                 { url: API_ENDPOINTS.Recipe, alias: 'createRecipe409', method: 'POST' },
                 {
                     statusCode: 409,
-                    delay: 100,
+                    delay: DELAY.SM,
                 },
             );
 
@@ -4037,14 +4028,15 @@ describe('recipe management', () => {
             takeAllScreenshots('create-recipe-409');
             cy.contains('Ошибка').should('be.visible');
             cy.contains('Рецепт с таким названием уже существует').should('be.visible');
-            cy.getByTestId(TEST_ID.Button.CloseAlert).click({ force: true });
         });
 
         it('should successfully publish a recipe', () => {
-            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Тестовый рецепт');
-            cy.getByTestId(TEST_ID.Recipe.Description).clear().type('Описание тестового рецепта');
-            cy.getByTestId(TEST_ID.Recipe.Time).clear().type('30');
-            cy.getByTestId(TEST_ID.Recipe.Portions).clear().type('4');
+            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Плов из детства');
+            cy.getByTestId(TEST_ID.Recipe.Description)
+                .clear()
+                .type('Супер вкусный и нежный плов по рецепту из вашего детства');
+            cy.getByTestId(TEST_ID.Recipe.Time).clear().type('54');
+            cy.getByTestId(TEST_ID.Recipe.Portions).clear().type('5');
 
             cy.getByTestId(TEST_ID.Recipe.ImageBlock).click();
             cy.getByTestId(TEST_ID.Recipe.ImageBlockInputFile).selectFile(
@@ -4066,24 +4058,62 @@ describe('recipe management', () => {
                 cy.getByTestId(TEST_ID.Recipe.Categories).click();
             });
 
-            cy.getByTestId('recipe-ingredients-title-0').clear().type('Мука');
-            cy.getByTestId('recipe-ingredients-count-0').clear().type('200');
+            cy.getByTestId('recipe-ingredients-title-0').clear().type('сахар');
+            cy.getByTestId('recipe-ingredients-count-0').clear().type('4');
             cy.getByTestId('recipe-ingredients-measureUnit-0').select('г');
 
-            cy.getByTestId('recipe-steps-description-0').clear().type('Смешать все ингредиенты');
+            cy.getByTestId(TEST_ID.Recipe.AddIngredientsButton).click();
+            cy.getByTestId(TEST_ID.Recipe.AddIngredientsButton).click();
 
-            interceptApi(
+            cy.getByTestId('recipe-ingredients-title-1').clear().type('кот');
+            cy.getByTestId('recipe-ingredients-count-1').clear().type('1');
+            cy.getByTestId('recipe-ingredients-measureUnit-1').select('шт');
+
+            cy.getByTestId('recipe-ingredients-title-2').clear().type('укроп');
+            cy.getByTestId('recipe-ingredients-count-2').clear().type('10');
+            cy.getByTestId('recipe-ingredients-measureUnit-2').select('кг');
+
+            cy.contains('Новый шаг').click();
+            cy.contains('Новый шаг').click();
+
+            cy.getByTestId('recipe-steps-description-0').clear().type('Берем сперва укропу');
+            cy.getByTestId('recipe-steps-description-1').clear().type('Потом кошачью ****');
+            cy.getByTestId('recipe-steps-description-2').clear().type('Дальше сами знаете...');
+
+            cy.getByTestId('recipe-steps-image-block-0').click();
+            cy.getByTestId('recipe-steps-image-block-0-input-file').selectFile(
+                'cypress/fixtures/plov.jpeg',
+                { force: true },
+            );
+            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
+                cy.contains('Сохранить').click();
+            });
+            cy.wait('@uploadFile');
+
+            const createRecipe = interceptApi(
                 { url: API_ENDPOINTS.Recipe, alias: 'createRecipe', method: 'POST' },
                 {
                     statusCode: 200,
                     body: NEW_RECIPE_RESPONSE,
-                    delay: 100,
+                    delay: DELAY.SM,
+                    expectedBody: {
+                        title: NEW_RECIPE_RESPONSE.title,
+                        description: NEW_RECIPE_RESPONSE.description,
+                        time: NEW_RECIPE_RESPONSE.time,
+                        portions: NEW_RECIPE_RESPONSE.portions,
+                        categoriesIds: NEW_RECIPE_RESPONSE.categoriesIds,
+                        image: NEW_RECIPE_RESPONSE.image,
+                        steps: NEW_RECIPE_RESPONSE.steps,
+                        ingredients: NEW_RECIPE_RESPONSE.ingredients,
+                    },
+                    withLoader: true,
                 },
             );
 
             cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
-            cy.wait('@createRecipe');
-            cy.wait('@getNewRecipe');
+            createRecipe();
+            cy.wait('@getMyRecipe');
+            takeAllScreenshots('create-recipe-200');
             cy.contains('Рецепт успешно опубликован').should('be.visible');
             takeAllScreenshots('create-recipe-200');
             cy.url().should('include', '/salads/meat-salads/681cbbd4b6c3c1bbdbf32bba');
@@ -4116,7 +4146,7 @@ describe('recipe management', () => {
 
         const exitWithoutSaving = () => {
             cy.getByTestId(TEST_ID.Modal.PreventiveModal).within(() => {
-                cy.getByTestId('recipe-preventive-modal-exit-button').click();
+                cy.contains(/^Выйти без сохранения$/).click();
             });
         };
 
@@ -4190,7 +4220,7 @@ describe('recipe management', () => {
         });
 
         it('should handle draft saving and cancellation correctly', () => {
-            cy.getByTestId('recipe-ingredients-measureUnit-0').select('г');
+            cy.getByTestId(TEST_ID.Recipe.Description).type('Описание будущего шедевра');
             cy.getByTestId(TEST_ID.HeaderLogo).click();
             saveDraft();
             cy.getByTestId(TEST_ID.Modal.PreventiveModal).should('not.exist');
@@ -4222,8 +4252,8 @@ describe('recipe management', () => {
         it('should create draft successfully', () => {
             cy.getByTestId(TEST_ID.Recipe.SaveDraftButton).click();
             checkBorderColor(TEST_ID.Recipe.Title);
-            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Проверяем черновик');
-
+            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Будущий шедевр');
+            cy.getByTestId(TEST_ID.Recipe.Description).type('Описание будущего шедевра');
             cy.getByTestId(TEST_ID.Recipe.SaveDraftButton).click();
             cy.wait('@createDraftRecipe');
             cy.contains('Черновик успешно сохранен').should('exist');
@@ -4237,7 +4267,7 @@ describe('recipe management', () => {
                 { url: API_ENDPOINTS.RecipeDraft, alias: 'createDraftRecipe409', method: 'POST' },
                 {
                     statusCode: 409,
-                    delay: 100,
+                    delay: DELAY.SM,
                 },
             );
 
@@ -4247,7 +4277,6 @@ describe('recipe management', () => {
             takeAllScreenshots('create-draft-recipe-409');
             cy.contains('Ошибка').should('be.visible');
             cy.contains('Рецепт с таким названием уже существует').should('be.visible');
-            cy.getByTestId(TEST_ID.Button.CloseAlert).click({ force: true });
         });
 
         it('should handle 500 error when creating draft', () => {
@@ -4257,7 +4286,7 @@ describe('recipe management', () => {
                 { url: API_ENDPOINTS.RecipeDraft, alias: 'createDraftRecipe500', method: 'POST' },
                 {
                     statusCode: 500,
-                    delay: 100,
+                    delay: DELAY.SM,
                 },
             );
 
@@ -4266,7 +4295,6 @@ describe('recipe management', () => {
             takeAllScreenshots('create-draft-recipe-500');
             cy.contains('Ошибка сервера').should('be.visible');
             cy.contains('Не удалось сохранить черновик рецепта').should('be.visible');
-            cy.getByTestId(TEST_ID.Button.CloseAlert).click({ force: true });
         });
     });
 
@@ -4287,14 +4315,13 @@ describe('recipe management', () => {
                 {
                     statusCode: 200,
                     body: UPDATE_RECIPE_RESPONSE,
-                    delay: 100,
+                    delay: DELAY.SM,
                 },
             );
         });
 
         it('should navigate to edit recipe page and show form with correct data', () => {
-            cy.contains('Редактировать рецепт').should('exist');
-            cy.contains('Редактировать рецепт').click();
+            cy.contains('Редактировать рецепт').should('exist').click();
 
             cy.url().should('include', 'edit-recipe/salads/meat-salads/681cbbd4b6c3c1bbdbf32bba');
 
@@ -4308,10 +4335,10 @@ describe('recipe management', () => {
                     .should('eq', NEW_RECIPE_RESPONSE.description);
                 cy.getByTestId(TEST_ID.Recipe.Time)
                     .invoke('val')
-                    .should('eq', NEW_RECIPE_RESPONSE.time);
+                    .should('eq', String(NEW_RECIPE_RESPONSE.time));
                 cy.getByTestId(TEST_ID.Recipe.Portions)
                     .invoke('val')
-                    .should('eq', NEW_RECIPE_RESPONSE.portions);
+                    .should('eq', String(NEW_RECIPE_RESPONSE.portions));
 
                 cy.getByTestId(TEST_ID.Recipe.Categories)
                     .contains('Мясные салаты')
@@ -4319,7 +4346,7 @@ describe('recipe management', () => {
                 cy.getByTestId(TEST_ID.Recipe.Categories)
                     .contains('Рыбные салаты')
                     .should('be.visible');
-                cy.getByTestId(TEST_ID.Recipe.Categories).contains('+1').should('be.visible');
+                cy.getByTestId(TEST_ID.Recipe.Categories).contains('+3').should('be.visible');
 
                 cy.getByTestId(TEST_ID.Recipe.ImageBlockPreviewImage)
                     .should('have.attr', 'src')
@@ -4337,7 +4364,7 @@ describe('recipe management', () => {
                         .should('eq', item.title);
                     cy.getByTestId(`recipe-ingredients-count-${index}`)
                         .invoke('val')
-                        .should('eq', item.count);
+                        .should('eq', String(item.count));
                     cy.getByTestId(`recipe-ingredients-measureUnit-${index}`)
                         .invoke('val')
                         .should('eq', item.measureUnit);
@@ -4500,7 +4527,7 @@ describe('recipe management', () => {
                 },
                 {
                     statusCode: 409,
-                    delay: 100,
+                    delay: DELAY.SM,
                 },
             );
 
@@ -4510,7 +4537,6 @@ describe('recipe management', () => {
 
             cy.contains('Ошибка').should('be.visible');
             cy.contains('Рецепт с таким названием уже существует').should('be.visible');
-            cy.getByTestId(TEST_ID.Button.CloseAlert).click({ force: true });
         });
 
         it('should handle 500 error when update recipe', () => {
@@ -4526,7 +4552,7 @@ describe('recipe management', () => {
                 },
                 {
                     statusCode: 500,
-                    delay: 100,
+                    delay: DELAY.SM,
                 },
             );
             cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
@@ -4535,7 +4561,6 @@ describe('recipe management', () => {
 
             cy.contains('Ошибка сервера').should('be.visible');
             cy.contains('Попробуйте пока сохранить в черновик').should('be.visible');
-            cy.getByTestId(TEST_ID.Button.CloseAlert).click({ force: true });
         });
     });
 
@@ -4553,7 +4578,7 @@ describe('recipe management', () => {
                 },
                 {
                     statusCode: 200,
-                    delay: 100,
+                    delay: DELAY.SM,
                 },
             );
         });
@@ -4578,7 +4603,7 @@ describe('recipe management', () => {
                 },
                 {
                     statusCode: 500,
-                    delay: 100,
+                    delay: DELAY.SM,
                 },
             );
 
@@ -4588,7 +4613,6 @@ describe('recipe management', () => {
 
             cy.contains('Ошибка сервера').should('be.visible');
             cy.contains('Не удалось удалить рецепт').should('be.visible');
-            cy.getByTestId(TEST_ID.Button.CloseAlert).click({ force: true });
         });
     });
 
@@ -4606,7 +4630,7 @@ describe('recipe management', () => {
                 {
                     statusCode: 200,
                     body: NOT_MY_RECIPE,
-                    delay: 100,
+                    delay: DELAY.SM,
                     withLoader: true,
                 },
             );
@@ -4623,7 +4647,7 @@ describe('recipe management', () => {
                 },
                 {
                     statusCode: 200,
-                    delay: 100,
+                    delay: DELAY.SM,
                 },
             );
 
@@ -4635,7 +4659,7 @@ describe('recipe management', () => {
                 },
                 {
                     statusCode: 200,
-                    delay: 100,
+                    delay: DELAY.SM,
                 },
             );
         });
@@ -4671,7 +4695,7 @@ describe('recipe management', () => {
                 },
                 {
                     statusCode: 500,
-                    delay: 100,
+                    delay: DELAY.SM,
                 },
             );
             interceptBloggerById('000000000000000', '65a1bc23f8e7d901f4c3d2a1');
@@ -4682,7 +4706,6 @@ describe('recipe management', () => {
 
             cy.contains('Ошибка сервера').should('be.visible');
             cy.contains('Попробуйте немного позже').should('be.visible');
-            cy.getByTestId(TEST_ID.Button.CloseAlert).click({ force: true });
         });
 
         it('should handle 500 error when save recipe', () => {
@@ -4694,7 +4717,7 @@ describe('recipe management', () => {
                 },
                 {
                     statusCode: 500,
-                    delay: 100,
+                    delay: DELAY.SM,
                 },
             );
             interceptBloggerById('000000000000000', '65a1bc23f8e7d901f4c3d2a1');
@@ -4705,7 +4728,6 @@ describe('recipe management', () => {
 
             cy.contains('Ошибка сервера').should('be.visible');
             cy.contains('Попробуйте немного позже').should('be.visible');
-            cy.getByTestId(TEST_ID.Button.CloseAlert).click({ force: true });
         });
     });
 });

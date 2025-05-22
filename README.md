@@ -1,6 +1,6 @@
 # yee-daa
 
-# Инструкция к спринту №4 по [ссылке](https://docs.google.com/document/d/1Ph7aqB_ejCRdSLECJwtIW3EWug15dcfk)
+# Инструкция к спринту №5 по [ссылке](https://docs.google.com/document/d/1fuZRvRxC_HQhsuoqf6oo_PNK3zJ0FTS8yim1xfTBvtQ)
 
 ---
 

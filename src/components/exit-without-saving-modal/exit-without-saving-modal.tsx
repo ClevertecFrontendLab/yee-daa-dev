@@ -54,7 +54,6 @@ export const ExitWithoutSavingModal: FC<ExitWithoutSavingModalProps> = ({
                 variant='ghost'
                 onClick={handleContinueNavigation}
                 type='button'
-                data-test-id='recipe-preventive-modal-exit-button'
             >
                 Выйти без сохранения
             </Button>
