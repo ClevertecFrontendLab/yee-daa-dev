@@ -4110,10 +4110,12 @@ describe('recipe management', () => {
                 },
             );
 
+            interceptBloggerById('65a1bc23f8e7d901f4c3d2a1', '65a1bc23f8e7d901f4c3d2a1');
+
             cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
-            createRecipe();
             cy.wait('@getMyRecipe');
-            takeAllScreenshots('create-recipe-200');
+            createRecipe();
+
             cy.contains('Рецепт успешно опубликован').should('be.visible');
             takeAllScreenshots('create-recipe-200');
             cy.url().should('include', '/salads/meat-salads/681cbbd4b6c3c1bbdbf32bba');
@@ -4569,6 +4571,7 @@ describe('recipe management', () => {
             cy.viewport(...RESOLUTION.desktop);
             cy.visit('/salads/meat-salads/681cbbd4b6c3c1bbdbf32bba');
             cy.wait('@getMyRecipe');
+            interceptBloggerById('65a1bc23f8e7d901f4c3d2a1', '65a1bc23f8e7d901f4c3d2a1');
 
             interceptApi(
                 {
