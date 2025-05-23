@@ -18,9 +18,23 @@ import {
 
 const ALERT_AUTOCLOSE_TIME_MS = 10000;
 
+const ALERT_CONFIG = {
+    error: {
+        color: 'white',
+        backgroundColor: 'red.500',
+    },
+    success: {
+        color: 'white',
+        backgroundColor: 'green.500',
+    },
+    info: {},
+    warning: {},
+    loading: {},
+};
+
 export const AppNotification = () => {
     const isNotificationShowed = useAppSelector(notificationShowedSelector);
-    const { status, title, description } = useAppSelector(notificationDataSelector);
+    const { status = 'error', title, description } = useAppSelector(notificationDataSelector);
 
     const dispatch = useAppDispatch();
 
@@ -46,9 +60,8 @@ export const AppNotification = () => {
             >
                 <Alert
                     data-test-id='error-notification'
+                    {...ALERT_CONFIG[status]}
                     status={status}
-                    color='white'
-                    backgroundColor='red.500'
                     p='12px 16px'
                     fontSize='16px'
                 >
@@ -70,9 +83,9 @@ export const AppNotification = () => {
                     <CloseButton
                         data-test-id='close-alert-button'
                         alignSelf='flex-start'
-                        position='relative'
-                        right={-1}
-                        top={-1}
+                        position='absolute'
+                        right={-0.25}
+                        top={-0.25}
                         onClick={onCloseAlert}
                     />
                 </Alert>

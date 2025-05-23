@@ -2,6 +2,7 @@ import { Avatar } from '@chakra-ui/icons';
 import { Grid, GridItem } from '@chakra-ui/react';
 
 import userImg from '~/assets/images/user.webp';
+import { Paths } from '~/constants/path.ts';
 import { UserProps } from '~/types/user.ts';
 
 import { HomeSvg } from '../icons/home-svg.tsx';
@@ -9,8 +10,11 @@ import { SearchSvg } from '../icons/search-svg.tsx';
 import { WriteSvg } from '../icons/write-svg.tsx';
 import { FooterBtn } from './footer-btn.tsx';
 
-const icons = [<HomeSvg />, <SearchSvg />, <WriteSvg />];
-const texts = ['Главная', 'Поиск', 'Записать'];
+const footerButtons = [
+    { text: 'Главная', icon: <HomeSvg />, path: Paths.R_SWITCHER },
+    { text: 'Поиск', icon: <SearchSvg />, path: Paths.R_SWITCHER },
+    { text: 'Записать', icon: <WriteSvg />, path: Paths.NEW_RECIPE },
+];
 
 const user: UserProps = {
     firstName: 'Екатерина',
@@ -25,16 +29,17 @@ export const Footer = () => {
 
     return (
         <Grid templateColumns='repeat(4, 1fr)' height='100%' templateRows='1fr'>
-            {icons.map((icon, i) => (
-                <GridItem key={i}>
-                    <FooterBtn text={texts[i]} icon={icon} />
+            {footerButtons.map(({ icon, path, text }) => (
+                <GridItem key={text}>
+                    <FooterBtn text={text} icon={icon} path={path} />
                 </GridItem>
             ))}
-            <GridItem key={icons.length + 1}>
+            <GridItem key={footerButtons.length}>
                 <FooterBtn
                     text='Мой профиль'
                     icon={<Avatar src={imageUrl} name={`${firstName} ${lastName}`} />}
                     isProfile={true}
+                    path={Paths.R_SWITCHER}
                 />
             </GridItem>
         </Grid>

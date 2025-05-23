@@ -1,4 +1,5 @@
-import { ApiEndpoints } from '~/redux/api/constants';
+import { NotificationMessages } from '~/constants/notification-messages';
+import { StatusTypesEnum } from '~/redux/api/types/common';
 import {
     AllRecipeParams,
     MetaData,
@@ -13,14 +14,17 @@ import {
 } from '~/redux/api/types/recipes';
 import { replaceUnderscoreId } from '~/redux/api/utils/replace-underscore-id';
 import { transformBaseErrorResponse } from '~/redux/api/utils/transform-base-error-response';
+import { setNotificationData, setNotificationVisibility } from '~/redux/features/app-slice';
 import {
     setFilteredRecipes,
     setIsFilterError,
     setShowedEmptyText,
 } from '~/redux/features/recipes-slice';
+import { RecipeFormValues } from '~/types/recipe-form';
 import { AppState } from '~/types/store';
 
 import { authorizedApi } from '..';
+import { ApiEndpoints, NOTIFICATION_STATE_NAME } from '../constants';
 
 export const recipeApi = authorizedApi.injectEndpoints({
     endpoints: (build) => ({
@@ -31,6 +35,13 @@ export const recipeApi = authorizedApi.injectEndpoints({
                 meta,
             }),
             transformErrorResponse: transformBaseErrorResponse,
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.data.map(({ id }) => ({ type: 'Recipe' as const, id })),
+                          { type: 'Recipe' as const, id: 'LIST' },
+                      ]
+                    : [{ type: 'Recipe' as const, id: 'LIST' }],
         }),
         getAllRecipesInfinite: build.infiniteQuery<
             RecipesResponseWithMeta,
@@ -39,7 +50,7 @@ export const recipeApi = authorizedApi.injectEndpoints({
         >({
             infiniteQueryOptions: {
                 initialPageParam: { page: 1 },
-                getNextPageParam(firstPage, allPages, firstPageParam) {
+                getNextPageParam(_firstPage, _allPages, firstPageParam) {
                     const currPage = firstPageParam?.page ?? 1;
 
                     return { page: currPage + 1 };
@@ -54,6 +65,7 @@ export const recipeApi = authorizedApi.injectEndpoints({
                 meta: response.meta,
             }),
             transformErrorResponse: transformBaseErrorResponse,
+            providesTags: () => [{ type: 'Recipe' as const, id: 'LIST' }],
         }),
         // старая версия - как в РТК можно сделать инфинит запрос - сделано, т.к. в инфинит нет lazy query - пока для фильтрации и поиска больше подходит
         getAllRecipesMerge: build.query<RecipesResponseWithMeta, AllRecipeParams>({
@@ -77,7 +89,7 @@ export const recipeApi = authorizedApi.injectEndpoints({
                         dispatch(setFilteredRecipes(data.data));
                         dispatch(setShowedEmptyText(!data.data.length));
                     }
-                } catch (error) {
+                } catch {
                     dispatch(setIsFilterError(true));
                 }
             },
@@ -114,6 +126,13 @@ export const recipeApi = authorizedApi.injectEndpoints({
                 meta: response.meta,
             }),
             transformErrorResponse: transformBaseErrorResponse,
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.data.map(({ id }) => ({ type: 'Recipe' as const, id })),
+                          { type: 'Recipe' as const, id: 'LIST' },
+                      ]
+                    : [{ type: 'Recipe' as const, id: 'LIST' }],
         }),
         getRecipeByCategoryId: build.query<RecipesResponse, RecipesByCategoryIdArgs>({
             query: ({ id, ...params }) => ({
@@ -125,6 +144,13 @@ export const recipeApi = authorizedApi.injectEndpoints({
                 return data.map((resp) => replaceUnderscoreId(resp));
             },
             transformErrorResponse: transformBaseErrorResponse,
+            providesTags: (result, _error, args) =>
+                result
+                    ? [
+                          ...result.map((recipe) => ({ type: 'Recipe' as const, id: recipe.id })),
+                          { type: 'Recipe' as const, id: `CATEGORY_${args.id}` },
+                      ]
+                    : [{ type: 'Recipe' as const, id: `CATEGORY_${args.id}` }],
         }),
         getRecipeByCategoryIdInfinite: build.infiniteQuery<
             RecipesInfiniteResponse,
@@ -133,7 +159,7 @@ export const recipeApi = authorizedApi.injectEndpoints({
         >({
             infiniteQueryOptions: {
                 initialPageParam: { page: 1 },
-                getNextPageParam(firstPage, allPages, firstPageParam) {
+                getNextPageParam(_firstPage, _allPages, firstPageParam) {
                     const currPage = firstPageParam?.page ?? 1;
 
                     return { page: currPage + 1 };
@@ -152,11 +178,204 @@ export const recipeApi = authorizedApi.injectEndpoints({
                 const preparedData = data.map((resp) => replaceUnderscoreId(resp));
                 return { data: preparedData, meta: response.meta };
             },
+            providesTags: (_result, _error, arg) => [
+                { type: 'Recipe' as const, id: `CATEGORY_${arg.id}` },
+            ],
         }),
         getRecipeById: build.query<Recipe, string>({
             query: (id) => ({ url: `${ApiEndpoints.Recipe}/${id}` }),
             transformResponse: (response: RawRecipe): Recipe => replaceUnderscoreId(response),
             transformErrorResponse: transformBaseErrorResponse,
+            providesTags: (_result, _error, id) => [{ type: 'Recipe' as const, id }],
+        }),
+        createRecipe: build.mutation<Recipe, RecipeFormValues>({
+            query: (recipe) => ({
+                url: ApiEndpoints.Recipe,
+                method: 'POST',
+                body: recipe,
+            }),
+            transformResponse: (response: RawRecipe): Recipe => replaceUnderscoreId(response),
+            transformErrorResponse: (response) => ({
+                ...response,
+                [NOTIFICATION_STATE_NAME]: {
+                    status: StatusTypesEnum.Error,
+                    title:
+                        response.status === 409
+                            ? NotificationMessages.ERROR_TITLE
+                            : NotificationMessages.ERROR_GENERAL_TITLE,
+                    description:
+                        response.status === 409
+                            ? NotificationMessages.RECIPE_ALREADY_EXISTS_DESCRIPTION
+                            : NotificationMessages.CREATE_RECIPE_ERROR_DESCRIPTION,
+                },
+            }),
+            invalidatesTags: (_result, error) =>
+                error ? [] : [{ type: 'Recipe' as const, id: 'LIST' }],
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(
+                        setNotificationData({
+                            status: StatusTypesEnum.Success,
+                            title: NotificationMessages.CREATE_RECIPE_SUCCESS_TITLE,
+                        }),
+                    );
+                    dispatch(setNotificationVisibility(true));
+                } catch (err) {
+                    console.error(err);
+                }
+            },
+        }),
+        updateRecipe: build.mutation<Recipe, { id: string; data: RecipeFormValues }>({
+            query: ({ id, data }) => ({
+                url: `${ApiEndpoints.Recipe}/${id}`,
+                method: 'PATCH',
+                body: data,
+            }),
+            transformResponse: (response: RawRecipe): Recipe => replaceUnderscoreId(response),
+            transformErrorResponse: (response) => ({
+                ...response,
+                [NOTIFICATION_STATE_NAME]: {
+                    status: StatusTypesEnum.Error,
+                    title:
+                        response.status === 409
+                            ? NotificationMessages.ERROR_TITLE
+                            : NotificationMessages.ERROR_GENERAL_TITLE,
+                    description:
+                        response.status === 409
+                            ? NotificationMessages.RECIPE_ALREADY_EXISTS_DESCRIPTION
+                            : NotificationMessages.CREATE_RECIPE_ERROR_DESCRIPTION,
+                },
+            }),
+            invalidatesTags: (_result, error, { id }) =>
+                error
+                    ? []
+                    : [
+                          { type: 'Recipe' as const, id },
+                          { type: 'Recipe' as const, id: 'LIST' },
+                      ],
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(
+                        setNotificationData({
+                            status: StatusTypesEnum.Success,
+                            title: NotificationMessages.CREATE_RECIPE_SUCCESS_TITLE,
+                        }),
+                    );
+                    dispatch(setNotificationVisibility(true));
+                } catch (err) {
+                    console.error(err);
+                }
+            },
+        }),
+        deleteRecipe: build.mutation<void, string>({
+            query: (id) => ({
+                url: `${ApiEndpoints.Recipe}/${id}`,
+                method: 'DELETE',
+            }),
+            transformErrorResponse: (response) => ({
+                ...response,
+                [NOTIFICATION_STATE_NAME]: {
+                    status: StatusTypesEnum.Error,
+                    title: NotificationMessages.ERROR_GENERAL_TITLE,
+                    description: NotificationMessages.DELETE_RECIPE_ERROR_DESCRIPTION,
+                },
+            }),
+            invalidatesTags: (_result, error) =>
+                error ? [] : [{ type: 'Recipe' as const, id: 'LIST' }],
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(
+                        setNotificationData({
+                            status: StatusTypesEnum.Success,
+                            title: NotificationMessages.DELETE_RECIPE_SUCCESS_TITLE,
+                        }),
+                    );
+                    dispatch(setNotificationVisibility(true));
+                } catch (err) {
+                    console.error(err);
+                }
+            },
+        }),
+        likeRecipe: build.mutation<void, string>({
+            query: (id) => ({
+                url: `${ApiEndpoints.Recipe}/${id}/like`,
+                method: 'POST',
+            }),
+            transformErrorResponse: (response) => ({
+                ...response,
+                [NOTIFICATION_STATE_NAME]: {
+                    status: StatusTypesEnum.Error,
+                    title: NotificationMessages.ERROR_GENERAL_TITLE,
+                    description: NotificationMessages.ERROR_TRY_LATER,
+                },
+            }),
+            invalidatesTags: (_result, error, id) =>
+                error
+                    ? []
+                    : [
+                          { type: 'Recipe' as const, id },
+                          { type: 'Recipe' as const, id: 'LIST' },
+                      ],
+        }),
+        bookmarkRecipe: build.mutation<void, string>({
+            query: (id) => ({
+                url: `${ApiEndpoints.Recipe}/${id}/bookmark`,
+                method: 'POST',
+            }),
+            transformErrorResponse: (response) => ({
+                ...response,
+                [NOTIFICATION_STATE_NAME]: {
+                    status: StatusTypesEnum.Error,
+                    title: NotificationMessages.ERROR_GENERAL_TITLE,
+                    description: NotificationMessages.ERROR_TRY_LATER,
+                },
+            }),
+            invalidatesTags: (_result, error, id) =>
+                error
+                    ? []
+                    : [
+                          { type: 'Recipe' as const, id },
+                          { type: 'Recipe' as const, id: 'LIST' },
+                      ],
+        }),
+        createRecipeDraft: build.mutation<Recipe, RecipeFormValues>({
+            query: (recipe) => ({
+                url: `${ApiEndpoints.Recipe}/draft`,
+                method: 'POST',
+                body: recipe,
+            }),
+            transformResponse: (response: RawRecipe): Recipe => replaceUnderscoreId(response),
+            transformErrorResponse: (response) => ({
+                ...response,
+                [NOTIFICATION_STATE_NAME]: {
+                    status: StatusTypesEnum.Error,
+                    title:
+                        response.status === 409
+                            ? NotificationMessages.ERROR_TITLE
+                            : NotificationMessages.ERROR_GENERAL_TITLE,
+                    description:
+                        response.status === 409
+                            ? NotificationMessages.RECIPE_ALREADY_EXISTS_DESCRIPTION
+                            : NotificationMessages.SAVE_DRAFT_ERROR_DESCRIPTION,
+                },
+            }),
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(
+                        setNotificationData({
+                            status: StatusTypesEnum.Success,
+                            title: NotificationMessages.DRAFT_SUCCESS_TITLE,
+                        }),
+                    );
+                    dispatch(setNotificationVisibility(true));
+                } catch (err) {
+                    console.error(err);
+                }
+            },
         }),
     }),
     overrideExisting: false,
@@ -173,4 +392,10 @@ export const {
     useGetRecipeByCategoryIdInfiniteInfiniteQuery,
     useGetAllRecipesMergeQuery,
     useLazyGetAllRecipesMergeQuery,
+    useCreateRecipeMutation,
+    useUpdateRecipeMutation,
+    useDeleteRecipeMutation,
+    useLikeRecipeMutation,
+    useBookmarkRecipeMutation,
+    useCreateRecipeDraftMutation,
 } = recipeApi;

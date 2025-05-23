@@ -11,21 +11,16 @@ type Props = {
     text: string;
     icon: React.ReactNode;
     isProfile?: boolean;
+    path: string;
 };
 
-export const FooterBtn: FC<Props> = ({ icon, isProfile = false, text }) => {
+export const FooterBtn: FC<Props> = ({ icon, isProfile = false, text, path }) => {
     const { pathname } = useLocation();
     // заглушка логики на определение активной ссылки
     const isActive = pathname === Paths.R_SWITCHER && text === 'Главная';
 
     return (
-        <Stack
-            direction='column'
-            spacing={1}
-            as={Link}
-            to={Paths.R_SWITCHER}
-            className={styles.footerLink}
-        >
+        <Stack direction='column' spacing={1} as={Link} to={path} className={styles.footerLink}>
             {isProfile ? (
                 <div className={isActive ? styles.profileActive : styles.profile}>{icon}</div>
             ) : (

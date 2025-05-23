@@ -30,9 +30,9 @@ export type EnergyValue = {
     carbohydrates: number;
 };
 
-type Ingredient = { title: string; count: number; measureUnit: string };
+export type Ingredient = { title: string; count: number; measureUnit: string };
 
-type Step = { stepNumber: number; description: string; image?: string };
+export type Step = { stepNumber: number; description: string; image?: string };
 
 export type RawRecipesResponse = { data: RawRecipe[]; meta: MetaData };
 
