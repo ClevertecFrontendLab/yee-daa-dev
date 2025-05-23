@@ -4106,7 +4106,6 @@ describe('recipe management', () => {
                         steps: NEW_RECIPE_RESPONSE.steps,
                         ingredients: NEW_RECIPE_RESPONSE.ingredients,
                     },
-                    withLoader: true,
                 },
             );
 
