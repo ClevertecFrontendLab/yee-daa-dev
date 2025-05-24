@@ -4,7 +4,7 @@ on:
     pull_request:
         branches:
             - main
-            - feat/sprint3
+            - feat/sprint5
 
 permissions:
     checks: write

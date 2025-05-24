@@ -17,16 +17,19 @@ export const Breadcrumbs = () => {
     const { data: recipe } = useGetRecipeByIdQuery(recipeId as string, { skip: !recipeId });
 
     const isJuiciestPath = pathname.includes(Paths.JUICIEST);
+    const isNewRecipePage = pathname.includes(Paths.NEW_RECIPE);
 
     const pathsArrNames = [
         selectedCategory?.title,
         selectedSubCategory?.title,
         recipeId ? recipe?.title : undefined,
+        isNewRecipePage ? 'Новый рецепт' : undefined,
     ].filter(Boolean);
     const pathsArr = [
         selectedCategory?.category,
         selectedSubCategory?.category,
         recipeId ? recipe?.id : undefined,
+        isNewRecipePage ? 'new-recipe' : undefined,
     ].filter(Boolean);
 
     const handleCategoryClick = () => dispatch(closeMenu());

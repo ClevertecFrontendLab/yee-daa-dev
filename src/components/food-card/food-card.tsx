@@ -6,6 +6,7 @@ import { NavLink, useLocation } from 'react-router';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { useGetRecipePath } from '~/hooks/use-get-recipe-path.ts';
 import { mockAuthors } from '~/mocks/authors.ts';
+import { useBookmarkRecipeMutation } from '~/redux/api/recipes-api';
 import { Recipe } from '~/redux/api/types/recipes.ts';
 import { selectInputValue } from '~/redux/features/search-slice.ts';
 import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
@@ -19,13 +20,18 @@ import { RecommendationTag } from '../recommendation-tag';
 export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index }) => {
     const inputValue = useAppSelector(selectInputValue);
     const { pathname } = useLocation();
+    const [bookmarkRecipe] = useBookmarkRecipeMutation();
 
-    const { title, image, description, categoriesIds, likes, bookmarks } = recipe;
+    const { title, image, description, categoriesIds, likes, bookmarks, id } = recipe;
 
     const recipePath = useGetRecipePath(recipe);
 
     // TODO заменить на поиск автора по recommendedByUserId из рецепта
     const { login, ...authorRecommendInfo } = mockAuthors[1];
+
+    const onBookmarkRecipe = async () => {
+        await bookmarkRecipe(id);
+    };
 
     return (
         <Card direction='row' variant='outline' gap={6} data-test-id={`food-card-${index}`}>
@@ -113,6 +119,7 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
                         size={{ base: 'xs', md: 'sm' }}
                         leftIcon={<BookmarkIcon />}
                         color='blackAlpha.800'
+                        onClick={onBookmarkRecipe}
                     >
                         <Box as='span' display={{ base: 'none', xmd: 'inline' }}>
                             Сохранить

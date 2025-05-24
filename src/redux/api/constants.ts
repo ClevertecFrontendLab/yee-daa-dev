@@ -26,6 +26,8 @@ export enum ApiEndpoints {
     Category = 'category',
     Recipe = 'recipe',
     RecipeByCategory = 'recipe/category',
+    FileUpload = 'file/upload',
+    MeasureUnits = 'measure-units',
 }
 
 export enum SortParamsAvailable {

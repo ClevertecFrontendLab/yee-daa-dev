@@ -101,5 +101,6 @@ export const unauthorizedApi = createApi({
 export const authorizedApi = createApi({
     reducerPath: 'authorized-api',
     baseQuery: reauthQuery,
+    tagTypes: ['Recipe'],
     endpoints: () => ({}),
 });
