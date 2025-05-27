@@ -3730,7 +3730,11 @@ const UPDATE_RECIPE_RESPONSE = {
     _id: '681cbbd4b6c3c1bbdbf32bba',
 };
 
-const NOT_MY_RECIPE = { ...UPDATE_RECIPE_RESPONSE, authorId: '000000000000000' };
+const NOT_MY_RECIPE = {
+    ...UPDATE_RECIPE_RESPONSE,
+    authorId: '000000000000000',
+    _id: '000000000000000',
+};
 
 const checkBorderColor = (testId: string) =>
     cy.getByTestId(testId).should('have.css', 'border-color', 'rgb(229, 62, 62)');
