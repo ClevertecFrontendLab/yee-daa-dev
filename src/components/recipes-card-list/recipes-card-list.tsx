@@ -1,4 +1,4 @@
-import { Button, Center } from '@chakra-ui/react';
+import { Box, Button, Center, SimpleGridProps } from '@chakra-ui/react';
 import { FC } from 'react';
 
 import { Recipe } from '~/redux/api/types/recipes';
@@ -11,7 +11,7 @@ type RecipeCardListProps = {
     totalPages?: number;
     loadMoreCallback?: VoidFunction;
     isLoading?: boolean;
-};
+} & SimpleGridProps;
 
 export const RecipeCardList: FC<RecipeCardListProps> = ({
     recipeList,
@@ -19,15 +19,15 @@ export const RecipeCardList: FC<RecipeCardListProps> = ({
     currentPage = 1,
     totalPages = 1,
     isLoading = false,
+    ...rest
 }) => (
-    <>
-        <CardList recipeList={recipeList} />
+    <Box>
+        <CardList recipeList={recipeList} {...rest} />
         {currentPage < totalPages && (
-            <Center mt={4}>
+            <Center mt={{ base: 3, sm: 4 }}>
                 <Button
                     data-test-id='load-more-button'
                     bg='lime.400'
-                    mb={10}
                     onClick={loadMoreCallback}
                     isLoading={isLoading}
                     loadingText='Загрузка...'
@@ -36,5 +36,5 @@ export const RecipeCardList: FC<RecipeCardListProps> = ({
                 </Button>
             </Center>
         )}
-    </>
+    </Box>
 );

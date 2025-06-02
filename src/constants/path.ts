@@ -2,6 +2,7 @@ export const routeParams = {
     categoryName: 'categoryName',
     subCategoryName: 'subCategoryName',
     recipeId: 'recipeId',
+    blogId: 'blogId',
 } as const;
 
 const RECIPE_PATH = `:${routeParams.categoryName}/:${routeParams.subCategoryName}/:${routeParams.recipeId}`;
@@ -17,6 +18,8 @@ export const Paths = {
     CATEGORY: `:${routeParams.categoryName}/:${routeParams.subCategoryName}`,
     RECIPE: `/${RECIPE_PATH}`,
     JUICIEST: '/the-juiciest',
+    BLOGS: '/blogs',
+    BLOGS_ITEM: `/blogs/:${routeParams.blogId}`,
     NEW_RECIPE: '/new-recipe',
     EDIT_RECIPE: `/${EDIT_RECIPE_PATH}/${RECIPE_PATH}`,
     ERROR: '/not-found',

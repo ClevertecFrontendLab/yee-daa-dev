@@ -83,7 +83,6 @@ export const RecipeForm = () => {
 
         try {
             if (recipeId) {
-                console.log(values);
                 const response = await updateRecipe({
                     id: recipeId,
                     data: values,

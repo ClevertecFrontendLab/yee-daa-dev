@@ -3,9 +3,13 @@ import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from '
 
 import { AuthGuard } from '~/components/authorization/auth-guard/auth-guard.tsx';
 import { Paths } from '~/constants/path.js';
+import { BlogExistProtected } from '~/hoc/blog-exist-protected.tsx';
+import { BlogsExistProtected } from '~/hoc/blogs-exist-protected.tsx';
 import { CategoryExistProtected } from '~/hoc/category-exist-protected';
 import { SubcategoryRedirect } from '~/hoc/subcategory-redirect';
 import { AppLayout } from '~/layout/app-layout';
+import { BlogProfile } from '~/pages/blog-profile/blog-profile.tsx';
+import { BlogsPage } from '~/pages/blogs-page/blogs-page.tsx';
 import { CategoryPage } from '~/pages/category-page';
 import { EditRecipePage } from '~/pages/edit-recipe-page';
 import { ErrorPage } from '~/pages/error-page/error-page';
@@ -13,6 +17,7 @@ import { JuiciestPage } from '~/pages/juiciest-page';
 import { MainPage } from '~/pages/main-page';
 import { NewRecipePage } from '~/pages/new-recipe-page';
 import { RecipePageWrapper } from '~/pages/recipe-page';
+import { blogsLoader } from '~/routes/loaders/blogs-loader.ts';
 
 import { ErrorBoundary } from './error-boundary/error-boundary';
 import { clearFilterStateLoader } from './loaders/clear-filter-state-loader';
@@ -67,6 +72,23 @@ export const appRouter = createBrowserRouter(
                             </CategoryExistProtected>
                         }
                         loader={clearFilterStateLoader}
+                    />
+                    <Route
+                        path={Paths.BLOGS}
+                        element={
+                            <BlogsExistProtected>
+                                <BlogsPage />
+                            </BlogsExistProtected>
+                        }
+                        loader={blogsLoader}
+                    />
+                    <Route
+                        path={Paths.BLOGS_ITEM}
+                        element={
+                            <BlogExistProtected>
+                                <BlogProfile />
+                            </BlogExistProtected>
+                        }
                     />
                     <Route
                         path={Paths.RECIPE}

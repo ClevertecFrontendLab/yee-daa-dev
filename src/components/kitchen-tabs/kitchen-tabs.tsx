@@ -108,6 +108,7 @@ export const KitchenTabs: FC = () => {
                                 currentPage={currentPage}
                                 totalPages={totalPages}
                                 loadMoreCallback={loadMore}
+                                mb={10}
                             />
                         </TabPanel>
                     ))}

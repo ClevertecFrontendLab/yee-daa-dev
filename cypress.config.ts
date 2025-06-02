@@ -3,6 +3,7 @@ const browserHeight = 950;
 
 module.exports = {
     video: false,
+    retries: 3,
     e2e: {
         baseUrl: 'http://localhost:3000',
         video: false,

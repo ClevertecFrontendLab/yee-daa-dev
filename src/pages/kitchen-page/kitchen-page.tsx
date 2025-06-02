@@ -108,6 +108,7 @@ export const KitchenPage: FC<KitchenPageProps> = ({ pageType }) => {
                         isLoading={isFetching || isFetchingByCategory}
                         totalPages={totalPages}
                         loadMoreCallback={loadMoreCallback}
+                        mb={10}
                     />
                 </Fragment>
             ) : (

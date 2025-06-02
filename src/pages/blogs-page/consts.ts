@@ -1,0 +1,173 @@
+export const MOCK_FAV_BLOGS = [
+    {
+        name: 'Елена',
+        lastName: 'Мин',
+        login: '@cookermin',
+        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
+        imgSrc: 'imgSrc',
+        newRecipes: 1,
+        social: {
+            bookmarks: 87,
+            followers: 12,
+        },
+    },
+    {
+        name: 'Мирием',
+        lastName: 'Чонишвили',
+        login: '@chonimiriem',
+        descr: 'Приготовим ароматное ризотто с грибами и белым вином. Давайте вместе сделаем этот ужин незабываемым!',
+        imgSrc: 'imgSrc',
+        newRecipes: 8,
+        social: {
+            bookmarks: 240,
+            followers: 87,
+        },
+    },
+];
+
+export const MOCK_ALL_BLOGS = [
+    {
+        name: 'Мин',
+        lastName: 'Мин',
+        login: '@cookermin',
+        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!  шедевры! шедевры! шедевры! шедевры! шедевры! шедевры! шедевры! шедевры!',
+        imgSrc: 'imgSrc',
+        newRecipes: 1,
+        social: {
+            bookmarks: 12,
+            followers: 1,
+        },
+    },
+    {
+        name: 'Name',
+        lastName: 'Мин',
+        login: 'login',
+        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
+        imgSrc: 'imgSrc',
+        newRecipes: 1,
+        social: {
+            bookmarks: 12,
+            followers: 1,
+        },
+    },
+    {
+        name: 'Name',
+        lastName: 'Мин',
+        login: 'login',
+        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
+        imgSrc: 'imgSrc',
+        newRecipes: 1,
+        social: {
+            bookmarks: 12,
+            followers: 1,
+        },
+    },
+    {
+        name: 'Name',
+        lastName: 'Мин',
+        login: 'login',
+        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
+        imgSrc: 'imgSrc',
+        newRecipes: 1,
+        social: {
+            bookmarks: 12,
+            followers: 1,
+        },
+    },
+    {
+        name: 'Name',
+        lastName: 'Мин',
+        login: 'login',
+        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
+        imgSrc: 'imgSrc',
+        newRecipes: 1,
+        social: {
+            bookmarks: 12,
+            followers: 1,
+        },
+    },
+    {
+        name: 'Name',
+        lastName: 'Мин',
+        login: 'login',
+        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
+        imgSrc: 'imgSrc',
+        newRecipes: 1,
+        social: {
+            bookmarks: 12,
+            followers: 1,
+        },
+    },
+    {
+        name: 'Name',
+        lastName: 'Мин',
+        login: 'login',
+        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
+        imgSrc: 'imgSrc',
+        newRecipes: 1,
+        social: {
+            bookmarks: 12,
+            followers: 1,
+        },
+    },
+    {
+        name: 'Name',
+        lastName: 'Мин',
+        login: 'login',
+        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
+        imgSrc: 'imgSrc',
+        newRecipes: 1,
+        social: {
+            bookmarks: 12,
+            followers: 1,
+        },
+    },
+    {
+        name: 'Name',
+        lastName: 'Мин',
+        login: 'login',
+        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
+        imgSrc: 'imgSrc',
+        newRecipes: 1,
+        social: {
+            bookmarks: 12,
+            followers: 1,
+        },
+    },
+    {
+        name: 'Name',
+        lastName: 'Мин',
+        login: 'login',
+        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
+        imgSrc: 'imgSrc',
+        newRecipes: 1,
+        social: {
+            bookmarks: 12,
+            followers: 1,
+        },
+    },
+    {
+        name: 'Name',
+        lastName: 'Мин',
+        login: 'login',
+        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
+        imgSrc: 'imgSrc',
+        newRecipes: 1,
+        social: {
+            bookmarks: 12,
+            followers: 1,
+        },
+    },
+    {
+        name: 'Name',
+        lastName: 'Мин',
+        login: 'login',
+        descr: 'Паназиатская кухня — это настоящий праздник для вашего здоровья и вкусовых рецепторов. Присоединяйтесь ко мне, и мы создадим новые кулинарные шедевры!',
+        imgSrc: 'imgSrc',
+        newRecipes: 1,
+        social: {
+            bookmarks: 12,
+            followers: 1,
+        },
+    },
+];
