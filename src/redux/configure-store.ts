@@ -1,5 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import { bloggersReducer, bloggersSlice } from '~/redux/features/bloggers-slice';
+
 import { authorizedApi, unauthorizedApi } from './api';
 import { accordionReducer, accordionSlice } from './features/accordion-slice';
 import { allergenReducer, allergenSlice } from './features/allergens-slice';
@@ -35,6 +37,7 @@ const combinedReducer = {
     [accordionSlice.name]: accordionReducer,
     [authorizedApi.reducerPath]: authorizedApi.reducer,
     [unauthorizedApi.reducerPath]: unauthorizedApi.reducer,
+    [bloggersSlice.name]: bloggersReducer,
 };
 
 export const store = configureStore({

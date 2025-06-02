@@ -67,7 +67,11 @@ export const AppNotification = () => {
                 >
                     <AlertIcon color='white' boxSize='20px' />
                     <Box>
-                        <AlertTitle fontWeight={700} pb='2px'>
+                        <AlertTitle
+                            fontWeight={700}
+                            pb='2px'
+                            data-test-id='error-notification-title'
+                        >
                             {title}
                         </AlertTitle>
                         {description && (
@@ -75,6 +79,7 @@ export const AppNotification = () => {
                                 fontWeight={400}
                                 width={{ base: '80%', lg: '100%' }}
                                 display='inline-block'
+                                data-test-id='error-notification-description'
                             >
                                 {description}
                             </AlertDescription>

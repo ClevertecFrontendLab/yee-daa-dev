@@ -1,8 +1,8 @@
 import 'swiper/swiper-bundle.css';
 
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
-import { Box, Center, Heading, IconButton } from '@chakra-ui/react';
-import { useRef } from 'react';
+import { Box, BoxProps, Center, Heading, IconButton } from '@chakra-ui/react';
+import { FC, useRef } from 'react';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 
@@ -14,7 +14,7 @@ import { isArrayWithItems } from '~/utils/is-array-with-items.ts';
 
 import { CarouselItem } from './carousel-item.tsx';
 
-export const Carousel = () => {
+export const Carousel: FC<BoxProps> = (props) => {
     const { data } = useGetAllRecipesWithParamsQuery(NEWEST_PARAMS);
     const carouselItems = data?.data ?? [];
     const swiperRef = useRef<Nullable<SwiperRef>>(null);
@@ -22,7 +22,7 @@ export const Carousel = () => {
     const carouselRecipes = carouselItems.slice(0, SLIDER_RECIPES_LIMIT);
 
     return (
-        <Box maxWidth='1360px' mb={{ base: 8, xmd: 10 }} position='relative'>
+        <Box maxWidth='1360px' mb={{ base: 8, xmd: 10 }} position='relative' {...props}>
             <Heading fontSize={{ base: '2xl', xl: '4xl', '2xl': '5xl' }} fontWeight={500} mb={6}>
                 Новые рецепты
             </Heading>

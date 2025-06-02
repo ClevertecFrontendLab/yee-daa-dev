@@ -54,6 +54,7 @@
         "@vitejs/plugin-react": "^4.3.4",
         "arui-presets-lint": "^8.4.0",
         "cypress": "^14.0.0",
+        "dayjs": "^1.11.13",
         "eslint-import-resolver-typescript": "^3.8.3",
         "eslint-plugin-import": "^2.31.0",
         "eslint-plugin-prettier": "^5.2.3",

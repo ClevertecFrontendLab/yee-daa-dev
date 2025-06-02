@@ -34,8 +34,13 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
     };
 
     return (
-        <Card direction='row' variant='outline' gap={6} data-test-id={`food-card-${index}`}>
-            <Box position='relative' w={{ base: '158px', md: '50%' }} maxW='346px' flex='1'>
+        <Card
+            direction='row'
+            variant='outline'
+            gap={{ base: 2, xmd: 6 }}
+            data-test-id={`food-card-${index}`}
+        >
+            <Box position='relative' w={{ base: '158px', xmd: '50%' }} maxW='346px' flex='1'>
                 <Box
                     position='absolute'
                     top={2}
@@ -72,9 +77,9 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
 
             <Stack
                 pt={{ base: 2, xl: 6 }}
-                pb={{ base: 2, xl: 6 }}
+                pb={{ base: 1, xl: 6 }}
                 pr={{ base: 2, xl: 6 }}
-                gap={6}
+                gap={{ base: 0, xmd: 6 }}
                 flex='1'
             >
                 <CardHeader
@@ -92,8 +97,8 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
                 <CardBody p={0}>
                     <Heading
                         fontSize={{ base: 'md', xmd: 'xl' }}
-                        noOfLines={{ base: 2, md: 1 }}
-                        mb={2}
+                        noOfLines={{ base: 2, xmd: 1 }}
+                        mb={{ base: 6, sm: 7, xmd: 2 }}
                         fontWeight={500}
                     >
                         <HighlightText query={inputValue ?? ''} text={title} />
@@ -116,7 +121,7 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
                 >
                     <Button
                         variant='outline'
-                        size={{ base: 'xs', md: 'sm' }}
+                        size={{ base: 'xs', xmd: 'sm' }}
                         leftIcon={<BookmarkIcon />}
                         color='blackAlpha.800'
                         onClick={onBookmarkRecipe}
@@ -130,7 +135,7 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
                         data-test-id={`card-link-${index}`}
                         state={{ fromPage: pathname }}
                     >
-                        <Button bg='black' color='white' size={{ base: 'xs', md: 'sm' }}>
+                        <Button bg='black' color='white' size={{ base: 'xs', xmd: 'sm' }}>
                             Готовить
                         </Button>
                     </NavLink>
