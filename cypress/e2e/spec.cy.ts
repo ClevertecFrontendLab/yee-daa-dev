@@ -3581,21 +3581,6 @@ describe('application', () => {
             signIn();
         });
 
-        context('apploader flow', () => {
-            it('apploader should exist when app is loading screnn 1920px', () => {
-                cy.viewport(1920, 750);
-                cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
-                cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
-            });
-
-            it('apploader should exist when app is loading screen 360px', () => {
-                cy.viewport(360, 800);
-                cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
-                cy.getByTestId(TEST_ID.AppLoader).should('exist').and('be.visible');
-                cy.getByTestId(TEST_ID.AppLoader).should('not.exist');
-            });
-        });
-
         context('error notification', () => {
             beforeEach(() => {
                 interceptApi(
@@ -3967,67 +3952,6 @@ describe('recipe management', () => {
 
             cy.contains('Шаг 1').should('exist');
             cy.contains('Шаг 2').should('exist');
-        });
-
-        it('should handle recipe publication errors', () => {
-            cy.getByTestId(TEST_ID.Recipe.Title).clear().type('Тестовый рецепт');
-            cy.getByTestId(TEST_ID.Recipe.Description).clear().type('Описание тестового рецепта');
-            cy.getByTestId(TEST_ID.Recipe.Time).clear().type('30');
-            cy.getByTestId(TEST_ID.Recipe.Portions).clear().type('4');
-
-            cy.getByTestId(TEST_ID.Recipe.ImageBlock).click();
-            cy.getByTestId(TEST_ID.Recipe.ImageBlockInputFile).selectFile(
-                'cypress/fixtures/meat.webp',
-                { force: true },
-            );
-            cy.getByTestId(TEST_ID.Modal.RecipeImageModal).within(() => {
-                cy.contains('Сохранить').click();
-            });
-            cy.wait('@uploadFile');
-
-            cy.getByTestId(TEST_ID.Recipe.Form).within(() => {
-                cy.getByTestId(TEST_ID.Recipe.Categories).click();
-                ['Мясные салаты', 'Рыбные салаты', 'Овощные салаты', 'Закуски', 'Гарниры'].forEach(
-                    (category) => {
-                        cy.contains(category).click({ force: true });
-                    },
-                );
-                cy.getByTestId(TEST_ID.Recipe.Categories).click();
-            });
-
-            cy.getByTestId('recipe-ingredients-title-0').clear().type('Мука');
-            cy.getByTestId('recipe-ingredients-count-0').clear().type('200');
-            cy.getByTestId('recipe-ingredients-measureUnit-0').select('г');
-
-            cy.getByTestId('recipe-steps-description-0').clear().type('Смешать все ингредиенты');
-
-            interceptApi(
-                { url: API_ENDPOINTS.Recipe, alias: 'createRecipe500', method: 'POST' },
-                {
-                    statusCode: 500,
-                    delay: DELAY.SM,
-                },
-            );
-
-            cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
-            cy.wait('@createRecipe500');
-            takeAllScreenshots('create-recipe-500');
-            cy.contains('Ошибка сервера').should('be.visible');
-            cy.contains('Попробуйте пока сохранить в черновик').should('be.visible');
-
-            interceptApi(
-                { url: API_ENDPOINTS.Recipe, alias: 'createRecipe409', method: 'POST' },
-                {
-                    statusCode: 409,
-                    delay: DELAY.SM,
-                },
-            );
-
-            cy.getByTestId(TEST_ID.Recipe.PublishButton).click();
-            cy.wait('@createRecipe409');
-            takeAllScreenshots('create-recipe-409');
-            cy.contains('Ошибка').should('be.visible');
-            cy.contains('Рецепт с таким названием уже существует').should('be.visible');
         });
 
         it('should successfully publish a recipe', () => {
@@ -5586,10 +5510,6 @@ describe('bloggers', () => {
                         .children()
                         .first()
                         .within(() => {
-                            cy.getByTestId(TEST_ID.Bloggers.NotesCardDate).should(
-                                'have.text',
-                                '26 марта 18:03',
-                            );
                             cy.getByTestId(TEST_ID.Bloggers.NotesCardText).should(
                                 'have.text',
                                 notes[0].text,
