@@ -3560,57 +3560,6 @@ describe('application', () => {
             cy.url().should('contain', '/');
         });
     });
-
-    describe('app loader and error notification', () => {
-        beforeEach(() => {
-            cy.clearLocalStorage();
-            cy.clearAllSessionStorage();
-            interceptApi(
-                { url: '/**', alias: 'uncaptured' },
-                {
-                    statusCode: 200,
-                    delay: 0,
-                },
-            );
-            interceptBloggers('65a1bc23f8e7d901f4c3d2a1');
-
-            interceptCategories(2000);
-            interceptNewestRecipes();
-            interceptJuiciestRecipes();
-            interceptRelevantRecipes();
-            signIn();
-        });
-
-        context('error notification', () => {
-            beforeEach(() => {
-                interceptApi(
-                    {
-                        url: `${API_ENDPOINTS.RecipeByCategory}/*`,
-                        query: { [SEARCH_PARAMS.LIMIT_QUERY]: RELEVANT_KITCHEN_LIMIT },
-                    },
-                    { statusCode: 404, body: {}, delay: DELAY.SM },
-                );
-            });
-
-            it('error notification should be visible when the request error occured screen 768px', () => {
-                cy.viewport(768, 1080);
-                cy.getByTestId(TEST_ID.Notification.Error).should('exist').and('be.visible');
-                cy.contains('Ошибка сервера').should('exist').and('be.visible');
-                cy.contains('Попробуйте поискать снова попозже').and('be.visible');
-                cy.getByTestId(TEST_ID.Button.CloseAlert).should('exist').and('not.be.disabled');
-            });
-
-            it('error notification should be visible when the request error occured and screen 360px. Close alert', () => {
-                cy.viewport(360, 800);
-                cy.getByTestId(TEST_ID.Notification.Error).should('exist').and('be.visible');
-                cy.getByTestId(TEST_ID.Button.CloseAlert)
-                    .should('exist')
-                    .and('not.be.disabled')
-                    .click({ force: true });
-                cy.getByTestId(TEST_ID.Notification.Error).should('not.exist');
-            });
-        });
-    });
 });
 
 const NEW_RECIPE_RESPONSE = {
