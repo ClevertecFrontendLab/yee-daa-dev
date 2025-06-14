@@ -3,41 +3,45 @@ import { FC } from 'react';
 
 import { ButtonSubscribe } from '~/components/button-subscribe';
 import { BloggerInfo } from '~/redux/features/bloggers-slice';
+import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path';
 
 import { FollowersIcon } from '../icons/followers-icon';
 
-export const AuthorCard: FC<{ author: BloggerInfo; authorId: string }> = ({ author, authorId }) => (
-    <Card bg='var(--chakra-colors-lime-300)' p={{ base: 3, sm: 6 }} flexDirection='row' gap={4}>
-        <CardHeader p={0}>
-            <Avatar
-                // src={author.imageUrl}
-                name={`${author.bloggerInfo.firstName} ${author.bloggerInfo.lastName}`}
-                size='lg'
-            />
-        </CardHeader>
-        <CardBody p={0}>
-            <HStack flexWrap='wrap' justifyContent='space-between'>
-                <Heading fontSize={{ base: 'xl', sm: '2xl' }}>
-                    {author.bloggerInfo.firstName} {author.bloggerInfo.lastName}
-                </Heading>
-                <Text>Автор рецепта</Text>
-            </HStack>
-            <Text mb={5} mt={2}>
-                @{author.bloggerInfo.login}
-            </Text>
-            <HStack flexWrap='wrap' justifyContent='space-between'>
-                {/* TODO: add author id from request */}
-                <ButtonSubscribe userId={authorId} isSubscribedFromReq={author.isFavorite} />
+export const AuthorCard: FC<{ author: BloggerInfo; authorId: string }> = ({ author, authorId }) => {
+    console.log('AuthorCard', author);
+    return (
+        <Card bg='var(--chakra-colors-lime-300)' p={{ base: 3, sm: 6 }} flexDirection='row' gap={4}>
+            <CardHeader p={0}>
+                <Avatar
+                    src={getAbsoluteImagePath(author.bloggerInfo.photoLink)}
+                    name={`${author.bloggerInfo.firstName} ${author.bloggerInfo.lastName}`}
+                    size='lg'
+                />
+            </CardHeader>
+            <CardBody p={0}>
+                <HStack flexWrap='wrap' justifyContent='space-between'>
+                    <Heading fontSize={{ base: 'xl', sm: '2xl' }}>
+                        {author.bloggerInfo.firstName} {author.bloggerInfo.lastName}
+                    </Heading>
+                    <Text>Автор рецепта</Text>
+                </HStack>
+                <Text mb={5} mt={2}>
+                    @{author.bloggerInfo.login}
+                </Text>
+                <HStack flexWrap='wrap' justifyContent='space-between'>
+                    {/* TODO: add author id from request */}
+                    <ButtonSubscribe userId={authorId} isSubscribedFromReq={author.isFavorite} />
 
-                <HStack>
                     <HStack>
-                        <FollowersIcon />
-                        <Text fontSize='xs' lineHeight={6} color='lime.600'>
-                            {author?.bloggerInfo.subscribers?.length ?? 0 ?? 0}
-                        </Text>
+                        <HStack>
+                            <FollowersIcon />
+                            <Text fontSize='xs' lineHeight={6} color='lime.600'>
+                                {author?.bloggerInfo.subscribers?.length ?? 0 ?? 0}
+                            </Text>
+                        </HStack>
                     </HStack>
                 </HStack>
-            </HStack>
-        </CardBody>
-    </Card>
-);
+            </CardBody>
+        </Card>
+    );
+};

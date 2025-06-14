@@ -15,6 +15,7 @@ import { meatsReducer, meatsSlice } from './features/meats-slice';
 import { recipesReducer, recipesSlice } from './features/recipes-slice';
 import { searchReducer, searchSlice } from './features/search-slice';
 import { sidesReducer, sidesSlice } from './features/sides-slice';
+import { userReducer, userSlice } from './features/user-slice';
 import { appErrorMiddleware } from './middleware';
 
 // по дефолту при старте приложения yarn start vite по устанавливает MODE: 'development'
@@ -38,6 +39,7 @@ const combinedReducer = {
     [authorizedApi.reducerPath]: authorizedApi.reducer,
     [unauthorizedApi.reducerPath]: unauthorizedApi.reducer,
     [bloggersSlice.name]: bloggersReducer,
+    [userSlice.name]: userReducer,
 };
 
 export const store = configureStore({

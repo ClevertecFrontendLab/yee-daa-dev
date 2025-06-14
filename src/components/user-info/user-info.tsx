@@ -3,21 +3,24 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
 import { USER_INFO_TYPES } from '~/components/user-info/consts';
-import { UserProps } from '~/types/user.ts';
+import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path';
 
-type Props = UserProps &
-    Partial<{
-        withGutter: boolean;
-        shrinks: boolean;
-    }>;
+type UserInfoProps = {
+    withGutter?: boolean;
+    shrinks?: boolean;
+    lastName: string;
+    imageUrl?: string;
+    firstName: string;
+    login: string;
+};
 
-export const UserInfo: FC<Props> = ({
+export const UserInfo: FC<UserInfoProps> = ({
     withGutter = false,
     lastName,
     imageUrl,
     firstName,
     login,
-    shrinks,
+    shrinks = false,
 }) => {
     const userInfoParams = shrinks ? USER_INFO_TYPES.SHRUNK : USER_INFO_TYPES.DEFAULT;
     return (
@@ -27,7 +30,11 @@ export const UserInfo: FC<Props> = ({
             alignItems='center'
             display={{ base: 'none', xs: 'flex' }}
         >
-            <Avatar src={imageUrl} name={`${firstName} ${lastName}`} {...userInfoParams.Avatar} />
+            <Avatar
+                src={getAbsoluteImagePath(imageUrl)}
+                name={`${firstName} ${lastName}`}
+                {...userInfoParams.Avatar}
+            />
             <Box ml={3} flexGrow={1}>
                 <Text
                     fontWeight={500}

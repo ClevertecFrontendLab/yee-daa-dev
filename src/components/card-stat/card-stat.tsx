@@ -10,13 +10,14 @@ type Props = Partial<{
     bookmarks: number;
     likes?: number;
     followers?: number;
+    isProfile?: boolean;
 }>;
 
-export const CardStat: FC<Props> = ({ bookmarks, likes, followers }) => (
+export const CardStat: FC<Props> = ({ bookmarks, likes, followers, isProfile }) => (
     <HStack
         spacing={2}
         flexWrap='nowrap'
-        justifyContent='flex-end'
+        justifyContent={isProfile ? 'flex-start' : 'flex-end'}
         minW={{ base: 'auto', md: '110px' }}
     >
         {(bookmarks || bookmarks === 0) && (

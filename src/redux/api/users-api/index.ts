@@ -12,6 +12,7 @@ import {
     setBloggersMain,
     setBloggersPreview,
 } from '~/redux/features/bloggers-slice';
+import { NoteType } from '~/types/user';
 
 type BloggersRequestType = {
     id: string;
@@ -21,11 +22,6 @@ type BloggersRequestType = {
 type ToggleSubscriptionRequestType = {
     fromUserId: string;
     toUserId: string;
-};
-
-export type NoteType = {
-    date: string;
-    text: string;
 };
 
 export type RawBloggerById = {

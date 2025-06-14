@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { BloggerById, NoteType } from '~/redux/api/users-api';
+import { BloggerById } from '~/redux/api/users-api';
+import { NoteType } from '~/types/user';
 
 export type BloggerCard = {
     _id: string;
@@ -13,6 +14,7 @@ export type BloggerCard = {
     notes?: NoteType[];
     text?: string;
     isFavorite?: boolean;
+    photoLink?: string;
 };
 
 export type BloggerInfo = {
@@ -25,6 +27,7 @@ export type BloggerInfo = {
         recipesIds: string[];
         drafts: never[];
         subscribers: string[];
+        photoLink?: string;
     };
     totalSubscribers: number;
     totalBookmarks: number;

@@ -27,9 +27,9 @@ export const users: UserProps[] = [
         lastName: 'Константинопольская',
         login: '@bake_and_pie',
         imageUrl: woman,
-        likes: 152,
-        bookmarks: 20,
-        followers: 89,
+        likes: 11,
+        bookmarks: 11,
+        followers: 11,
     },
 ];
 

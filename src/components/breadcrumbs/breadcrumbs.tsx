@@ -1,6 +1,6 @@
 import { BreadcrumbLink, ChevronRightIcon } from '@chakra-ui/icons';
 import { Box, Breadcrumb, BreadcrumbItem } from '@chakra-ui/react';
-import { Link, useLocation } from 'react-router';
+import { Link, matchPath, useLocation } from 'react-router';
 
 import { Paths } from '~/constants/path';
 import { useAppDispatch, useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
@@ -9,6 +9,7 @@ import { useGetRecipeByIdQuery } from '~/redux/api/recipes-api';
 import { resetAccordion } from '~/redux/features/accordion-slice';
 import { selectBloggersInfoById } from '~/redux/features/bloggers-slice';
 import { closeMenu } from '~/redux/features/burger-slice.ts';
+import { selectUserDraft } from '~/redux/features/user-slice';
 import { isArrayWithItems } from '~/utils/is-array-with-items';
 
 export const Breadcrumbs = () => {
@@ -16,26 +17,38 @@ export const Breadcrumbs = () => {
     const { selectedCategory, selectedSubCategory, recipeId } = useDetectParams();
     const dispatch = useAppDispatch();
     const { bloggerInfo } = useAppSelector(selectBloggersInfoById);
+    const isEditDraftPage = Boolean(matchPath(Paths.EDIT_DRAFT, pathname));
 
-    const { data: recipeData } = useGetRecipeByIdQuery(recipeId as string, { skip: !recipeId });
+    const { data: recipeData } = useGetRecipeByIdQuery(recipeId as string, {
+        skip: !recipeId || isEditDraftPage,
+    });
 
     const isJuiciestPath = pathname.includes(Paths.JUICIEST);
     const isBlogs = pathname.includes(Paths.BLOGS);
     const isBlogCurrent = bloggerInfo.login;
     const isRecipes = !isJuiciestPath && !isBlogs;
     const isNewRecipePage = pathname.includes(Paths.NEW_RECIPE);
+    const isSettings = pathname.includes(Paths.SETTINGS);
+    const isProfile = pathname.includes(Paths.PROFILE);
+
+    const recipeFromState = useAppSelector((state) => selectUserDraft(state, recipeId));
+    const recipe = isEditDraftPage ? recipeFromState : recipeData;
 
     const pathsArrNames = [
         selectedCategory?.title,
         selectedSubCategory?.title,
-        recipeId ? recipeData?.title : undefined,
+        recipeId ? recipe?.title : undefined,
         isNewRecipePage ? 'Новый рецепт' : undefined,
+        isProfile ? 'Мой профиль' : undefined,
+        isSettings ? 'Настройки' : undefined,
     ].filter(Boolean);
     const pathsArr = [
         selectedCategory?.category,
         selectedSubCategory?.category,
-        recipeId ? recipeData?.id : undefined,
+        recipeId ? recipe?.id : undefined,
         isNewRecipePage ? 'new-recipe' : undefined,
+        isProfile ? 'profile' : undefined,
+        isSettings ? 'settings' : undefined,
     ].filter(Boolean);
 
     const handleCategoryClick = () => dispatch(closeMenu());

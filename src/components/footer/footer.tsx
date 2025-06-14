@@ -1,9 +1,10 @@
 import { Avatar } from '@chakra-ui/icons';
 import { Grid, GridItem } from '@chakra-ui/react';
 
-import userImg from '~/assets/images/user.webp';
 import { Paths } from '~/constants/path.ts';
-import { UserProps } from '~/types/user.ts';
+import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
+import { selectUser } from '~/redux/features/user-slice.ts';
+import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
 
 import { HomeSvg } from '../icons/home-svg.tsx';
 import { SearchSvg } from '../icons/search-svg.tsx';
@@ -16,16 +17,8 @@ const footerButtons = [
     { text: 'Записать', icon: <WriteSvg />, path: Paths.NEW_RECIPE },
 ];
 
-const user: UserProps = {
-    firstName: 'Екатерина',
-    lastName: 'Константинопольская',
-    login: '@bake_and_pie',
-    imageUrl: userImg,
-};
-
 export const Footer = () => {
-    // TODO: заменить на селектор когда будет коллекция пользователей
-    const { firstName, lastName, imageUrl } = user;
+    const { firstName, lastName, photoLink } = useAppSelector(selectUser);
 
     return (
         <Grid templateColumns='repeat(4, 1fr)' height='100%' templateRows='1fr'>
@@ -37,9 +30,14 @@ export const Footer = () => {
             <GridItem key={footerButtons.length}>
                 <FooterBtn
                     text='Мой профиль'
-                    icon={<Avatar src={imageUrl} name={`${firstName} ${lastName}`} />}
+                    icon={
+                        <Avatar
+                            src={getAbsoluteImagePath(photoLink)}
+                            name={`${firstName} ${lastName}`}
+                        />
+                    }
                     isProfile={true}
-                    path={Paths.R_SWITCHER}
+                    path={Paths.PROFILE}
                 />
             </GridItem>
         </Grid>

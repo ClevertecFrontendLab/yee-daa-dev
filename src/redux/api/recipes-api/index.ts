@@ -7,12 +7,17 @@ import {
     RawRecipe,
     RawRecipesResponse,
     Recipe,
+    RecipeByUserId,
+    RecipeByUserIdNormalized,
     RecipesByCategoryIdArgs,
     RecipesInfiniteResponse,
     RecipesResponse,
     RecipesResponseWithMeta,
 } from '~/redux/api/types/recipes';
-import { replaceUnderscoreId } from '~/redux/api/utils/replace-underscore-id';
+import {
+    replaceMapUnderscoreId,
+    replaceUnderscoreId,
+} from '~/redux/api/utils/replace-underscore-id';
 import { transformBaseErrorResponse } from '~/redux/api/utils/transform-base-error-response';
 import { setNotificationData, setNotificationVisibility } from '~/redux/features/app-slice';
 import {
@@ -20,6 +25,7 @@ import {
     setIsFilterError,
     setShowedEmptyText,
 } from '~/redux/features/recipes-slice';
+import { removeBookmarks, setRecipeRecommendation } from '~/redux/features/user-slice';
 import { RecipeFormValues } from '~/types/recipe-form';
 import { AppState } from '~/types/store';
 
@@ -320,11 +326,21 @@ export const recipeApi = authorizedApi.injectEndpoints({
                           { type: 'Recipe' as const, id: 'LIST' },
                       ],
         }),
-        bookmarkRecipe: build.mutation<void, string>({
+        bookmarkRecipe: build.mutation<{ message: string }, string>({
             query: (id) => ({
                 url: `${ApiEndpoints.Recipe}/${id}/bookmark`,
                 method: 'POST',
             }),
+            async onQueryStarted(id, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    if (data.message === 'Recipe removed from bookmarks') {
+                        dispatch(removeBookmarks(id));
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            },
             transformErrorResponse: (response) => ({
                 ...response,
                 [NOTIFICATION_STATE_NAME]: {
@@ -377,6 +393,42 @@ export const recipeApi = authorizedApi.injectEndpoints({
                 }
             },
         }),
+        recommendationRecipe: build.mutation<void, string>({
+            query: (id) => ({
+                url: `/${ApiEndpoints.Recipe}/recommend/${id}`,
+                method: 'POST',
+            }),
+            async onQueryStarted(id, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(setRecipeRecommendation(id));
+                } catch (err) {
+                    console.error(err);
+                }
+            },
+            invalidatesTags: (_result, error, id) =>
+                error
+                    ? []
+                    : [
+                          { type: 'Recipe' as const, id },
+                          { type: 'Recipe' as const, id: 'LIST' },
+                      ],
+        }),
+        getRecipeByUserId: build.query<RecipeByUserIdNormalized, string>({
+            query: (id) => ({
+                url: `/${ApiEndpoints.Recipe}/user/${id}`,
+                method: 'GET',
+            }),
+            transformResponse: (response: RecipeByUserId): RecipeByUserIdNormalized => {
+                const replaceId = {
+                    ...response,
+                    myBookmarks: replaceMapUnderscoreId(response.myBookmarks),
+                    recipes: replaceMapUnderscoreId(response.recipes),
+                    notes: replaceMapUnderscoreId(response.notes),
+                };
+                return replaceId;
+            },
+        }),
     }),
     overrideExisting: false,
 });
@@ -398,4 +450,6 @@ export const {
     useLikeRecipeMutation,
     useBookmarkRecipeMutation,
     useCreateRecipeDraftMutation,
+    useRecommendationRecipeMutation,
+    useGetRecipeByUserIdQuery,
 } = recipeApi;

@@ -17,4 +17,13 @@ export const NotificationMessages = {
     RECIPE_ALREADY_EXISTS_DESCRIPTION: 'Рецепт с таким названием уже существует',
     SAVE_DRAFT_ERROR_DESCRIPTION: 'Не удалось сохранить черновик рецепта',
     DRAFT_SUCCESS_TITLE: 'Черновик успешно сохранен',
+    NOTES_CREATE_SUCCESS_TITLE: 'Заметка опубликована',
+    NOTES_DELETE_SUCCESS_TITLE: 'Заметка удалена',
+    USER_DELETE_SUCCESS_TITLE: 'Аккаунт успешно удалён',
+    USER_UPDATE_DATA_SUCCESS_TITLE: 'Изменения сохранены',
+} as const;
+
+export const NotificationDescription = {
+    ERROR_GENERAL_DESCRIPTION: 'Попробуйте позже.',
+    ERROR_TRY_AGAIN_DESCRIPTION: 'Попробуйте снова',
 } as const;

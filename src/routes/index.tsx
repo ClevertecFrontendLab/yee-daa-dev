@@ -17,6 +17,8 @@ import { JuiciestPage } from '~/pages/juiciest-page';
 import { MainPage } from '~/pages/main-page';
 import { NewRecipePage } from '~/pages/new-recipe-page';
 import { RecipePageWrapper } from '~/pages/recipe-page';
+import { UserProfilePage } from '~/pages/user-profile-page/user-profile-page.tsx';
+import { UserSettingsPage } from '~/pages/user-settings-page/user-settings-page.tsx';
 import { blogsLoader } from '~/routes/loaders/blogs-loader.ts';
 
 import { ErrorBoundary } from './error-boundary/error-boundary';
@@ -101,11 +103,14 @@ export const appRouter = createBrowserRouter(
                     />
                     <Route path={Paths.NEW_RECIPE} element={<NewRecipePage />} />
                     <Route path={Paths.EDIT_RECIPE} element={<EditRecipePage />} />
+                    <Route path={Paths.EDIT_DRAFT} element={<EditRecipePage />} />
                     <Route
                         path={Paths.JUICIEST}
                         element={<JuiciestPage />}
                         loader={juiciestLoader}
                     />
+                    <Route path={Paths.PROFILE} element={<UserProfilePage />} />
+                    <Route path={Paths.SETTINGS} element={<UserSettingsPage />} />
                     <Route path={Paths.ERROR} element={<ErrorPage />} />
                 </Route>
             </Route>

@@ -1,12 +1,16 @@
 import { Flex, Spacer } from '@chakra-ui/react';
-import { NavLink } from 'react-router';
+import { Link, NavLink } from 'react-router';
 
 import { Paths } from '~/constants/path';
 import { useIsLg, useIsTablet } from '~/hooks/media-query.ts';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { useIsErrorPage } from '~/hooks/use-is-error-page';
-import { user, users } from '~/mocks/users.ts';
 import { selectMenu } from '~/redux/features/burger-slice.ts';
+import {
+    selectIsRecommending,
+    selectUser,
+    selectUserInfoCounts,
+} from '~/redux/features/user-slice';
 
 import { Breadcrumbs } from '../breadcrumbs';
 import { BurgerMenu } from '../burger-menu';
@@ -21,7 +25,9 @@ export const Header = () => {
     const isErrorPage = useIsErrorPage();
 
     const isOpen = useAppSelector(selectMenu);
-
+    const { login, firstName, lastName, photoLink } = useAppSelector(selectUser);
+    const { likes, bookmarks, subscribers, recommendations } = useAppSelector(selectUserInfoCounts);
+    const isRecommendingProfile = useAppSelector(selectIsRecommending);
     return (
         <Flex pl={4} pr={4} pt={6} pb={6} h='100%' alignItems='center'>
             <NavLink to={Paths.R_SWITCHER}>
@@ -32,8 +38,25 @@ export const Header = () => {
                 <>
                     {!isLg && <Breadcrumbs />}
                     <Spacer />
-                    {isTablet && !isOpen && <StatsBlock {...users[2]} />}
-                    {!isTablet && <UserInfo withGutter {...user} />}
+                    {isTablet && !isOpen && (
+                        <StatsBlock
+                            {...{
+                                followers: subscribers,
+                                likes,
+                                bookmarks,
+                                isRecommendingProfile,
+                                recommendations,
+                            }}
+                        />
+                    )}
+                    {!isTablet && (
+                        <Link to={Paths.PROFILE}>
+                            <UserInfo
+                                withGutter
+                                {...{ login, firstName, lastName, imageUrl: photoLink }}
+                            />
+                        </Link>
+                    )}
                     <BurgerMenu />
                 </>
             )}
