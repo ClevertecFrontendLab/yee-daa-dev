@@ -37,6 +37,7 @@ export const BlogProfile = () => {
                 mt={{ base: 0, md: -8, xmd: -4 }}
                 minWidth={{ base: 0, sm: 356, xmd: 422, '2xl': 480 }}
                 _id={info.bloggerInfo._id}
+                imgSrc={info.bloggerInfo.photoLink}
                 dataTestId='blogger-user-info'
             />
             {isArrayWithItems(data.recipes) && (
