@@ -53,6 +53,7 @@ export const BlogsPage = () => {
                                 isFavorite={el.isFavorite}
                                 newRecipesCount={el.newRecipesCount}
                                 link={`${Paths.BLOGS}/${el._id}`}
+                                imageUrl={el.photoLink}
                             />
                         ))}
                     </SimpleGrid>

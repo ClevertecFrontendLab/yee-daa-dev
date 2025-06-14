@@ -2,15 +2,33 @@ import { Avatar, TagLabel } from '@chakra-ui/icons';
 import { Tag } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { UserProps } from '~/types/user.ts';
+import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path';
 
-type Props = Omit<UserProps, 'login'>;
+type RecommendationTagProps = {
+    firstName?: string;
+    lastName?: string;
+    photo?: string;
+    othersLength?: number;
+};
 
-export const RecommendationTag: FC<Props> = ({ firstName, lastName, imageUrl }) => (
-    <Tag size='md' bg='lime.150'>
-        <Avatar size='2xs' src={imageUrl} name={`${firstName} ${lastName}`} />
-        <TagLabel ml={2} noOfLines={1}>
-            {`${firstName} ${lastName}`} рекомендует
-        </TagLabel>
-    </Tag>
-);
+export const RecommendationTag: FC<RecommendationTagProps> = ({
+    firstName,
+    lastName,
+    photo,
+    othersLength,
+}) => {
+    const renderText =
+        othersLength && othersLength - 1 > 0 ? `и ${othersLength - 1} рекомендуют` : 'рекомендует';
+    return (
+        <Tag size='md' bg='lime.150'>
+            <Avatar
+                size='2xs'
+                src={getAbsoluteImagePath(photo)}
+                name={`${firstName} ${lastName}`}
+            />
+            <TagLabel ml={2} noOfLines={1}>
+                {`${firstName} ${lastName}`} {renderText}
+            </TagLabel>
+        </Tag>
+    );
+};

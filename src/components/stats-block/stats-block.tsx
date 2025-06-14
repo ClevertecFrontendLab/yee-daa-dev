@@ -2,9 +2,22 @@ import { Flex, HStack, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
 import { icons } from '~/constants/icons';
-import { UserProps } from '~/types/user';
 
-export const StatsBlock: FC<UserProps> = ({ followers, likes, bookmarks }) => (
+type StatsBlockProps = {
+    followers: number;
+    likes: number;
+    bookmarks: number;
+    recommendations: number;
+    isRecommendingProfile: boolean;
+};
+
+export const StatsBlock: FC<StatsBlockProps> = ({
+    followers,
+    likes,
+    bookmarks,
+    isRecommendingProfile,
+    recommendations,
+}) => (
     <Flex
         pl={{ base: 4, md: 0 }}
         pr={{ base: 4, md: 0 }}
@@ -14,6 +27,14 @@ export const StatsBlock: FC<UserProps> = ({ followers, likes, bookmarks }) => (
         flexDirection={{ base: 'row', xl: 'column' }}
         gap={{ base: 0, md: 6 }}
     >
+        {isRecommendingProfile && (
+            <HStack spacing={{ base: '6px', md: '8px' }} pt={2} pb={2} pl={2} pr={1}>
+                {icons['recommendation']}
+                <Text fontSize='md' lineHeight={6} color='lime.600'>
+                    {recommendations}
+                </Text>
+            </HStack>
+        )}
         {bookmarks && (
             <HStack spacing={{ base: '6px', md: '8px' }} pt={2} pb={2} pl={2} pr={1}>
                 {icons['bookmarks']}

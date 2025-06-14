@@ -1,15 +1,17 @@
 import { SimpleGrid, SimpleGridProps } from '@chakra-ui/react';
 import { FC } from 'react';
 
+import { userProfileHeaderDataType } from '~/pages/user-profile-page/utils/user-profile-headers';
 import { Recipe } from '~/redux/api/types/recipes';
 
 import { FoodCard } from '../food-card';
 
 type CardListProps = {
     recipeList: Recipe[];
+    cardType?: userProfileHeaderDataType;
 } & SimpleGridProps;
 
-export const CardList: FC<CardListProps> = ({ recipeList, ...rest }) => (
+export const CardList: FC<CardListProps> = ({ recipeList, cardType, ...rest }) => (
     <SimpleGrid
         pt={6}
         columns={{ base: 1, md: 2, xmd: 1, '2xl': 2 }}

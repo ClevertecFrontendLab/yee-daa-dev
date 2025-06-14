@@ -21,35 +21,9 @@ import tefteliImg from '~/assets/images/tefteli-vegan.jpg';
 import tomImg from '~/assets/images/tom.png';
 import womanImg from '~/assets/images/woman.png';
 import woman from '~/assets/images/woman.png';
-import { UserProps } from '~/types/user';
+import { Recipe } from '~/redux/api/types/recipes';
 
-type OldRecipe = {
-    id: string;
-    category: string[];
-    subcategory: string[];
-    title: string;
-    date: string;
-    description: string;
-    time: string;
-    value: EnergyValue;
-    ingredients: ingredient[];
-    steps: Step[];
-    author: UserProps;
-    meat?: string;
-    side?: string;
-    portions?: number;
-    image?: string;
-    likes?: number;
-    views?: number;
-    bookmarks?: number;
-    recommendation?: Omit<UserProps, 'login'>;
-};
-
-type EnergyValue = { calorie: number; proteins: number; fats: number; carbohydrates: number };
-type ingredient = { name: string; title: string; quantity: number; unit: string };
-type Step = { number: number; description: string; image?: string };
-
-export const recipes: OldRecipe[] = [
+export const recipes: Recipe[] = [
     {
         id: '0',
         title: 'Картошка, тушенная с болгарским перцем и фасолью в томатном соусе',

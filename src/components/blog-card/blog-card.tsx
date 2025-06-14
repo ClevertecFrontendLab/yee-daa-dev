@@ -51,7 +51,6 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
 }) => {
     const cardData = cardType ? CardTypeProps[cardType] : CardTypeProps.DEFAULT;
     const bloggersLoadingId = useAppSelector(selectBloggersToggleLoading);
-
     return (
         <Card minHeight={cardData.minHeight} data-test-id='blogs-card'>
             <CardHeader {...cardData.CardHeader}>
@@ -61,7 +60,6 @@ export const BlogCard: FC<Post & BlogCardProps> = ({
                     login={login}
                     imageUrl={imageUrl}
                     shrinks
-                    _id={_id}
                 />
                 {cardType === 'FAVORITE' &&
                     Boolean(newRecipesCount) &&

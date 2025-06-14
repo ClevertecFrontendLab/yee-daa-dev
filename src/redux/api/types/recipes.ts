@@ -1,3 +1,5 @@
+import { NoteType } from '~/types/user';
+
 import { SortOrder, SortParamsAvailable } from '../constants';
 import { ReplacedIdToUnderscore } from './common';
 
@@ -20,7 +22,7 @@ export type Recipe = {
     portions?: number;
     image?: string;
     bookmarks?: number;
-    recommendedByUserId?: string;
+    recommendedByUserId?: string[];
 };
 
 export type AuthorDataType = {
@@ -90,3 +92,26 @@ export type SearchParams = {
 export type AllRecipeParams = Partial<PaginationParams & FilterParams & SortParams & SearchParams>;
 
 export type RecipesByCategoryIdArgs = { id: string } & Partial<PaginationParams & SearchParams>;
+
+export type RecipeWithUnderscoreId = Omit<Recipe, 'id'> & {
+    _id: string;
+};
+
+export type NoteWithUnderscoreId = Omit<NoteType, 'id'> & {
+    _id: string;
+};
+
+export type RecipeByUserId = {
+    userId: string;
+    totalSubscribers: number;
+    totalBookmarks: number;
+    notes: NoteWithUnderscoreId[];
+    recipes: RecipeWithUnderscoreId[];
+    myBookmarks: RecipeWithUnderscoreId[];
+};
+
+export type RecipeByUserIdNormalized = Omit<RecipeByUserId, 'recipes' | 'myBookmarks' | 'notes'> & {
+    recipes: Recipe[];
+    myBookmarks: Recipe[];
+    notes: NoteType[];
+};

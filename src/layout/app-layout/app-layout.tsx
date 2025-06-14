@@ -6,6 +6,11 @@ import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
 import { useGetAllCategoriesQuery } from '~/redux/api/category-api';
 import { JUICIEST_PARAMS, NEWEST_PARAMS } from '~/redux/api/constants';
 import { useGetAllRecipesWithParamsQuery } from '~/redux/api/recipes-api';
+import {
+    useGetAllUsersInfoQuery,
+    useGetCurrentUserQuery,
+    useGetStatisticQuery,
+} from '~/redux/api/user-api';
 import { useGetBloggersQuery } from '~/redux/api/users-api';
 import { appLoadingSelector } from '~/redux/features/app-slice';
 import { selectUserId } from '~/redux/features/auth-slice';
@@ -28,8 +33,18 @@ export const AppLayout = () => {
     });
     const { isLoading: loadingNewest } = useGetAllRecipesWithParamsQuery(NEWEST_PARAMS);
     const { isLoading: loadingJuiciest } = useGetAllRecipesWithParamsQuery(JUICIEST_PARAMS);
+    const { isLoading: loadingUser } = useGetCurrentUserQuery();
+    const { isLoading: loadingAllUsers } = useGetAllUsersInfoQuery();
+    const { isLoading: loadingAllStatistic } = useGetStatisticQuery();
 
-    const isAppLoading = loadingCategory || loadingNewest || loadingJuiciest || loadingBloggers;
+    const isAppLoading =
+        loadingCategory ||
+        loadingNewest ||
+        loadingJuiciest ||
+        loadingBloggers ||
+        loadingUser ||
+        loadingAllUsers ||
+        loadingAllStatistic;
 
     return (
         <Fragment>

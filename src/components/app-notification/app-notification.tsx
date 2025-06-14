@@ -51,7 +51,7 @@ export const AppNotification = () => {
         isNotificationShowed &&
         title && (
             <Center
-                zIndex={1000}
+                zIndex={1600}
                 position='fixed'
                 bottom={{ base: '80px', md: '100px', lg: '16px' }}
                 left='50%'

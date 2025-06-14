@@ -10,22 +10,43 @@ import {
     useBreakpointValue,
 } from '@chakra-ui/react';
 import { FC, useState } from 'react';
+import { useLocation } from 'react-router';
 
 import { NoteCard } from '~/components/notes-box/components/note-card';
-import { NoteCardProps } from '~/components/notes-box/components/note-card/note-card';
+import { Paths } from '~/constants/path';
+import { useAppDispatch } from '~/hooks/typed-react-redux-hooks';
+import { ProfileBlockTitle } from '~/pages/user-profile-page/components';
+import { useDeleteNoteMutation } from '~/redux/api/user-api';
+import { openDrawer } from '~/redux/features/filter-drawer-slice.js';
+import { NoteType } from '~/types/user';
+
+import { PenIcon } from '../icons/pen-icon';
 
 export type NotesBoxData = {
-    items: NoteCardProps[];
+    items: NoteType[];
 } & StackProps;
 
 export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
+    const dispatch = useAppDispatch();
     const [notesFolded, setNotesFolded] = useState(true);
+
+    const { pathname } = useLocation();
+    const [deleteNote] = useDeleteNoteMutation();
+
+    const isProfile = pathname.includes(Paths.PROFILE);
     const variant = useBreakpointValue({
         base: 204,
         md: 247,
         sm: 228,
         '2xl': 169,
     });
+
+    const handleAddNotes = () => {
+        dispatch(openDrawer());
+    };
+    const handleDeleteNote = (id: string) => {
+        deleteNote(id);
+    };
 
     const length = items.length;
     return (
@@ -41,17 +62,38 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
             data-test-id='blog-notes-box'
             {...rest}
         >
-            <HStack alignItems='center' mb={{ base: 4, '2xl': 3 }} w='100%'>
-                <Heading fontSize={{ base: 20, lg: 36 }} lineHeight='none' fontWeight={400}>
-                    Заметки
-                </Heading>
-                <Text
-                    lineHeight='none'
-                    color='blackAlpha.600'
-                    fontSize={{ base: 20, lg: 30 }}
-                    fontWeight={400}
-                >{`(${length})`}</Text>
-            </HStack>
+            <Flex justifyContent='space-between' flexDirection={{ base: 'row' }} gap={6} w='100%'>
+                {isProfile ? (
+                    <>
+                        <ProfileBlockTitle {...{ title: 'Заметки', count: length }} />
+                        <Button
+                            variant='outline'
+                            size={{ base: 'sm', '2xl': 'lg' }}
+                            px={12}
+                            leftIcon={<PenIcon />}
+                            color='blackAlpha.800'
+                            fontSize={{ base: 'xs', lg: 'sm' }}
+                            onClick={handleAddNotes}
+                            border='1px solid rgba(0, 0, 0, 0.48)'
+                            borderRadius='6px'
+                        >
+                            Новая заметка
+                        </Button>
+                    </>
+                ) : (
+                    <HStack alignItems='center' mb={{ base: 4, '2xl': 3 }} w='100%'>
+                        <Heading fontSize={{ base: 20, lg: 36 }} lineHeight='none' fontWeight={400}>
+                            Заметки
+                        </Heading>
+                        <Text
+                            lineHeight='none'
+                            color='blackAlpha.600'
+                            fontSize={{ base: 20, lg: 30 }}
+                            fontWeight={400}
+                        >{`(${length})`}</Text>
+                    </HStack>
+                )}
+            </Flex>
             <Collapse
                 in={!notesFolded}
                 startingHeight={items.length !== 0 ? variant : 0}
@@ -72,6 +114,9 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
                             }}
                             maxWidth={{ base: '100%', md: 'calc(100% / 2)' }}
                             flex={1}
+                            isProfile={isProfile}
+                            id={item.id}
+                            deleteNote={handleDeleteNote}
                         />
                     ))}
                 </Flex>

@@ -27,6 +27,7 @@ export enum ApiEndpoints {
     GetBloggerInfoById = '/user',
     GetUserById = '/users',
     GetMe = '/users/me',
+    GetAllUsers = '/users/all',
     GetBloggers = '/bloggers',
 
     Category = 'category',

@@ -1,14 +1,16 @@
 import { Button, CardFooter, Image, Stack } from '@chakra-ui/icons';
-import { Box, Card, CardBody, CardHeader, Heading, Text } from '@chakra-ui/react';
+import { Badge, Box, Card, CardBody, CardHeader, Heading, Text } from '@chakra-ui/react';
 import { FC } from 'react';
-import { NavLink, useLocation } from 'react-router';
+import { NavLink, useLocation, useNavigate } from 'react-router';
 
+import { EDIT_DRAFT_PATH, EDIT_RECIPE_PATH, Paths } from '~/constants/path.ts';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks.ts';
 import { useGetRecipePath } from '~/hooks/use-get-recipe-path.ts';
-import { mockAuthors } from '~/mocks/authors.ts';
+import { userProfileHeaderDataType } from '~/pages/user-profile-page/utils/user-profile-headers.tsx';
 import { useBookmarkRecipeMutation } from '~/redux/api/recipes-api';
 import { Recipe } from '~/redux/api/types/recipes.ts';
 import { selectInputValue } from '~/redux/features/search-slice.ts';
+import { selectUser, selectUserInfoRecommended } from '~/redux/features/user-slice.ts';
 import { getAbsoluteImagePath } from '~/utils/get-absolute-image-path.ts';
 
 import { CardStat } from '../card-stat/card-stat.tsx';
@@ -19,19 +21,80 @@ import { RecommendationTag } from '../recommendation-tag';
 
 export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index }) => {
     const inputValue = useAppSelector(selectInputValue);
+
+    const { bookmarks: bookmarksUser, drafts } = useAppSelector(selectUser);
+    const { title, image, description, categoriesIds, likes, bookmarks, id, recommendedByUserId } =
+        recipe;
+
     const { pathname } = useLocation();
     const [bookmarkRecipe] = useBookmarkRecipeMutation();
 
-    const { title, image, description, categoriesIds, likes, bookmarks, id } = recipe;
+    const userRecommendedRecipe = useAppSelector((state) =>
+        recommendedByUserId?.[0]
+            ? selectUserInfoRecommended(state, recommendedByUserId[0])
+            : undefined,
+    );
 
+    const isProfile = pathname === Paths.PROFILE;
+
+    const cardType = () => {
+        const bookmarksKey = bookmarksUser.find((el) => el.id === id);
+        if (bookmarksKey) {
+            return userProfileHeaderDataType.bookmarks;
+        }
+        const resultKey = drafts.find((draft) => draft.id === id);
+        if (resultKey) {
+            return userProfileHeaderDataType.drafts;
+        }
+        return userProfileHeaderDataType.recipes;
+    };
+
+    const cardKey = cardType();
     const recipePath = useGetRecipePath(recipe);
 
-    // TODO заменить на поиск автора по recommendedByUserId из рецепта
-    const { login, ...authorRecommendInfo } = mockAuthors[1];
+    const navigate = useNavigate();
 
     const onBookmarkRecipe = async () => {
         await bookmarkRecipe(id);
     };
+    const handleEditDraft = () => {
+        if (cardKey === userProfileHeaderDataType.drafts) {
+            navigate(`/${EDIT_DRAFT_PATH}/${id}`);
+        } else {
+            navigate(`/${EDIT_RECIPE_PATH}${recipePath}`);
+        }
+    };
+
+    const renderButtonsForProfile = () =>
+        cardKey === userProfileHeaderDataType.bookmarks ? (
+            <Button
+                variant='outline'
+                size={{ base: 'xs', xmd: 'sm' }}
+                leftIcon={<BookmarkIcon />}
+                color='blackAlpha.800'
+                onClick={onBookmarkRecipe}
+            >
+                <Box as='span' display={{ base: 'none', xmd: 'inline' }}>
+                    Убрать из сохранённых
+                </Box>
+            </Button>
+        ) : (
+            <Button
+                variant='outline'
+                size={{ base: 'xs', xmd: 'sm' }}
+                color={cardKey === userProfileHeaderDataType.recipes ? 'blackAlpha.800' : 'white'}
+                bg={
+                    cardKey === userProfileHeaderDataType.drafts
+                        ? 'blackAlpha.900'
+                        : 'whiteAlpha-100'
+                }
+                onClick={handleEditDraft}
+            >
+                <Box as='span' display={{ base: 'none', xmd: 'inline' }}>
+                    Редактировать
+                </Box>
+            </Button>
+        );
 
     return (
         <Card
@@ -60,7 +123,12 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
                     right={2}
                     display={{ base: 'none', xxl: 'block' }}
                 >
-                    {login && <RecommendationTag {...authorRecommendInfo} />}
+                    {Boolean(recommendedByUserId?.length) && userRecommendedRecipe ? (
+                        <RecommendationTag
+                            {...userRecommendedRecipe}
+                            othersLength={recommendedByUserId?.length}
+                        />
+                    ) : null}
                 </Box>
                 <Image
                     top={0}
@@ -85,14 +153,34 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
                 <CardHeader
                     p={0}
                     display='flex'
-                    justifyContent='space-between'
+                    justifyContent={
+                        cardKey === userProfileHeaderDataType.drafts ? 'flex-end' : 'space-between'
+                    }
                     flexDirection='row'
                     alignItems='flex-start'
                 >
-                    <Box display={{ base: 'none', xmd: 'block' }}>
-                        <CategoryTag categoriesIds={categoriesIds} color='lime.50' />
-                    </Box>
-                    <CardStat bookmarks={bookmarks} likes={likes} />
+                    {cardKey === userProfileHeaderDataType.drafts ? (
+                        <Badge
+                            fontWeight='400'
+                            color='black'
+                            bg='blackAlpha.100'
+                            fontSize='14px'
+                            variant='solid'
+                            p='2px 8px'
+                            borderRadius='4px'
+                            lineHeight='20px'
+                            textTransform='capitalize'
+                        >
+                            Черновик
+                        </Badge>
+                    ) : (
+                        <>
+                            <Box display={{ base: 'none', xmd: 'block' }}>
+                                <CategoryTag categoriesIds={categoriesIds} color='lime.50' />
+                            </Box>
+                            <CardStat bookmarks={bookmarks} likes={likes} />
+                        </>
+                    )}
                 </CardHeader>
                 <CardBody p={0}>
                     <Heading
@@ -119,26 +207,32 @@ export const FoodCard: FC<{ recipe: Recipe; index: number }> = ({ recipe, index 
                     gap={{ base: 3, md: 2 }}
                     flexWrap='wrap'
                 >
-                    <Button
-                        variant='outline'
-                        size={{ base: 'xs', xmd: 'sm' }}
-                        leftIcon={<BookmarkIcon />}
-                        color='blackAlpha.800'
-                        onClick={onBookmarkRecipe}
-                    >
-                        <Box as='span' display={{ base: 'none', xmd: 'inline' }}>
-                            Сохранить
-                        </Box>
-                    </Button>
-                    <NavLink
-                        to={recipePath}
-                        data-test-id={`card-link-${index}`}
-                        state={{ fromPage: pathname }}
-                    >
-                        <Button bg='black' color='white' size={{ base: 'xs', xmd: 'sm' }}>
-                            Готовить
-                        </Button>
-                    </NavLink>
+                    {isProfile ? (
+                        renderButtonsForProfile()
+                    ) : (
+                        <>
+                            <Button
+                                variant='outline'
+                                size={{ base: 'xs', xmd: 'sm' }}
+                                leftIcon={<BookmarkIcon />}
+                                color='blackAlpha.800'
+                                onClick={onBookmarkRecipe}
+                            >
+                                <Box as='span' display={{ base: 'none', xmd: 'inline' }}>
+                                    Сохранить
+                                </Box>
+                            </Button>
+                            <NavLink
+                                to={recipePath}
+                                data-test-id={`card-link-${index}`}
+                                state={{ fromPage: pathname }}
+                            >
+                                <Button bg='black' color='white' size={{ base: 'xs', xmd: 'sm' }}>
+                                    Готовить
+                                </Button>
+                            </NavLink>
+                        </>
+                    )}
                 </CardFooter>
             </Stack>
         </Card>

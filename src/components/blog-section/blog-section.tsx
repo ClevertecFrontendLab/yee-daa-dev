@@ -9,7 +9,6 @@ import { selectBloggersPreview } from '~/redux/features/bloggers-slice.ts';
 
 export const BlogSection = () => {
     const bloggersPreview = useAppSelector(selectBloggersPreview);
-    console.log('bloggersPreview', bloggersPreview);
 
     return (
         Boolean(bloggersPreview.length) && (

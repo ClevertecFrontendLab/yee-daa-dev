@@ -7,6 +7,7 @@ export const routeParams = {
 
 const RECIPE_PATH = `:${routeParams.categoryName}/:${routeParams.subCategoryName}/:${routeParams.recipeId}`;
 export const EDIT_RECIPE_PATH = 'edit-recipe';
+export const EDIT_DRAFT_PATH = 'edit-draft';
 
 export const Paths = {
     SIGN_IN: '/sign-in',
@@ -22,6 +23,11 @@ export const Paths = {
     BLOGS_ITEM: `/blogs/:${routeParams.blogId}`,
     NEW_RECIPE: '/new-recipe',
     EDIT_RECIPE: `/${EDIT_RECIPE_PATH}/${RECIPE_PATH}`,
+    EDIT_DRAFT: `/${EDIT_DRAFT_PATH}/:${routeParams.recipeId}`,
+    PROFILE: '/profile',
+    SETTINGS: '/profile/settings',
     ERROR: '/not-found',
     OTHERS: '*',
 } as const;
+
+export const CLEVERTEC = 'https://clevertec.ru/';

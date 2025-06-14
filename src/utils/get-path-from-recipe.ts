@@ -9,7 +9,7 @@ export const getPathFromRecipe = (
     subCategories: SubCategory[],
     recipe: Recipe,
 ) => {
-    const { id: recipeId, categoriesIds } = recipe;
+    const { categoriesIds } = recipe;
 
     // если не найдется рецепт - просто будет возврат на главную
     if (!isArrayWithItems(subCategories) || !isArrayWithItems(categoriesIds)) {
@@ -29,6 +29,6 @@ export const getPathFromRecipe = (
     if (!categoryName || !subCategoryName) {
         return Paths.R_SWITCHER;
     }
-
+    const recipeId = recipe.id ?? recipe._id;
     return `/${categoryName}/${subCategoryName}/${recipeId}`;
 };

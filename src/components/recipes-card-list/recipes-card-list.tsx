@@ -1,6 +1,7 @@
 import { Box, Button, Center, SimpleGridProps } from '@chakra-ui/react';
 import { FC } from 'react';
 
+import { userProfileHeaderDataType } from '~/pages/user-profile-page/utils/user-profile-headers';
 import { Recipe } from '~/redux/api/types/recipes';
 
 import { CardList } from '../card-list';
@@ -11,6 +12,8 @@ type RecipeCardListProps = {
     totalPages?: number;
     loadMoreCallback?: VoidFunction;
     isLoading?: boolean;
+    isRecipes?: boolean;
+    cardType?: userProfileHeaderDataType;
 } & SimpleGridProps;
 
 export const RecipeCardList: FC<RecipeCardListProps> = ({
@@ -19,10 +22,11 @@ export const RecipeCardList: FC<RecipeCardListProps> = ({
     currentPage = 1,
     totalPages = 1,
     isLoading = false,
+    cardType,
     ...rest
 }) => (
     <Box>
-        <CardList recipeList={recipeList} {...rest} />
+        <CardList cardType={cardType} recipeList={recipeList} {...rest} />
         {currentPage < totalPages && (
             <Center mt={{ base: 3, sm: 4 }}>
                 <Button

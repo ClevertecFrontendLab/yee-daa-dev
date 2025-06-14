@@ -1,7 +1,7 @@
 import { Flex, useMediaQuery, VStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router';
+import { matchPath, useLocation, useNavigate } from 'react-router';
 
 import { Paths } from '~/constants/path';
 import { useAppSelector } from '~/hooks/typed-react-redux-hooks';
@@ -15,6 +15,7 @@ import {
     useUpdateRecipeMutation,
 } from '~/redux/api/recipes-api';
 import { selectCategoriesMenu, selectSubCategories } from '~/redux/features/categories-slice';
+import { selectUserDraft } from '~/redux/features/user-slice';
 import { theme } from '~/theme/theme';
 import { RecipeFormValues } from '~/types/recipe-form';
 
@@ -31,10 +32,17 @@ export const RecipeForm = () => {
     const navigate = useNavigate();
     const [submittedPath, setSubmittedPath] = useState<string | null>(null);
 
+    const { pathname } = useLocation();
     const { recipeId } = useDetectParams();
+    const isEditDraftPage = Boolean(matchPath(Paths.EDIT_DRAFT, pathname));
 
-    const { data: recipe } = useGetRecipeByIdQuery(recipeId as string, { skip: !recipeId });
+    const { data: recipeFromApi } = useGetRecipeByIdQuery(recipeId as string, {
+        skip: !recipeId || isEditDraftPage,
+    });
     const { data: measureUnits } = useGetMeasureUnitsQuery();
+
+    const recipeFromState = useAppSelector((state) => selectUserDraft(state, recipeId));
+    const recipe = isEditDraftPage ? recipeFromState : recipeFromApi;
 
     const [createRecipe, { isLoading: isLoadingCreateRecipe }] = useCreateRecipeMutation();
     const [updateRecipe, { isLoading: isLoadingUpdateRecipe }] = useUpdateRecipeMutation();
@@ -83,7 +91,6 @@ export const RecipeForm = () => {
 
         try {
             if (recipeId) {
-                console.log(values);
                 const response = await updateRecipe({
                     id: recipeId,
                     data: values,
@@ -99,7 +106,7 @@ export const RecipeForm = () => {
     };
 
     const onSaveDraft = async (place: 'modal' | 'form') => {
-        const isValid = await trigger('title');
+        const isValid = await trigger(['title']);
 
         if (!isValid) {
             onClose();

@@ -92,6 +92,7 @@ export const BlogProfile = () => {
                         subscribersCount={el.subscribersCount}
                         bookmarksCount={el.bookmarksCount}
                         link={`${Paths.BLOGS}/${el._id}`}
+                        imageUrl={el.photoLink}
                     />
                 ))}
             </SimpleGrid>
