@@ -8,7 +8,14 @@ type MobileLoaderType = {
 
 export const MobileLoader = ({ isOpen }: MobileLoaderType) =>
     isOpen && (
-        <Box position='absolute' width='100%' height='100%' top={0} left={0}>
+        <Box
+            position='absolute'
+            width='100%'
+            height='100%'
+            top={0}
+            left={0}
+            data-test-id='mobile-loader'
+        >
             <Loader boxSize='100%' size='md' color='black' radius={14} />
         </Box>
     );

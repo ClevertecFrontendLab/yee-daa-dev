@@ -37,6 +37,7 @@ export const BlogProfile = () => {
                 mt={{ base: 0, md: -8, xmd: -4 }}
                 minWidth={{ base: 0, sm: 356, xmd: 422, '2xl': 480 }}
                 _id={info.bloggerInfo._id}
+                dataTestId='blogger-user-info'
             />
             {isArrayWithItems(data.recipes) && (
                 <RecipeCardList
@@ -62,6 +63,7 @@ export const BlogProfile = () => {
                     variant='ghost'
                     as={Link}
                     to={Paths.BLOGS}
+                    data-test-id='blogger-user-other-blogs-button'
                 >
                     Всe авторы
                 </Button>
@@ -77,6 +79,7 @@ export const BlogProfile = () => {
                     xl: '1fr',
                     xxxl: 'repeat(3, 1fr)',
                 }}
+                data-test-id='blogger-user-other-blogs-grid'
             >
                 {bloggersPreview.slice(0, 3).map((el) => (
                     <BlogCard

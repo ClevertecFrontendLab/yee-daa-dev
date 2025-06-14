@@ -100,7 +100,7 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
                 animateOpacity
                 style={{ width: '100%' }}
             >
-                <Flex flexWrap='wrap' gap={4}>
+                <Flex flexWrap='wrap' gap={4} data-test-id='blogger-user-notes-grid'>
                     {items.map((item) => (
                         <NoteCard
                             key={item.date}
@@ -128,6 +128,7 @@ export const NotesBox: FC<NotesBoxData> = ({ items, ...rest }) => {
                     variant='ghost'
                     mt={{ base: 3, sm: 0 }}
                     onClick={() => setNotesFolded(!notesFolded)}
+                    data-test-id='blogger-user-notes-button'
                 >
                     {notesFolded ? 'Показать больше' : 'Свернуть'}
                 </Button>

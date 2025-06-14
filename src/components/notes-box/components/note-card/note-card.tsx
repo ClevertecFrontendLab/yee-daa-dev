@@ -39,6 +39,7 @@ export const NoteCard: FC<NoteCardProps> = ({ date, text, isProfile, id, deleteN
                 lineHeight={5}
                 noOfLines={{ base: 3, '2xl': 4 }}
                 letterSpacing='-0.8px'
+                data-test-id='notes-card-text'
             >
                 {text}
             </Text>

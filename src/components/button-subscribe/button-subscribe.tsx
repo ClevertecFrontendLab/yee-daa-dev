@@ -48,6 +48,7 @@ export const ButtonSubscribe: FC<ButtonSubscribeProps> = ({ userId, isSubscribed
             openDelay={100}
             maxWidth={150}
             bgColor='blackAlpha.900'
+            data-test-id='blog-tooltip'
         >
             <Button
                 type='button'
